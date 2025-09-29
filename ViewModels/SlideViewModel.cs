@@ -1,21 +1,21 @@
 ﻿namespace congress_cucuta.ViewModels;
 
-public class SlideViewModel : ViewModel {
+internal class SlideViewModel : ViewModel {
     private string _title = "Title";
     private List<LineViewModel> _description = [];
 
     public string Title {
-        get { return _title; }
+        get => this._title;
         set {
-            _title = value;
+            this._title = value;
             OnPropertyChanged ();
         }
     }
 
     public List<LineViewModel> Description {
-        get { return _description; }
+        get => this._description;
         set {
-            _description = value;
+            this._description = value;
             OnPropertyChanged ();
         }
     }

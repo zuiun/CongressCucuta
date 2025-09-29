@@ -1,3 +1,43 @@
-make sure that all the views (slideview) have a viewmodel attached eventually. i just removed them to test how it works because idk how to make lineview work
-bind title of simulationwindow to the country name
-display textblock on filewindow if file fails
+bind title of SimulationWindow to state name
+display textblock on FileWindow if file fails
+Line needs to wrap overflow
+should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
+many objects need to be convertible to Slides.
+ownerID 0 is the state (eg Tension, Stability, etc), other ownerIDs refer to factions
+lots of classes should really be structs
+
+
+
+Simulation
+Order:
+Intro slide (state, government type)
+Context slide
+Title slide (date, event, period)
+Governmental procedures
+Special procedures
+Declared procedures
+Titles slide (member, speaker)
+Regions
+Parties
+Ballots list slide
+Ballots
+End results
+Historical path slide
+The End
+
+Link conditions: Specific ballot passed, number of ballots passed, currency value, procedure exists
+Effects: Add/remove regions, add/remove/replace parties, add/remove/replace procedures
+
+Ballots
+Ballot/incident
+ID
+Name
+Description
+Pass/fail results
+Effects
+Links
+Is end
+
+End Results
+Links
+Historical path: Passed/failed, declared procedures

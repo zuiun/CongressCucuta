@@ -1,14 +1,13 @@
-﻿using System.Diagnostics;
-using System.Globalization;
+﻿using System.Globalization;
 using System.Windows.Data;
 
 namespace congress_cucuta.Converters;
 
-[ValueConversion (typeof (Byte), typeof (String))]
-public class IndentLevelToFontSizeConverter : IValueConverter {
-    const byte MARGIN_MAX = 28;
-    const byte MARGIN_MIN = 16;
-    const byte MARGIN_PER_INDENT_LEVEL = 4;
+[ValueConversion (typeof (byte), typeof (string))]
+internal class IndentLevelToFontSizeConverter : IValueConverter {
+    private const byte MARGIN_MAX = 28;
+    private const byte MARGIN_MIN = 16;
+    private const byte MARGIN_PER_INDENT_LEVEL = 4;
 
     public object Convert (object value, Type targetType, object parameter, CultureInfo culture) {
         if (value is byte indentLevel) {

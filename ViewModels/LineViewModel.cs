@@ -1,39 +1,39 @@
 ﻿namespace congress_cucuta.ViewModels;
 
-public class LineViewModel : ViewModel {
+internal class LineViewModel : ViewModel {
     private string _text = "Text";
     private byte _indentLevel = 0;
     private bool _isImportant = false;
     private string? _description = null;
 
     public string Text {
-        get { return _text; }
+        get => this._text;
         set {
-            _text = value;
+            this._text = value;
             OnPropertyChanged ();
         }
     }
 
     public byte IndentLevel {
-        get { return _indentLevel; }
+        get => this._indentLevel;
         set {
-            _indentLevel = value;
+            this._indentLevel = value;
             OnPropertyChanged ();
         }
     }
 
     public bool IsImportant {
-        get { return _isImportant; }
+        get => this._isImportant;
         set {
-            _isImportant = value;
+            this._isImportant = value;
             OnPropertyChanged ();
         }
     }
 
     public string? Description {
-        get { return _description; }
+        get => this._description;
         set {
-            _description = value;
+            this._description = value;
             OnPropertyChanged ();
         }
     }

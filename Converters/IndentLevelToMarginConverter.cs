@@ -3,9 +3,9 @@ using System.Windows.Data;
 
 namespace congress_cucuta.Converters;
 
-[ValueConversion (typeof (Byte), typeof (String))]
-public class IndentLevelToMarginConverter : IValueConverter {
-    const uint MARGIN_PER_INDENT_LEVEL = 24;
+[ValueConversion (typeof (byte), typeof (string))]
+internal class IndentLevelToMarginConverter : IValueConverter {
+    private const byte MARGIN_PER_INDENT_LEVEL = 24;
 
     public object Convert (object value, Type targetType, object parameter, CultureInfo culture) {
         if (value is byte indentLevel) {
