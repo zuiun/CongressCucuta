@@ -9,7 +9,7 @@ public class SlideViewModel : ViewModel {
 
     public SlideViewModel () {
         _description.Add (new LineModel ("Line 1", 0, isImportant: true));
-        _description.Add (new LineModel ("Line 2", 0, hoverText: "Hover"));
+        _description.Add (new LineModel ("Line 2", 0, description: "Hover"));
         _description.Add (new LineModel ("Line 3", 0));
         _description.Add (new LineModel ("Line 4", 200));
     }

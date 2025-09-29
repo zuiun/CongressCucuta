@@ -7,6 +7,20 @@
              xmlns:vm = "clr-namespace:congress_cucuta.ViewModels"
              mc:Ignorable = "d"
              d:DesignHeight = "600" d:DesignWidth = "300">
+    <UserControl.Resources>
+        <Style TargetType = "Label">
+            <Setter Property = "FontFamily" Value = "Candara"/>
+            <Setter Property = "FontSize" Value = "44"/>
+            <Setter Property = "FontWeight" Value = "Bold"/>
+        </Style>
+        <Style TargetType = "Button">
+            <Setter Property = "FontFamily" Value = "Candara"/>
+            <Setter Property = "FontSize" Value = "28"/>
+        </Style>
+    </UserControl.Resources>
+    <UserControl.DataContext>
+        <vm:SlideViewModel/>
+    </UserControl.DataContext>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height = "Auto"/>
@@ -17,7 +31,7 @@
         <ItemsControl Grid.Row = "1" ItemsSource = "{Binding Description}">
             <!--<ItemsControl.Resources>
                 <DataTemplate>
-                    --><!--<local:LineView/>--><!--
+                    <local:LineView/>
                 </DataTemplate>
             </ItemsControl.Resources>-->
         </ItemsControl>

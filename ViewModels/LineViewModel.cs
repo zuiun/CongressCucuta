@@ -4,7 +4,7 @@ public class LineViewModel : ViewModel {
     private string _text = "Text";
     private byte _indentLevel = 0;
     private bool _isImportant = false;
-    private string? _hoverText = null;
+    private string? _description = null;
 
     public string Text {
         get { return _text; }
@@ -30,10 +30,10 @@ public class LineViewModel : ViewModel {
         }
     }
 
-    public string? HoverText {
-        get { return _hoverText; }
+    public string? Description {
+        get { return _description; }
         set {
-            _hoverText = value;
+            _description = value;
             OnPropertyChanged ();
         }
     }

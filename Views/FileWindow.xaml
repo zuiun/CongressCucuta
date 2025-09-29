@@ -7,7 +7,13 @@
         mc:Ignorable="d"
         Title = "Congress of Cucuta" Height = "480" Width = "640">
     <Window.Resources>
+        <Style TargetType = "Button">
+            <Setter Property = "FontFamily" Value = "Candara"/>
+            <Setter Property = "FontSize" Value = "44"/>
+            <Setter Property = "Padding" Value = "44"/>
+        </Style>
         <Style TargetType = "TextBlock">
+            <Setter Property = "FontFamily" Value = "Nirmala UI"/>
             <Setter Property = "Foreground" Value = "Red"/>
             <Setter Property = "FontSize" Value = "16"/>
         </Style>
@@ -22,7 +28,7 @@
         <Button Grid.Row = "1" HorizontalAlignment = "Center">
             Choose a simulation
         </Button>
-        <TextBlock Grid.Row = "2" Visibility = "Visible" HorizontalAlignment = "Center" Margin = "6">
+        <TextBlock Grid.Row = "2" Visibility = "Hidden" HorizontalAlignment = "Center" Margin = "6">
             Failed to open file
         </TextBlock>
     </Grid>
