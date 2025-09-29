@@ -11,7 +11,7 @@ public class IndentLevelToMarginConverter : IValueConverter {
         if (value is byte indentLevel) {
             return $"{indentLevel * MARGIN_PER_INDENT_LEVEL}, 0, 0, 0";
         } else {
-            return "0";
+            throw new NotSupportedException ();
         }
     }
 

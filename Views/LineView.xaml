@@ -8,9 +8,6 @@
              xmlns:vm="clr-namespace:congress_cucuta.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="80" d:DesignWidth="400">
-    <UserControl.DataContext>
-        <vm:LineViewModel/>
-    </UserControl.DataContext>
     <UserControl.Resources>
         <c:IndentLevelToMarginConverter x:Key = "IndentLevelToMarginConverter"/>
         <c:IndentLevelToFontSizeConverter x:Key = "IndentLevelToFontSizeConverter"/>
@@ -21,7 +18,7 @@
         </Style>
         <Style TargetType = "TextBlock">
             <Setter Property = "FontFamily" Value = "Nirmala UI"/>
-            <Setter Property = "FontSize" Value = "{Binding IsImportant, Converter = {StaticResource IndentLevelToFontSizeConverter}}"/>
+            <Setter Property = "FontSize" Value = "{Binding IndentLevel, Converter = {StaticResource IndentLevelToFontSizeConverter}}"/>
             <Setter Property = "Foreground" Value = "{Binding IsImportant, Converter = {StaticResource IsImportantToForegroundConverter}}"/>
         </Style>
         <Style TargetType = "ToolTip">
@@ -40,7 +37,7 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <TextBlock Text = "•" Margin = "{Binding IndentLevel, Converter = {StaticResource IndentLevelToMarginConverter}}"/>
+        <TextBlock Text = "• " Margin = "{Binding IndentLevel, Converter = {StaticResource IndentLevelToMarginConverter}}"/>
         <TextBlock Style = "{StaticResource Text}" Text = "{Binding Text}"/>
     </StackPanel>
 </UserControl>

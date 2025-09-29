@@ -9,7 +9,7 @@ public class IsImportantToForegroundConverter : IValueConverter {
         if (value is bool isImportant) {
             return isImportant ? "Red" : "Black";
         } else {
-            return "Black";
+            throw new NotSupportedException ();
         }
     }
 

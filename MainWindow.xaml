@@ -5,9 +5,13 @@
         xmlns:mc = "http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local = "clr-namespace:congress_cucuta"
         xmlns:v = "clr-namespace:congress_cucuta.Views"
+        xmlns:vm = "clr-namespace:congress_cucuta.ViewModels"
         mc:Ignorable = "d"
         Title = "Congress of Cucuta" Height = "480" Width = "640">
+    <Window.DataContext>
+        <vm:SlideViewModel/>
+    </Window.DataContext>
     <Grid>
-        <v:LineView/>
+        <v:SlideView/>
     </Grid>
 </Window>

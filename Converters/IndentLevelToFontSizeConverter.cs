@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Diagnostics;
+using System.Globalization;
 using System.Windows.Data;
 
 namespace congress_cucuta.Converters;
@@ -13,7 +14,7 @@ public class IndentLevelToFontSizeConverter : IValueConverter {
         if (value is byte indentLevel) {
             return $"{Math.Max (MARGIN_MAX - (indentLevel * MARGIN_PER_INDENT_LEVEL), MARGIN_MIN)}";
         } else {
-            return $"{MARGIN_MAX}";
+            throw new NotSupportedException ();
         }
     }
 
