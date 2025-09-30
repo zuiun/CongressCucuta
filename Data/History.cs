@@ -1,13 +1,17 @@
 ﻿namespace congress_cucuta.Data;
 
-internal readonly struct HistoryPath (List<bool> ballotsPassed, List<List<byte>> proceduresDeclared) {
-    public List<bool> BallotsPassed { get; } = ballotsPassed;
-    public List<List<byte>> ProceduresDeclared { get; } = proceduresDeclared;
+internal readonly struct HistoryPath (
+    HashSet<byte> ballotsPassed,
+    Dictionary<byte, SortedSet<byte>> ballotsProceduresDeclared
+) {
+    public HashSet<byte> BallotsPassed { get; } = ballotsPassed;
+    public Dictionary<byte, SortedSet<byte>> BallotsProceduresDeclared { get; } = ballotsProceduresDeclared;
 }
 
 internal readonly struct History (
     string state,
     string government,
+    string[] context,
     string date,
     string situation,
     string period,
@@ -17,6 +21,7 @@ internal readonly struct History (
 ) {
     public string State { get; } = state;
     public string Government { get; } = government;
+    public string[] Context { get; } = context;
     public string Date { get; } = date;
     public string Situation { get; } = situation;
     public string Period { get; } = period;

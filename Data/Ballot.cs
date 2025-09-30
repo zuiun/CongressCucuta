@@ -40,9 +40,9 @@ internal readonly struct Ballot (
         public byte? ReplacementID { get; }
     }
 
-    internal readonly struct Result (List<Ballot.Effect> effects, List<string> description, bool isPassed = true) {
+    internal readonly struct Result (List<Effect> effects, List<string> description, bool isPassed = true) {
         public bool IsPassed { get; } = isPassed;
-        public List<Ballot.Effect> Effects { get; } = effects;
+        public List<Effect> Effects { get; } = effects;
         public List<string> Description { get; } = description;
     }
 

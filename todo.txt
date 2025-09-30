@@ -1,5 +1,3 @@
-WE START WITH MAKING PROCEDURES!
-
 bind title of SimulationWindow to state name
 display textblock on FileWindow if file fails
 Line needs to wrap overflow
@@ -10,33 +8,22 @@ a ballot/result that links to nothing or which satisfies no links (null) is an e
 need an activeparty, activeregion, activeprocedure lists for Simulation
 Simulation needs to track sections so it can know where to jump on end states
 consider doing a using ID = byte where relevant
+Australia is bicameral NOOOOOOOOOO
+consider decoupling Currency from Faction, and moving all Currncy into a HashMap instead
+perhaps Slide with only one or no Line of Description should become a SlideTitle, vs a SlideContent
+
+Procedure stuff:
+for ProcedureDeclared, it can only be pressed for people who meet its filters
+for ProcedureRepeating, automatically yield every ballot
+after YieldEffect
+if EffectBundle has a procedureID, then remove that procedure from active procedures (it is ProcedureImmediate)
+apply effects
 
 
 
-procedure types:
-they must also be able to set permissions immediately upon being created... (this requires all roles are created first)
-purely ballot-related (votes, currency; apply this to the beginning of the ballot)
-declared (factions, currency, forced votes/changing who can vote; apply only during a ballot, must press a button; must have declarers)
-
-differences between Governmental, Special, and Declared procedures:
-Governmental: takes place at start, can be repeated, involve shuffling of factions
-Special: repeated every ballot (affects votes, currency)
-Declared: repeatably declared (changes factions, currency, votes)
-
-
-
-Simulation order:
-Intro slide (state, government type)
-Context slide
-Title slide (date, event, period)
-Governmental procedures
-Special procedures
-Declared procedures
-Titles slide (member, speaker)
-Regions
-Parties
-Ballots list slide
-Ballots
-End results
-Historical path slide
-The End
+Simulation initialisation:
+Roles + permissions,
+Factions,
+Procedures,
+Balllots,
+???

@@ -14,24 +14,24 @@ internal abstract class Faction : IID {
         string name,
         List<string> description,
         string? leader,
-        Currency? currency = null
+        bool isActiveStart = true
     ) {
         if (id == STATE) {
             throw new ArgumentOutOfRangeException (nameof (id), "id cannot be STATE (255)");
         }
 
         ID = id;
+        IsActiveStart = isActiveStart;
         Name = name;
         Description = description;
         Leader = leader;
-        Currency = currency;
     }
 
     public byte ID { get; }
-    string Name { get; }
-    List<string> Description { get; }
-    string? Leader { get; }
-    Currency? Currency { get; }
+    public bool IsActiveStart { get; }
+    public string Name { get; }
+    public List<string> Description { get; }
+    public string? Leader { get; }
 }
 
 internal class Party (
@@ -39,9 +39,9 @@ internal class Party (
     string name,
     List<string> description,
     string leader,
-    string? abbreviation = null,
-    Currency? currency = null
-) : Faction (id, name, description, leader, currency) {
+    bool isActiveStart = true,
+    string? abbreviation = null
+) : Faction (id, name, description, leader, isActiveStart) {
     public string? Abbreviation { get; } = abbreviation;
 }
 
@@ -50,5 +50,5 @@ internal class Region (
     string name,
     List<string> description,
     string? leader,
-    Currency? currency = null
-) : Faction (id, name, description, leader, currency) { }
+    bool isActiveStart = true
+) : Faction (id, name, description, leader, isActiveStart) { }

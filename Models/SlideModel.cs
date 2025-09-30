@@ -7,7 +7,7 @@ internal abstract class SlideModel (byte id, string title, List<LineModel> descr
     public string Title { get; } = title;
     public List<LineModel> Description { get; } = description;
 
-    public abstract byte? YieldNext (SimulationContext context);
+    public abstract byte? YieldNext (ref readonly SimulationContext context);
 }
 
 internal class SlideLinearModel (
@@ -15,7 +15,7 @@ internal class SlideLinearModel (
     string title,
     List<LineModel> description
 ) : SlideModel (id, title, description) {
-    override public byte? YieldNext (SimulationContext context) => (byte) (ID + 1);
+    override public byte? YieldNext (ref readonly SimulationContext context) => (byte) (ID + 1);
 }
 
 internal class SlideBranchingModel (
@@ -26,13 +26,21 @@ internal class SlideBranchingModel (
 ) : SlideModel(id, title, description) {
     public List<Link<SlideModel>> Links { get; } = links;
 
-    override public byte? YieldNext (SimulationContext context) {
+    override public byte? YieldNext (ref readonly SimulationContext context) {
         foreach (var link in Links) {
-            if (link.Evaluate (context) is byte evaluation) {
+            if (link.Evaluate (in context) is byte evaluation) {
                 return evaluation;
             }
         }
 
         return null;
     }
+}
+
+internal class SlideConstantModel (
+    byte id,
+    string title,
+    List<LineModel> description
+) : SlideModel (id, title, description) {
+    override public byte? YieldNext (ref readonly SimulationContext context) => null;
 }
