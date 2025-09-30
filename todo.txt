@@ -5,11 +5,13 @@ should SimulationWindow be fullscreen? maybe allow it to switch to smaller windo
 many objects need to be convertible to Slides.
 ownerID 0 is the state (eg Tension, Stability, etc), other ownerIDs refer to factions
 lots of classes should really be structs
+a ballot/result that links to nothing or which satisfies no links is an end state
+linear slide, branching slide
+simulation is just a slide iterator
+need an activeparty, activeregion, activeprocedure lists for Simulation
+all Data should eventually be readonly. these will need to have better constructors
 
-
-
-Simulation
-Order:
+Simulation order:
 Intro slide (state, government type)
 Context slide
 Title slide (date, event, period)
@@ -24,20 +26,3 @@ Ballots
 End results
 Historical path slide
 The End
-
-Link conditions: Specific ballot passed, number of ballots passed, currency value, procedure exists
-Effects: Add/remove regions, add/remove/replace parties, add/remove/replace procedures
-
-Ballots
-Ballot/incident
-ID
-Name
-Description
-Pass/fail results
-Effects
-Links
-Is end
-
-End Results
-Links
-Historical path: Passed/failed, declared procedures

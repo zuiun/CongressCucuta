@@ -1,10 +1,8 @@
-﻿namespace congress_cucuta.Data;
+﻿using System.Diagnostics;
 
-internal interface ICondition {
-    bool Evaluate (SimulationContext results);
-}
+namespace congress_cucuta.Data;
 
-public enum ValueComparison {
+internal enum Comparison {
     Equal,
     GreaterThan,
     LessThan,
@@ -12,12 +10,16 @@ public enum ValueComparison {
     LessThanOrEqual,
 }
 
-internal class AndCondition (params ICondition[] conditions) : ICondition {
-    private readonly ICondition[] conditions = conditions;
+internal interface ICondition {
+    public bool Evaluate (SimulationContext context);
+}
 
-    public bool Evaluate (SimulationContext results) {
-        foreach (var condition in conditions) {
-            if (!condition.Evaluate (results)) {
+internal readonly struct AndCondition (params ICondition[] conditions) : ICondition {
+    public ICondition[] Conditions { get; } = conditions;
+
+    public bool Evaluate (SimulationContext context) {
+        foreach (var condition in Conditions) {
+            if (! condition.Evaluate (context)) {
                 return false;
             }
         }
@@ -26,12 +28,12 @@ internal class AndCondition (params ICondition[] conditions) : ICondition {
     }
 }
 
-internal class OrCondition (params ICondition[] conditions) : ICondition {
-    private readonly ICondition[] conditions = conditions;
+internal readonly struct OrCondition (params ICondition[] conditions) : ICondition {
+    public ICondition[] Conditions { get; } = conditions;
 
-    public bool Evaluate (SimulationContext results) {
-        foreach (var condition in conditions) {
-            if (condition.Evaluate (results)) {
+    public bool Evaluate (SimulationContext context) {
+        foreach (var condition in Conditions) {
+            if (condition.Evaluate (context)) {
                 return true;
             }
         }
@@ -40,47 +42,53 @@ internal class OrCondition (params ICondition[] conditions) : ICondition {
     }
 }
 
-internal class BallotPassedCondition (byte ballotID, bool shouldBePassed) : ICondition {
-    private readonly byte ballotID = ballotID;
-    private readonly bool shouldBePassed = shouldBePassed;
+internal readonly struct BallotPassedCondition (byte ballotID, bool shouldBePassed = true) : ICondition {
+    public byte BallotID { get; } = ballotID;
+    public bool ShouldBePassed { get; } = shouldBePassed;
 
-    public bool Evaluate (SimulationContext results) {
-        throw new NotImplementedException ();
+    public bool Evaluate (SimulationContext context) {
+        return context.IsBallotPassed (BallotID) == ShouldBePassed;
     }
 }
 
-internal class BallotsPassedCondition (params byte[] ballotIDs) : ICondition {
-    private readonly byte[] ballotIDs = ballotIDs;
+internal readonly struct BallotsPassedCountCondition (Comparison comparison, byte count) : ICondition {
+    public Comparison Comparison { get; } = comparison;
+    public byte Count { get; } = count;
 
-    public bool Evaluate (SimulationContext results) {
-        throw new NotImplementedException ();
+    public bool Evaluate (SimulationContext context) {
+        return Comparison switch {
+            Comparison.Equal => context.GetBallotsPassedCount () == Count,
+            Comparison.GreaterThan => context.GetBallotsPassedCount () > Count,
+            Comparison.LessThan => context.GetBallotsPassedCount () < Count,
+            Comparison.GreaterThanOrEqual => context.GetBallotsPassedCount () >= Count,
+            Comparison.LessThanOrEqual => context.GetBallotsPassedCount () <= Count,
+            _ => throw new UnreachableException (),
+        };
     }
 }
 
-internal class BallotsPassedCountCondition (ValueComparison comparison, byte count) : ICondition {
-    private readonly ValueComparison comparison = comparison;
-    private readonly byte count = count;
+internal readonly struct CurrencyValueCondition (byte ownerID, Comparison comparison, byte value) : ICondition {
+    public byte OwnerID { get; } = ownerID;
+    public Comparison Comparison { get; } = comparison;
+    public byte Value { get; } = value;
 
-    public bool Evaluate (SimulationContext results) {
-        throw new NotImplementedException ();
+    public bool Evaluate (SimulationContext context) {
+        return Comparison switch {
+            Comparison.Equal => context.GetCurrencyValue (OwnerID) == Value,
+            Comparison.GreaterThan => context.GetCurrencyValue (OwnerID) > Value,
+            Comparison.LessThan => context.GetCurrencyValue (OwnerID) < Value,
+            Comparison.GreaterThanOrEqual => context.GetCurrencyValue (OwnerID) >= Value,
+            Comparison.LessThanOrEqual => context.GetCurrencyValue (OwnerID) <= Value,
+            _ => throw new UnreachableException (),
+        };
     }
 }
 
-internal class CurrencyValueCondition (byte ownerID, ValueComparison comparison, byte value) : ICondition {
-    private readonly byte ownerID = ownerID;
-    private readonly ValueComparison comparison = comparison;
-    private readonly byte value = value;
+internal readonly struct ProcedureActiveCondition (byte procedureID, bool shouldBeActive) : ICondition {
+    public byte ProcedureID { get; } = procedureID;
+    public bool ShouldBeActive { get; } = shouldBeActive;
 
-    public bool Evaluate (SimulationContext results) {
-        throw new NotImplementedException ();
-    }
-}
-
-internal class ProcedureActiveCondition (byte procedureID, bool shouldBeActive) : ICondition {
-    private readonly byte procedureID = procedureID;
-    private readonly bool shouldBeActive = shouldBeActive;
-
-    public bool Evaluate (SimulationContext results) {
-        throw new NotImplementedException ();
+    public bool Evaluate (SimulationContext context) {
+        return context.IsProcedureActive (ProcedureID) == ShouldBeActive;
     }
 }
