@@ -2,15 +2,15 @@
 
 namespace congress_cucuta.Data;
 
-internal enum Comparison {
-    Equal,
-    GreaterThan,
-    LessThan,
-    GreaterThanOrEqual,
-    LessThanOrEqual,
-}
-
 internal interface ICondition {
+    internal enum ComparisonType {
+        Equal,
+        GreaterThan,
+        LessThan,
+        GreaterThanOrEqual,
+        LessThanOrEqual,
+    }
+
     public bool Evaluate (SimulationContext context);
 }
 
@@ -51,34 +51,34 @@ internal readonly struct BallotPassedCondition (byte ballotID, bool shouldBePass
     }
 }
 
-internal readonly struct BallotsPassedCountCondition (Comparison comparison, byte count) : ICondition {
-    public Comparison Comparison { get; } = comparison;
+internal readonly struct BallotsPassedCountCondition (ICondition.ComparisonType comparison, byte count) : ICondition {
+    public ICondition.ComparisonType Comparison { get; } = comparison;
     public byte Count { get; } = count;
 
     public bool Evaluate (SimulationContext context) {
         return Comparison switch {
-            Comparison.Equal => context.GetBallotsPassedCount () == Count,
-            Comparison.GreaterThan => context.GetBallotsPassedCount () > Count,
-            Comparison.LessThan => context.GetBallotsPassedCount () < Count,
-            Comparison.GreaterThanOrEqual => context.GetBallotsPassedCount () >= Count,
-            Comparison.LessThanOrEqual => context.GetBallotsPassedCount () <= Count,
+            ICondition.ComparisonType.Equal => context.GetBallotsPassedCount () == Count,
+            ICondition.ComparisonType.GreaterThan => context.GetBallotsPassedCount () > Count,
+            ICondition.ComparisonType.LessThan => context.GetBallotsPassedCount () < Count,
+            ICondition.ComparisonType.GreaterThanOrEqual => context.GetBallotsPassedCount () >= Count,
+            ICondition.ComparisonType.LessThanOrEqual => context.GetBallotsPassedCount () <= Count,
             _ => throw new UnreachableException (),
         };
     }
 }
 
-internal readonly struct CurrencyValueCondition (byte ownerID, Comparison comparison, byte value) : ICondition {
+internal readonly struct CurrencyValueCondition (byte ownerID, ICondition.ComparisonType comparison, byte value) : ICondition {
     public byte OwnerID { get; } = ownerID;
-    public Comparison Comparison { get; } = comparison;
+    public ICondition.ComparisonType Comparison { get; } = comparison;
     public byte Value { get; } = value;
 
     public bool Evaluate (SimulationContext context) {
         return Comparison switch {
-            Comparison.Equal => context.GetCurrencyValue (OwnerID) == Value,
-            Comparison.GreaterThan => context.GetCurrencyValue (OwnerID) > Value,
-            Comparison.LessThan => context.GetCurrencyValue (OwnerID) < Value,
-            Comparison.GreaterThanOrEqual => context.GetCurrencyValue (OwnerID) >= Value,
-            Comparison.LessThanOrEqual => context.GetCurrencyValue (OwnerID) <= Value,
+            ICondition.ComparisonType.Equal => context.GetCurrencyValue (OwnerID) == Value,
+            ICondition.ComparisonType.GreaterThan => context.GetCurrencyValue (OwnerID) > Value,
+            ICondition.ComparisonType.LessThan => context.GetCurrencyValue (OwnerID) < Value,
+            ICondition.ComparisonType.GreaterThanOrEqual => context.GetCurrencyValue (OwnerID) >= Value,
+            ICondition.ComparisonType.LessThanOrEqual => context.GetCurrencyValue (OwnerID) <= Value,
             _ => throw new UnreachableException (),
         };
     }

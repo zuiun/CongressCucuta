@@ -1,6 +1,38 @@
-﻿namespace congress_cucuta.Models;
+﻿using congress_cucuta.Data;
 
-internal class SlideModel (string title, List<LineModel> description) {
-    public string Title { get; set; } = title;
+namespace congress_cucuta.Models;
+
+internal abstract class SlideModel (byte id, string title, List<LineModel> description) : IID {
+    public byte ID { get; } = id;
+    public string Title { get; } = title;
     public List<LineModel> Description { get; } = description;
+
+    public abstract byte? YieldNext (SimulationContext context);
+}
+
+internal class SlideLinearModel (
+    byte id,
+    string title,
+    List<LineModel> description
+) : SlideModel (id, title, description) {
+    override public byte? YieldNext (SimulationContext context) => (byte) (ID + 1);
+}
+
+internal class SlideBranchingModel (
+    byte id,
+    string title,
+    List<LineModel> description,
+    List<Link<SlideModel>> links
+) : SlideModel(id, title, description) {
+    public List<Link<SlideModel>> Links { get; } = links;
+
+    override public byte? YieldNext (SimulationContext context) {
+        foreach (var link in Links) {
+            if (link.Evaluate (context) is byte evaluation) {
+                return evaluation;
+            }
+        }
+
+        return null;
+    }
 }

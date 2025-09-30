@@ -1,15 +1,29 @@
+WE START WITH MAKING PROCEDURES!
+
 bind title of SimulationWindow to state name
 display textblock on FileWindow if file fails
 Line needs to wrap overflow
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
-many objects need to be convertible to Slides.
-ownerID 0 is the state (eg Tension, Stability, etc), other ownerIDs refer to factions
-lots of classes should really be structs
-a ballot/result that links to nothing or which satisfies no links is an end state
-linear slide, branching slide
-simulation is just a slide iterator
+many objects need to be convertible to Slides
+ownerID 255 is the state (eg Tension, Stability, etc), other ownerIDs refer to factions
+a ballot/result that links to nothing or which satisfies no links (null) is an end state
 need an activeparty, activeregion, activeprocedure lists for Simulation
-all Data should eventually be readonly. these will need to have better constructors
+Simulation needs to track sections so it can know where to jump on end states
+consider doing a using ID = byte where relevant
+
+
+
+procedure types:
+they must also be able to set permissions immediately upon being created... (this requires all roles are created first)
+purely ballot-related (votes, currency; apply this to the beginning of the ballot)
+declared (factions, currency, forced votes/changing who can vote; apply only during a ballot, must press a button; must have declarers)
+
+differences between Governmental, Special, and Declared procedures:
+Governmental: takes place at start, can be repeated, involve shuffling of factions
+Special: repeated every ballot (affects votes, currency)
+Declared: repeatably declared (changes factions, currency, votes)
+
+
 
 Simulation order:
 Intro slide (state, government type)
