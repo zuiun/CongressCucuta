@@ -3,8 +3,6 @@
 namespace congress_cucuta.Models;
 
 internal class SimulationModel {
-    public const string NEW_LINE = "&#x0a;";
-
     private byte slideCurrentIdx = 0;
     // End state of ballots
     private readonly byte resultBallotIdx;
@@ -32,7 +30,7 @@ internal class SimulationModel {
         SlideLinearModel slideTitle = new (
             slideCurrentIdx ++,
             simulation.History.Period,
-            [$"{simulation.History.Date}{NEW_LINE}{simulation.History.Situation}"]
+            [$"{simulation.History.Date}\n{simulation.History.Situation}"]
         );
         slides.Add (slideTitle);
         // TODO: gov procedures

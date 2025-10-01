@@ -1,6 +1,3 @@
-i suppose now is a good time to start working on different types of slides
-slides also need to have some sort of control interface
-clicking on the SlideView's next would need to bubble up to the SimulationViewModel so it could handle the switch
 Button names:
 no button if no Link
 Next if only one Link (it's linear)

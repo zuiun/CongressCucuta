@@ -5,6 +5,9 @@
     <Compile Update="Views\CompilerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\LinkView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\SimulationWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>

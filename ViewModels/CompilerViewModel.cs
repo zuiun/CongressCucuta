@@ -15,7 +15,7 @@ internal class CompilerViewModel : ViewModel {
         throw new NotImplementedException ();
     }
 
-    public Boolean WasCompilationSuccess {
+    public bool WasCompilationSuccess {
         get => _wasCompilationSuccess;
         set {
             _wasCompilationSuccess = value;
@@ -23,7 +23,7 @@ internal class CompilerViewModel : ViewModel {
         }
     }
 
-    public Boolean WasCompilationFailure {
+    public bool WasCompilationFailure {
         get => _wasCompilationFailure;
         set {
             _wasCompilationFailure = value;

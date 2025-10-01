@@ -16,9 +16,9 @@ internal class SlideLinearModel (
     string title,
     List<LineModel> description
 ) : SlideModel (id, title, description) {
-    override public List<Link<SlideModel>> YieldLinks () => [new (new AlwaysCondition (), ID + 1)];
+    override public List<Link<SlideModel>> YieldLinks () => [new (new AlwaysCondition (), (byte) (ID + 1))];
 
-    override public IDType? YieldNext (ref readonly SimulationContext context) => ID + 1;
+    override public IDType? YieldNext (ref readonly SimulationContext context) => (byte) (ID + 1);
 }
 
 internal class SlideBranchingModel (
