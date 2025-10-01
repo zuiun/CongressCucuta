@@ -1,11 +1,11 @@
 ﻿namespace congress_cucuta.Data;
 
-internal class Person (byte id, string name) : IID {
-    public byte ID { get; } = id;
+internal class Person (IDType id, string name) : IID {
+    public IDType ID { get; } = id;
     public string Name { get; } = name;
-    public HashSet<byte> RoleIDs { get; } = [];
+    public HashSet<IDType> RoleIDs { get; } = [];
 
-    public void AddRole (byte roleID) => RoleIDs.Add (roleID);
+    public void AddRole (IDType roleID) => RoleIDs.Add (roleID);
 
-    public void RemoveRole (byte roleID) => RoleIDs.Remove (roleID);
+    public void RemoveRole (IDType roleID) => RoleIDs.Remove (roleID);
 }

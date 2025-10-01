@@ -5,17 +5,17 @@ internal class SlideViewModel : ViewModel {
     private List<LineViewModel> _description = [];
 
     public string Title {
-        get => this._title;
+        get => _title;
         set {
-            this._title = value;
+            _title = value;
             OnPropertyChanged ();
         }
     }
 
     public List<LineViewModel> Description {
-        get => this._description;
+        get => _description;
         set {
-            this._description = value;
+            _description = value;
             OnPropertyChanged ();
         }
     }

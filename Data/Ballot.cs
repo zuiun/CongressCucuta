@@ -1,7 +1,7 @@
 ﻿namespace congress_cucuta.Data;
 
 internal readonly struct Ballot (
-    byte id,
+    IDType id,
     string title,
     string name,
     List<string> description,
@@ -23,7 +23,7 @@ internal readonly struct Ballot (
             Procedure,
         }
 
-        public Effect (ActionType action, TargetType target, byte targetID, byte? replacementID = null) {
+        public Effect (ActionType action, TargetType target, IDType targetID, IDType? replacementID = null) {
             if (action is ActionType.Replace && replacementID is null) {
                 throw new ArgumentException ("replacementID must exist for action = Replace");
             }
@@ -36,8 +36,8 @@ internal readonly struct Ballot (
 
         public ActionType Action { get; }
         public TargetType Target { get; }
-        public byte TargetID { get; }
-        public byte? ReplacementID { get; }
+        public IDType TargetID { get; }
+        public IDType? ReplacementID { get; }
     }
 
     internal readonly struct Result (List<Effect> effects, List<string> description, bool isPassed = true) {
@@ -46,7 +46,7 @@ internal readonly struct Ballot (
         public List<string> Description { get; } = description;
     }
 
-    public byte ID { get; } = id;
+    public IDType ID { get; } = id;
     public bool IsIncident { get; } = isIncident;
     public string Title { get; } = title;
     public string Name { get; } = name;

@@ -1,11 +1,11 @@
 ﻿namespace congress_cucuta.Data;
 
 internal readonly struct HistoryPath (
-    HashSet<byte> ballotsPassed,
-    Dictionary<byte, SortedSet<byte>> ballotsProceduresDeclared
+    HashSet<IDType> ballotsPassed,
+    Dictionary<IDType, SortedSet<IDType>> ballotsProceduresDeclared
 ) {
-    public HashSet<byte> BallotsPassed { get; } = ballotsPassed;
-    public Dictionary<byte, SortedSet<byte>> BallotsProceduresDeclared { get; } = ballotsProceduresDeclared;
+    public HashSet<IDType> BallotsPassed { get; } = ballotsPassed;
+    public Dictionary<IDType, SortedSet<IDType>> BallotsProceduresDeclared { get; } = ballotsProceduresDeclared;
 }
 
 internal readonly struct History (

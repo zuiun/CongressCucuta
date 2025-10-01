@@ -11,22 +11,22 @@ internal class CompilerViewModel : ViewModel {
     private readonly Simulation simulation;
 
     public CompilerViewModel () {
-        // Must set simulation here!
-        this.simulation = new ();
+        // TODO: Must set simulation here!
+        throw new NotImplementedException ();
     }
 
     public Boolean WasCompilationSuccess {
-        get => this._wasCompilationSuccess;
+        get => _wasCompilationSuccess;
         set {
-            this._wasCompilationSuccess = value;
+            _wasCompilationSuccess = value;
             OnPropertyChanged ();
         }
     }
 
     public Boolean WasCompilationFailure {
-        get => this._wasCompilationFailure;
+        get => _wasCompilationFailure;
         set {
-            this._wasCompilationFailure = value;
+            _wasCompilationFailure = value;
             OnPropertyChanged ();
         }
     }
@@ -39,23 +39,23 @@ internal class CompilerViewModel : ViewModel {
         bool? result = file.ShowDialog ();
 
         if (result is null || result! == false) {
-            this.WasCompilationSuccess = false;
-            this.WasCompilationFailure = true;
+            WasCompilationSuccess = false;
+            WasCompilationFailure = true;
             return;
         }
 
         string filename = file.FileName;
-        string json = JsonSerializer.Serialize (this.simulation);
+        string json = JsonSerializer.Serialize (simulation);
 
         try {
             File.WriteAllText (filename, json);
         } catch (Exception) {
-            this.WasCompilationSuccess = false;
-            this.WasCompilationFailure = true;
+            WasCompilationSuccess = false;
+            WasCompilationFailure = true;
             return;
         }
 
-        this.WasCompilationSuccess = true;
-        this.WasCompilationFailure = false;
+        WasCompilationSuccess = true;
+        WasCompilationFailure = false;
     });
 }

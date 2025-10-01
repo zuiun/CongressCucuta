@@ -5,6 +5,7 @@ namespace congress_cucuta.Models;
 internal class SimulationModel {
     public const string NEW_LINE = "&#x0a;";
 
+    private byte slideCurrentIdx = 0;
     // End state of ballots
     private readonly byte resultBallotIdx;
     // End state of results
@@ -75,7 +76,7 @@ internal class SimulationModel {
         foreach (var ballot in simulation.Ballots) {
             string line = $"{LineModel.INDENT}{LineModel.DELIMITER}{ballot.Name}";
 
-            if (simulation.History.Path.BallotsProceduresDeclared.TryGetValue (ballot.ID, out SortedSet<byte>? proceduresDeclared)) {
+            if (simulation.History.Path.BallotsProceduresDeclared.TryGetValue (ballot.ID, out SortedSet<IDType>? proceduresDeclared)) {
                 var proceduresDeclaredNamesIter = simulation.ProceduresDeclared.Where (p => proceduresDeclared.Contains (p.ID))
                     .Select (p => p.Name);
                 string proceduresDeclaredNames = string.Join (", ", proceduresDeclaredNamesIter);
@@ -100,6 +101,19 @@ internal class SimulationModel {
         return (slides, resultBallotIdx, resultHistoricalIdx);
     }
 
+    public SlideModel YieldSlide () => Slides[slideCurrentIdx];
+
+    public SlideModel SwitchSlide () {
+        IDType? slideIdx = Slides[slideCurrentIdx].YieldNext (in context);
+
+        if (slideIdx is null) {
+            slideCurrentIdx = slideCurrentIdx < resultBallotIdx ? resultBallotIdx : slideCurrentIdx;
+        } else {
+            slideCurrentIdx = slideIdx;
+        }
+
+        return Slides[slideCurrentIdx];
+    }
+
     public List<SlideModel> Slides { get; }
-    public byte SlideCurrentIdx { get; } = 0;
 }

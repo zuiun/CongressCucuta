@@ -9,10 +9,10 @@ namespace congress_cucuta.ViewModels;
 internal class FileViewModel : ViewModel {
     private bool _wasChoiceFailure = false;
 
-    public Boolean WasChoiceFailure {
-        get => this._wasChoiceFailure;
+    public bool WasChoiceFailure {
+        get => _wasChoiceFailure;
         set {
-            this._wasChoiceFailure = value;
+            _wasChoiceFailure = value;
             OnPropertyChanged ();
         }
     }
@@ -25,9 +25,9 @@ internal class FileViewModel : ViewModel {
 
         // TODO: Enable when context is done
         //if (result! == true) {
-        //    this.IsChoiceFailed = false;
+        //    IsChoiceFailed = false;
         //} else {
-        //    this.IsChoiceFailed = true;
+        //    IsChoiceFailed = true;
         //    return;
         //}
 
@@ -35,15 +35,19 @@ internal class FileViewModel : ViewModel {
 
         //try {
         //    string json = File.ReadAllText (file.FileName);
-        //    simulation = JsonSerializer.Deserialize<SimulationModel> (json)!;
+        //    simulation = JsonSerializer.Deserialize<Simulation> (json)!;
         //} catch (Exception) {
-        //    this.IsChoiceFailed = true;
+        //    IsChoiceFailed = true;
         //    return;
         //}
 
+        // TODO: now convert the Simulation to a SimulationModel, then pass it to SimulationViewModel
+
         // TODO: Set proper context whenever I figure out how it should work
         SimulationWindow simulationWindow = new () {
-            DataContext = new SlideViewModel (),
+            // TODO: this should be a SimulationViewModel
+            // TODO: SimulationWindow contains a SlideView, which should contain the SlideViewModel
+            DataContext = new SimulationViewModel (),
         };
 
         simulationWindow.ShowDialog ();

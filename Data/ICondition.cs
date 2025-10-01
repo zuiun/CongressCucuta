@@ -14,6 +14,10 @@ internal interface ICondition {
     public bool Evaluate (SimulationContext context);
 }
 
+internal readonly struct AlwaysCondition () : ICondition {
+    public bool Evaluate (SimulationContext context) => true;
+}
+
 internal readonly struct AndCondition (params ICondition[] conditions) : ICondition {
     public ICondition[] Conditions { get; } = conditions;
 
@@ -42,8 +46,8 @@ internal readonly struct OrCondition (params ICondition[] conditions) : IConditi
     }
 }
 
-internal readonly struct BallotPassedCondition (byte ballotID, bool shouldBePassed = true) : ICondition {
-    public byte BallotID { get; } = ballotID;
+internal readonly struct BallotPassedCondition (IDType ballotID, bool shouldBePassed = true) : ICondition {
+    public IDType BallotID { get; } = ballotID;
     public bool ShouldBePassed { get; } = shouldBePassed;
 
     public bool Evaluate (SimulationContext context) {
@@ -51,9 +55,9 @@ internal readonly struct BallotPassedCondition (byte ballotID, bool shouldBePass
     }
 }
 
-internal readonly struct BallotsPassedCountCondition (ICondition.ComparisonType comparison, byte count) : ICondition {
+internal readonly struct BallotsPassedCountCondition (ICondition.ComparisonType comparison, IDType count) : ICondition {
     public ICondition.ComparisonType Comparison { get; } = comparison;
-    public byte Count { get; } = count;
+    public IDType Count { get; } = count;
 
     public bool Evaluate (SimulationContext context) {
         return Comparison switch {
@@ -67,8 +71,8 @@ internal readonly struct BallotsPassedCountCondition (ICondition.ComparisonType 
     }
 }
 
-internal readonly struct CurrencyValueCondition (byte ownerID, ICondition.ComparisonType comparison, byte value) : ICondition {
-    public byte OwnerID { get; } = ownerID;
+internal readonly struct CurrencyValueCondition (IDType ownerID, ICondition.ComparisonType comparison, byte value) : ICondition {
+    public IDType OwnerID { get; } = ownerID;
     public ICondition.ComparisonType Comparison { get; } = comparison;
     public byte Value { get; } = value;
 
@@ -84,8 +88,8 @@ internal readonly struct CurrencyValueCondition (byte ownerID, ICondition.Compar
     }
 }
 
-internal readonly struct ProcedureActiveCondition (byte procedureID, bool shouldBeActive) : ICondition {
-    public byte ProcedureID { get; } = procedureID;
+internal readonly struct ProcedureActiveCondition (IDType procedureID, bool shouldBeActive) : ICondition {
+    public IDType ProcedureID { get; } = procedureID;
     public bool ShouldBeActive { get; } = shouldBeActive;
 
     public bool Evaluate (SimulationContext context) {

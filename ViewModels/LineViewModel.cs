@@ -7,33 +7,33 @@ internal class LineViewModel : ViewModel {
     private string? _description = null;
 
     public string Text {
-        get => this._text;
+        get => _text;
         set {
-            this._text = value;
+            _text = value;
             OnPropertyChanged ();
         }
     }
 
     public byte IndentLevel {
-        get => this._indentLevel;
+        get => _indentLevel;
         set {
-            this._indentLevel = value;
+            _indentLevel = value;
             OnPropertyChanged ();
         }
     }
 
     public bool IsImportant {
-        get => this._isImportant;
+        get => _isImportant;
         set {
-            this._isImportant = value;
+            _isImportant = value;
             OnPropertyChanged ();
         }
     }
 
     public string? Description {
-        get => this._description;
+        get => _description;
         set {
-            this._description = value;
+            _description = value;
             OnPropertyChanged ();
         }
     }

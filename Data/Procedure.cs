@@ -3,13 +3,13 @@
 namespace congress_cucuta.Data;
 
 internal abstract class Procedure (
-    byte id,
+    IDType id,
     string name,
     string description,
     Procedure.Effect[] effects,
     Procedure.ConfirmationType? confirmation = null,
     Procedure.TargetType? filter = null, // Ballots, Declarers
-    params byte[] filterIDs // Ballots, Declarers
+    params IDType[] filterIDs // Ballots, Declarers
 ): IID {
     internal enum TargetType {
         Every,
@@ -29,9 +29,9 @@ internal abstract class Procedure (
         Effect.ActionType action,
         byte value,
         TargetType? target,
-        byte[] targetIDs,
+        IDType[] targetIDs,
         TargetType? filter = null, // Allowed participants
-        params byte[] filterIDs
+        params IDType[] filterIDs
     ) {
         internal enum ActionType {
             VotePassAdd, // Target: Ballot; Value: Added
@@ -51,25 +51,25 @@ internal abstract class Procedure (
         public ActionType Action { get; } = action;
         public byte Value { get; } = value;
         public TargetType? Target { get; } = target;
-        public byte[] TargetIDs { get; } = targetIDs;
+        public IDType[] TargetIDs { get; } = targetIDs;
         public TargetType? Filter { get; } = filter;
-        public byte[] FilterIDs { get; } = filterIDs;
+        public IDType[] FilterIDs { get; } = filterIDs;
     }
 
-    internal readonly struct EffectBundle (byte? procedureID = null, ConfirmationType? confirmation = null, params Effect[] effects) {
+    internal readonly struct EffectBundle (IDType? procedureID = null, ConfirmationType? confirmation = null, params Effect[] effects) {
         // Presence indicates ProcedureImmediate
-        public byte? ProcedureID { get; } = procedureID;
+        public IDType? ProcedureID { get; } = procedureID;
         public Effect[] Effects { get; } = effects;
         public ConfirmationType? Confirmation { get; } = confirmation;
     }
 
-    public byte ID { get; } = id;
+    public IDType ID { get; } = id;
     public string Name { get; } = name;
     public string Description { get; } = description;
     public Effect[] Effects { get; } = effects;
     public ConfirmationType? Confirmation { get; } = confirmation;
     public TargetType? Filter { get; } = filter;
-    public byte[] FilterIDs { get; } = filterIDs;
+    public IDType[] FilterIDs { get; } = filterIDs;
 
     public abstract EffectBundle? YieldEffects (ref readonly SimulationContext context);
 }
@@ -83,7 +83,7 @@ internal abstract class Procedure (
  */
 internal class ProcedureImmediate : Procedure {
     public ProcedureImmediate (
-        byte id,
+        IDType id,
         string name,
         string description,
         Effect[] effects
@@ -95,7 +95,7 @@ internal class ProcedureImmediate : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (ID, Confirmation, Effects);
+    override public EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (ID, Confirmation, Effects);
 }
 
 /*
@@ -108,12 +108,12 @@ internal class ProcedureImmediate : Procedure {
  */
 internal class ProcedureTargeted : Procedure {
     public ProcedureTargeted (
-        byte id,
+        IDType id,
         string name,
         string description,
         Effect[] effects,
         TargetType filter,
-        params byte[] filterIDs
+        params IDType[] filterIDs
     ) : base (id, name, description, effects, null, filter, filterIDs) {
         foreach (var effect in effects) {
             if (
@@ -128,8 +128,8 @@ internal class ProcedureTargeted : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) {
-        bool isBallotMatched = FilterIDs.Contains (context.BallotCurrent);
+    override public EffectBundle? YieldEffects (ref readonly SimulationContext context) {
+        bool isBallotMatched = FilterIDs.Contains (context.BallotCurrentID);
 
         return Filter switch {
             TargetType.Every => new (null, Confirmation, Effects),
@@ -149,13 +149,13 @@ internal class ProcedureTargeted : Procedure {
  */
 internal class ProcedureDeclared : Procedure {
     public ProcedureDeclared (
-        byte id,
+        IDType id,
         string name,
         string description,
         Effect[] effects,
         ConfirmationType? confirmation,
         TargetType filter,
-        params byte[] filterIDs
+        params IDType[] filterIDs
     ) : base (id, name, description, effects, confirmation, filter, filterIDs) {
         foreach (var effect in effects) {
             if (
@@ -172,5 +172,5 @@ internal class ProcedureDeclared : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (null, Confirmation, Effects);
+    override public EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (null, Confirmation, Effects);
 }

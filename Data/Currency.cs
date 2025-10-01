@@ -1,7 +1,9 @@
 ﻿namespace congress_cucuta.Data;
 
-internal class Currency (byte id, string name, sbyte value) : IID {
-    public byte ID { get; } = id;
+internal class Currency (IDType id, string name, sbyte value) : IID {
+    public const byte STATE = byte.MaxValue;
+
+    public IDType ID { get; } = id;
     public string Name { get; } = name;
     public sbyte Value { get; set; } = value;
 
@@ -13,11 +15,7 @@ internal class Currency (byte id, string name, sbyte value) : IID {
         return new Currency (left.ID, left.Name, (sbyte) (left.Value - right.Value));
     }
 
-    public static implicit operator Currency (byte id) {
-        return new Currency (id, "byte", 0);
-    }
-
-    public static implicit operator Currency (sbyte value) {
-        return new Currency (0, "sbyte", value);
+    public static implicit operator Currency (IDType id) {
+        return new Currency (id, nameof (IDType), 0);
     }
 }

@@ -8,11 +8,11 @@ internal struct Permissions (
     bool? canSpeak = true
 ) {
     // These fields are used as backups
-    private readonly bool? _canVote = canVote;
-    private readonly byte? _votes = votes;
-    private readonly bool? _canPass = canPass;
-    private readonly bool? _canVeto = canVeto;
-    private readonly bool? _canSpeak = canSpeak;
+    //private readonly bool? _canVote = canVote;
+    //private readonly byte? _votes = votes;
+    //private readonly bool? _canPass = canPass;
+    //private readonly bool? _canVeto = canVeto;
+    //private readonly bool? _canSpeak = canSpeak;
 
     public bool? CanVote { get; set; } = canVote;
     public byte? Votes { get; set; } = votes;
@@ -32,13 +32,13 @@ internal struct Permissions (
     }
 
     // Revert left where right has changes
-    public static Permissions operator - (Permissions left, Permissions right) {
-        return new Permissions () {
-            CanVote = right.CanVote is null ? left.CanVote : left._canVote,
-            Votes = right.Votes is null ? left.Votes : left._votes,
-            CanPass = right.CanPass is null ? left.CanPass : left._canPass,
-            CanVeto = right.CanVeto is null ? left.CanVeto : left._canVeto,
-            CanSpeak = right.CanSpeak is null ? left.CanSpeak : left._canSpeak,
-        };
-    }
+    //public static Permissions operator - (Permissions left, Permissions right) {
+    //    return new Permissions () {
+    //        CanVote = right.CanVote is null ? left.CanVote : left._canVote,
+    //        Votes = right.Votes is null ? left.Votes : left._votes,
+    //        CanPass = right.CanPass is null ? left.CanPass : left._canPass,
+    //        CanVeto = right.CanVeto is null ? left.CanVeto : left._canVeto,
+    //        CanSpeak = right.CanSpeak is null ? left.CanSpeak : left._canSpeak,
+    //    };
+    //}
 }

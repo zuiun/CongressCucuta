@@ -10,7 +10,7 @@ internal abstract class Faction : IID {
     public const byte STATE = byte.MaxValue;
 
     public Faction (
-        byte id,
+        IDType id,
         string name,
         List<string> description,
         string? leader,
@@ -27,7 +27,7 @@ internal abstract class Faction : IID {
         Leader = leader;
     }
 
-    public byte ID { get; }
+    public IDType ID { get; }
     public bool IsActiveStart { get; }
     public string Name { get; }
     public List<string> Description { get; }
@@ -35,7 +35,7 @@ internal abstract class Faction : IID {
 }
 
 internal class Party (
-    byte id,
+    IDType id,
     string name,
     List<string> description,
     string leader,
@@ -46,7 +46,7 @@ internal class Party (
 }
 
 internal class Region (
-    byte id,
+    IDType id,
     string name,
     List<string> description,
     string? leader,
