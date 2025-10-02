@@ -8,13 +8,7 @@ namespace congress_cucuta.ViewModels;
 internal class CompilerViewModel : ViewModel {
     private bool _wasCompilationSuccess = false;
     private bool _wasCompilationFailure = false;
-    private readonly Simulation simulation;
-
-    public CompilerViewModel () {
-        // TODO: Must set simulation here!
-        throw new NotImplementedException ();
-    }
-
+    private readonly Simulation _simulation;
     public bool WasCompilationSuccess {
         get => _wasCompilationSuccess;
         set {
@@ -22,7 +16,6 @@ internal class CompilerViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-
     public bool WasCompilationFailure {
         get => _wasCompilationFailure;
         set {
@@ -31,31 +24,36 @@ internal class CompilerViewModel : ViewModel {
         }
     }
 
+    public CompilerViewModel () {
+        // TODO: Must set simulation here!
+        throw new NotImplementedException ();
+    }
+
     public RelayCommand CompileSimulationCommand => new (_ => {
-        SaveFileDialog file = new () {
-            DefaultExt = ".sim",
-            Filter = "Simulation files (*.sim)| *.sim",
-        };
-        bool? result = file.ShowDialog ();
+                    SaveFileDialog file = new () {
+                        DefaultExt = ".sim",
+                        Filter = "Simulation files (*.sim)| *.sim",
+                    };
+                    bool? result = file.ShowDialog ();
 
-        if (result is null || result! == false) {
-            WasCompilationSuccess = false;
-            WasCompilationFailure = true;
-            return;
-        }
+                    if (result is null or false) {
+                        WasCompilationSuccess = false;
+                        WasCompilationFailure = true;
+                        return;
+                    }
 
-        string filename = file.FileName;
-        string json = JsonSerializer.Serialize (simulation);
+                    string filename = file.FileName;
+                    string json = JsonSerializer.Serialize (_simulation);
 
-        try {
-            File.WriteAllText (filename, json);
-        } catch (Exception) {
-            WasCompilationSuccess = false;
-            WasCompilationFailure = true;
-            return;
-        }
+                    try {
+                        File.WriteAllText (filename, json);
+                    } catch (Exception) {
+                        WasCompilationSuccess = false;
+                        WasCompilationFailure = true;
+                        return;
+                    }
 
-        WasCompilationSuccess = true;
-        WasCompilationFailure = false;
-    });
+                    WasCompilationSuccess = true;
+                    WasCompilationFailure = false;
+                });
 }

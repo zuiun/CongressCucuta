@@ -1,40 +1,12 @@
-﻿namespace congress_cucuta.ViewModels;
+﻿using congress_cucuta.Models;
 
-internal class LineViewModel : ViewModel {
-    private string _text = "Text";
-    private byte _indentLevel = 0;
-    private bool _isImportant = false;
-    private string? _description = null;
+namespace congress_cucuta.ViewModels;
 
-    public string Text {
-        get => _text;
-        set {
-            _text = value;
-            OnPropertyChanged ();
-        }
-    }
-
-    public byte IndentLevel {
-        get => _indentLevel;
-        set {
-            _indentLevel = value;
-            OnPropertyChanged ();
-        }
-    }
-
-    public bool IsImportant {
-        get => _isImportant;
-        set {
-            _isImportant = value;
-            OnPropertyChanged ();
-        }
-    }
-
-    public string? Description {
-        get => _description;
-        set {
-            _description = value;
-            OnPropertyChanged ();
-        }
-    }
+internal class LineViewModel (LineModel line) : ViewModel {
+    public string Text => line.Text;
+    public byte IndentLevel => line.IndentLevel;
+    public bool IsImportant => line.IsImportant;
+    public string? Description => line.Description;
+    public bool IsContent => line.IsContent;
+    public bool IsSubtitle => ! IsContent;
 }

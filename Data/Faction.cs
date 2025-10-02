@@ -7,9 +7,14 @@
  * TODO: Enforce this at Simulation creation
  */
 internal abstract class Faction : IID {
-    public const byte STATE = byte.MaxValue;
+    public static readonly IDType STATE = byte.MaxValue;
+    public IDType ID { get; }
+    public bool IsActiveStart { get; }
+    public string Name { get; }
+    public List<string> Description { get; }
+    public string? Leader { get; }
 
-    public Faction (
+    protected Faction (
         IDType id,
         string name,
         List<string> description,
@@ -26,12 +31,6 @@ internal abstract class Faction : IID {
         Description = description;
         Leader = leader;
     }
-
-    public IDType ID { get; }
-    public bool IsActiveStart { get; }
-    public string Name { get; }
-    public List<string> Description { get; }
-    public string? Leader { get; }
 }
 
 internal class Party (

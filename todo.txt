@@ -1,17 +1,54 @@
-Button names:
-no button if no Link
-Next if only one Link (it's linear)
-Generate from Link.Condition if more than one Link (Branching)
+Make sure Simulations are completely creatable
+then Branching
+THEN YOU CAN WORK ON THE OTHER RIDICULOUS STUFF RAHHHHHHHHHHH
+i wish i could centralise fonts
 
-bind title of SimulationWindow to state name
-Line needs to wrap overflow
+how concretely do ballots work?
+perhaps they each have two (auto-generated) links, one to pass result and one to fail result (requires a new VoteCountCondition)
+upon reaching a ballot result, follow each result's links
+
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
-many objects need to be convertible to Slides
 Australia is bicameral NOOOOOOOOOO
-slides which yield null should be converted into slides without a next button
-perhaps Slide with only one or no Line of Description should become a SlideTitle, vs a SlideContent
-rethink whether Idx is an IDType or not
-each new ballot should start with a blank slate (i.e. regenerate all information like permissions from context), so we don't have to do weird permissions compositions
+each new ballot should start with a blank slate (i.e. regenerate all information like permissions, majority needed from context), then compose permissions
+gonna need specific permissions slides
+Simulation needs a way to know if it's on a Ballot slide or not; once entering a Ballot slide, it needs to apply all Procedures, and once exiting, it needs to apply Results
+clicking on a ballot vote link confirms the vote and adds it (or not) to the ballotsPassed
+
+
+
+Context Grid
+
+State Currencies
+People ItemsControl (sorted by party (independents, eg heads of state come before parties), then region; faction leaders first):
+[party, with currency if exists]
+[region, with currency if exists; a well-formed simulation is not likely to have both party and region currencies]
+Name | pass/fail/abstain RadioButton (default to abstain) | available ProcedureDeclared Expander (opens left)
+
+Ballots ItemsControl:
+Ballot/Incident | pass-fail-abstain (successful option highlighted and coloured green/red)
+
+Procedures Expander (opens up, covers entire Grid):
+Governmental
+Special
+Declared
+
+space-between equivalent:
+<Grid>
+    <Grid.ColumnDefinitions>
+        <!-- Flexible space on the left -->
+        <ColumnDefinition Width="*" />
+        <!-- Auto-sized content -->
+        <ColumnDefinition Width="Auto" />
+        <!-- Flexible space between columns -->
+        <ColumnDefinition Width="*" />
+        <!-- Auto-sized content -->
+        <ColumnDefinition Width="Auto" />
+        <!-- Flexible space on the right -->
+        <ColumnDefinition Width="*" />
+    </Grid.ColumnDefinitions>
+</Grid>
+
+
 
 Procedure stuff:
 for ProcedureDeclared, it can only be pressed for people who meet its filters
@@ -19,8 +56,6 @@ for ProcedureRepeating, automatically yield every ballot
 after YieldEffect
 if EffectBundle has a procedureID, then remove that procedure from active procedures (it is ProcedureImmediate)
 apply effects
-
-
 
 Simulation initialisation:
 Roles + permissions,

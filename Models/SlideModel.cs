@@ -2,12 +2,25 @@
 
 namespace congress_cucuta.Models;
 
-internal abstract class SlideModel (IDType id, string title, List<LineModel> description) : IID {
-    public IDType ID { get; } = id;
-    public string Title { get; } = title;
-    public List<LineModel> Description { get; } = description;
+internal abstract class SlideModel : IID {
+    public IDType ID { get; }
+    public string Title { get; }
+    public List<LineModel> Description { get; }
+    
+    protected SlideModel (IDType id, string title, List<LineModel> description) {
+        ID = id;
+        Title = title;
+        Description = description;
+        
+        if (Description.Count <= 1) {
+            foreach (LineModel line in description) {
+                line.IsContent = false;
+            }
+        }
+    }
 
     public abstract List<Link<SlideModel>> YieldLinks ();
+
     public abstract IDType? YieldNext (ref readonly SimulationContext context);
 }
 
@@ -16,9 +29,9 @@ internal class SlideLinearModel (
     string title,
     List<LineModel> description
 ) : SlideModel (id, title, description) {
-    override public List<Link<SlideModel>> YieldLinks () => [new (new AlwaysCondition (), (byte) (ID + 1))];
+    public override List<Link<SlideModel>> YieldLinks () => [new (new AlwaysCondition (), ID + 1)];
 
-    override public IDType? YieldNext (ref readonly SimulationContext context) => (byte) (ID + 1);
+    public override IDType? YieldNext (ref readonly SimulationContext context) => ID + 1;
 }
 
 internal class SlideBranchingModel (
@@ -26,15 +39,15 @@ internal class SlideBranchingModel (
     string title,
     List<LineModel> description,
     List<Link<SlideModel>> links
-) : SlideModel(id, title, description) {
-    public List<Link<SlideModel>> Links { get; } = links;
+) : SlideModel (id, title, description) {
+    private readonly List<Link<SlideModel>> _links = links;
 
-    override public List<Link<SlideModel>> YieldLinks () => Links;
+    public override List<Link<SlideModel>> YieldLinks () => _links;
 
-    override public IDType? YieldNext (ref readonly SimulationContext context) {
-        foreach (var link in Links) {
-            if (link.Evaluate (in context) is IDType evaluation) {
-                return evaluation;
+    public override IDType? YieldNext (ref readonly SimulationContext context) {
+        foreach (Link<SlideModel> link in _links) {
+            if (link.Evaluate (in context) ?? false) {
+                return link.TargetID;
             }
         }
 
@@ -47,7 +60,7 @@ internal class SlideConstantModel (
     string title,
     List<LineModel> description
 ) : SlideModel (id, title, description) {
-    override public List<Link<SlideModel>> YieldLinks () => [];
+    public override List<Link<SlideModel>> YieldLinks () => [];
 
-    override public IDType? YieldNext (ref readonly SimulationContext context) => ID;
+    public override IDType? YieldNext (ref readonly SimulationContext context) => null;
 }

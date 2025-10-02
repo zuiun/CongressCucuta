@@ -8,7 +8,7 @@
         xmlns:v = "clr-namespace:congress_cucuta.Views"
         xmlns:vm = "clr-namespace:congress_cucuta.ViewModels"
         mc:Ignorable = "d"
-        Title = "Congress of Cucuta" Height = "480" Width = "640">
+        Title = "Testing" Height = "480" Width = "640">
     <Window.DataContext>
         <vm:SlideViewModel/>
     </Window.DataContext>

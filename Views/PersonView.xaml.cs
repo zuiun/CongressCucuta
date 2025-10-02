@@ -2,8 +2,8 @@
 
 namespace congress_cucuta.Views;
 
-public partial class LinkView : UserControl {
-    public LinkView () {
+public partial class PersonView : UserControl {
+    public PersonView () {
         InitializeComponent ();
     }
 }

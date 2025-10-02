@@ -1,8 +1,11 @@
 ﻿namespace congress_cucuta.Data;
 
-internal record IDType (byte ID) {
+internal readonly record struct IDType (byte ID) {
     public static implicit operator IDType (byte id) => new (id);
+
     public static implicit operator byte (IDType id) => id.ID;
+
+    public static implicit operator IDType (int id) => new ((byte)id);
 }
 
 internal interface IID {

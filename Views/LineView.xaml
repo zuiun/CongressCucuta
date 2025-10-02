@@ -5,25 +5,36 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:congress_cucuta.Views"
              xmlns:c="clr-namespace:congress_cucuta.Converters"
-             xmlns:vm="clr-namespace:congress_cucuta.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="80" d:DesignWidth="400">
     <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <c:IndentLevelToMarginConverter x:Key = "IndentLevelToMarginConverter"/>
         <c:IndentLevelToFontSizeConverter x:Key = "IndentLevelToFontSizeConverter"/>
         <c:IsImportantToForegroundConverter x:Key = "IsImportantToForegroundConverter"/>
         <c:DescriptionToTextDecorationsConverter x:Key = "DescriptionToTextDecorationsConverter"/>
-        <Style TargetType = "StackPanel">
-            <Setter Property = "Orientation" Value = "Horizontal"/>
-        </Style>
         <Style TargetType = "TextBlock">
-            <Setter Property = "FontFamily" Value = "Nirmala UI"/>
+            <Style.Triggers>
+                <DataTrigger Binding = "{Binding Path = IsContent}" Value = "true">
+                    <Setter Property = "Foreground" Value = "{Binding IsImportant, Converter = {StaticResource IsImportantToForegroundConverter}}"/>
+                </DataTrigger>
+                <DataTrigger Binding = "{Binding Path = IsContent}" Value = "false">
+                    <Setter Property = "Foreground" Value = "Gray"/>
+                </DataTrigger>
+            </Style.Triggers>
+
+            <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
             <Setter Property = "FontSize" Value = "{Binding IndentLevel, Converter = {StaticResource IndentLevelToFontSizeConverter}}"/>
-            <Setter Property = "Foreground" Value = "{Binding IsImportant, Converter = {StaticResource IsImportantToForegroundConverter}}"/>
         </Style>
         <Style TargetType = "ToolTip">
             <Setter Property = "FontFamily" Value = "Segoe UI"/>
             <Setter Property = "FontSize" Value = "12"/>
+        </Style>
+        <Style x:Key = "Content" TargetType = "Grid">
+            <Setter Property = "Visibility" Value = "{Binding IsContent, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
+        </Style>
+        <Style x:Key = "Subtitle" TargetType = "Grid">
+            <Setter Property = "Visibility" Value = "{Binding IsSubtitle, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
         </Style>
         <Style x:Key = "Text" BasedOn = "{StaticResource {x:Type TextBlock}}" TargetType = "TextBlock">
             <Style.Triggers>
@@ -36,8 +47,18 @@
         </Style>
     </UserControl.Resources>
 
-    <StackPanel>
-        <TextBlock Text = "• " Margin = "{Binding IndentLevel, Converter = {StaticResource IndentLevelToMarginConverter}}"/>
-        <TextBlock Style = "{StaticResource Text}" Text = "{Binding Text}"/>
-    </StackPanel>
+    <Grid>
+        <Grid Style = "{StaticResource Content}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width = "Auto"/>
+                <ColumnDefinition Width = "*"/>
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column = "0" Text = "• " Margin = "{Binding IndentLevel, Converter = {StaticResource IndentLevelToMarginConverter}}"/>
+            <TextBlock Grid.Column = "1" Style = "{StaticResource Text}" Text = "{Binding Text}" TextWrapping = "Wrap"/>
+        </Grid>
+        <Grid Style = "{StaticResource Subtitle}">
+            <TextBlock Text = "{Binding Text}" TextWrapping = "Wrap"/>
+        </Grid>
+    </Grid>
 </UserControl>

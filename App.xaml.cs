@@ -2,5 +2,4 @@
 
 namespace congress_cucuta;
 
-public partial class App : Application {
-}
+public partial class App : Application { }

@@ -34,18 +34,19 @@ internal abstract class Procedure (
         params IDType[] filterIDs
     ) {
         internal enum ActionType {
-            VotePassAdd, // Target: Ballot; Value: Added
-            VoteFailAdd, // Target: Ballot; Value: Added
-            VotePassTwoThirds, // Target: Ballot
-            CurrencyAdd, // Target: Currency; Value: Added
-            CurrencySubtract, // Target: Currency; Value: Subtracted
-            CurrencySet, // Target: Currency; Value: Set
-            ProcedureActivate, // Target: Procedure
-            ElectionRandom, // Filter: Every; Role (excluded)
-            ElectionNominated, // Target: Role (elected)
-            Commitment,
-            VotersLimit, // Target: None, Currency; Value: Compared (value), Compared (Currency)
-            Appointment, // Target: Role
+            VotePassAdd, // Target: Ballot; Value: Added; Filter: Ballot
+            VoteFailAdd, // Target: Ballot; Value: Added; Filter: Ballot
+            VotePassTwoThirds, // Target: Ballot; Filter: Ballot
+            CurrencyAdd, // Target: Currency; Value: Added; Filter: Ballot, Declarer
+            CurrencySubtract, // Target: Currency; Value: Subtracted; Filter: Ballot, Declarer
+            CurrencySet, // Target: Currency; Value: Set; Filter: Ballot, Declarer
+            // Only used for elections
+            ProcedureActivate, // Target: Procedure; Filter: Ballot
+            ElectionRandom, // Target: Every; Role (excluded); Filter: Ballot, Declarer
+            ElectionNominated, // Target: Role (elected); Filter: Ballot, Declarer
+            Commitment, // TODO: FRANCE!! WHY??????
+            VotersLimit, // Target: None, Currency; Value: >= (value), >= (Currency); Filter: Declarer
+            Appointment, // Target: Role; Filter: Declarer
         }
 
         public ActionType Action { get; } = action;
@@ -56,9 +57,10 @@ internal abstract class Procedure (
         public IDType[] FilterIDs { get; } = filterIDs;
     }
 
-    internal readonly struct EffectBundle (IDType? procedureID = null, ConfirmationType? confirmation = null, params Effect[] effects) {
+    // TODO: remove ProcedureImmediate after done with effects
+    internal readonly struct EffectBundle (IDType? procedureId = null, ConfirmationType? confirmation = null, params Effect[] effects) {
         // Presence indicates ProcedureImmediate
-        public IDType? ProcedureID { get; } = procedureID;
+        public IDType? ProcedureID { get; } = procedureId;
         public Effect[] Effects { get; } = effects;
         public ConfirmationType? Confirmation { get; } = confirmation;
     }
@@ -71,7 +73,7 @@ internal abstract class Procedure (
     public TargetType? Filter { get; } = filter;
     public IDType[] FilterIDs { get; } = filterIDs;
 
-    public abstract EffectBundle? YieldEffects (ref readonly SimulationContext context);
+    public abstract EffectBundle? YieldEffects (SimulationContext context);
 }
 
 /*
@@ -88,20 +90,18 @@ internal class ProcedureImmediate : Procedure {
         string description,
         Effect[] effects
     ) : base (id, name, description, effects, 0) {
-        foreach (var effect in effects) {
-            if (effect.Action is not Effect.ActionType.ElectionRandom and not Effect.ActionType.ElectionNominated) {
-                throw new ArgumentException ("action must be ElectionRandom or ElectionNominated");
-            }
+        if (effects.Any (e => e.Action is not Effect.ActionType.ElectionRandom and not Effect.ActionType.ElectionNominated)) {
+            throw new ArgumentException ("action must be ElectionRandom or ElectionNominated");
         }
     }
 
-    override public EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (ID, Confirmation, Effects);
+    public override EffectBundle? YieldEffects (SimulationContext context) => new (ID, Confirmation, Effects);
 }
 
 /*
  * Activates on targeted Ballots
  * filter controls on which ballots it activates
- * confirmationIDs only matters if filter is TargetType.Only or TargetType.Except
+ * filterIDs only matters if filter is TargetType.Only or TargetType.Except
  *
  * action: != ElectionRandom, != ElectionNominated, != Commitment, != VotersLimit, != Appointment
  * filter: Ballot
@@ -115,20 +115,18 @@ internal class ProcedureTargeted : Procedure {
         TargetType filter,
         params IDType[] filterIDs
     ) : base (id, name, description, effects, null, filter, filterIDs) {
-        foreach (var effect in effects) {
-            if (
-                effect.Action is Effect.ActionType.ElectionRandom
-                or Effect.ActionType.ElectionNominated
-                or Effect.ActionType.Commitment
-                or Effect.ActionType.VotersLimit
-                or Effect.ActionType.Appointment
-            ) {
-                throw new ArgumentException ("action cannot be ElectionRandom, ElectionNominated, Commitment, VotersLimit, or Appointment");
-            }
+        if (effects.Any (e => 
+            e.Action is Effect.ActionType.ElectionRandom
+            or Effect.ActionType.ElectionNominated
+            or Effect.ActionType.Commitment
+            or Effect.ActionType.VotersLimit
+            or Effect.ActionType.Appointment
+        )) {
+            throw new ArgumentException ("action cannot be ElectionRandom, ElectionNominated, Commitment, VotersLimit, or Appointment");
         }
     }
 
-    override public EffectBundle? YieldEffects (ref readonly SimulationContext context) {
+    public override EffectBundle? YieldEffects (SimulationContext context) {
         bool isBallotMatched = FilterIDs.Contains (context.BallotCurrentID);
 
         return Filter switch {
@@ -157,20 +155,18 @@ internal class ProcedureDeclared : Procedure {
         TargetType filter,
         params IDType[] filterIDs
     ) : base (id, name, description, effects, confirmation, filter, filterIDs) {
-        foreach (var effect in effects) {
-            if (
-                effect.Action is not Effect.ActionType.CurrencyAdd
-                and not Effect.ActionType.CurrencySubtract
-                and not Effect.ActionType.CurrencySet
-                and not Effect.ActionType.ElectionRandom
-                and not Effect.ActionType.Commitment
-                and not Effect.ActionType.VotersLimit
-                and not Effect.ActionType.Appointment
-            ) {
-                throw new ArgumentException ("action must be CurrencyAdd, CurrencySubtract, CurrencySet, ElectionRandom, Commitment, VotersLimit, or Appointment");
-            }
+        if (effects.Any (
+            effect => effect.Action is not Effect.ActionType.CurrencyAdd
+            and not Effect.ActionType.CurrencySubtract
+            and not Effect.ActionType.CurrencySet
+            and not Effect.ActionType.ElectionRandom
+            and not Effect.ActionType.Commitment
+            and not Effect.ActionType.VotersLimit
+            and not Effect.ActionType.Appointment
+        )) {
+            throw new ArgumentException ("action must be CurrencyAdd, CurrencySubtract, CurrencySet, ElectionRandom, Commitment, VotersLimit, or Appointment");
         }
     }
 
-    override public EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (null, Confirmation, Effects);
+    public override EffectBundle? YieldEffects (SimulationContext context) => new (null, Confirmation, Effects);
 }

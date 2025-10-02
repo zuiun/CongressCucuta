@@ -4,9 +4,12 @@
  * Generic indicates which object's ID is referenced
  * It serves no functional purpose
  */
-internal readonly struct Link<IID> (ICondition condition, IDType targetID) {
-    public ICondition Condition { get; } = condition;
-    public IDType TargetID { get; } = targetID;
+internal readonly struct Link<T> (Condition condition, IDType targetId)
+where T : IID {
+    private readonly Condition _condition = condition;
+    public IDType TargetID { get; } = targetId;
 
-    public IDType? Evaluate (ref readonly SimulationContext context) => Condition.Evaluate (in context) ? TargetID : null;
+    public bool? Evaluate (ref readonly SimulationContext context) => _condition.Evaluate (in context);
+
+    public override string ToString () => _condition.ToString ();
 }

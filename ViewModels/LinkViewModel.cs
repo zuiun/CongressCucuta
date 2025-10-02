@@ -3,10 +3,9 @@ using congress_cucuta.Models;
 
 namespace congress_cucuta.ViewModels;
 
-internal class LinkViewModel : ViewModel {
-    private string _name = "Link";
-    private Link<SlideModel> _link = new (new AlwaysCondition (), 0);
-
+internal class LinkViewModel (string name, Link<SlideModel> link) : ViewModel {
+    private string _name = name;
+    private Link<SlideModel> _link = link;
     public string Name {
         get => _name;
         set {
@@ -14,7 +13,6 @@ internal class LinkViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-
     public Link<SlideModel> Link {
         get => _link;
         set {

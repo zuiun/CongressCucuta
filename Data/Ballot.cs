@@ -7,7 +7,6 @@ internal readonly struct Ballot (
     List<string> description,
     Ballot.Result passResult,
     Ballot.Result failResult,
-    List<Link<Ballot>> links,
     bool isIncident = false
 ) : IID {
     internal readonly struct Effect {
@@ -23,35 +22,36 @@ internal readonly struct Ballot (
             Procedure,
         }
 
-        public Effect (ActionType action, TargetType target, IDType targetID, IDType? replacementID = null) {
-            if (action is ActionType.Replace && replacementID is null) {
-                throw new ArgumentException ("replacementID must exist for action = Replace");
-            }
-
-            Action = action;
-            Target = target;
-            TargetID = targetID;
-            ReplacementID = replacementID;
-        }
-
         public ActionType Action { get; }
         public TargetType Target { get; }
         public IDType TargetID { get; }
         public IDType? ReplacementID { get; }
-    }
 
-    internal readonly struct Result (List<Effect> effects, List<string> description, bool isPassed = true) {
-        public bool IsPassed { get; } = isPassed;
-        public List<Effect> Effects { get; } = effects;
-        public List<string> Description { get; } = description;
+        public Effect (ActionType action, TargetType target, IDType targetId, IDType? replacementId = null) {
+            if (action is ActionType.Replace && replacementId is null)
+                throw new ArgumentException ("replacementID must exist for action = Replace");
+
+            Action = action;
+            Target = target;
+            TargetID = targetId;
+            ReplacementID = replacementId;
+        }
     }
 
     public IDType ID { get; } = id;
     public bool IsIncident { get; } = isIncident;
+    // Short title of Ballot, eg Ballot A
     public string Title { get; } = title;
+    // Actual name of Ballot
     public string Name { get; } = name;
     public List<string> Description { get; } = description;
-    public Ballot.Result PassResult { get; } = passResult;
-    public Ballot.Result FailResult { get; } = failResult;
-    public List<Link<Ballot>> Links { get; } = links;
+    public Result PassResult { get; } = passResult;
+    public Result FailResult { get; } = failResult;
+
+    internal readonly struct Result (List<Effect> effects, List<string> description, List<Link<Ballot>> links, bool isPassed = true) {
+        public bool IsPassed { get; } = isPassed;
+        public List<Effect> Effects { get; } = effects;
+        public List<string> Description { get; } = description;
+        public List<Link<Ballot>> Links { get; } = links;
+    }
 }

@@ -8,6 +8,9 @@
     <Compile Update="Views\LinkView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\PersonView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\SimulationWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
