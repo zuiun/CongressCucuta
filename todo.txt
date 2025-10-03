@@ -1,6 +1,4 @@
 Make sure Simulations are completely creatable
-then Branching
-THEN YOU CAN WORK ON THE OTHER RIDICULOUS STUFF RAHHHHHHHHHHH
 i wish i could centralise fonts
 
 how concretely do ballots work?
@@ -13,6 +11,9 @@ each new ballot should start with a blank slate (i.e. regenerate all information
 gonna need specific permissions slides
 Simulation needs a way to know if it's on a Ballot slide or not; once entering a Ballot slide, it needs to apply all Procedures, and once exiting, it needs to apply Results
 clicking on a ballot vote link confirms the vote and adds it (or not) to the ballotsPassed
+test the other Conditions (completed: And, Or, Always, Never)
+
+REALLY PROBABLY NECESSARY add a Localisation struct to hold all strings, because this is annoying!!!
 
 
 
@@ -22,7 +23,7 @@ State Currencies
 People ItemsControl (sorted by party (independents, eg heads of state come before parties), then region; faction leaders first):
 [party, with currency if exists]
 [region, with currency if exists; a well-formed simulation is not likely to have both party and region currencies]
-Name | pass/fail/abstain RadioButton (default to abstain) | available ProcedureDeclared Expander (opens left)
+Name [Roles] | pass/fail/abstain RadioButton (default to abstain) | available ProcedureDeclared Expander (opens left)
 
 Ballots ItemsControl:
 Ballot/Incident | pass-fail-abstain (successful option highlighted and coloured green/red)
@@ -60,6 +61,7 @@ apply effects
 Simulation initialisation:
 Roles + permissions,
 Factions,
+Currencies,
 Procedures,
 Balllots,
 ???

@@ -3,9 +3,10 @@
 internal class Simulation {
     public History History { get; }
     public Dictionary<Role, Permissions> RolesPermissions { get; }
-    public List<Procedure> ProceduresGovernmental { get; }
-    public List<Procedure> ProceduresSpecial { get; }
-    public List<Procedure> ProceduresDeclared { get; }
+    public Dictionary<Currency, sbyte> Currencies { get; }
+    public List<ProcedureImmediate> ProceduresGovernmental { get; }
+    public List<ProcedureTargeted> ProceduresSpecial { get; }
+    public List<ProcedureDeclared> ProceduresDeclared { get; }
     public string RegionNameSingular { get; }
     public string RegionNamePlural { get; }
     public List<Region> Regions { get; }
@@ -17,9 +18,10 @@ internal class Simulation {
     public Simulation (
         History history,
         Dictionary<Role, Permissions> rolesPermissions,
-        List<Procedure> proceduresGovernmental,
-        List<Procedure> proceduresSpecial,
-        List<Procedure> proceduresDeclared,
+        Dictionary<Currency, sbyte> currencies,
+        List<ProcedureImmediate> proceduresGovernmental,
+        List<ProcedureTargeted> proceduresSpecial,
+        List<ProcedureDeclared> proceduresDeclared,
         string regionNameSingular,
         string regionNamePlural,
         List<Region> regions,
@@ -30,6 +32,7 @@ internal class Simulation {
     ) {
         History = history;
         RolesPermissions = rolesPermissions;
+        Currencies = currencies;
         ProceduresGovernmental = proceduresGovernmental;
         ProceduresSpecial = proceduresSpecial;
         ProceduresDeclared = proceduresDeclared;
@@ -40,55 +43,124 @@ internal class Simulation {
         PartyNamePlural = partyNamePlural;
         Parties = parties;
         Ballots = ballots;
-
         Validate ();
     }
 
     /*
-     * There must be a MEMBER Role
-     * Factions cannot share an ID with a reserved Role ID
-     * Role IDs must correspond one-to-one with Faction IDs (signifies Faction leadership), excepting the reserved Roles
-     * Either MEMBER or HEAD_GOVERNMENT must be able to vote
-     * Region IDs and Party IDs cannot overlap
-     * TODO: insane Procedures moment
+     * (1) There must be a MEMBER Role
+     * (2) Role IDs must correspond one-to-one with Faction IDs (signifies Faction leadership), excepting reserved Role IDs
+     * (3) Currency IDs must correspond one-to-one with Faction IDs (signifies Faction ownership), excepting reserved Currency IDs
+     * (4) Either MEMBER or HEAD_GOVERNMENT must be able to vote
+     * (5) Region IDs and Party IDs cannot overlap
+     * (6) Every Ballot Link must have a valid Ballot ID
+     * (7) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
      */
     private void Validate () {
-        // TODO: Validate MUST throw an exception if invariants are broken. There is NO RECOVERING
+        // TODO: test these FURIOUSLY
+#region (1)
         if (RolesPermissions.Keys.All (r => r.ID != Role.MEMBER)) {
             throw new ArgumentException ("There must be a MEMBER Role");
         }
-        
-        if (
-            Regions.Any (r => r.ID == Role.MEMBER || r.ID == Role.HEAD_GOVERNMENT || r.ID == Role.HEAD_STATE)
-            || Parties.Any (p => p.ID == Role.MEMBER || p.ID == Role.HEAD_GOVERNMENT || p.ID == Role.HEAD_STATE)
-        ) {
-            throw new ArgumentException ("Factions cannot share an ID with a reserved Role ID");
-        }
+#endregion
 
-        if (
-            RolesPermissions.Keys.Any (
-                ro =>
-                    ro.ID != Role.MEMBER
-                    && ro.ID != Role.HEAD_GOVERNMENT
-                    && ro.ID != Role.HEAD_STATE
-                    && Regions.All (re => ro.ID != re.ID)
-                    && Parties.All (p => ro.ID != p.ID)
-            )
-        ) {
-            throw new ArgumentException ("Role IDs must correspond one-to-one with Faction IDs (signifies Faction leadership), excepting the reserved Roles");
-        }
+#region (2)
+        foreach (Role ro in RolesPermissions.Keys) {
+            if (ro.ID != Role.MEMBER && ro.ID != Role.HEAD_GOVERNMENT && ro.ID != Role.HEAD_STATE) {
+                bool isRegion = false;
+                bool isParty = false;
 
+                foreach (Region re in Regions) {
+                    if (ro.ID == re.ID) {
+                        isRegion = true;
+                        break;
+                    }
+                }
+
+                if (isRegion) {
+                    continue;
+                }
+
+                foreach (Party p in Parties) {
+                    if (ro.ID == p.ID) {
+                        isParty = true;
+                    }
+                }
+
+                if (!isParty) {
+                    throw new ArgumentException ($"Role ID {ro.ID} does not correspond with any Faction ID");
+                }
+            }
+        }
+#endregion
+
+#region (3)
+        foreach (Currency c in Currencies.Keys) {
+            if (c.ID != Currency.STATE && c.ID != Currency.PARTY && c.ID != Currency.REGION) {
+                bool isRegion = false;
+                bool isParty = false;
+
+                foreach (Region r in Regions) {
+                    if (c.ID == r.ID) {
+                        isRegion = true;
+                        break;
+                    }
+                }
+
+                if (isRegion) {
+                    continue;
+                }
+
+                foreach (Party p in Parties) {
+                    if (c.ID == p.ID) {
+                        isParty = true;
+                    }
+                }
+
+                if (!isParty) {
+                    throw new ArgumentException ($"Currency ID {c.ID} does not correspond with any Faction ID");
+                }
+            }
+        }
+#endregion
+
+#region (4)
         if (
             RolesPermissions.Where (k => k.Key.ID == Role.MEMBER).All (k => k.Value.CanVote is false)
             && RolesPermissions.Where (k => k.Key.ID == Role.HEAD_GOVERNMENT).All (k => k.Value.CanVote is false)
         ) {
             throw new ArgumentException ("Either MEMBER or HEAD_GOVERNMENT must be able to vote");
         }
+#endregion
 
-        if (Regions.Any (r => Parties.Any (p => r.ID == p.ID))) {
-            throw new ArgumentException ("Region IDs and Party IDs cannot overlap");
+#region (5)
+        foreach (Region r in Regions) {
+            foreach (Party p in Parties) {
+                if (r.ID == p.ID) {
+                    throw new ArgumentException ($"Region ID {r.ID} overlaps with Party ID {p.ID}");
+                }
+            }
         }
+#endregion
 
-        // TODO: Horrible Procedure rules :sob:
+#region (6)
+        foreach (Ballot b in Ballots) {
+            foreach (var l in b.PassResult.Links) {
+                if (l.TargetID >= Ballots.Count) {
+                    throw new ArgumentException ($"Ballot ID {b.ID} passage Link targeting {l.TargetID} does not correspond with any Ballot ID");
+                }
+            }
+
+            foreach (var l in b.FailResult.Links) {
+                if (l.TargetID >= Ballots.Count) {
+                    throw new ArgumentException ($"Ballot ID {b.ID} failure Link targeting {l.TargetID} does not correspond with any Ballot ID");
+                }
+            }
+        }
+#endregion
+
+#region (7)
+        // TODO: Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
+
+#endregion
     }
 }

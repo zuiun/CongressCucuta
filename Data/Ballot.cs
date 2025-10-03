@@ -38,6 +38,13 @@ internal readonly struct Ballot (
         }
     }
 
+    internal readonly struct Result (List<Effect> effects, List<string> description, List<Link<Ballot>> links, bool isPassed = true) {
+        public bool IsPassed { get; } = isPassed;
+        public List<Effect> Effects { get; } = effects;
+        public List<string> Description { get; } = description;
+        public List<Link<Ballot>> Links { get; } = links;
+    }
+
     public IDType ID { get; } = id;
     public bool IsIncident { get; } = isIncident;
     // Short title of Ballot, eg Ballot A
@@ -47,11 +54,4 @@ internal readonly struct Ballot (
     public List<string> Description { get; } = description;
     public Result PassResult { get; } = passResult;
     public Result FailResult { get; } = failResult;
-
-    internal readonly struct Result (List<Effect> effects, List<string> description, List<Link<Ballot>> links, bool isPassed = true) {
-        public bool IsPassed { get; } = isPassed;
-        public List<Effect> Effects { get; } = effects;
-        public List<string> Description { get; } = description;
-        public List<Link<Ballot>> Links { get; } = links;
-    }
 }

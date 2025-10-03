@@ -10,7 +10,7 @@
 internal struct SimulationContext (SimulationContext.BallotContext ballot) {
     internal struct BallotContext (byte peopleCount, bool isSimpleMajority = true) {
         // 50% + 1
-        private readonly byte _majoritySimple = (byte) (Math.Ceiling (peopleCount / 2m) + 1);
+        private readonly byte _majoritySimple = (byte) Math.Ceiling (peopleCount / 2m);
         // 2 / 3
         private readonly byte _majoritySuper = (byte) Math.Ceiling ((peopleCount * 2) / 3m);
 
@@ -52,6 +52,7 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
     }
 
     private readonly Dictionary<IDType, Permissions> _rolesPermissions = [];
+    private readonly Dictionary<IDType, Currency> _currencies = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleRoles = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleFactions = [];
     private readonly Dictionary<IDType, sbyte> _currencyValues = [];
@@ -63,11 +64,13 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
     public IDType BallotCurrentID { get; set; } = 0;
     public Dictionary<IDType, Role> Roles { get; } = [];
     public Dictionary<IDType, Person> People { get; } = [];
-    public Dictionary<IDType, Currency> Currencies { get; } = [];
+    public Dictionary<IDType, sbyte> Currencies { get; } = [];
     public Dictionary<IDType, Party> Parties { get; } = [];
     public Dictionary<IDType, Region> Regions { get; } = [];
     public Dictionary<IDType, Procedure> Procedures { get; } = [];
     public Dictionary<IDType, Ballot> Ballots { get; } = [];
+    public string RegionSingular { get; } = "Region";
+    public string PartySingular { get; } = "Party";
 
     public readonly void PassBallot (IDType ballotId) => _ballotsPassed.Add (ballotId);
 

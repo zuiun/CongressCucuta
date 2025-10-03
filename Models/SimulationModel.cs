@@ -1,6 +1,7 @@
 ﻿using System.Diagnostics;
-using congress_cucuta.Data;
 using System.Text;
+using congress_cucuta.Converters;
+using congress_cucuta.Data;
 
 namespace congress_cucuta.Models;
 
@@ -27,96 +28,83 @@ internal class SimulationModel {
 
         List<SlideModel> slides = [];
 
-        slides.Add (new SlideLinearModel (0, "Slide 1", ["make sure there is Next!", "this is content"]));
-        slides.Add (new SlideLinearModel (1, "Slide 2", ["i should be a subtitle"]));
-        slides.Add (new SlideConstantModel (2, "Slide 3", ["we shouldn't have any buttons!\nwhat if i'm multiline?"]));
-        slides.Add (new SlideLinearModel (3, "Slide 4", ["you should never reach me!"]));
+        slides.Add (new SlideLinearModel (0, "Slide 0", ["make sure there is Next!", "this is content"]));
+        slides.Add (new SlideLinearModel (1, "Slide 1", ["i should be a subtitle"]));
+        slides.Add (new SlideBranchingModel (
+            2,
+            "Slide 2",
+            ["first is branch to 3", "second is branch to 0"],
+            [
+            new Link<SlideModel> (new AndCondition (new NeverCondition (), new AlwaysCondition ()), 3),
+            new Link<SlideModel> (new OrCondition (new NeverCondition (), new AlwaysCondition ()), 0),
+        ]
+        ));
+        slides.Add (new SlideConstantModel (3, "Slide 3", ["the end!"]));
         Slides = slides;
-    }
-
-    private static string Indent (string line, byte indentLevel) {
-        StringBuilder result = new ();
-
-        for (byte i = 0; i < indentLevel; ++ i) {
-            result.Append (LineModel.INDENT);
-        }
-
-        result.Append (LineModel.DELIMITER);
-        result.Append (line);
-        return result.ToString ();
-    }
-
-    private static string ToString (Procedure.TargetType? target, string name, params string[] items) {
-        return target switch {
-            Procedure.TargetType.Every => $"Every {name}:",
-            Procedure.TargetType.Except => $"Every {name} except {string.Join (", ", items)}:",
-            Procedure.TargetType.Only => $"{string.Join (", ", items)}:",
-            _ => throw new NotSupportedException (),
-        };
     }
 
     private SlideModel GenerateSlideProcedure (ref readonly Simulation simulation, Procedure procedure) {
         List<LineModel> description = [new (procedure.Name, true, procedure.Description)];
 
-        foreach (Procedure.Effect effect in procedure.Effects) {
-            switch (effect.Action) {
-                case Procedure.Effect.ActionType.VotePassAdd: {
-                    string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
-                    string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
-                    description.Add (everyBallot);
-                    string addPassVote = Indent ($"Gains {effect.Value} vote(s) in favour", 2);
-                    description.Add (addPassVote);
-                    break;
-                }
-                case Procedure.Effect.ActionType.VoteFailAdd: {
-                    string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
-                    string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
-                    description.Add (everyBallot);
-                    string addPassVote = Indent ($"Gains {effect.Value} vote(s) in opposition", 2);
-                    description.Add (addPassVote);
-                    break;
-                }
-                case Procedure.Effect.ActionType.VotePassTwoThirds: {
-                    string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
-                    string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
-                    description.Add (everyBallot);
-                    string addPassVote = Indent ("Needs a two-thirds majority to pass", 2);
-                    description.Add (addPassVote);
-                    break;
-                }
-                case Procedure.Effect.ActionType.CurrencyAdd: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.CurrencySubtract: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.CurrencySet: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.ProcedureActivate: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.ElectionRandom: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.ElectionNominated: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.Commitment: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.VotersLimit: {
-                    throw new NotImplementedException ();
-                }
-                case Procedure.Effect.ActionType.Appointment: {
-                    throw new NotImplementedException ();
-                }
-                default:
-                    throw new UnreachableException ();
-            }
-        }
+        //foreach (Procedure.Effect effect in procedure.Effects) {
+        //    switch (effect.Action) {
+        //        case Procedure.Effect.ActionType.VotePassAdd: {
+        //            string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
+        //            string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
+        //            description.Add (everyBallot);
+        //            string addPassVote = Indent ($"Gains {effect.Value} vote(s) in favour", 2);
+        //            description.Add (addPassVote);
+        //            break;
+        //        }
+        //        case Procedure.Effect.ActionType.VoteFailAdd: {
+        //            string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
+        //            string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
+        //            description.Add (everyBallot);
+        //            string addPassVote = Indent ($"Gains {effect.Value} vote(s) in opposition", 2);
+        //            description.Add (addPassVote);
+        //            break;
+        //        }
+        //        case Procedure.Effect.ActionType.VotePassTwoThirds: {
+        //            string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
+        //            string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
+        //            description.Add (everyBallot);
+        //            string addPassVote = Indent ("Needs a two-thirds majority to pass", 2);
+        //            description.Add (addPassVote);
+        //            break;
+        //        }
+        //        case Procedure.Effect.ActionType.CurrencyAdd: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.CurrencySubtract: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.CurrencySet: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.ProcedureActivate: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.ElectionRandom: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.ElectionNominated: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.Commitment: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.VotersLimit: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        case Procedure.Effect.ActionType.Appointment: {
+        //            throw new NotImplementedException ();
+        //        }
+        //        default:
+        //            throw new UnreachableException ();
+        //    }
+        //}
 
-        return new SlideLinearModel (0, "Title", description);
+        throw new NotImplementedException ();
     }
 
     private static (List<SlideModel>, byte, byte) GenerateSlides (ref readonly Simulation simulation) {
@@ -191,13 +179,13 @@ internal class SimulationModel {
         // TODO: ballot results
         IDType resultBallotIdx = slideCurrentIdx;
 
-        #region Historical Results
+#region Historical Results
         IDType resultHistoricalIdx = slideCurrentIdx;
         List<string> ballotsPassed = [];
         List<string> ballotsFailed = [];
 
         foreach (Ballot ballot in simulation.Ballots) {
-            string line = LineModel.INDENT + LineModel.DELIMITER + ballot.Name;
+            string line = StringLineFormatter.Indent (ballot.Title, 1);
 
             if (simulation.History.Path.BallotsProceduresDeclared.TryGetValue (ballot.ID, out SortedSet<IDType>? proceduresDeclared)) {
                 var proceduresDeclaredNamesIter = simulation.ProceduresDeclared.Where (p => proceduresDeclared.Contains (p.ID))

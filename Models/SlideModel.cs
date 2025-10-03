@@ -40,12 +40,10 @@ internal class SlideBranchingModel (
     List<LineModel> description,
     List<Link<SlideModel>> links
 ) : SlideModel (id, title, description) {
-    private readonly List<Link<SlideModel>> _links = links;
-
-    public override List<Link<SlideModel>> YieldLinks () => _links;
+    public override List<Link<SlideModel>> YieldLinks () => links;
 
     public override IDType? YieldNext (ref readonly SimulationContext context) {
-        foreach (Link<SlideModel> link in _links) {
+        foreach (Link<SlideModel> link in links) {
             if (link.Evaluate (in context) ?? false) {
                 return link.TargetID;
             }

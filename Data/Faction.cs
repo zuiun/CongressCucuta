@@ -7,7 +7,6 @@
  * TODO: Enforce this at Simulation creation
  */
 internal abstract class Faction : IID {
-    public static readonly IDType STATE = byte.MaxValue;
     public IDType ID { get; }
     public bool IsActiveStart { get; }
     public string Name { get; }
@@ -21,8 +20,8 @@ internal abstract class Faction : IID {
         string? leader,
         bool isActiveStart = true
     ) {
-        if (id == STATE) {
-            throw new ArgumentOutOfRangeException (nameof (id), "id cannot be STATE (255)");
+        if (id == Role.MEMBER || id == Role.HEAD_GOVERNMENT || id == Role.HEAD_STATE) {
+            throw new ArgumentException ($"Faction ID {id} is reserved by Role", nameof (id));
         }
 
         ID = id;
@@ -41,7 +40,7 @@ internal class Party (
     bool isActiveStart = true,
     string? abbreviation = null
 ) : Faction (id, name, description, leader, isActiveStart) {
-    public string? Abbreviation { get; } = abbreviation;
+    public string? Abbreviation => abbreviation;
 }
 
 internal class Region (
