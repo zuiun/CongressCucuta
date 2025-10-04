@@ -1,5 +1,6 @@
 ﻿using congress_cucuta.Data;
 using congress_cucuta.Models;
+using congress_cucuta.Simulations;
 
 namespace congress_cucuta.ViewModels;
 
@@ -14,8 +15,8 @@ internal class SimulationViewModel : ViewModel {
     // TODO: This is only for testing!
     // TODO: After creation, we need to Replace the first slide so that everything can begin
     public SimulationViewModel () {
-
-        _simulation = new ();
+        var colombia = new Testing ().Colombia;
+        _simulation = new (in colombia);
         _state = _simulation.State;
         SlideModel slide = _simulation.Slides[0];
         _slide.Replace (in slide);
@@ -24,7 +25,7 @@ internal class SimulationViewModel : ViewModel {
     public RelayCommand<Link<SlideModel>> SwitchSlideCommand => new (
         l => {
             IDType? result = _simulation.ResolveLink (l);
-                    
+            
             if (result is not null) {
                 IDType slideIdx = (IDType) result!;
                 SlideModel slide = _simulation.Slides[slideIdx];

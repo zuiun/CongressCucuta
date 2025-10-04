@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
-using congress_cucuta.Converters;
+﻿using congress_cucuta.Converters;
+using System.Diagnostics;
+using static congress_cucuta.Data.Procedure.Effect;
 
 namespace congress_cucuta.Data;
 
@@ -15,20 +16,21 @@ internal abstract class Procedure (
      * Always: always succeeds
      * DivisionChamber: simple majority vote, succeeds if vote passes
      * CurrencyValue: succeeds if Currency is higher than Value, Value is subtracted from Currency
-     * SingleDiceValue: rolls one dice, succeeds if dice is higher than Value
-     * SingleDiceCurrency: rolls one dice, succeeds if Currency is higher than dice, dice is subtracted from Currency
+     * SingleDiceValue: rolls one dice, succeeds if dice >= Value
+     * SingleDiceCurrency: rolls one dice, succeeds if dice <= Currency, dice is subtracted from Currency
      * AdversarialDice: rolls two die representing declarer and others, whichever dice is higher gets positive effects of Procedure
      */
     internal enum ConfirmationType {
         Always,
         DivisionChamber,
+        CurrencyValue,
         SingleDiceValue,
         SingleDiceCurrency,
-        AdversarialDice,
+        // AdversarialDice,
     }
 
     internal readonly struct Effect (
-        Effect.ActionType action,
+        ActionType action,
         IDType[] targetIDs,
         byte value = 0,
         params IDType[] filterIDs
@@ -59,7 +61,7 @@ internal abstract class Procedure (
              * Adds Value to Target Currency
              *
              * Targeted
-             * Targets Currencies (populated: specified [Faction ID, PARTY, REGION, STATE])
+             * Targets Factions (populated: specified), Currencies (empty: STATE)
              * Filters Ballots (empty: every, populated: specified)
              */
             CurrencyAdd,
@@ -67,7 +69,7 @@ internal abstract class Procedure (
              * Subtracts Value from Target Currency
              *
              * Targeted
-             * Targets Currencies (populated: specified [Faction ID, PARTY, REGION, STATE])
+             * Targets Factions (populated: specified), Currencies (empty: STATE)
              * Filters Ballots (empty: every, populated: specified)
              */
             CurrencySubtract,
@@ -111,7 +113,7 @@ internal abstract class Procedure (
              * Limits eligible voters on Target Ballot
              *
              * Declared
-             * Targets Value (empty) Currencies (populated [ignored]: declarer's)
+             * Targets Value (empty), Currencies (populated [ignored]: declarer's)
              */
             VotersLimit,
         }
@@ -124,11 +126,13 @@ internal abstract class Procedure (
         private static string TargetToString (Effect effect, ref readonly SimulationContext context) {
             throw new NotImplementedException ();
             string target = effect.Action switch {
+                ActionType.CurrencyAdd
+                or ActionType.CurrencySubtract => "",
+                ActionType.ProcedureActivate => "",
                 ActionType.ElectionRegion
                 or ActionType.ElectionParty
                 or ActionType.ElectionNominated
-                or ActionType.ElectionAppointed
-                or ActionType.VotersLimit =>
+                or ActionType.ElectionAppointed =>
                     effect.FilterIDs.Length > 0
                         ? string.Join (
                             ", ",
@@ -136,6 +140,7 @@ internal abstract class Procedure (
                                 .Select (r => r.TitlePlural)
                         )
                         : "Everyone",
+                ActionType.VotersLimit => "",
                 _ => throw new NotSupportedException (),
             };
         }
@@ -155,18 +160,6 @@ internal abstract class Procedure (
                                 .Select (b => b.Title)
                         ) + ":"
                         : "Every Ballot:",
-                ActionType.ElectionRegion
-                or ActionType.ElectionParty
-                or ActionType.ElectionNominated
-                or ActionType.ElectionAppointed
-                or ActionType.VotersLimit =>
-                    effect.FilterIDs.Length > 0
-                        ? string.Join (
-                            ", ",
-                            context.Roles.Values.Where (r => effect.FilterIDs.Contains (r.ID))
-                                .Select (r => r.TitlePlural)
-                        ) + ":"
-                        : "Everyone:",
                 _ => throw new NotSupportedException (),
             };
         }
@@ -202,7 +195,9 @@ internal abstract class Procedure (
                 case ActionType.CurrencyAdd: {
                     string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
                     throw new NotImplementedException ();
-                    string action = StringLineFormatter.Indent ($"Gains {Value} Vote(s) in Opposition", 2);
+                    // TODO: Get Currency name
+                    // empty: STATE, populated: Faction Currency
+                    string action = StringLineFormatter.Indent ($"Gains {Value} ", 2);
 
                     result.Add (filter);
                     result.Add (action);
@@ -211,7 +206,7 @@ internal abstract class Procedure (
                 case ActionType.CurrencySubtract: {
                     string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
                     throw new NotImplementedException ();
-                    string action = StringLineFormatter.Indent ($"Gains {Value} Vote(s) in Opposition", 2);
+                    string action = StringLineFormatter.Indent ($"Loses {Value} ", 2);
 
                     result.Add (filter);
                     result.Add (action);
@@ -263,17 +258,18 @@ internal abstract class Procedure (
     }
 
     // TODO: remove ProcedureImmediate after done with effects
-    internal readonly struct EffectBundle (IDType? procedureId = null, ConfirmationType? confirmation = null, params Effect[] effects) {
+    internal readonly struct EffectBundle (IDType? procedureId = null, ConfirmationType? confirmation = null, byte value = 0, params Effect[] effects) {
         // Presence indicates ProcedureImmediate
         public IDType? ProcedureID => procedureId;
         public Effect[] Effects => effects;
         public ConfirmationType? Confirmation => confirmation;
+        public byte Value => value;
     }
 
-    public IDType ID { get; } = id;
-    public string Name { get; } = name;
-    public string Description { get; } = description;
-    public Effect[] Effects { get; } = effects;
+    public IDType ID => id;
+    public string Name => name;
+    public string Description => description;
+    public Effect[] Effects => effects;
 
     public abstract EffectBundle? YieldEffects (ref readonly SimulationContext context);
     public abstract string ToString (ref readonly SimulationContext context);
@@ -295,10 +291,10 @@ internal class ProcedureImmediate : Procedure {
     ) : base (id, name, description, effects) {
         foreach (Effect e in effects) {
             switch (e.Action) {
-                case Effect.ActionType.ElectionRegion:
-                case Effect.ActionType.ElectionParty:
-                case Effect.ActionType.ElectionNominated:
-                case Effect.ActionType.ElectionAppointed:
+                case ActionType.ElectionRegion:
+                case ActionType.ElectionParty:
+                case ActionType.ElectionNominated:
+                case ActionType.ElectionAppointed:
                     break;
                 default:
                     throw new ArgumentException ($"ProcedureImmediate ID {id}: Action must be Election*");
@@ -306,7 +302,7 @@ internal class ProcedureImmediate : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (ID, null, Effects);
+    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (ID, effects: Effects);
 
     public override string ToString (ref readonly SimulationContext context) {
         List<string> result = [StringLineFormatter.Indent (Name, 0)];
@@ -336,13 +332,13 @@ internal class ProcedureTargeted : Procedure {
     ) : base (id, name, description, effects) {
         foreach (Effect e in effects) {
             switch (e.Action) {
-                case Effect.ActionType.VotePassAdd:
-                case Effect.ActionType.VoteFailAdd:
-                case Effect.ActionType.VotePassTwoThirds:
-                case Effect.ActionType.CurrencyAdd:
-                case Effect.ActionType.CurrencySubtract:
+                case ActionType.VotePassAdd:
+                case ActionType.VoteFailAdd:
+                case ActionType.VotePassTwoThirds:
+                case ActionType.CurrencyAdd:
+                case ActionType.CurrencySubtract:
                     break;
-                case Effect.ActionType.ProcedureActivate:
+                case ActionType.ProcedureActivate:
                     if (e.TargetIDs.Length == 0) {
                         throw new ArgumentException ($"ProcedureTargeted ID {id}: ProcedureActivate Target must be populated");
                     }
@@ -363,7 +359,7 @@ internal class ProcedureTargeted : Procedure {
             }
         }
 
-        return effects.Count > 0 ? new EffectBundle(null, null, effects.ToArray ()) : null;
+        return effects.Count > 0 ? new EffectBundle(effects: effects.ToArray ()) : null;
     }
 
     public override string ToString (ref readonly SimulationContext context) {
@@ -386,6 +382,7 @@ internal class ProcedureTargeted : Procedure {
  */
 internal class ProcedureDeclared : Procedure {
     private readonly ConfirmationType? _confirmation;
+    private byte _value;
     // Filters Roles (empty: every, populated: specified)
     public IDType[] DeclarerIDs { get; }
 
@@ -395,21 +392,22 @@ internal class ProcedureDeclared : Procedure {
         string description,
         Effect[] effects,
         ConfirmationType? confirmation,
+        byte value,
         IDType[] declarerIDs
     ) : base (id, name, description, effects) {
         foreach (Effect e in effects) {
             switch (e.Action) {
-                case Effect.ActionType.ElectionRegion:
-                case Effect.ActionType.ElectionParty:
-                case Effect.ActionType.VotersLimit:
+                case ActionType.ElectionRegion:
+                case ActionType.ElectionParty:
+                case ActionType.VotersLimit:
                     break;
-                case Effect.ActionType.ElectionNominated:
+                case ActionType.ElectionNominated:
                     if (e.TargetIDs.Length == 0) {
                         throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionNominated Target must be populated");
                     }
 
                     break;
-                case Effect.ActionType.ElectionAppointed:
+                case ActionType.ElectionAppointed:
                     if (e.TargetIDs.Length == 0) {
                         throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionAppointed Target must be populated");
                     }
@@ -421,55 +419,68 @@ internal class ProcedureDeclared : Procedure {
         }
 
         _confirmation = confirmation;
+        _value = value;
         DeclarerIDs = declarerIDs;
     }
 
     private string DeclarerToString (ref readonly SimulationContext context) {
-        throw new NotImplementedException ();
-        //return effect.Action switch {
-        //    Effect.ActionType.VotePassAdd
-        //    or Effect.ActionType.VoteFailAdd
-        //    or Effect.ActionType.VotePassTwoThirds
-        //    or Effect.ActionType.CurrencyAdd
-        //    or Effect.ActionType.CurrencySubtract
-        //    or Effect.ActionType.ProcedureActivate =>
-        //        effect.FilterIDs.Length > 0
-        //            ? string.Join (
-        //                ", ",
-        //                context.Ballots.Values.Where (b => effect.FilterIDs.Contains (b.ID))
-        //                    .Select (b => b.Title)
-        //            ) + ":"
-        //            : "Every Ballot:",
-        //    Effect.ActionType.ElectionRegion
-        //    or Effect.ActionType.ElectionParty
-        //    or Effect.ActionType.ElectionNominated
-        //    or Effect.ActionType.ElectionAppointed
-        //    or Effect.ActionType.VotersLimit =>
-        //        effect.FilterIDs.Length > 0
-        //            ? string.Join (
-        //                ", ",
-        //                context.Roles.Values.Where (r => effect.FilterIDs.Contains (r.ID))
-        //                    .Select (r => r.TitlePlural)
-        //            ) + ":"
-        //            : "Everyone:",
-        //    _ => throw new NotSupportedException (),
-        //};
+        return DeclarerIDs.Length > 0
+            ? string.Join (
+                ", ",
+                context.Roles.Values.Where (r => DeclarerIDs.Contains (r.ID))
+                    .Select (r => r.TitlePlural)
+            ) + ":"
+            : "Everyone:";
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (null, _confirmation, Effects);
+    /*
+     * Presence indicates DeclaredProcedure
+     *
+     * CurrencyValue: succeeds if Currency is higher than Value, Value is subtracted from Currency
+     * SingleDiceValue: rolls one dice, succeeds if dice is higher than Value
+     * SingleDiceCurrency: rolls one dice, succeeds if Currency is higher than dice, dice is subtracted from Currency
+     */
+    private string ConfirmationToString (ref readonly SimulationContext context) {
+        switch (_confirmation) {
+            case ConfirmationType.Always:
+                return "Always";
+            case ConfirmationType.DivisionChamber:
+                return "Division of Chamber";
+            case ConfirmationType.CurrencyValue: {
+                // TODO: Get Currency name via Declarer ID (should be a Role)
+                throw new NotImplementedException ();
+                return $"Can Subtract {_value} from {context.Currencies}";
+            }
+            case ConfirmationType.SingleDiceValue:
+                return $"Dice Roll Greater than or Equal to {_value}";
+            case ConfirmationType.SingleDiceCurrency: {
+                // TODO: Get Currency name via Declarer ID (should be a Role)
+                throw new NotImplementedException ();
+                return $"Can Subtract Dice Roll from {context.Currencies}";
+            }
+            default:
+                throw new UnreachableException ();
+        }
+    }
+
+    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (null, _confirmation, _value, Effects);
 
     public override string ToString (ref readonly SimulationContext context) {
         List<string> result = [StringLineFormatter.Indent (Name, 0)];
-        throw new NotImplementedException ();
-        
+        string declarer = StringLineFormatter.Indent (DeclarerToString (in context), 1);
+        string canDeclare = StringLineFormatter.Indent ("Can declare if:", 2);
+        string confirmation = StringLineFormatter.Indent (ConfirmationToString (in context), 3);
 
-        // TODO: Filter and Confirmation
+        result.Add (declarer);
+        result.Add (canDeclare);
+        result.Add (confirmation);
 
-        //foreach (Effect e in Effects) {
-        //    string filter = StringLineFormatter.Indent (DeclarerToString (e, in context), 1);
-        //    result.Add (e.ToString (in context));
-        //}
+        foreach (Effect e in Effects) {
+            string effect = StringLineFormatter.Indent (e.ToString (in context), 1);
 
-        //return string.Join ('\n', result);
+            result.Add (effect);
+        }
+
+        return string.Join ('\n', result);
     }
 }

@@ -1,6 +1,4 @@
-﻿using congress_cucuta.Data;
-using congress_cucuta.Models;
-using System.Windows;
+﻿using congress_cucuta.Models;
 
 namespace congress_cucuta.ViewModels;
 
@@ -47,24 +45,21 @@ internal class SlideViewModel : ViewModel {
     }
 
     public void Replace (ref readonly SlideModel slide) {
-        List<Link<SlideModel>> links = slide.YieldLinks ();
-
         Title = slide.Title;
         Description = slide.Description.ConvertAll (l => new LineViewModel (l));
 
         // SlideBranching
-        if (links.Count > 1) {
-            // TODO: should Pass or Fail be on the left?
-            Links = links.ConvertAll (l => new LinkViewModel (l.ToString (), l));
+        if (slide.Links.Count > 1) {
+            Links = slide.Links.ConvertAll (l => new LinkViewModel (l.ToString (), l));
         // SlideConstant
-        } else if (links.Count < 1) {
+        } else if (slide.Links.Count < 1) {
             Links = [];
-        // SlideLinear
+        // SlideLinear or end SlideBranching
         } else {
-            Links = [new ("Next", links[0])];
+            Links = [new ("Next", slide.Links[0])];
         }
 
-        IsContent = Description.Count > 1;
+        IsContent = slide.IsContent;
         IsSubtitle = ! IsContent;
     }
 }

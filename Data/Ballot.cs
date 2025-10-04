@@ -20,38 +20,45 @@ internal readonly struct Ballot (
             Region,
             Party,
             Procedure,
+            Currency
         }
 
         public ActionType Action { get; }
         public TargetType Target { get; }
         public IDType TargetID { get; }
         public IDType? ReplacementID { get; }
+        public byte? Value { get; }
 
-        public Effect (ActionType action, TargetType target, IDType targetId, IDType? replacementId = null) {
-            if (action is ActionType.Replace && replacementId is null)
-                throw new ArgumentException ("replacementID must exist for action = Replace");
+        public Effect (ActionType action, TargetType target, IDType targetId, IDType? replacementId = null, byte? value = null) {
+            if (action is ActionType.Replace && replacementId is null) {
+                throw new ArgumentException ("replacementID must exist for ActionType Replace", nameof (replacementId));
+            }
+
+            if (target is TargetType.Currency && value is null) {
+                throw new ArgumentException ("value must exist for TargetType Currency", nameof (value));
+            }
 
             Action = action;
             Target = target;
             TargetID = targetId;
             ReplacementID = replacementId;
+            Value = value;
         }
     }
 
-    internal readonly struct Result (List<Effect> effects, List<string> description, List<Link<Ballot>> links, bool isPassed = true) {
-        public bool IsPassed { get; } = isPassed;
-        public List<Effect> Effects { get; } = effects;
-        public List<string> Description { get; } = description;
-        public List<Link<Ballot>> Links { get; } = links;
+    internal readonly struct Result (List < Effect> effects, List<string> description, List<Link<Ballot>> links) {
+        public List<Effect> Effects => effects;
+        public List<string> Description => description;
+        public List<Link<Ballot>> Links => links;
     }
 
-    public IDType ID { get; } = id;
-    public bool IsIncident { get; } = isIncident;
+    public IDType ID => id;
+    public bool IsIncident => isIncident;
     // Short title of Ballot, eg Ballot A
-    public string Title { get; } = title;
+    public string Title => title;
     // Actual name of Ballot
-    public string Name { get; } = name;
-    public List<string> Description { get; } = description;
-    public Result PassResult { get; } = passResult;
-    public Result FailResult { get; } = failResult;
+    public string Name => name;
+    public List<string> Description => description;
+    public Result PassResult => passResult;
+    public Result FailResult => failResult;
 }

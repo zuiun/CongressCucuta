@@ -3,46 +3,40 @@
 internal class Simulation {
     public History History { get; }
     public Dictionary<Role, Permissions> RolesPermissions { get; }
-    public Dictionary<Currency, sbyte> Currencies { get; }
+    public Dictionary<Currency, sbyte> CurrenciesValues { get; }
+    public List<Region> Regions { get; }
+    public List<Party> Parties { get; }
     public List<ProcedureImmediate> ProceduresGovernmental { get; }
     public List<ProcedureTargeted> ProceduresSpecial { get; }
     public List<ProcedureDeclared> ProceduresDeclared { get; }
-    public string RegionNameSingular { get; }
-    public string RegionNamePlural { get; }
-    public List<Region> Regions { get; }
-    public string PartyNameSingular { get; }
-    public string PartyNamePlural { get; }
-    public List<Party> Parties { get; }
     public List<Ballot> Ballots { get; }
+    public List<Result> Results { get; }
+    public Localisation Localisation { get; }
 
     public Simulation (
         History history,
         Dictionary<Role, Permissions> rolesPermissions,
-        Dictionary<Currency, sbyte> currencies,
+        Dictionary<Currency, sbyte> currenciesValues,
+        List<Region> regions,
+        List<Party> parties,
         List<ProcedureImmediate> proceduresGovernmental,
         List<ProcedureTargeted> proceduresSpecial,
         List<ProcedureDeclared> proceduresDeclared,
-        string regionNameSingular,
-        string regionNamePlural,
-        List<Region> regions,
-        string partyNameSingular,
-        string partyNamePlural,
-        List<Party> parties,
-        List<Ballot> ballots
+        List<Ballot> ballots,
+        List<Result> results,
+        Localisation localisation
     ) {
         History = history;
         RolesPermissions = rolesPermissions;
-        Currencies = currencies;
+        CurrenciesValues = currenciesValues;
+        Regions = regions;
+        Parties = parties;
         ProceduresGovernmental = proceduresGovernmental;
         ProceduresSpecial = proceduresSpecial;
         ProceduresDeclared = proceduresDeclared;
-        RegionNameSingular = regionNameSingular;
-        RegionNamePlural = regionNamePlural;
-        Regions = regions;
-        PartyNameSingular = partyNameSingular;
-        PartyNamePlural = partyNamePlural;
-        Parties = parties;
         Ballots = ballots;
+        Results = results;
+        Localisation = localisation;
         Validate ();
     }
 
@@ -54,6 +48,7 @@ internal class Simulation {
      * (5) Region IDs and Party IDs cannot overlap
      * (6) Every Ballot Link must have a valid Ballot ID
      * (7) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
+     * (8) If any Party has a Currency, then every Party must have a Currency; same restriction applies to Regions
      */
     private void Validate () {
         // TODO: test these FURIOUSLY
@@ -94,8 +89,9 @@ internal class Simulation {
 #endregion
 
 #region (3)
-        foreach (Currency c in Currencies.Keys) {
-            if (c.ID != Currency.STATE && c.ID != Currency.PARTY && c.ID != Currency.REGION) {
+        foreach (Currency c in CurrenciesValues.Keys) {
+            // TODO: decide about the reserved IDs
+            if (c.ID != Currency.STATE/* && c.ID != Currency.PARTY && c.ID != Currency.REGION */) {
                 bool isRegion = false;
                 bool isParty = false;
 
@@ -125,8 +121,8 @@ internal class Simulation {
 
 #region (4)
         if (
-            RolesPermissions.Where (k => k.Key.ID == Role.MEMBER).All (k => k.Value.CanVote is false)
-            && RolesPermissions.Where (k => k.Key.ID == Role.HEAD_GOVERNMENT).All (k => k.Value.CanVote is false)
+            RolesPermissions.Where (k => k.Key.ID == Role.MEMBER).All (v => ! v.Value.CanVote)
+            && RolesPermissions.Where (k => k.Key.ID == Role.HEAD_GOVERNMENT).All (v => ! v.Value.CanVote)
         ) {
             throw new ArgumentException ("Either MEMBER or HEAD_GOVERNMENT must be able to vote");
         }
@@ -137,6 +133,22 @@ internal class Simulation {
             foreach (Party p in Parties) {
                 if (r.ID == p.ID) {
                     throw new ArgumentException ($"Region ID {r.ID} overlaps with Party ID {p.ID}");
+                }
+            }
+        }
+
+        for (byte i = 0; i < Regions.Count; ++ i) {
+            for (byte j = 0; j < Regions.Count; ++ j) {
+                if (Regions[i].ID == Regions[j].ID && i != j) {
+                    throw new ArgumentException ($"Region ID {Regions[i].ID} is repeated");
+                }
+            }
+        }
+
+        for (byte i = 0; i < Parties.Count; ++i) {
+            for (byte j = 0; j < Parties.Count; ++j) {
+                if (Parties[i].ID == Parties[j].ID && i != j) {
+                    throw new ArgumentException ($"Party ID {Parties[i].ID} is repeated");
                 }
             }
         }
@@ -160,6 +172,11 @@ internal class Simulation {
 
 #region (7)
         // TODO: Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
+
+#endregion
+
+#region (8)
+
 
 #endregion
     }

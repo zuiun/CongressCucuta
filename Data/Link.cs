@@ -6,9 +6,10 @@
  */
 internal readonly struct Link<T> (Condition condition, IDType targetId)
 where T : IID {
-    public IDType TargetID { get; } = targetId;
+    public Condition Condition => condition;
+    public IDType TargetID => targetId;
 
-    public bool? Evaluate (ref readonly SimulationContext context) => condition.Evaluate (in context);
+    public bool Evaluate (ref readonly SimulationContext context) => condition.Evaluate (in context);
 
     public override string ToString () => condition.ToString ();
 }

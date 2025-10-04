@@ -1,9 +1,9 @@
 ﻿namespace congress_cucuta.Data;
 
 internal class Person (IDType id, string name) : IID {
-    public IDType ID { get; } = id;
-    public string Name { get; } = name;
-    public HashSet<IDType> RoleIDs { get; } = [];
+    public IDType ID => id;
+    public string Name => name;
+    public HashSet<IDType> RoleIDs => [];
 
     public void AddRole (IDType roleId) => RoleIDs.Add (roleId);
 

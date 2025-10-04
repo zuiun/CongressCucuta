@@ -47,6 +47,6 @@ internal class Region (
     IDType id,
     string name,
     List<string> description,
-    string? leader,
+    string? leader = null,
     bool isActiveStart = true
 ) : Faction (id, name, description, leader, isActiveStart) { }

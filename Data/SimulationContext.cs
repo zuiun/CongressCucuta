@@ -18,9 +18,9 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
         public Dictionary<IDType, Permissions> RolesPermissions { get; set; } = [];
         // This gets replaced as necessary
         public Dictionary<IDType, HashSet<IDType>> PeopleRoles { get; set; } = [];
-        public HashSet<IDType> VotesPass { get; } = [];
-        public HashSet<IDType> VotesFail { get; } = [];
-        public bool IsSimpleMajority { get; } = isSimpleMajority;
+        public readonly HashSet<IDType> VotesPass => [];
+        public readonly HashSet<IDType> VotesFail => [];
+        public bool IsSimpleMajority { get; set; } = isSimpleMajority;
 
         public readonly bool? IsBallotVoted () {
             byte majority = IsSimpleMajority ? _majoritySimple : _majoritySuper;
@@ -55,26 +55,26 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
     private readonly Dictionary<IDType, Currency> _currencies = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleRoles = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleFactions = [];
-    private readonly Dictionary<IDType, sbyte> _currencyValues = [];
+    private readonly Dictionary<IDType, sbyte> _currenciesValues = [];
     private readonly HashSet<IDType> _partiesActive = [];
     private readonly HashSet<IDType> _regionsActive = [];
     private readonly HashSet<IDType> _proceduresActive = [];
     private readonly HashSet<IDType> _ballotsPassed = [];
     private readonly BallotContext _ballot = ballot;
     public IDType BallotCurrentID { get; set; } = 0;
-    public Dictionary<IDType, Role> Roles { get; } = [];
-    public Dictionary<IDType, Person> People { get; } = [];
-    public Dictionary<IDType, sbyte> Currencies { get; } = [];
-    public Dictionary<IDType, Party> Parties { get; } = [];
-    public Dictionary<IDType, Region> Regions { get; } = [];
-    public Dictionary<IDType, Procedure> Procedures { get; } = [];
-    public Dictionary<IDType, Ballot> Ballots { get; } = [];
-    public string RegionSingular { get; } = "Region";
-    public string PartySingular { get; } = "Party";
+    public Dictionary<IDType, Role> Roles => [];
+    public Dictionary<IDType, Person> People => [];
+    public Dictionary<IDType, Currency> Currencies => [];
+    public Dictionary<IDType, Party> Parties => [];
+    public Dictionary<IDType, Region> Regions => [];
+    public Dictionary<IDType, Procedure> Procedures => [];
+    public Dictionary<IDType, Ballot> Ballots => [];
+    public string RegionSingular => "Region";
+    public string PartySingular => "Party";
 
     public readonly void PassBallot (IDType ballotId) => _ballotsPassed.Add (ballotId);
 
-    public readonly void SetCurrencyValue (IDType currencyId, sbyte value) => _currencyValues[currencyId] = value;
+    public readonly void SetCurrencyValue (IDType currencyId, sbyte value) => _currenciesValues[currencyId] = value;
 
     public readonly void ActivateProcedure (IDType procedureId) => _proceduresActive.Add (procedureId);
 
@@ -86,7 +86,7 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
 
     public readonly byte GetBallotsPassedCount () => (byte) _ballotsPassed.Count;
 
-    public readonly sbyte GetCurrencyValue (IDType currencyId) => _currencyValues.GetValueOrDefault (currencyId);
+    public readonly sbyte GetCurrencyValue (IDType currencyId) => _currenciesValues.GetValueOrDefault (currencyId);
 
     public readonly bool IsProcedureActive (IDType procedureId) => _proceduresActive.Contains (procedureId);
 }

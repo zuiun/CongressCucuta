@@ -1,30 +1,31 @@
 ﻿namespace congress_cucuta.Data;
 
 internal struct Permissions (
-    bool canVote = true,
+    bool canVote,
     byte votes = 1,
     bool canPass = false,
     bool canVeto = false,
     bool canSpeak = true
 ) {
-    internal struct Composition (
-    bool? canVote = null,
-    byte? votes = null,
-    bool? canPass = null,
-    bool? canVeto = null,
-    bool? canSpeak = null
-) {
-        public bool? CanVote { get; } = canVote;
-        public byte? Votes { get; } = votes;
-        public bool? CanPass { get; } = canPass;
-        public bool? CanVeto { get; } = canVeto;
-        public bool? CanSpeak { get; } = canSpeak;
+    internal readonly struct Composition (
+        bool? canVote = null,
+        byte? votes = null,
+        bool? canPass = null,
+        bool? canVeto = null,
+        bool? canSpeak = null
+    ) {
+        public bool? CanVote => canVote;
+        public byte? Votes => votes;
+        public bool? CanPass => canPass;
+        public bool? CanVeto => canVeto;
+        public bool? CanSpeak => canSpeak;
     }
-    
+
     public bool CanVote { get; set; } = canVote;
     public byte Votes { get; set; } = votes;
     public bool CanPass { get; set; } = canPass;
     public bool CanVeto { get; set; } = canVeto;
+    // Currently not used
     public bool CanSpeak { get; set; } = canSpeak;
 
     // Compose left with changes from right

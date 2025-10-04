@@ -1,130 +1,47 @@
-﻿using System.Diagnostics;
-using System.Text;
-using congress_cucuta.Converters;
+﻿using congress_cucuta.Converters;
 using congress_cucuta.Data;
 
 namespace congress_cucuta.Models;
 
-internal class SimulationModel {
-    // End state of ballots
-    private readonly IDType _resultBallotIdx;
-    // End state of results
-    private readonly IDType _resultHistoricalIdx;
+internal class SimulationModel (ref readonly Simulation simulation) {
     private readonly SimulationContext _context = new ();
     public string State = "State"; // TODO: Initialise
     public SimulationContext Context => _context;
-    public List<SlideModel> Slides { get; }
+    public List<SlideModel> Slides { get; } = GenerateSlides (in simulation);
     public IDType SlideCurrentIdx { get; set; } = 0;
-
-    public SimulationModel (ref readonly Simulation simulation) {
-        (Slides, _resultBallotIdx, _resultHistoricalIdx) = GenerateSlides (in simulation);
-
-        throw new NotImplementedException ();
-    }
-
-    // TODO: THIS IS ONLY FOR TESTING PURPOSES!
-    public SimulationModel () {
-        State = "Great Para";
-
-        List<SlideModel> slides = [];
-
-        slides.Add (new SlideLinearModel (0, "Slide 0", ["make sure there is Next!", "this is content"]));
-        slides.Add (new SlideLinearModel (1, "Slide 1", ["i should be a subtitle"]));
-        slides.Add (new SlideBranchingModel (
-            2,
-            "Slide 2",
-            ["first is branch to 3", "second is branch to 0"],
-            [
-            new Link<SlideModel> (new AndCondition (new NeverCondition (), new AlwaysCondition ()), 3),
-            new Link<SlideModel> (new OrCondition (new NeverCondition (), new AlwaysCondition ()), 0),
-        ]
-        ));
-        slides.Add (new SlideConstantModel (3, "Slide 3", ["the end!"]));
-        Slides = slides;
-    }
 
     private SlideModel GenerateSlideProcedure (ref readonly Simulation simulation, Procedure procedure) {
         List<LineModel> description = [new (procedure.Name, true, procedure.Description)];
 
-        //foreach (Procedure.Effect effect in procedure.Effects) {
-        //    switch (effect.Action) {
-        //        case Procedure.Effect.ActionType.VotePassAdd: {
-        //            string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
-        //            string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
-        //            description.Add (everyBallot);
-        //            string addPassVote = Indent ($"Gains {effect.Value} vote(s) in favour", 2);
-        //            description.Add (addPassVote);
-        //            break;
-        //        }
-        //        case Procedure.Effect.ActionType.VoteFailAdd: {
-        //            string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
-        //            string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
-        //            description.Add (everyBallot);
-        //            string addPassVote = Indent ($"Gains {effect.Value} vote(s) in opposition", 2);
-        //            description.Add (addPassVote);
-        //            break;
-        //        }
-        //        case Procedure.Effect.ActionType.VotePassTwoThirds: {
-        //            string[] ballotsIter = [.. effect.FilterIDs.Select (t => _context.Ballots[t].Title)];
-        //            string everyBallot = Indent (ToString (effect.Filter, "Ballot", ballotsIter), 1);
-        //            description.Add (everyBallot);
-        //            string addPassVote = Indent ("Needs a two-thirds majority to pass", 2);
-        //            description.Add (addPassVote);
-        //            break;
-        //        }
-        //        case Procedure.Effect.ActionType.CurrencyAdd: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.CurrencySubtract: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.CurrencySet: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.ProcedureActivate: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.ElectionRandom: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.ElectionNominated: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.Commitment: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.VotersLimit: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        case Procedure.Effect.ActionType.Appointment: {
-        //            throw new NotImplementedException ();
-        //        }
-        //        default:
-        //            throw new UnreachableException ();
-        //    }
-        //}
-
         throw new NotImplementedException ();
     }
 
-    private static (List<SlideModel>, byte, byte) GenerateSlides (ref readonly Simulation simulation) {
+    private static List<SlideModel> GenerateSlides (ref readonly Simulation simulation) {
         List<SlideModel> slides = [];
 
+#region Introduction
         // TODO: the vast majority of these should really be in special constructors
         IDType slideCurrentIdx = 0;
-        SlideLinearModel slideIntro = new (slideCurrentIdx, simulation.History.State, [simulation.History.Government]);
+        SlideLinearModel slideIntro = new (slideCurrentIdx, simulation.Localisation.State, [simulation.Localisation.Government], false);
+
         ++ slideCurrentIdx;
         slides.Add (slideIntro);
-        SlideLinearModel slideContext = new (slideCurrentIdx, "Context", [.. simulation.History.Context]);
+
+        SlideLinearModel slideContext = new (slideCurrentIdx, "Context", [.. simulation.Localisation.Context]);
+
         ++ slideCurrentIdx;
         slides.Add (slideContext);
+
         SlideLinearModel slideTitle = new (
             slideCurrentIdx,
-            simulation.History.Period,
-            [$"{simulation.History.Date}\n{simulation.History.Situation}"]
+            simulation.Localisation.Period,
+            [simulation.Localisation.Date, simulation.Localisation.Situation],
+            false
         );
+
         ++ slideCurrentIdx;
         slides.Add (slideTitle);
+#endregion
 
 #region Procedures
         for (byte i = 0; i < simulation.ProceduresGovernmental.Count; ++ i) {
@@ -142,7 +59,8 @@ internal class SimulationModel {
         // TODO: dec procedures
 #endregion
 
-        SlideLinearModel slideTitles = new (slideCurrentIdx, "Titles", [simulation.History.Member, simulation.History.Speaker]);
+        SlideLinearModel slideTitles = new (slideCurrentIdx, "Titles", [simulation.Localisation.MemberSingular, simulation.Localisation.Speaker]);
+
         ++ slideCurrentIdx;
         slides.Add (slideTitles);
 
@@ -156,9 +74,12 @@ internal class SimulationModel {
             }
         }
 
-        SlideLinearModel slideRegions = new (slideCurrentIdx, simulation.RegionNamePlural, [.. regions]);
-        ++ slideCurrentIdx;
-        slides.Add (slideRegions);
+        if (regions.Count > 0) {
+            SlideLinearModel slideRegions = new (slideCurrentIdx, simulation.Localisation.RegionPlural, [.. regions]);
+
+            ++ slideCurrentIdx;
+            slides.Add (slideRegions);
+        }
 
         List<string> parties = [];
 
@@ -169,15 +90,94 @@ internal class SimulationModel {
             }
         }
 
-        SlideLinearModel slideParties = new (slideCurrentIdx, simulation.PartyNamePlural, [.. parties]);
-        ++ slideCurrentIdx;
-        slides.Add (slideParties);
-        #endregion
+        if (parties.Count > 0) {
+            SlideLinearModel slideParties = new (slideCurrentIdx, simulation.Localisation.PartyPlural, [.. parties]);
 
+            ++ slideCurrentIdx;
+            slides.Add (slideParties);
+        }
+#endregion
+
+#region Ballots
         // TODO: compile ballots into one slide
         // TODO: ballots
-        // TODO: ballot results
-        IDType resultBallotIdx = slideCurrentIdx;
+        IDType ballotIdx = slideCurrentIdx;
+        IDType resultBallotIdxFirst = slideCurrentIdx + simulation.Ballots.Count;
+        List<SlideModel> slidesBallots = [];
+        List<SlideModel> slidesResultBallots = [];
+        Dictionary<IDType, IDType> ballotIDsFinalIdxs = [];
+        Dictionary<IDType, IDType> resultBallotIDsFinalIdxs = [];
+
+        // First, every Ballot is added and their IDs are mapped to indexes
+        foreach (Ballot ballot in simulation.Ballots) {
+            string[] description = [ballot.Name, .. ballot.Description];
+            SlideBranchingModel slideBallot = new (
+                slideCurrentIdx,
+                ballot.Title,
+                [.. description],
+                // Fail (left, first), pass (right, second)
+                [
+                    new (new BallotVoteCondition (false), resultBallotIdxFirst),
+                    new (new BallotVoteCondition (true), resultBallotIdxFirst + 1)
+                ]
+            );
+
+            ballotIDsFinalIdxs[ballot.ID] = slideCurrentIdx;
+            ++ slideCurrentIdx;
+            slidesBallots.Add (slideBallot);
+            resultBallotIdxFirst += 2; // On the final iteration, this should point to the end results
+        }
+
+        IDType resultEndIdx = resultBallotIdxFirst;
+
+        // Then, Result Links can be corectly mapped from IDs to indexes
+        foreach (Ballot ballot in simulation.Ballots) {
+            // Fail (left, first), pass (right, second)
+            List<Link<SlideModel>> linksFail = ballot.FailResult.Links.ConvertAll (l =>
+                new Link<SlideModel> (l.Condition, ballotIDsFinalIdxs[l.TargetID])
+            );
+
+            if (linksFail.Count == 0) {
+                linksFail = [new (new AlwaysCondition (), resultEndIdx)];
+            }
+
+            SlideBranchingModel slideBallotFail = new (
+                slideCurrentIdx,
+                $"{ballot.Title} Failed",
+                [.. ballot.FailResult.Description],
+                linksFail
+            );
+
+            ++ slideCurrentIdx;
+            slidesResultBallots.Add (slideBallotFail);
+
+            List<Link<SlideModel>> linksPass = ballot.PassResult.Links.ConvertAll (l =>
+                new Link<SlideModel> (l.Condition, ballotIDsFinalIdxs[l.TargetID])
+            );
+
+            if (linksPass.Count == 0) {
+                linksPass = [new (new AlwaysCondition (), resultEndIdx)];
+            }
+
+            SlideBranchingModel slideBallotPass = new (
+                slideCurrentIdx,
+                $"{ballot.Title} Passed",
+                [.. ballot.PassResult.Description],
+                linksPass
+            );
+
+            ++ slideCurrentIdx; // On the final iteration, this should point to the end results
+            slidesResultBallots.Add (slideBallotPass);
+        }
+
+        slides.AddRange (slidesBallots);
+        slides.AddRange (slidesResultBallots);
+#endregion
+
+#region Results
+// TODO: end results
+
+#endregion
 
 #region Historical Results
         IDType resultHistoricalIdx = slideCurrentIdx;
@@ -187,7 +187,7 @@ internal class SimulationModel {
         foreach (Ballot ballot in simulation.Ballots) {
             string line = StringLineFormatter.Indent (ballot.Title, 1);
 
-            if (simulation.History.Path.BallotsProceduresDeclared.TryGetValue (ballot.ID, out SortedSet<IDType>? proceduresDeclared)) {
+            if (simulation.History.BallotsProceduresDeclared.TryGetValue (ballot.ID, out SortedSet<IDType>? proceduresDeclared)) {
                 var proceduresDeclaredNamesIter = simulation.ProceduresDeclared.Where (p => proceduresDeclared.Contains (p.ID))
                     .Select (p => p.Name);
 
@@ -196,7 +196,7 @@ internal class SimulationModel {
                 line += $" ({proceduresDeclaredNames})";
             }
 
-            if (simulation.History.Path.BallotsPassed.Contains (ballot.ID)) {
+            if (simulation.History.BallotsPassed.Contains (ballot.ID)) {
                 ballotsPassed.Add (line);
             } else {
                 ballotsFailed.Add (line);
@@ -204,26 +204,20 @@ internal class SimulationModel {
         }
 
         SlideLinearModel slideHistorical = new (slideCurrentIdx, "Historical Results", ["Passed", .. ballotsPassed, "Failed", .. ballotsFailed]);
+
         ++ slideCurrentIdx;
         slides.Add (slideHistorical);
 #endregion
 
         SlideConstantModel slideEnd = new (slideCurrentIdx, "The End", []);
+
         slides.Add (slideEnd);
-        return (slides, resultBallotIdx, resultHistoricalIdx);
+        return slides;
     }
 
     public SlideModel YieldSlide () => Slides[SlideCurrentIdx];
 
-    public IDType? ResolveLink (Link<SlideModel> link) {
-        bool? result = link.Evaluate (in _context);
+    public IDType? ResolveLink (Link<SlideModel> link) => link.Evaluate (in _context) ? link.TargetID : null;
 
-        return result switch {
-            null => SlideCurrentIdx < _resultBallotIdx ? _resultBallotIdx : _resultHistoricalIdx,
-            true => link.TargetID,
-            _ => null,
-        };
-    }
-
-    public bool EvaluateLink (Link<SlideModel> link) => link.Evaluate (in _context) is null or true;
+    public bool EvaluateLink (Link<SlideModel> link) => link.Evaluate (in _context);
 }

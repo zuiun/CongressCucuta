@@ -1,9 +1,10 @@
 Make sure Simulations are completely creatable
 i wish i could centralise fonts
-
-how concretely do ballots work?
-perhaps they each have two (auto-generated) links, one to pass result and one to fail result (requires a new VoteCountCondition)
-upon reaching a ballot result, follow each result's links
+current issues with slideshow:
+ballot results do not display effects. they need ToString and also have to literally get added to the slides
+without a proper SimulationContext, it's impossible to test the vote conditions
+procedures have not been added
+end results have not been added
 
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
 Australia is bicameral NOOOOOOOOOO
@@ -14,8 +15,7 @@ clicking on a ballot vote link confirms the vote and adds it (or not) to the bal
 test the other Conditions (completed: And, Or, Always, Never)
 
 REALLY PROBABLY NECESSARY add a Localisation struct to hold all strings, because this is annoying!!!
-
-
+todo: Role, Currency
 
 Context Grid
 

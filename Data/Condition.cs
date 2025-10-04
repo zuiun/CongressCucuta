@@ -60,7 +60,7 @@ internal class OrCondition (params Condition[] conditions) : Condition {
  * Only intended for use during a Ballot vote to choose a Result
  * Do not use this in the creation of Links
  */
-internal class BallotVoteCondition (bool shouldBePassed = true) : Condition {
+internal class BallotVoteCondition (bool shouldBePassed) : Condition {
     public override bool Evaluate (ref readonly SimulationContext context) {
         bool? result = context.IsBallotVoted ();
 
@@ -130,7 +130,7 @@ internal class CurrencyValueCondition (ref readonly Currency currency, Condition
     }
 }
 
-internal class ProcedureActiveCondition (ref readonly Procedure procedure, bool shouldBeActive) : Condition {
+internal class ProcedureActiveCondition (ref readonly ProcedureTargeted procedure, bool shouldBeActive) : Condition {
     private readonly IDType _procedureId = procedure.ID;
     private readonly string _procedureName = procedure.Name;
 

@@ -6,59 +6,38 @@ internal abstract class SlideModel : IID {
     public IDType ID { get; }
     public string Title { get; }
     public List<LineModel> Description { get; }
-    
-    protected SlideModel (IDType id, string title, List<LineModel> description) {
+    public List<Link<SlideModel>> Links { get; }
+    public bool IsContent { get; }
+
+    protected SlideModel (IDType id, string title, List<LineModel> description, List<Link<SlideModel>> links, bool isContent) {
         ID = id;
         Title = title;
         Description = description;
+        Links = links;
+        IsContent = isContent;
         
-        if (Description.Count <= 1) {
-            foreach (LineModel line in description) {
-                line.IsContent = false;
-            }
+        foreach (LineModel line in description) {
+            line.IsContent = isContent;
         }
     }
-
-    public abstract List<Link<SlideModel>> YieldLinks ();
-
-    public abstract IDType? YieldNext (ref readonly SimulationContext context);
 }
 
 internal class SlideLinearModel (
     IDType id,
     string title,
-    List<LineModel> description
-) : SlideModel (id, title, description) {
-    public override List<Link<SlideModel>> YieldLinks () => [new (new AlwaysCondition (), ID + 1)];
-
-    public override IDType? YieldNext (ref readonly SimulationContext context) => ID + 1;
-}
+    List<LineModel> description,
+    bool isContent = true
+) : SlideModel (id, title, description, [new (new AlwaysCondition (), id + 1)], isContent) { }
 
 internal class SlideBranchingModel (
     IDType id,
     string title,
     List<LineModel> description,
     List<Link<SlideModel>> links
-) : SlideModel (id, title, description) {
-    public override List<Link<SlideModel>> YieldLinks () => links;
-
-    public override IDType? YieldNext (ref readonly SimulationContext context) {
-        foreach (Link<SlideModel> link in links) {
-            if (link.Evaluate (in context) ?? false) {
-                return link.TargetID;
-            }
-        }
-
-        return null;
-    }
-}
+) : SlideModel (id, title, description, links, true) { }
 
 internal class SlideConstantModel (
     IDType id,
     string title,
     List<LineModel> description
-) : SlideModel (id, title, description) {
-    public override List<Link<SlideModel>> YieldLinks () => [];
-
-    public override IDType? YieldNext (ref readonly SimulationContext context) => null;
-}
+) : SlideModel (id, title, description, [], false) { }
