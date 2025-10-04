@@ -1,24 +1,23 @@
-Make sure Simulations are completely creatable
-i wish i could centralise fonts
+Finish Simulation Validate
 current issues with slideshow:
-ballot results do not display effects. they need ToString and also have to literally get added to the slides
 without a proper SimulationContext, it's impossible to test the vote conditions
-procedures have not been added
-end results have not been added
+procedures tostring and slides
 
+i wish i could centralise fonts
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
 Australia is bicameral NOOOOOOOOOO
 each new ballot should start with a blank slate (i.e. regenerate all information like permissions, majority needed from context), then compose permissions
-gonna need specific permissions slides
 Simulation needs a way to know if it's on a Ballot slide or not; once entering a Ballot slide, it needs to apply all Procedures, and once exiting, it needs to apply Results
 clicking on a ballot vote link confirms the vote and adds it (or not) to the ballotsPassed
 test the other Conditions (completed: And, Or, Always, Never)
+double check class vs struct
+once i figure out Permissions stuff, i need to make Procedures work with them because I LOVE CANADA
+the netherlands is a good way to test if the unique localisation roles work
+maybe keyboard navigation, though that seems a little tough
 
-REALLY PROBABLY NECESSARY add a Localisation struct to hold all strings, because this is annoying!!!
-todo: Role, Currency
 
-Context Grid
 
+Context Grid:
 State Currencies
 People ItemsControl (sorted by party (independents, eg heads of state come before parties), then region; faction leaders first):
 [party, with currency if exists]
@@ -57,11 +56,3 @@ for ProcedureRepeating, automatically yield every ballot
 after YieldEffect
 if EffectBundle has a procedureID, then remove that procedure from active procedures (it is ProcedureImmediate)
 apply effects
-
-Simulation initialisation:
-Roles + permissions,
-Factions,
-Currencies,
-Procedures,
-Balllots,
-???

@@ -6,8 +6,6 @@ namespace congress_cucuta.Data;
 
 internal abstract class Procedure (
     IDType id,
-    string name,
-    string description,
     Procedure.Effect[] effects
 ): IID {
     /*
@@ -123,7 +121,7 @@ internal abstract class Procedure (
         public IDType[] TargetIDs => targetIDs;
         public IDType[] FilterIDs => filterIDs;
 
-        private static string TargetToString (Effect effect, ref readonly SimulationContext context) {
+        private static string TargetToString (Effect effect, ref readonly Localisation localisation) {
             throw new NotImplementedException ();
             string target = effect.Action switch {
                 ActionType.CurrencyAdd
@@ -136,8 +134,8 @@ internal abstract class Procedure (
                     effect.FilterIDs.Length > 0
                         ? string.Join (
                             ", ",
-                            context.Roles.Values.Where (r => effect.FilterIDs.Contains (r.ID))
-                                .Select (r => r.TitlePlural)
+                            localisation.Roles.Where (k => effect.FilterIDs.Contains (k.Key))
+                                .Select (k => k.Value.Item2)
                         )
                         : "Everyone",
                 ActionType.VotersLimit => "",
@@ -145,7 +143,7 @@ internal abstract class Procedure (
             };
         }
 
-        private static string FilterToString (Effect effect, ref readonly SimulationContext context) {
+        private static string FilterToString (Effect effect, ref readonly Localisation localisation) {
             return effect.Action switch {
                 ActionType.VotePassAdd
                 or ActionType.VoteFailAdd
@@ -156,20 +154,20 @@ internal abstract class Procedure (
                     effect.FilterIDs.Length > 0
                         ? string.Join (
                             ", ",
-                            context.Ballots.Values.Where (b => effect.FilterIDs.Contains (b.ID))
-                                .Select (b => b.Title)
+                            localisation.Ballots.Where (k => effect.FilterIDs.Contains (k.Key))
+                                .Select (k => k.Value.Item1)
                         ) + ":"
                         : "Every Ballot:",
                 _ => throw new NotSupportedException (),
             };
         }
 
-        public string ToString (ref readonly SimulationContext context) {
+        public string ToString (ref readonly Localisation localisation) {
             List<string> result = [];
 
             switch (Action) {
                 case ActionType.VotePassAdd: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
+                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Gains {Value} Vote(s) in Favour", 2);
 
                     result.Add (filter);
@@ -177,7 +175,7 @@ internal abstract class Procedure (
                     break;
                 }
                 case ActionType.VoteFailAdd: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
+                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Gains {Value} Vote(s) in Opposition", 2);
 
                     result.Add (filter);
@@ -185,7 +183,7 @@ internal abstract class Procedure (
                     break;
                 }
                 case ActionType.VotePassTwoThirds: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
+                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Needs a Two-Thirds Majority to Pass", 2);
 
                     result.Add (filter);
@@ -193,7 +191,7 @@ internal abstract class Procedure (
                     break;
                 }
                 case ActionType.CurrencyAdd: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
+                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     throw new NotImplementedException ();
                     // TODO: Get Currency name
                     // empty: STATE, populated: Faction Currency
@@ -204,7 +202,7 @@ internal abstract class Procedure (
                     break;
                 }
                 case ActionType.CurrencySubtract: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
+                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     throw new NotImplementedException ();
                     string action = StringLineFormatter.Indent ($"Loses {Value} ", 2);
 
@@ -213,7 +211,7 @@ internal abstract class Procedure (
                     break;
                 }
                 case ActionType.ProcedureActivate: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in context), 1);
+                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     throw new NotImplementedException ();
                     string action = StringLineFormatter.Indent ($"Gains {Value} Vote(s) in Opposition", 2);
 
@@ -223,30 +221,30 @@ internal abstract class Procedure (
                 case ActionType.ElectionRegion: {
                     throw new NotImplementedException ();
                     // TODO: target?
-                    string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.RegionSingular}", 2);
+                    //string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.RegionSingular}", 2);
 
-                    result.Add (action);
+                    //result.Add (action);
                 }
                 case ActionType.ElectionParty: {
                     throw new NotImplementedException ();
                     // TODO: target?
-                    string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.PartySingular}", 2);
+                    //string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.PartySingular}", 2);
 
-                    result.Add (action);
+                    //result.Add (action);
                 }
                 case ActionType.ElectionNominated: {
                     throw new NotImplementedException ();
                     // TODO: target?
-                    string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.PartySingular}", 1);
+                    //string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.PartySingular}", 1);
 
-                    result.Add (action);
+                    //result.Add (action);
                 }
                 case ActionType.ElectionAppointed: {
                     throw new NotImplementedException ();
                     // TODO: target?
-                    string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.PartySingular}", 1);
+                    //string action = StringLineFormatter.Indent ($"Aligns randomly with a {context.PartySingular}", 1);
 
-                    result.Add (action);
+                    //result.Add (action);
                 }
                 case ActionType.VotersLimit: {
                     throw new NotImplementedException ();
@@ -267,12 +265,10 @@ internal abstract class Procedure (
     }
 
     public IDType ID => id;
-    public string Name => name;
-    public string Description => description;
     public Effect[] Effects => effects;
 
     public abstract EffectBundle? YieldEffects (ref readonly SimulationContext context);
-    public abstract string ToString (ref readonly SimulationContext context);
+    public abstract string ToString (ref readonly Localisation localisation);
 }
 
 /*
@@ -285,10 +281,8 @@ internal abstract class Procedure (
 internal class ProcedureImmediate : Procedure {
     public ProcedureImmediate (
         IDType id,
-        string name,
-        string description,
         Effect[] effects
-    ) : base (id, name, description, effects) {
+    ) : base (id, effects) {
         foreach (Effect e in effects) {
             switch (e.Action) {
                 case ActionType.ElectionRegion:
@@ -304,11 +298,11 @@ internal class ProcedureImmediate : Procedure {
 
     public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (ID, effects: Effects);
 
-    public override string ToString (ref readonly SimulationContext context) {
-        List<string> result = [StringLineFormatter.Indent (Name, 0)];
+    public override string ToString (ref readonly Localisation localisation) {
+        List<string> result = [localisation.Procedures[ID].Item1];
 
         foreach (Effect e in Effects) {
-            result.Add (e.ToString (in context));
+            result.Add (e.ToString (in localisation));
         }
 
         return string.Join ('\n', result);
@@ -326,10 +320,8 @@ internal class ProcedureImmediate : Procedure {
 internal class ProcedureTargeted : Procedure {
     public ProcedureTargeted (
         IDType id,
-        string name,
-        string description,
         Effect[] effects
-    ) : base (id, name, description, effects) {
+    ) : base (id, effects) {
         foreach (Effect e in effects) {
             switch (e.Action) {
                 case ActionType.VotePassAdd:
@@ -362,11 +354,11 @@ internal class ProcedureTargeted : Procedure {
         return effects.Count > 0 ? new EffectBundle(effects: effects.ToArray ()) : null;
     }
 
-    public override string ToString (ref readonly SimulationContext context) {
-        List<string> result = [StringLineFormatter.Indent (Name, 0)];
+    public override string ToString (ref readonly Localisation localisation) {
+        List<string> result = [localisation.Procedures[ID].Item1];
 
         foreach (Effect e in Effects) {
-            result.Add (e.ToString (in context));
+            result.Add (e.ToString (in localisation));
         }
 
         return string.Join ('\n', result);
@@ -388,13 +380,11 @@ internal class ProcedureDeclared : Procedure {
 
     public ProcedureDeclared (
         IDType id,
-        string name,
-        string description,
         Effect[] effects,
         ConfirmationType? confirmation,
         byte value,
         IDType[] declarerIDs
-    ) : base (id, name, description, effects) {
+    ) : base (id, effects) {
         foreach (Effect e in effects) {
             switch (e.Action) {
                 case ActionType.ElectionRegion:
@@ -423,12 +413,12 @@ internal class ProcedureDeclared : Procedure {
         DeclarerIDs = declarerIDs;
     }
 
-    private string DeclarerToString (ref readonly SimulationContext context) {
+    private string DeclarerToString (ref readonly Localisation localisation) {
         return DeclarerIDs.Length > 0
             ? string.Join (
                 ", ",
-                context.Roles.Values.Where (r => DeclarerIDs.Contains (r.ID))
-                    .Select (r => r.TitlePlural)
+                localisation.Roles.Where (k => DeclarerIDs.Contains (k.Key))
+                    .Select (k => k.Value.Item2)
             ) + ":"
             : "Everyone:";
     }
@@ -440,7 +430,7 @@ internal class ProcedureDeclared : Procedure {
      * SingleDiceValue: rolls one dice, succeeds if dice is higher than Value
      * SingleDiceCurrency: rolls one dice, succeeds if Currency is higher than dice, dice is subtracted from Currency
      */
-    private string ConfirmationToString (ref readonly SimulationContext context) {
+    private string ConfirmationToString (ref readonly Localisation localisation) {
         switch (_confirmation) {
             case ConfirmationType.Always:
                 return "Always";
@@ -449,14 +439,14 @@ internal class ProcedureDeclared : Procedure {
             case ConfirmationType.CurrencyValue: {
                 // TODO: Get Currency name via Declarer ID (should be a Role)
                 throw new NotImplementedException ();
-                return $"Can Subtract {_value} from {context.Currencies}";
+                return $"Can Subtract {_value} from {localisation.Currencies}";
             }
             case ConfirmationType.SingleDiceValue:
                 return $"Dice Roll Greater than or Equal to {_value}";
             case ConfirmationType.SingleDiceCurrency: {
                 // TODO: Get Currency name via Declarer ID (should be a Role)
                 throw new NotImplementedException ();
-                return $"Can Subtract Dice Roll from {context.Currencies}";
+                return $"Can Subtract Dice Roll from {localisation.Currencies}";
             }
             default:
                 throw new UnreachableException ();
@@ -465,18 +455,18 @@ internal class ProcedureDeclared : Procedure {
 
     public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (null, _confirmation, _value, Effects);
 
-    public override string ToString (ref readonly SimulationContext context) {
-        List<string> result = [StringLineFormatter.Indent (Name, 0)];
-        string declarer = StringLineFormatter.Indent (DeclarerToString (in context), 1);
+    public override string ToString (ref readonly Localisation localisation) {
+        List<string> result = [localisation.Procedures[ID].Item1];
+        string declarer = StringLineFormatter.Indent (DeclarerToString (in localisation), 1);
         string canDeclare = StringLineFormatter.Indent ("Can declare if:", 2);
-        string confirmation = StringLineFormatter.Indent (ConfirmationToString (in context), 3);
+        string confirmation = StringLineFormatter.Indent (ConfirmationToString (in localisation), 3);
 
         result.Add (declarer);
         result.Add (canDeclare);
         result.Add (confirmation);
 
         foreach (Effect e in Effects) {
-            string effect = StringLineFormatter.Indent (e.ToString (in context), 1);
+            string effect = StringLineFormatter.Indent (e.ToString (in localisation), 1);
 
             result.Add (effect);
         }

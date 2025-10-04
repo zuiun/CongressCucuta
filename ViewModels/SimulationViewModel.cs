@@ -13,13 +13,14 @@ internal class SimulationViewModel : ViewModel {
     public string State => _state;
 
     // TODO: This is only for testing!
+    // Normally, we would just pass in Simulation as a parameter
     // TODO: After creation, we need to Replace the first slide so that everything can begin
     public SimulationViewModel () {
-        var colombia = new Testing ().Colombia;
-        _simulation = new (in colombia);
+        var colombia = new Colombia ().Simulation;
+        _simulation = new (colombia);
         _state = _simulation.State;
         SlideModel slide = _simulation.Slides[0];
-        _slide.Replace (in slide);
+        _slide.Replace (in slide, _simulation.Localisation);
     }
     
     public RelayCommand<Link<SlideModel>> SwitchSlideCommand => new (
@@ -30,7 +31,7 @@ internal class SimulationViewModel : ViewModel {
                 IDType slideIdx = (IDType) result!;
                 SlideModel slide = _simulation.Slides[slideIdx];
 
-                Slide.Replace (in slide);
+                Slide.Replace (in slide, _simulation.Localisation);
                 Simulation.SlideCurrentIdx = slideIdx;
             }
         },

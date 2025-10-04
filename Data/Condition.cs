@@ -13,19 +13,19 @@ internal abstract class Condition {
 
     public abstract bool Evaluate (ref readonly SimulationContext context);
 
-    public abstract override string ToString ();
+    public abstract string ToString (ref readonly Localisation localisation);
 }
 
 internal class AlwaysCondition : Condition {
     public override bool Evaluate (ref readonly SimulationContext context) => true;
 
-    public override string ToString () => "Next";
+    public override string ToString (ref readonly Localisation localisation) => "Next";
 }
 
 internal class NeverCondition : Condition {
     public override bool Evaluate (ref readonly SimulationContext context) => false;
 
-    public override string ToString () => "End";
+    public override string ToString (ref readonly Localisation localisation) => "End";
 }
 
 internal class AndCondition (params Condition[] conditions) : Condition {
@@ -39,7 +39,7 @@ internal class AndCondition (params Condition[] conditions) : Condition {
         return true;
     }
 
-    public override string ToString () => string.Join (" and ", conditions.Select (c => c.ToString ()));
+    public override string ToString (ref readonly Localisation localisation) => string.Join (" and ", conditions.Select (c => c.ToString ()));
 }
 
 internal class OrCondition (params Condition[] conditions) : Condition {
@@ -53,7 +53,7 @@ internal class OrCondition (params Condition[] conditions) : Condition {
         return false;
     }
 
-    public override string ToString () => string.Join (" or ", conditions.Select (c => c.ToString ()));
+    public override string ToString (ref readonly Localisation localisation) => string.Join (" or ", conditions.Select (c => c.ToString ()));
 }
 
 /*
@@ -67,16 +67,19 @@ internal class BallotVoteCondition (bool shouldBePassed) : Condition {
         return result == shouldBePassed;
     }
 
-    public override string ToString () => shouldBePassed ? "Pass" : "Fail";
+    public override string ToString (ref readonly Localisation localisation) => shouldBePassed ? "Pass" : "Fail";
 }
 
 internal class BallotPassedCondition (ref readonly Ballot ballot, bool shouldBePassed = true) : Condition {
     private readonly IDType _ballotId = ballot.ID;
-    private readonly string _ballotTitle = ballot.Title;
 
     public override bool Evaluate (ref readonly SimulationContext context) => context.IsBallotPassed (_ballotId) == shouldBePassed;
 
-    public override string ToString () => shouldBePassed ? $"{_ballotTitle} Passed" : $"{_ballotTitle} Failed";
+    public override string ToString (ref readonly Localisation localisation) {
+        string title = localisation.Ballots[_ballotId].Item1;
+
+        return shouldBePassed ? $"{title} Passed" : $"{title} Failed";
+    }
 }
 
 internal class BallotsPassedCountCondition (Condition.ComparisonType comparison, byte count) : Condition {
@@ -91,7 +94,7 @@ internal class BallotsPassedCountCondition (Condition.ComparisonType comparison,
         };
     }
 
-    public override string ToString () {
+    public override string ToString (ref readonly Localisation localisation) {
         return comparison switch {
             ComparisonType.Equal => $"{count} Ballots Passed",
             ComparisonType.GreaterThan => $"Greater than {count} Ballots Passed",
@@ -105,7 +108,6 @@ internal class BallotsPassedCountCondition (Condition.ComparisonType comparison,
 
 internal class CurrencyValueCondition (ref readonly Currency currency, Condition.ComparisonType comparison, byte value) : Condition {
     private readonly IDType _currencyId = currency.ID;
-    private readonly string _currencyName = currency.Name;
 
     public override bool Evaluate (ref readonly SimulationContext context) {
         return comparison switch {
@@ -118,13 +120,15 @@ internal class CurrencyValueCondition (ref readonly Currency currency, Condition
         };
     }
 
-    public override string ToString () {
+    public override string ToString (ref readonly Localisation localisation) {
+        string name = localisation.Currencies[_currencyId];
+
         return comparison switch {
-            ComparisonType.Equal => $"{value} {_currencyName}",
-            ComparisonType.GreaterThan => $"Greater than {value} {_currencyName}",
-            ComparisonType.FewerThan => $"Fewer than {value} {_currencyName}",
-            ComparisonType.GreaterThanOrEqual => $"{value} or Greater {_currencyName}",
-            ComparisonType.FewerThanOrEqual => $"{value} or Fewer {_currencyName}",
+            ComparisonType.Equal => $"{value} {name}",
+            ComparisonType.GreaterThan => $"Greater than {value} {name}",
+            ComparisonType.FewerThan => $"Fewer than {value} {name}",
+            ComparisonType.GreaterThanOrEqual => $"{value} or Greater {name}",
+            ComparisonType.FewerThanOrEqual => $"{value} or Fewer {name}",
             _ => throw new UnreachableException (),
         };
     }
@@ -132,9 +136,12 @@ internal class CurrencyValueCondition (ref readonly Currency currency, Condition
 
 internal class ProcedureActiveCondition (ref readonly ProcedureTargeted procedure, bool shouldBeActive) : Condition {
     private readonly IDType _procedureId = procedure.ID;
-    private readonly string _procedureName = procedure.Name;
 
     public override bool Evaluate (ref readonly SimulationContext context) => context.IsProcedureActive (_procedureId) == shouldBeActive;
     
-    public override string ToString () => shouldBeActive ? $"{_procedureName} is Active" : $"{_procedureName} is not Active";
+    public override string ToString (ref readonly Localisation localisation) {
+        string name = localisation.Procedures[_procedureId].Item1;
+
+        return shouldBeActive ? $"{name} is Active" : $"{name} is not Active";
+    }
 }

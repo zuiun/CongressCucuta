@@ -3,12 +3,10 @@
 /*
  * Assumptions to make this easier to parse:
  * Everyone is assigned at least one role
- * Every role has permissions
- * Every permission has a vote number
  * Those who cannot vote will never be added to either Votes HashSet
  */
-internal struct SimulationContext (SimulationContext.BallotContext ballot) {
-    internal struct BallotContext (byte peopleCount, bool isSimpleMajority = true) {
+internal class SimulationContext {
+    internal class BallotContext (byte peopleCount, bool isSimpleMajority = true) {
         // 50% + 1
         private readonly byte _majoritySimple = (byte) Math.Ceiling (peopleCount / 2m);
         // 2 / 3
@@ -18,11 +16,11 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
         public Dictionary<IDType, Permissions> RolesPermissions { get; set; } = [];
         // This gets replaced as necessary
         public Dictionary<IDType, HashSet<IDType>> PeopleRoles { get; set; } = [];
-        public readonly HashSet<IDType> VotesPass => [];
-        public readonly HashSet<IDType> VotesFail => [];
+        public HashSet<IDType> VotesPass => [];
+        public HashSet<IDType> VotesFail => [];
         public bool IsSimpleMajority { get; set; } = isSimpleMajority;
 
-        public readonly bool? IsBallotVoted () {
+        public bool? IsBallotVoted () {
             byte majority = IsSimpleMajority ? _majoritySimple : _majoritySuper;
             byte passCount = 0;
             byte failCount = 0;
@@ -48,11 +46,10 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
             }
         }
 
-        public readonly void UpdateRolePermissions (IDType roleID, Permissions.Composition permissions) => RolesPermissions[roleID] += permissions;
+        public void UpdateRolePermissions (IDType roleID, Permissions.Composition permissions) => RolesPermissions[roleID] += permissions;
     }
 
     private readonly Dictionary<IDType, Permissions> _rolesPermissions = [];
-    private readonly Dictionary<IDType, Currency> _currencies = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleRoles = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleFactions = [];
     private readonly Dictionary<IDType, sbyte> _currenciesValues = [];
@@ -60,33 +57,31 @@ internal struct SimulationContext (SimulationContext.BallotContext ballot) {
     private readonly HashSet<IDType> _regionsActive = [];
     private readonly HashSet<IDType> _proceduresActive = [];
     private readonly HashSet<IDType> _ballotsPassed = [];
-    private readonly BallotContext _ballot = ballot;
     public IDType BallotCurrentID { get; set; } = 0;
     public Dictionary<IDType, Role> Roles => [];
     public Dictionary<IDType, Person> People => [];
+    public Dictionary<IDType, Faction> Parties => [];
+    public Dictionary<IDType, Faction> Regions => [];
     public Dictionary<IDType, Currency> Currencies => [];
-    public Dictionary<IDType, Party> Parties => [];
-    public Dictionary<IDType, Region> Regions => [];
     public Dictionary<IDType, Procedure> Procedures => [];
     public Dictionary<IDType, Ballot> Ballots => [];
-    public string RegionSingular => "Region";
-    public string PartySingular => "Party";
+    public BallotContext? Ballot { get; set; }
 
-    public readonly void PassBallot (IDType ballotId) => _ballotsPassed.Add (ballotId);
+    public void PassBallot (IDType ballotId) => _ballotsPassed.Add (ballotId);
 
-    public readonly void SetCurrencyValue (IDType currencyId, sbyte value) => _currenciesValues[currencyId] = value;
+    public void SetCurrencyValue (IDType currencyId, sbyte value) => _currenciesValues[currencyId] = value;
 
-    public readonly void ActivateProcedure (IDType procedureId) => _proceduresActive.Add (procedureId);
+    public void ActivateProcedure (IDType procedureId) => _proceduresActive.Add (procedureId);
 
-    public readonly void DeactivateProcedure (IDType procedureId) => _proceduresActive.Remove (procedureId);
+    public void DeactivateProcedure (IDType procedureId) => _proceduresActive.Remove (procedureId);
 
-    public readonly bool? IsBallotVoted () => _ballot.IsBallotVoted ();
+    public bool? IsBallotVoted () => Ballot?.IsBallotVoted ();
 
-    public readonly bool IsBallotPassed (IDType ballotId) => _ballotsPassed.Contains (ballotId);
+    public bool IsBallotPassed (IDType ballotId) => _ballotsPassed.Contains (ballotId);
 
-    public readonly byte GetBallotsPassedCount () => (byte) _ballotsPassed.Count;
+    public byte GetBallotsPassedCount () => (byte) _ballotsPassed.Count;
 
-    public readonly sbyte GetCurrencyValue (IDType currencyId) => _currenciesValues.GetValueOrDefault (currencyId);
+    public sbyte GetCurrencyValue (IDType currencyId) => _currenciesValues.GetValueOrDefault (currencyId);
 
-    public readonly bool IsProcedureActive (IDType procedureId) => _proceduresActive.Contains (procedureId);
+    public bool IsProcedureActive (IDType procedureId) => _proceduresActive.Contains (procedureId);
 }

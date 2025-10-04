@@ -3,9 +3,9 @@
 internal class Simulation {
     public History History { get; }
     public Dictionary<Role, Permissions> RolesPermissions { get; }
+    public List<Faction> Regions { get; }
+    public List<Faction> Parties { get; }
     public Dictionary<Currency, sbyte> CurrenciesValues { get; }
-    public List<Region> Regions { get; }
-    public List<Party> Parties { get; }
     public List<ProcedureImmediate> ProceduresGovernmental { get; }
     public List<ProcedureTargeted> ProceduresSpecial { get; }
     public List<ProcedureDeclared> ProceduresDeclared { get; }
@@ -16,9 +16,9 @@ internal class Simulation {
     public Simulation (
         History history,
         Dictionary<Role, Permissions> rolesPermissions,
+        List<Faction> regions,
+        List<Faction> parties,
         Dictionary<Currency, sbyte> currenciesValues,
-        List<Region> regions,
-        List<Party> parties,
         List<ProcedureImmediate> proceduresGovernmental,
         List<ProcedureTargeted> proceduresSpecial,
         List<ProcedureDeclared> proceduresDeclared,
@@ -28,9 +28,9 @@ internal class Simulation {
     ) {
         History = history;
         RolesPermissions = rolesPermissions;
-        CurrenciesValues = currenciesValues;
         Regions = regions;
         Parties = parties;
+        CurrenciesValues = currenciesValues;
         ProceduresGovernmental = proceduresGovernmental;
         ProceduresSpecial = proceduresSpecial;
         ProceduresDeclared = proceduresDeclared;
@@ -43,12 +43,14 @@ internal class Simulation {
     /*
      * (1) There must be a MEMBER Role
      * (2) Role IDs must correspond one-to-one with Faction IDs (signifies Faction leadership), excepting reserved Role IDs
-     * (3) Currency IDs must correspond one-to-one with Faction IDs (signifies Faction ownership), excepting reserved Currency IDs
+     * (3) Currency IDs must correspond one-to-one with Faction IDs (signifies Faction ownership), excepting reserved Currency IDs (only STATE)
      * (4) Either MEMBER or HEAD_GOVERNMENT must be able to vote
      * (5) Region IDs and Party IDs cannot overlap
      * (6) Every Ballot Link must have a valid Ballot ID
      * (7) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
      * (8) If any Party has a Currency, then every Party must have a Currency; same restriction applies to Regions
+     * (9) Every IID must have a Localisation entry
+     * (10) Every IID of a certain type must have a unique ID
      */
     private void Validate () {
         // TODO: test these FURIOUSLY
@@ -60,11 +62,17 @@ internal class Simulation {
 
 #region (2)
         foreach (Role ro in RolesPermissions.Keys) {
-            if (ro.ID != Role.MEMBER && ro.ID != Role.HEAD_GOVERNMENT && ro.ID != Role.HEAD_STATE) {
+            if (
+                ro.ID != Role.MEMBER
+                && ro.ID != Role.HEAD_GOVERNMENT
+                && ro.ID != Role.HEAD_STATE
+                && ro.ID != Role.LEADER_PARTY
+                && ro.ID != Role.LEADER_REGION
+            ) {
                 bool isRegion = false;
                 bool isParty = false;
 
-                foreach (Region re in Regions) {
+                foreach (Faction re in Regions) {
                     if (ro.ID == re.ID) {
                         isRegion = true;
                         break;
@@ -75,7 +83,7 @@ internal class Simulation {
                     continue;
                 }
 
-                foreach (Party p in Parties) {
+                foreach (Faction p in Parties) {
                     if (ro.ID == p.ID) {
                         isParty = true;
                     }
@@ -90,12 +98,11 @@ internal class Simulation {
 
 #region (3)
         foreach (Currency c in CurrenciesValues.Keys) {
-            // TODO: decide about the reserved IDs
-            if (c.ID != Currency.STATE/* && c.ID != Currency.PARTY && c.ID != Currency.REGION */) {
+            if (c.ID != Currency.STATE) {
                 bool isRegion = false;
                 bool isParty = false;
 
-                foreach (Region r in Regions) {
+                foreach (Faction r in Regions) {
                     if (c.ID == r.ID) {
                         isRegion = true;
                         break;
@@ -106,7 +113,7 @@ internal class Simulation {
                     continue;
                 }
 
-                foreach (Party p in Parties) {
+                foreach (Faction p in Parties) {
                     if (c.ID == p.ID) {
                         isParty = true;
                     }
@@ -129,8 +136,8 @@ internal class Simulation {
 #endregion
 
 #region (5)
-        foreach (Region r in Regions) {
-            foreach (Party p in Parties) {
+        foreach (Faction r in Regions) {
+            foreach (Faction p in Parties) {
                 if (r.ID == p.ID) {
                     throw new ArgumentException ($"Region ID {r.ID} overlaps with Party ID {p.ID}");
                 }
@@ -171,12 +178,20 @@ internal class Simulation {
 #endregion
 
 #region (7)
-        // TODO: Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
+// TODO: Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
 
 #endregion
 
 #region (8)
 
+
+#endregion
+
+#region (9)
+
+#endregion
+
+#region (10)
 
 #endregion
     }

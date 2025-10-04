@@ -38,4 +38,22 @@ internal struct Permissions (
             right.CanSpeak ?? left.CanSpeak
         );
     }
+
+    public override readonly string ToString () {
+        List<string> result = [CanVote ? $"Can Vote" : "Cannot Vote"];
+
+        if (CanVote) {
+            result.Add ($"#.Has {Votes} Vote(s)");
+        }
+
+        if (CanPass) {
+            result.Add ("Can Forcibly Pass Ballots");
+        }
+
+        if (CanVeto) {
+            result.Add ("Can Veto Ballots");
+        }
+
+        return string.Join ('\n', result);
+    }
 }

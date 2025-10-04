@@ -11,5 +11,5 @@ where T : IID {
 
     public bool Evaluate (ref readonly SimulationContext context) => condition.Evaluate (in context);
 
-    public override string ToString () => condition.ToString ();
+    public string ToString (ref readonly Localisation localisation) => condition.ToString (in localisation);
 }

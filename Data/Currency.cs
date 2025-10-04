@@ -1,11 +1,15 @@
 ﻿namespace congress_cucuta.Data;
 
-internal readonly struct Currency (IDType id, string name) : IID {
+internal class Currency (IDType id) : IID {
     public static readonly IDType STATE = byte.MaxValue;
-    // These two reserved IDs exist for setup purposes and are converted into the appropriate Faction IDs
-    // public static readonly IDType PARTY = STATE - 1;
-    // public static readonly IDType REGION = PARTY - 1;
+    /*
+     * The following reserved IDs exist for Target purposes and should not be used to create a Currency
+     *
+     * When creating Localisation, they should be used for common Currencies used by PARTY and/or REGION,
+     * alongside the corresponding Currency for each Faction ID
+     */
+    public static readonly IDType PARTY = STATE - 1;
+    public static readonly IDType REGION = PARTY - 1;
 
     public IDType ID => id;
-    public string Name => name;
 }

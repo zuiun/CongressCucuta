@@ -1,64 +1,131 @@
-﻿namespace congress_cucuta.Data;
+﻿using System.Diagnostics;
 
-internal readonly struct Ballot (
+namespace congress_cucuta.Data;
+
+internal class Ballot (
     IDType id,
-    string title,
-    string name,
-    List<string> description,
     Ballot.Result passResult,
     Ballot.Result failResult,
     bool isIncident = false
 ) : IID {
     internal readonly struct Effect {
         internal enum ActionType {
-            Add,
-            Remove,
-            Replace,
-        }
-
-        internal enum TargetType {
-            Region,
-            Party,
-            Procedure,
-            Currency
+            CreateParty, // Targets Factions
+            DissolveParty, // Targets Factions
+            // Regions are not intended to change
+            RemoveProcedure, // Targets Procedures
+            ReplaceProcedure, // Targets Procedures [original, new]
+            // Action *Currency should only Target same-name/-category Currencies
+            AddCurrency, // Targets Currencies (Faction ID, REGION, PARTY, STATE)
+            SubtractCurrency, // Targets Currencies (Faction ID, REGION, PARTY, STATE)
         }
 
         public ActionType Action { get; }
-        public TargetType Target { get; }
-        public IDType TargetID { get; }
-        public IDType? ReplacementID { get; }
+        public List<IDType> TargetIDs { get; }
         public byte? Value { get; }
 
-        public Effect (ActionType action, TargetType target, IDType targetId, IDType? replacementId = null, byte? value = null) {
-            if (action is ActionType.Replace && replacementId is null) {
-                throw new ArgumentException ("replacementID must exist for ActionType Replace", nameof (replacementId));
+        public Effect (ActionType action, IDType[] targetIds, byte? value = null) {
+            if (targetIds.Length == 0) {
+                throw new ArgumentException ("Target IDs must be populated", nameof (targetIds));
             }
 
-            if (target is TargetType.Currency && value is null) {
-                throw new ArgumentException ("value must exist for TargetType Currency", nameof (value));
+            if (action is ActionType.ReplaceProcedure && targetIds.Length != 2) {
+                throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceProcedure", nameof (targetIds));
             }
 
             Action = action;
-            Target = target;
-            TargetID = targetId;
-            ReplacementID = replacementId;
+            TargetIDs = [.. targetIds];
             Value = value;
+        }
+
+        public string ToString (ref readonly Localisation localisation) {
+            switch (Action) {
+                case ActionType.CreateParty: {
+                    List<string> parties = [];
+
+                    foreach (IDType t in TargetIDs) {
+                        parties.Add (localisation.GetFactionAndAbbreviation (t));
+                    }
+
+                    return $"Create {string.Join (", ", parties)}";
+                }
+                case ActionType.DissolveParty: {
+                    List<string> parties = [];
+
+                    foreach (IDType t in TargetIDs) {
+                        parties.Add (localisation.GetFactionAndAbbreviation (t));
+                    }
+
+                    return $"Dissolve {string.Join (", ", parties)}";
+                }
+                case ActionType.RemoveProcedure: {
+                    List<string> procedures = [];
+
+                    foreach (IDType t in TargetIDs) {
+                        procedures.Add (localisation.Procedures[t].Item1);
+                    }
+
+                    return $"Remove {string.Join (", ", procedures)}";
+                }
+                case ActionType.ReplaceProcedure: {
+                    string procedureOriginal = localisation.Procedures[TargetIDs[0]].Item1;
+                    string procedureNew = localisation.Procedures[TargetIDs[0]].Item1;
+                    // TODO: Need to also show new's effects. That will require a Context NOOOOOOOOOOOOOOOOO
+                    return $"Replace {procedureOriginal} with {procedureNew}";
+                }
+                case ActionType.AddCurrency: {
+                    string currency = localisation.Currencies[TargetIDs[0]];
+
+                    if (TargetIDs[0] == Currency.STATE) {
+
+                        return $"Gain {Value} {currency}";
+                    } else if (TargetIDs[0] == Currency.PARTY) {
+                        return $"Every {localisation.Party.Item1}:\n#.Gains {Value} {currency}";
+                    } else if (TargetIDs[0] == Currency.REGION) {
+                        return $"Every {localisation.Region.Item1}:\n#.Gains {Value} {currency}";
+                    } else {
+                        List<string> owners = [];
+    
+                        foreach (IDType t in TargetIDs) {
+                            owners.Add (localisation.GetFactionOrAbbreviation (t));
+                        }
+
+                        return $"{string.Join (", ", owners)}:\n#.Gain {Value} {currency}";
+                    }
+
+                }
+                case ActionType.SubtractCurrency: {
+                    string currency = localisation.Currencies[TargetIDs[0]];
+
+                    if (TargetIDs[0] == Currency.STATE) {
+                        return $"Lose {Value} {currency}";
+                    } else if (TargetIDs[0] == Currency.PARTY) {
+                        return $"Every {localisation.Party.Item1}:\n#.Loses {Value} {currency}";
+                    } else if (TargetIDs[0] == Currency.REGION) {
+                        return $"Every {localisation.Region.Item1}:\n#.Loses {Value} {currency}";
+                    } else {
+                        List<string> owners = [];
+
+                        foreach (IDType t in TargetIDs) {
+                            owners.Add (localisation.GetFactionOrAbbreviation (t));
+                        }
+
+                        return $"{string.Join (", ", owners)}:\n#.Lose {Value} {currency}";
+                    }
+                }
+                default:
+                    throw new UnreachableException ();
+            }
         }
     }
 
-    internal readonly struct Result (List < Effect> effects, List<string> description, List<Link<Ballot>> links) {
+    internal readonly struct Result (List < Effect> effects, List<Link<Ballot>> links) {
         public List<Effect> Effects => effects;
-        public List<string> Description => description;
         public List<Link<Ballot>> Links => links;
     }
 
     public IDType ID => id;
     public bool IsIncident => isIncident;
-    // Short title of Ballot, eg Ballot A
-    public string Title => title;
-    // Actual name of Ballot
-    public string Name => name;
-    public List<string> Description => description;
     public Result PassResult => passResult;
     public Result FailResult => failResult;
 }

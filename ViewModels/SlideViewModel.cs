@@ -1,10 +1,13 @@
-﻿using congress_cucuta.Models;
+﻿using congress_cucuta.Data;
+using congress_cucuta.Models;
 
 namespace congress_cucuta.ViewModels;
 
 internal class SlideViewModel : ViewModel {
     private string _title = "Title";
+    // Intentionally a List, as only setting is intended (no in-place modifications)
     private List<LineViewModel> _description = [];
+    // Intentionally a List, as only setting is intended (no in-place modifications)
     private List<LinkViewModel> _links = [];
     private bool _isContent = true;
     private bool _isSubtitle = false;
@@ -44,19 +47,34 @@ internal class SlideViewModel : ViewModel {
         }
     }
 
-    public void Replace (ref readonly SlideModel slide) {
+    public void Replace (ref readonly SlideModel slide, Localisation localisation) {
         Title = slide.Title;
         Description = slide.Description.ConvertAll (l => new LineViewModel (l));
 
-        // SlideBranching
+        // SlideBranching or SlideBidirectional
         if (slide.Links.Count > 1) {
-            Links = slide.Links.ConvertAll (l => new LinkViewModel (l.ToString (), l));
+            // SlideBranching
+            if (slide.IsForward is null) {
+                Links = slide.Links.ConvertAll (l => new LinkViewModel (l.ToString (in localisation), l));
+            // SlideBidirectional
+            } else {
+                Links = [
+                    new ("Previous", slide.Links[0]),
+                    new ("Next", slide.Links[1]),
+                ];
+            }
         // SlideConstant
         } else if (slide.Links.Count < 1) {
             Links = [];
-        // SlideLinear or end SlideBranching
+        // SlideForward, end SlideBranching, or SlideBackward
         } else {
-            Links = [new ("Next", slide.Links[0])];
+            // SlideBackward
+            if (slide.IsForward is false) {
+                Links = [new ("Previous", slide.Links[0])];
+            // SlideForward or end SlideBranching
+            } else {
+                Links = [new ("Next", slide.Links[0])];
+            }
         }
 
         IsContent = slide.IsContent;
