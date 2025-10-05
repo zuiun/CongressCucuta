@@ -108,7 +108,7 @@ internal class SimulationModel (Simulation simulation) {
             .First ();
         SlideBidirectionalModel slideMember = new (
             slideCurrentIdx,
-            localisation.Member.Item1,
+            localisation.Roles[Role.MEMBER].Item1,
             [.. member.ToString ().Split ('\n')]
         );
 
@@ -433,7 +433,7 @@ internal class SimulationModel (Simulation simulation) {
         ++ slideCurrentIdx;
         slides.Add (slideHistorical);
 
-        SlideBackwardModel slideEnd = new (slideCurrentIdx, "The End", []);
+        SlideBackwardModel slideEnd = new (slideCurrentIdx, "End", []);
 
         slides.Add (slideEnd);
     }

@@ -1,6 +1,5 @@
-Finish Simulation Validate
-current issues with slideshow:
-without a proper SimulationContext, it's impossible to test the vote conditions
+Need a way to add Person
+Offload creation of Simulation to an async operation (Task) while inputting Person (File > Person > Simulation)
 
 i wish i could centralise fonts
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed

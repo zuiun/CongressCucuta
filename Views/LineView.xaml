@@ -11,7 +11,6 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <c:IndentLevelToMarginConverter x:Key = "IndentLevelToMarginConverter"/>
         <c:IndentLevelToFontSizeConverter x:Key = "IndentLevelToFontSizeConverter"/>
-        <c:IsImportantToForegroundConverter x:Key = "IsImportantToForegroundConverter"/>
         <c:DescriptionToTextDecorationsConverter x:Key = "DescriptionToTextDecorationsConverter"/>
         <c:DescriptionToForegroundConverter x:Key = "DescriptionToForegroundConverter"/>
         <Style TargetType = "TextBlock">
@@ -39,8 +38,19 @@
             <Setter Property = "FontSize" Value = "{Binding IndentLevel, Converter = {StaticResource IndentLevelToFontSizeConverter}}"/>
         </Style>
         <Style TargetType = "ToolTip">
+            <Style.Resources>
+                <Style TargetType = "ContentPresenter">
+                    <Style.Resources>
+                        <Style TargetType = "TextBlock">
+                            <Setter Property = "TextWrapping" Value = "Wrap"/>
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </Style.Resources>
+
             <Setter Property = "FontFamily" Value = "Segoe UI"/>
             <Setter Property = "FontSize" Value = "12"/>
+            <Setter Property = "MaxWidth" Value = "640"/>
         </Style>
         <Style x:Key = "Content" TargetType = "Grid">
             <Setter Property = "Visibility" Value = "{Binding IsContent, Converter = {StaticResource BooleanToVisibilityConverter}}"/>

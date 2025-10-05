@@ -4,8 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:congress_cucuta.Views"
+        xmlns:vm="clr-namespace:congress_cucuta.ViewModels"
         mc:Ignorable="d"
         Title="CompilerWindow" Height="480" Width="640">
+    <Window.DataContext>
+        <vm:CompilerViewModel/>
+    </Window.DataContext>
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style TargetType = "Button">
@@ -26,7 +30,7 @@
             <RowDefinition Height = "*"/>
         </Grid.RowDefinitions>
 
-        <Button Grid.Row = "1" Command = "{Binding ChooseSimulationCommand}" HorizontalAlignment = "Center">
+        <Button Grid.Row = "1" Command = "{Binding CompileSimulationCommand}" HorizontalAlignment = "Center">
             Compile simulation
         </Button>
         <TextBlock Grid.Row = "2"

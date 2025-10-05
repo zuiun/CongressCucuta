@@ -1,79 +1,98 @@
 ﻿namespace congress_cucuta.Data;
 
-/*
- * Assumptions to make this easier to parse:
- * Everyone is assigned at least one role
- * Those who cannot vote will never be added to either Votes HashSet
- */
-internal class SimulationContext {
-    internal class BallotContext (byte peopleCount, bool isSimpleMajority = true) {
-        // 50% + 1
-        private readonly byte _majoritySimple = (byte) (Math.Floor (peopleCount / 2m) + 1);
-        // 2 / 3
-        private readonly byte _majoritySuper = (byte) Math.Ceiling ((peopleCount * 2) / 3m);
-
-        // This gets composed/replaced as necessary
-        public Dictionary<IDType, Permissions> RolesPermissions { get; set; } = [];
-        // This gets replaced as necessary
-        public Dictionary<IDType, HashSet<IDType>> PeopleRoles { get; set; } = [];
-        public HashSet<IDType> VotesPass => [];
-        public HashSet<IDType> VotesFail => [];
+// Must call InitialisePeople () after construction to complete initialisation
+internal class SimulationContext (Simulation simulation) {
+    internal class BallotContext (bool isSimpleMajority = true) {
+        // Replaced as necessary (every ballot, upon VotersLimit declared, upon role change)
+        public Dictionary<IDType, Permissions> PeoplePermissions { get; set; } = [];
+        public HashSet<IDType> VotesPass { get; } = [];
+        public HashSet<IDType> VotesFail { get; } = [];
         public bool IsSimpleMajority { get; set; } = isSimpleMajority;
 
+        public byte CalculateVotesTotal () {
+            byte votes = 0;
+
+            foreach (Permissions p in PeoplePermissions.Values) {
+                if (p.CanVote) {
+                    votes += p.Votes;
+                }
+            }
+
+            return votes;
+        }
+
+        public byte CalculateVotesMajority () {
+            byte votesTotal = CalculateVotesTotal ();
+
+            return IsSimpleMajority
+                ? (byte) (Math.Floor (votesTotal / 2m) + 1)
+                : (byte) Math.Ceiling ((votesTotal * 2) / 3m);
+        } 
+
         public bool? IsBallotVoted () {
-            byte majority = IsSimpleMajority ? _majoritySimple : _majoritySuper;
+            byte votesPass = CalculateVotesMajority ();
             byte passCount = 0;
             byte failCount = 0;
 
-            foreach (IDType personId in VotesPass) {
-                foreach (IDType roleId in PeopleRoles[personId]) {
-                    passCount += RolesPermissions[roleId].Votes;
-                }
+            foreach (IDType p in VotesPass) {
+                passCount += PeoplePermissions[p].Votes;
             }
 
-            foreach (IDType personId in VotesFail) {
-                foreach (IDType roleId in PeopleRoles[personId]) {
-                    failCount += RolesPermissions[roleId].Votes;
-                }
+            foreach (IDType p in VotesFail) {
+                failCount += PeoplePermissions[p].Votes;
             }
 
-            if (passCount >= majority) {
+            if (passCount >= votesPass) {
                 return true;
-            } else if (failCount >= majority) {
+            } else if (failCount >= votesPass) {
                 return false;
             } else {
                 return null;
             }
         }
 
-        public void UpdateRolePermissions (IDType roleID, Permissions.Composition permissions) => RolesPermissions[roleID] += permissions;
+        public void UpdatePersonPermissions (IDType personId, Permissions permissions) => PeoplePermissions[personId] = permissions;
     }
 
-    private readonly Dictionary<IDType, Permissions> _rolesPermissions = [];
-    private readonly Dictionary<IDType, HashSet<IDType>> _peopleRoles = [];
+    private readonly Dictionary<IDType, SortedSet<IDType>> _peopleRoles = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleFactions = [];
-    private readonly HashSet<IDType> _partiesActive = [];
-    private readonly HashSet<IDType> _regionsActive = [];
-    private readonly HashSet<IDType> _proceduresActive = [];
+    private readonly Dictionary<IDType, Permissions> _rolesPermissions = simulation.RolesPermissions.ToDictionary (k => k.Key, k => k.Value);
+    private readonly HashSet<IDType> _partiesActive = [.. simulation.Parties.Where (p => p.IsActiveStart).Select (p => p.ID)];
+    private readonly HashSet<IDType> _regionsActive = [.. simulation.Regions.Where (r => r.IsActiveStart).Select (r => r.ID)];
+    private readonly HashSet<IDType> _proceduresActive = [
+        .. simulation.ProceduresGovernmental.Select (pi => pi.ID),
+        .. simulation.ProceduresSpecial.Select (pt => pt.ID),
+        .. simulation.ProceduresDeclared.Select (pd => pd.ID),
+    ];
     private readonly HashSet<IDType> _ballotsPassed = [];
     public IDType BallotCurrentID { get; set; } = 0;
-    public Dictionary<IDType, Role> Roles => [];
-    public Dictionary<IDType, Person> People => [];
-    public Dictionary<IDType, Faction> Parties => [];
-    public Dictionary<IDType, Faction> Regions => [];
-    public Dictionary<IDType, Currency> Currencies => [];
-    public Dictionary<IDType, sbyte> CurrenciesValues => [];
-    public Dictionary<IDType, Procedure> Procedures => [];
-    public Dictionary<IDType, Ballot> Ballots => [];
+    public Dictionary<IDType, Person> People { get; } = [];
+    public HashSet<IDType> Roles { get; } = [.. simulation.RolesPermissions.Keys];
+    public Dictionary<IDType, Faction> Parties { get; } = simulation.Parties.ToDictionary (p => p.ID, p => p);
+    public Dictionary<IDType, Faction> Regions { get; } = simulation.Regions.ToDictionary (r => r.ID, r => r);
+    public HashSet<IDType> Currencies { get; } = [.. simulation.CurrenciesValues.Keys];
+    public Dictionary<IDType, sbyte> CurrenciesValues { get; } = simulation.CurrenciesValues;
+    public Dictionary<IDType, ProcedureImmediate> ProceduresGovernmental { get; } = simulation.ProceduresGovernmental.ToDictionary (pi => pi.ID, pi => pi);
+    public Dictionary<IDType, ProcedureTargeted> ProceduresSpecial { get; } = simulation.ProceduresSpecial.ToDictionary (pt => pt.ID, pt => pt);
+    public Dictionary<IDType, ProcedureDeclared> ProceduresDeclared { get; } = simulation.ProceduresDeclared.ToDictionary (pd => pd.ID, pd => pd);
+    public Dictionary<IDType, Ballot> Ballots { get; } = simulation.Ballots.ToDictionary (b => b.ID, b => b);
     public BallotContext? Ballot { get; set; }
 
-    public SimulationContext (Simulation simulation) {
-        // TODO: populate
-        foreach (var k in simulation.RolesPermissions) {
-            Roles[k.Key.ID] = k.Key;
-            _rolesPermissions[k.Key.ID] = k.Value;
+    public void InitialisePeople (List<Person> people) {
+        foreach (Person p in people) {
+            People[p.ID] = p;
+            _peopleRoles[p.ID] = [Role.MEMBER];
+            _peopleFactions[p.ID] = [];
         }
     }
+
+    public void AddPersonRole (IDType personId, IDType roleId) => _peopleRoles[personId].Add (roleId);
+
+    public void RemovePersonRole (IDType personId, IDType roleId) => _peopleRoles[personId].Remove (roleId);
+
+    public void AddPersonFaction (IDType personId, IDType factionId) => _peopleRoles[personId].Add (factionId);
+
+    public void RemovePersonFaction (IDType personId, IDType factionId) => _peopleRoles[personId].Add (factionId);
 
     public void PassBallot (IDType ballotId) => _ballotsPassed.Add (ballotId);
 

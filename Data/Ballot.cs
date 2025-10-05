@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Text.Json.Serialization;
 using congress_cucuta.Converters;
 
 namespace congress_cucuta.Data;
@@ -9,7 +10,7 @@ internal class Ballot (
     Ballot.Result failResult,
     bool isIncident = false
 ) : IID {
-    internal readonly struct Effect {
+    internal readonly record struct Effect {
         internal enum ActionType {
             CreateParty, // Targets Factions
             DissolveParty, // Targets Factions
@@ -25,17 +26,18 @@ internal class Ballot (
         public List<IDType> TargetIDs { get; }
         public byte? Value { get; }
 
-        public Effect (ActionType action, IDType[] targetIds, byte? value = null) {
-            if (targetIds.Length == 0) {
+        [JsonConstructor]
+        public Effect (ActionType action, List<IDType> targetIds, byte? value = null) {
+            if (targetIds.Count == 0) {
                 throw new ArgumentException ("Target IDs must be populated", nameof (targetIds));
             }
 
-            if (action is ActionType.ReplaceProcedure && targetIds.Length != 2) {
+            if (action is ActionType.ReplaceProcedure && targetIds.Count != 2) {
                 throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceProcedure", nameof (targetIds));
             }
 
             Action = action;
-            TargetIDs = [.. targetIds];
+            TargetIDs = targetIds;
             Value = value;
         }
 
@@ -126,10 +128,7 @@ internal class Ballot (
         }
     }
 
-    internal readonly struct Result (List < Effect> effects, List<Link<Ballot>> links) {
-        public List<Effect> Effects => effects;
-        public List<Link<Ballot>> Links => links;
-    }
+    internal readonly record struct Result (List <Effect> Effects, List<Link<Ballot>> Links);
 
     public IDType ID => id;
     public bool IsIncident => isIncident;

@@ -8,12 +8,8 @@ internal abstract class Procedure (
     Procedure.Effect[] effects,
     bool isActiveStart = true
 ): IID {
-    /*
-     * Presence indicates DeclaredProcedure
-     *
-     * Targets Value (populated), Currencies (null: declarer's)
-     */
-    internal readonly struct Confirmation (Confirmation.CostType cost, byte value = 0) {
+    // Presence indicates ProcedureDeclared
+    internal readonly record struct Confirmation (Confirmation.CostType Cost, byte Value = 0) {
         /*
          * Always: always succeeds
          * DivisionChamber: simple majority vote, succeeds if vote passes
@@ -30,53 +26,44 @@ internal abstract class Procedure (
             SingleDiceCurrency,
             // AdversarialDice,
         }
-
-        public CostType Cost => cost;
-        public byte Value => value;
     }
 
-    internal readonly struct Effect (
-        Effect.ActionType action,
-        IDType[] targetIDs,
-        byte value = 0,
-        params IDType[] filterIDs
+    internal readonly record struct Effect (
+        Effect.ActionType Action,
+        IDType[] TargetIDs,
+        byte Value = 0
     ) {
         internal enum ActionType {
             /*
              * Adds Value votes for the passage of Filter Ballot
              *
              * Targeted
-             * Filters Ballots (empty: every, populated: specified)
              */
-        VotePassAdd,
+            VotePassAdd,
             /*
              * Adds Value votes for the failure of Filter Ballot
              *
              * Targeted
-             * Filters Ballots (empty: every, populated: specified)
              */
             VoteFailAdd,
             /*
              * Causes Filter Ballot to require a two-thirds majority to pass
              *
              * Targeted
-             * Filters Ballots (empty: every, populated: specified)
              */
             VotePassTwoThirds,
             /*
-             * Adds Value to Target Currency
+             * Adds Value to Target Currency during Filter Ballot
              *
              * Targeted
              * Targets Factions (populated: specified), Currencies (empty: STATE)
-             * Filters Ballots (empty: every, populated: specified)
              */
             CurrencyAdd,
             /*
-             * Subtracts Value from Target Currency
+             * Subtracts Value from Target Currency during Filter Ballot
              *
              * Targeted
              * Targets Factions (populated: specified), Currencies (empty: STATE)
-             * Filters Ballots (empty: every, populated: specified)
              */
             CurrencySubtract,
             /*
@@ -87,11 +74,10 @@ internal abstract class Procedure (
              */
             CurrencyInitialise,
             /*
-             * Activates Target ProcedureImmediate
+             * Activates Target ProcedureImmediate during Filter Ballot
              *
              * Targeted
              * Targets Procedure (populated [one]: specified)
-             * Filters Ballots (empty: every, populated: specified)
              */
             ProcedureActivate,
             /*
@@ -130,11 +116,6 @@ internal abstract class Procedure (
              */
             VotersLimit,
         }
-
-        public ActionType Action => action;
-        public byte Value => value;
-        public IDType[] TargetIDs => targetIDs;
-        public IDType[] FilterIDs => filterIDs;
 
         private static string TargetToString (Effect effect, ref readonly Localisation localisation) {
             switch (effect.Action) {
@@ -195,88 +176,53 @@ internal abstract class Procedure (
             };
         }
 
-        private static string FilterToString (Effect effect, ref readonly Localisation localisation) {
-            switch (effect.Action) {
-                case ActionType.VotePassAdd:
-                case ActionType.VoteFailAdd:
-                case ActionType.VotePassTwoThirds:
-                case ActionType.CurrencyAdd:
-                case ActionType.CurrencySubtract:
-                case ActionType.ProcedureActivate:
-                    if (effect.FilterIDs.Length > 0) {
-                        var ballotsIter = localisation.Ballots.Where (k => effect.FilterIDs.Contains (k.Key))
-                            .Select (k => k.Value.Item1);
-
-                        return $"{string.Join (", ", ballotsIter)}:";
-                    } else {
-                        return "Every Ballot:";
-                    }
-                default:
-                    throw new NotSupportedException ();
-            }
-        }
-
         public string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
             List<string> result = [];
 
             switch (Action) {
                 case ActionType.VotePassAdd: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Gains {Value} vote(s) in favour", 2);
 
-                    result.Add (filter);
                     result.Add (action);
                     break;
                 }
                 case ActionType.VoteFailAdd: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Gains {Value} vote(s) in opposition", 2);
 
-                    result.Add (filter);
                     result.Add (action);
                     break;
                 }
                 case ActionType.VotePassTwoThirds: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Needs a two-thirds majority to pass", 2);
 
-                    result.Add (filter);
                     result.Add (action);
                     break;
                 }
                 case ActionType.CurrencyAdd: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
-
                     if (TargetIDs.Length > 0) {
                         string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 2);
                         string action = StringLineFormatter.Indent ($"Gains {Value} {localisation.Currencies[TargetIDs[0]]}", 3);
 
-                        result.Add (filter);
                         result.Add (target);
                         result.Add (action);
                     } else {
                         string action = StringLineFormatter.Indent ($"Gain {Value} {localisation.Currencies[Currency.STATE]}", 2);
 
-                        result.Add (filter);
                         result.Add (action);
                     }
 
                     break;
                 }
                 case ActionType.CurrencySubtract: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
-                    
                     if (TargetIDs.Length > 0) {
                         string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 2);
                         string action = StringLineFormatter.Indent ($"Loses {Value} {localisation.Currencies[TargetIDs[0]]}", 3);
 
-                        result.Add (filter);
                         result.Add (target);
                         result.Add (action);
                     } else {
                         string action = StringLineFormatter.Indent ($"Lose {Value} {localisation.Currencies[Currency.STATE]}", 2);
 
-                        result.Add (filter);
                         result.Add (action);
                     }
 
@@ -292,7 +238,7 @@ internal abstract class Procedure (
                         result.Add (StringLineFormatter.Indent ($"{currencyState} begins at {value}", 1));
                     }
 
-                    SortedDictionary<sbyte, List<string>> currencyRegions = [];
+                    SortedList<sbyte, List<string>> currencyRegions = [];
                     string currencyRegion = string.Empty;
 
                     foreach (Faction region in simulation.Regions) {
@@ -325,7 +271,7 @@ internal abstract class Procedure (
                         }
                     }
 
-                    SortedDictionary<sbyte, List<string>> currencyParties = [];
+                    SortedList<sbyte, List<string>> currencyParties = [];
                     string currencyParty = string.Empty;
 
                     foreach (Faction party in simulation.Parties) {
@@ -361,11 +307,9 @@ internal abstract class Procedure (
                     break;
                 }
                 case ActionType.ProcedureActivate: {
-                    string filter = StringLineFormatter.Indent (FilterToString (this, in localisation), 1);
                     string target = TargetToString (this, in localisation);
                     string action = StringLineFormatter.Indent ($"Hold new {target}", 2);
 
-                    result.Add (filter);
                     result.Add (action);
                     break;
                 }
@@ -416,14 +360,12 @@ internal abstract class Procedure (
     }
 
     // TODO: remove ProcedureImmediate after done with effects
-    internal readonly struct EffectBundle (IDType? procedureId = null, Confirmation? confirmation = null, byte value = 0, params Effect[] effects) {
-        // Presence indicates ProcedureImmediate
-        public IDType? ProcedureID => procedureId;
-        public Effect[] Effects => effects;
-        // Presence indicates ProcedureDeclared
-        public Confirmation? Confirmation => confirmation;
-        public byte Value => value;
-    }
+    internal readonly record struct EffectBundle (
+        Effect[] Effects,
+        IDType? ProcedureId = null,
+        Confirmation? Confirmation = null,
+        byte Value = 0
+    );
 
     public IDType ID => id;
     public Effect[] Effects => effects;
@@ -458,7 +400,7 @@ internal class ProcedureImmediate : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (ID, effects: Effects);
+    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (Effects, ID);
 
     public override string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];
@@ -486,9 +428,13 @@ internal class ProcedureImmediate : Procedure {
  * filter: Ballot
  */
 internal class ProcedureTargeted : Procedure {
+    // Filters Ballots (empty: every, populated: specified)
+    public IDType[] BallotIDs { get; }
+
     public ProcedureTargeted (
         IDType id,
-        Effect[] effects
+        Effect[] effects,
+        IDType[] ballotIds
     ) : base (id, effects) {
         foreach (Effect e in effects) {
             switch (e.Action) {
@@ -509,22 +455,31 @@ internal class ProcedureTargeted : Procedure {
                     throw new ArgumentException ($"ProcedureTargeted ID {id}: Action must be Vote*, Currency*, or ProcedureActivate");
             }
         }
+
+        BallotIDs = ballotIds;
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) {
-        List<Effect> effects = [];
+    private string FilterToString (ref readonly Localisation localisation) {
+        if (BallotIDs.Length > 0) {
+            var ballotsIter = localisation.Ballots.Where (k => BallotIDs.Contains (k.Key))
+                .Select (k => k.Value.Item1);
 
-        foreach (Effect e in Effects) {
-            if (e.FilterIDs.Length == 0 || e.FilterIDs.Contains (context.BallotCurrentID)) {
-                effects.Add (e);
-            }
+            return $"{string.Join (", ", ballotsIter)}:";
+        } else {
+            return "Every Ballot:";
         }
-
-        return effects.Count > 0 ? new EffectBundle(effects: effects.ToArray ()) : null;
     }
+
+    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) =>
+        BallotIDs.Length == 0 || BallotIDs.Contains(context.BallotCurrentID)
+            ? new EffectBundle ([.. Effects])
+            : null;
 
     public override string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];
+        string filter = StringLineFormatter.Indent (FilterToString (in localisation), 1);
+
+        result.Add (filter);
 
         foreach (Effect e in Effects) {
             result.Add (e.ToString (in simulation, in localisation));
@@ -543,7 +498,7 @@ internal class ProcedureTargeted : Procedure {
  */
 internal class ProcedureDeclared : Procedure {
     private readonly Confirmation _confirmation;
-    private byte _value;
+    private readonly byte _value;
     // Filters Roles (empty: every, populated: specified)
     public IDType[] DeclarerIDs { get; }
 
@@ -647,7 +602,7 @@ internal class ProcedureDeclared : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (null, _confirmation, _value, Effects);
+    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (Effects, Confirmation: _confirmation, Value: _value);
 
     public override string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];

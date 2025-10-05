@@ -1,13 +1,18 @@
-﻿using Microsoft.Win32;
+﻿using congress_cucuta.Converters;
+using congress_cucuta.Data;
+using congress_cucuta.Views;
+using Microsoft.Win32;
 using System.IO;
 using System.Text.Json;
-using congress_cucuta.Models;
-using congress_cucuta.Views;
 
 namespace congress_cucuta.ViewModels;
 
 internal class FileViewModel : ViewModel {
     private bool _wasChoiceFailure = false;
+    private readonly JsonSerializerOptions _options = new () {
+        Converters = { new IDTypeJsonConverter () },
+        IncludeFields = true,
+    };
     public bool WasChoiceFailure {
         get => _wasChoiceFailure;
         set {
@@ -15,40 +20,36 @@ internal class FileViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
+
     public RelayCommand ChooseSimulationCommand => new (_ => {
-            OpenFileDialog file = new () {
-                Filter = "Simulation files (*.sim)|*.sim",
-            };
-            bool? result = file.ShowDialog ();
+        OpenFileDialog file = new () {
+            Filter = "Simulation files (*.sim)|*.sim",
+        };
+        bool? result = file.ShowDialog ();
 
-            // TODO: Enable when context is done
-            // if (result! == true) {
-            //    IsChoiceFailed = false;
-            // } else {
-            //    IsChoiceFailed = true;
-            //    return;
-            // }
+        // TODO: Enable when context is done
+        if (result! == true) {
+            WasChoiceFailure = false;
+        } else {
+            WasChoiceFailure = true;
+            return;
+        }
 
-            // SimulationModel simulation;
+        Simulation simulation;
 
-            // try {
-            //    string json = File.ReadAllText (file.FileName);
-            //    simulation = JsonSerializer.Deserialize<Simulation> (json)!;
-            // } catch (Exception) {
-            //    IsChoiceFailed = true;
-            //    return;
-            // }
-
-            // TODO: now convert the Simulation to a SimulationModel, then pass it to SimulationViewModel
-
-            // TODO: Set proper context whenever I figure out how it should work
-            SimulationWindow simulationWindow = new () {
-                // TODO: this should be a SimulationViewModel
-                // TODO: SimulationWindow contains a SlideView, which should contain the SlideViewModel
-                DataContext = new SimulationViewModel (),
-            };
-
-            simulationWindow.ShowDialog ();
+        try {
+            string json = File.ReadAllText (file.FileName);
             
-        });
+            simulation = JsonSerializer.Deserialize<Simulation> (json, _options)!;
+        } catch (Exception) {
+            WasChoiceFailure = true;
+            return;
+        }
+
+        SimulationWindow simulationWindow = new () {
+            DataContext = new SimulationViewModel (simulation),
+        };
+
+        simulationWindow.ShowDialog ();
+    });
 }

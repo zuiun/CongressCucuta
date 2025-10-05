@@ -7,23 +7,23 @@ internal class Colombia {
     public Simulation Simulation { get; }
 
     public Colombia () {
-        Dictionary<Role, Permissions> rolesPermissions = [];
-        Role member = new (Role.MEMBER);
-        Role president = new (Role.HEAD_STATE);
+        Dictionary<IDType, Permissions> rolesPermissions = [];
+        IDType deputy = Role.MEMBER;
+        IDType president = Role.HEAD_STATE;
         Permissions normal = new (canVote: true);
         Permissions cantVoteCanVeto = new (canVote: false, votes: 0, canVeto: true);
-        rolesPermissions[member] = normal;
+        rolesPermissions[deputy] = normal;
         rolesPermissions[president] = cantVoteCanVeto;
         Dictionary<IDType, (string, string)> roles = [];
-        roles[Role.MEMBER] = ("Deputy", "Deputies");
-        roles[Role.HEAD_STATE] = ("President", "Presidents");
+        roles[deputy] = ("Deputy", "Deputies");
+        roles[president] = ("President", "Presidents");
 
         Faction cundinamarca = new (0);
         Faction venezuela = new (1);
         Faction quito = new (2);
         List<Faction> regions = [cundinamarca, venezuela, quito];
         Dictionary<IDType, (string, string[], string)> regionsLocs = [];
-        regionsLocs[0] = (
+        regionsLocs[cundinamarca.ID] = (
             "Cundinamarca",
             [
                 StringLineFormatter.Indent ("Largest department", 1),
@@ -31,7 +31,7 @@ internal class Colombia {
             ],
             Localisation.UNUSED
         );
-        regionsLocs[1] = (
+        regionsLocs[venezuela.ID] = (
             "Venezuela",
             [
                 StringLineFormatter.Indent ("Wealthiest department", 1),
@@ -39,7 +39,7 @@ internal class Colombia {
             ],
             Localisation.UNUSED
         );
-        regionsLocs[2] = (
+        regionsLocs[quito.ID] = (
             "Quito",
             [
                 StringLineFormatter.Indent ("Smallest department", 1),
@@ -48,27 +48,23 @@ internal class Colombia {
             Localisation.UNUSED
         );
 
-        Dictionary<Currency, sbyte> currenciesValues = [];
-        Currency prosperityCundinamarca = new (0);
-        Currency prosperityVenezuela = new (1);
-        Currency prosperityQuito = new (2);
+        Dictionary<IDType, sbyte> currenciesValues = [];
+        IDType prosperityCundinamarca = 0;
+        IDType prosperityVenezuela = 1;
+        IDType prosperityQuito = 2;
         currenciesValues[prosperityCundinamarca] = 1;
         currenciesValues[prosperityVenezuela] = 1;
         currenciesValues[prosperityQuito] = 1;
         Dictionary<IDType, string> currencies = [];
-        currencies[0] = "Prosperity";
-        currencies[1] = "Prosperity";
-        currencies[2] = "Prosperity";
+        currencies[prosperityCundinamarca] = "Prosperity";
+        currencies[prosperityVenezuela] = "Prosperity";
+        currencies[prosperityQuito] = "Prosperity";
         currencies[Currency.REGION] = "Prosperity";
 
         ProcedureImmediate presidentialElection = new (
             0,
             [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
         );
-        //ProcedureImmediate constitutionCucuta = new (
-        //    1,
-        //    [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
-        //);
         List<ProcedureImmediate> proceduresGovernmental = [presidentialElection/*, constitutionCucuta*/];
         ProcedureTargeted liberalReforms = new (
             1,
@@ -76,40 +72,31 @@ internal class Colombia {
                 new (Procedure.Effect.ActionType.CurrencyInitialise, []),
                 new (Procedure.Effect.ActionType.CurrencyAdd, [0, 1], 1),
                 new (Procedure.Effect.ActionType.CurrencySubtract, [2], 1),
-            ]
+            ],
+            []
         );
         ProcedureTargeted bolivarianism = new (
             2,
-            [new (Procedure.Effect.ActionType.VotePassAdd, [1, 2], 1)]
+            [new (Procedure.Effect.ActionType.VotePassAdd, [], 1)],
+            [1, 2]
         );
         ProcedureTargeted repressedFederalism = new (
             3,
-            [
-                new (Procedure.Effect.ActionType.VotePassTwoThirds, [0]),
-                new (Procedure.Effect.ActionType.VotePassAdd, [3], 1),
-            ]
+            [new (Procedure.Effect.ActionType.VotePassAdd, [], 1)],
+            [3]
         );
-        List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism];
-        //ProcedureDeclared test = new (
-        //    4,
-        //    [
-        //        new (Procedure.Effect.ActionType.ElectionRegion, []),
-        //        new (Procedure.Effect.ActionType.VotersLimit, []),
-        //    ],
-        //    Procedure.ConfirmationType.DivisionChamber,
-        //    0,
-        //    [Role.HEAD_STATE]
-        //);
+        ProcedureTargeted constitutionCucuta = new (
+            4,
+            [new (Procedure.Effect.ActionType.VotePassTwoThirds, [])],
+            [0]
+        );
+        List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism, constitutionCucuta];
         List<ProcedureDeclared> proceduresDeclared = [/*test*/];
         Dictionary<IDType, (string, string)> procedures = [];
         procedures[0] = (
             "Presidential Election",
             "This country has a powerful, elected executive who is separate from the legislature."
         );
-        //procedures[1] = (
-        //    "Constitution of Cucuta",
-        //    "Colombia was founded on the principles of federalism, but today departmental officials have few prerogatives and Colombia is essentially a unitary state."
-        //);
         procedures[1] = (
             "Liberal Reforms",
             "Colombia has adopted liberal economic reforms to stimulate the economy, but not every department benefits from these reforms."
@@ -123,26 +110,21 @@ internal class Colombia {
             "Colombia was originally established as a federation, but the power of the departments has been suppressed in order to wage the war against Spain; this is an extremely unpopular measure in Venezuela, which sees itself as dominated by Cundinamarca."
         );
         procedures[4] = (
-            "Test",
-            "I am just a test"
+            "Constitution of Cucuta",
+            "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
         );
 
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [
-                    //new Ballot.Effect (
-                    //    Ballot.Effect.ActionType.ReplaceProcedure,
-                    //    [2, 3]
-                    //)
-                ],
+                [],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
                 [
                     new Ballot.Effect (
                         Ballot.Effect.ActionType.RemoveProcedure,
-                        [3]
+                        [4]
                     ),
                     new Ballot.Effect (
                         Ballot.Effect.ActionType.AddCurrency,
@@ -275,15 +257,15 @@ internal class Colombia {
         Result resultStart = new (
             0,
             [
-                new (new ProcedureActiveCondition (in repressedFederalism, false), 1),
-                new (new ProcedureActiveCondition (in repressedFederalism, true), 2),
+                new (new ProcedureActiveCondition (repressedFederalism.ID, false), 1),
+                new (new ProcedureActiveCondition (repressedFederalism.ID, true), 2),
             ]
         );
         Result repressedFederalismInactive = new (
             1,
             [
-                new (new CurrencyValueCondition (in prosperityQuito, Condition.ComparisonType.FewerThan, 0), 3),
-                new (new CurrencyValueCondition (in prosperityQuito, Condition.ComparisonType.GreaterThanOrEqual, 0), 4),
+                new (new CurrencyValueCondition (prosperityQuito, ICondition.ComparisonType.FewerThan, 0), 3),
+                new (new CurrencyValueCondition (prosperityQuito, ICondition.ComparisonType.GreaterThanOrEqual, 0), 4),
             ]
         );
         Result repressedFederalismActive = new (
@@ -293,15 +275,15 @@ internal class Colombia {
         Result quitoLessProsperity = new (
             3,
             [
-                new (new CurrencyValueCondition (in prosperityVenezuela, Condition.ComparisonType.FewerThan, 0), 5),
-                new (new CurrencyValueCondition (in prosperityVenezuela, Condition.ComparisonType.GreaterThanOrEqual, 0), 6),
+                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.FewerThan, 0), 5),
+                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.GreaterThanOrEqual, 0), 6),
             ]
         );
         Result quitoGreaterEqualProsperity = new (
             4,
             [
-                new (new CurrencyValueCondition (in prosperityVenezuela, Condition.ComparisonType.FewerThan, 0), 5),
-                new (new CurrencyValueCondition (in prosperityVenezuela, Condition.ComparisonType.GreaterThanOrEqual, 0), 6),
+                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.FewerThan, 0), 5),
+                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.GreaterThanOrEqual, 0), 6),
             ]
         );
         Result venezuelaLessProsperity = new (
@@ -322,18 +304,18 @@ internal class Colombia {
             venezuelaGreaterEqualProsperity,
         ];
         Dictionary<IDType, (string, string[])> resultsLocs = [];
-        resultsLocs[0] = (
-            "End Results",
+        resultsLocs[resultStart.ID] = (
+            "Results",
             ["Intentionally left blank"]
         );
-        resultsLocs[1] = (
+        resultsLocs[repressedFederalismInactive.ID] = (
             "No Repressed Federalism",
             [
                 "Colombia celebrates its victory over Spain as a united state",
                 StringLineFormatter.Indent ("However, the state of the economy is very worrying to many", 1),
             ]
         );
-        resultsLocs[2] = (
+        resultsLocs[repressedFederalismActive.ID] = (
             "Repressed Federalism",
             [
                 "Quitonians begin petitioning the administration for change",
@@ -344,7 +326,7 @@ internal class Colombia {
                 "Colombia’s future seems very grim",
             ]
         );
-        resultsLocs[3] = (
+        resultsLocs[quitoLessProsperity.ID] = (
             "Less than Zero Prosperity",
             [
                 "Quito is devastated by exploitation",
@@ -352,7 +334,7 @@ internal class Colombia {
                 StringLineFormatter.Indent ("Quitonians understand that they are far too weak to win independence, but separatism is spreading", 1),
             ]
         );
-        resultsLocs[4] = (
+        resultsLocs[quitoGreaterEqualProsperity.ID] = (
             "Zero or Greater Prosperity",
             [
                 "Quito may not be an economic powerhouse, but it has survived",
@@ -360,7 +342,7 @@ internal class Colombia {
                 StringLineFormatter.Indent ("However, if Quito is marginalised again in the future, it may demand independence", 1),
             ]
         );
-        resultsLocs[5] = (
+        resultsLocs[venezuelaLessProsperity.ID] = (
             "Less than Zero Prosperity",
             [
                 "Venezuela feels cheated by the war",
@@ -371,7 +353,7 @@ internal class Colombia {
                 StringLineFormatter.Indent ("Quitonian separatists can count on Venezuelan support if the situation doesn’t improve", 2),
             ]
         );
-        resultsLocs[6] = (
+        resultsLocs[venezuelaGreaterEqualProsperity.ID] = (
             "Zero or Greater Prosperity",
             [
                 "Venezuela remains a powerful partner within Colombia",
@@ -410,7 +392,6 @@ internal class Colombia {
                 "Annexation of Guayaquil",
                 "The Campaigns of the South",
                 roles,
-                ("Deputy", "Deputies"),
                 "Congress President (Chairman)",
                 ("Department", "Departments"),
                 regionsLocs,

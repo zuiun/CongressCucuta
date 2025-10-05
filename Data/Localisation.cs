@@ -1,52 +1,32 @@
 ﻿namespace congress_cucuta.Data;
 
-internal readonly struct Localisation (
-    string state,
-    string government,
-    string[] context,
-    string date,
-    string situation,
-    string period,
-    Dictionary<IDType, (string, string)> roles,
-    (string, string) member,
-    string speaker,
-    (string, string) region,
-    Dictionary<IDType, (string, string[], string)> regions,
-    (string, string) party,
-    Dictionary<IDType, (string, string[], string)> parties,
-    Dictionary<IDType, string> abbreviations,
-    Dictionary<IDType, string> currencies,
-    Dictionary<IDType, (string, string)> procedures,
-    Dictionary<IDType, (string, string, string[], string[], string[])> ballots,
-    Dictionary<IDType, (string, string[])> results
+internal readonly record struct Localisation (
+    string State,
+    string Government,
+    string[] Context,
+    string Date,
+    string Situation,
+    string Period,
+    // (singular, plural)
+    Dictionary<IDType, (string, string)> Roles,
+    string Speaker, // TODO: this is currently unused
+    // (singular, plural)
+    (string, string) Region,
+    // (name, description, leader)
+    Dictionary<IDType, (string, string[], string)> Regions,
+    (string, string) Party,
+    // (name, description, leader)
+    Dictionary<IDType, (string, string[], string)> Parties,
+    Dictionary<IDType, string> Abbreviations,
+    Dictionary<IDType, string> Currencies,
+    // (name, description)
+    Dictionary<IDType, (string, string)> Procedures,
+    // (title, name, description, pass, fail)
+    Dictionary<IDType, (string, string, string[], string[], string[])> Ballots,
+    // (title, description)
+    Dictionary<IDType, (string, string[])> Results
 ) {
     public const string UNUSED = "";
-
-    public string State => state;
-    public string Government => government;
-    public string[] Context => context;
-    public string Date => date;
-    public string Situation => situation;
-    public string Period => period;
-    // (singular, plural)
-    public Dictionary<IDType, (string, string)> Roles => roles;
-    public (string, string) Member => member;
-    public string Speaker => speaker;
-    public (string, string) Region => region;
-    // (name, description, leader)
-    public Dictionary<IDType, (string, string[], string)> Regions => regions;
-    // (singular, plural)
-    public (string, string) Party => party;
-    // (name, description, leader)
-    public Dictionary<IDType, (string, string[], string)> Parties => parties;
-    public Dictionary<IDType, string> Abbreviations => abbreviations;
-    public Dictionary<IDType, string> Currencies => currencies;
-    // (name, description)
-    public Dictionary<IDType, (string, string)> Procedures => procedures;
-    // (title, name, description, pass, fail)
-    public Dictionary<IDType, (string, string, string[], string[], string[])> Ballots => ballots;
-    // (title, description)
-    public Dictionary<IDType, (string, string[])> Results => results;
 
     public string GetFactionAndAbbreviation (IDType factionId) {
         string name;

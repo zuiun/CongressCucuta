@@ -9,19 +9,13 @@ internal struct Permissions (
     bool canVeto = false,
     bool canSpeak = true
 ) {
-    internal readonly struct Composition (
-        bool? canVote = null,
-        byte? votes = null,
-        bool? canPass = null,
-        bool? canVeto = null,
-        bool? canSpeak = null
-    ) {
-        public bool? CanVote => canVote;
-        public byte? Votes => votes;
-        public bool? CanPass => canPass;
-        public bool? CanVeto => canVeto;
-        public bool? CanSpeak => canSpeak;
-    }
+    internal readonly record struct Composition (
+        bool? CanVote = null,
+        byte? Votes = null,
+        bool? CanPass = null,
+        bool? CanVeto = null,
+        bool? CanSpeak = null
+    );
 
     public bool CanVote { get; set; } = canVote;
     public byte Votes { get; set; } = votes;

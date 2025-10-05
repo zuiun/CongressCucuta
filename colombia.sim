@@ -1,0 +1,595 @@
+{
+  "History": {
+    "BallotsPassed": [
+      0,
+      1,
+      2
+    ],
+    "BallotsProceduresDeclared": {}
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanPass": false,
+      "CanVeto": false,
+      "CanSpeak": true
+    },
+    "253": {
+      "CanVote": false,
+      "Votes": 0,
+      "CanPass": false,
+      "CanVeto": true,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [
+    {
+      "ID": 0,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "IsActiveStart": true
+    }
+  ],
+  "Parties": [],
+  "CurrenciesValues": {
+    "0": 1,
+    "1": 1,
+    "2": 1
+  },
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [],
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 5,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 3,
+          "TargetIDs": [
+            0,
+            1
+          ],
+          "Value": 1
+        },
+        {
+          "Action": 4,
+          "TargetIDs": [
+            2
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        1,
+        2
+      ],
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 0,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        3
+      ],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 0,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        0
+      ],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 2,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresDeclared": [],
+  "Ballots": [
+    {
+      "ID": 0,
+      "IsIncident": false,
+      "PassResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              4
+            ],
+            "Value": null
+          },
+          {
+            "Action": 4,
+            "TargetIDs": [
+              2
+            ],
+            "Value": 2
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      }
+    },
+    {
+      "ID": 1,
+      "IsIncident": false,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 5,
+            "TargetIDs": [
+              1,
+              2
+            ],
+            "Value": 2
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      }
+    },
+    {
+      "ID": 2,
+      "IsIncident": true,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 5,
+            "TargetIDs": [
+              253
+            ],
+            "Value": 2
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      }
+    },
+    {
+      "ID": 3,
+      "IsIncident": false,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              3
+            ],
+            "Value": null
+          }
+        ],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      }
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "ProcedureActiveCondition",
+            "ProcedureID": 3,
+            "ShouldBeActive": false
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "ProcedureActiveCondition",
+            "ProcedureID": 3,
+            "ShouldBeActive": true
+          },
+          "TargetID": 2
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 2,
+            "Comparison": 2,
+            "Value": 0
+          },
+          "TargetID": 3
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 2,
+            "Comparison": 3,
+            "Value": 0
+          },
+          "TargetID": 4
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Links": []
+    },
+    {
+      "ID": 3,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 1,
+            "Comparison": 2,
+            "Value": 0
+          },
+          "TargetID": 5
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 1,
+            "Comparison": 3,
+            "Value": 0
+          },
+          "TargetID": 6
+        }
+      ]
+    },
+    {
+      "ID": 4,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 1,
+            "Comparison": 2,
+            "Value": 0
+          },
+          "TargetID": 5
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 1,
+            "Comparison": 3,
+            "Value": 0
+          },
+          "TargetID": 6
+        }
+      ]
+    },
+    {
+      "ID": 5,
+      "Links": []
+    },
+    {
+      "ID": 6,
+      "Links": []
+    }
+  ],
+  "Localisation": {
+    "State": "Colombia",
+    "Government": "Presidential Republic",
+    "Context": [
+      "New Granada was a Spanish viceroyalty",
+      "#.While Spain was under French occupation, its Latin American colonies revolted for independence",
+      "After multiple failed attempts, Sim\u00F3n Bol\u00EDvar finally liberated New Granada and Venezuela",
+      "#.Newly freed colonies united into what is now known as Great Colombia",
+      "#.He later conquered Quito",
+      "##.He wanted to unite all of Latin America under Great Colombia"
+    ],
+    "Date": "13 July 1822",
+    "Situation": "Annexation of Guayaquil",
+    "Period": "The Campaigns of the South",
+    "Roles": {
+      "255": {
+        "Item1": "Deputy",
+        "Item2": "Deputies"
+      },
+      "253": {
+        "Item1": "President",
+        "Item2": "Presidents"
+      }
+    },
+    "Speaker": "Congress President (Chairman)",
+    "Region": {
+      "Item1": "Department",
+      "Item2": "Departments"
+    },
+    "Regions": {
+      "0": {
+        "Item1": "Cundinamarca",
+        "Item2": [
+          "#.Largest department",
+          "#.Seeks centralisation"
+        ],
+        "Item3": ""
+      },
+      "1": {
+        "Item1": "Venezuela",
+        "Item2": [
+          "#.Wealthiest department",
+          "#.Seeks federalisation"
+        ],
+        "Item3": ""
+      },
+      "2": {
+        "Item1": "Quito",
+        "Item2": [
+          "#.Smallest department",
+          "#.Completely marginalised in national politics"
+        ],
+        "Item3": ""
+      }
+    },
+    "Party": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Parties": {},
+    "Abbreviations": {},
+    "Currencies": {
+      "0": "Prosperity",
+      "1": "Prosperity",
+      "2": "Prosperity",
+      "253": "Prosperity"
+    },
+    "Procedures": {
+      "0": {
+        "Item1": "Presidential Election",
+        "Item2": "This country has a powerful, elected executive who is separate from the legislature."
+      },
+      "1": {
+        "Item1": "Liberal Reforms",
+        "Item2": "Colombia has adopted liberal economic reforms to stimulate the economy, but not every department benefits from these reforms."
+      },
+      "2": {
+        "Item1": "Bolivarianism",
+        "Item2": "The ideals of Sim\u00F3n Bol\u00EDvar, which most prominently include the liberation and unification of all of Latin America under a massive federation, are extremely popular in Colombia."
+      },
+      "3": {
+        "Item1": "Repressed Federalism",
+        "Item2": "Colombia was originally established as a federation, but the power of the departments has been suppressed in order to wage the war against Spain; this is an extremely unpopular measure in Venezuela, which sees itself as dominated by Cundinamarca."
+      },
+      "4": {
+        "Item1": "Constitution of Cucuta",
+        "Item2": "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Divide the departments",
+        "Item3": [
+          "#.This will divide Gran Colombia into twelve departments, suppressing regional tendencies",
+          "##.This will abolish the current departments",
+          "##.Each of the twelve departments will answer directly to the President",
+          "##.This will improve the war effort against Spain, allowing the war to end more quickly",
+          "#.This arrangement is unacceptable to Venezuela and will be contested once Spain is defeated"
+        ],
+        "Item4": [
+          "With greater control over the departments, the President is able to better allocate resources without the interference of middle-men",
+          "#.Venezuelans agitate for the restoration of the old federalist system as soon as is expedient"
+        ],
+        "Item5": [
+          "Federalism is preserved",
+          "#.Venezuelans are satisfied with their political position",
+          "#.Quitonians expect their own concessions once the Spaniards are fully driven out"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot B",
+        "Item2": "Intervene in Peru",
+        "Item3": [
+          "#.This will lengthen the war against Spain",
+          "#.In order to properly fund an extended campaign, Quitonian and Venezuelan resources will need to be exploited",
+          "##.Quito will also be brought under direct military rule in order to better manage the frontline"
+        ],
+        "Item4": [
+          "Peru is liberated, but Venezuela and Quito are practically emptied to do so"
+        ],
+        "Item5": [
+          "Intentionally left blank"
+        ]
+      },
+      "2": {
+        "Item1": "Incident A",
+        "Item2": "Intervene in Upper Peru",
+        "Item3": [
+          "#.Peru has largely been liberated, but Upper Peru is still fighting for independence",
+          "#.This will lengthen the war against Spain",
+          "#.With funding running low, all departments will need to make significant sacrifices",
+          "##.This includes appropriating church lands"
+        ],
+        "Item4": [
+          "Upper Peru is liberated and named Bolivia",
+          "#.Venezuela and Quito are extremely angry at the usage of national resources for the purposes of ego"
+        ],
+        "Item5": [
+          "Intentionally left blank"
+        ]
+      },
+      "3": {
+        "Item1": "Ballot C",
+        "Item2": "Adopt a federalist constitution",
+        "Item3": [
+          "#.Now that Spain has been defeated, Venezuela wants Colombia to be a permanent federation",
+          "##.Venezuela and Quito are extremely angry at being dragged into foreign wars",
+          "##.Venezuela relies heavily on trade and doesn\u0027t want any further disruptions",
+          "##.Quito wants to revert to civilian control"
+        ],
+        "Item4": [
+          "Venezuelans are happy with the government fulfilling its promises",
+          "Quitonians are happy with civilian rule"
+        ],
+        "Item5": [
+          "Venezuelans are infuriated with the government for breaking its promises",
+          "Quitonians are starting to organise against the government for neglecting their needs",
+          "#.Separatism is starting to rise"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "No Repressed Federalism",
+        "Item2": [
+          "Colombia celebrates its victory over Spain as a united state",
+          "#.However, the state of the economy is very worrying to many"
+        ]
+      },
+      "2": {
+        "Item1": "Repressed Federalism",
+        "Item2": [
+          "Quitonians begin petitioning the administration for change",
+          "#.Some want federalism, some want centralism, and some want independence",
+          "#.In any case, tensions are high in Quito",
+          "Venezuela is infuriated with broken promises",
+          "#.While popular opinion is not currently for independence, a few generals and politicians are preparing to revolt",
+          "Colombia\u2019s future seems very grim"
+        ]
+      },
+      "3": {
+        "Item1": "Less than Zero Prosperity",
+        "Item2": [
+          "Quito is devastated by exploitation",
+          "#.Appropriation of church lands was especially unpopular",
+          "#.Quitonians understand that they are far too weak to win independence, but separatism is spreading"
+        ]
+      },
+      "4": {
+        "Item1": "Zero or Greater Prosperity",
+        "Item2": [
+          "Quito may not be an economic powerhouse, but it has survived",
+          "For now, Quito is satisfied with the current state of affairs",
+          "#.However, if Quito is marginalised again in the future, it may demand independence"
+        ]
+      },
+      "5": {
+        "Item1": "Less than Zero Prosperity",
+        "Item2": [
+          "Venezuela feels cheated by the war",
+          "#.There was practically nothing to gain by participating and Venezuela suffered for it",
+          "##.Venezuela considers itself subjugated by Cundinamarca",
+          "#.While popular opinion is not currently for independence, some generals and politicians are preparing to revolt",
+          "#.If Venezuelan grievances are not addressed soon, Colombia will fall apart",
+          "##.Quitonian separatists can count on Venezuelan support if the situation doesn\u2019t improve"
+        ]
+      },
+      "6": {
+        "Item1": "Zero or Greater Prosperity",
+        "Item2": [
+          "Venezuela remains a powerful partner within Colombia",
+          "#.It seems that the dream of a powerful federation in Latin America will come true",
+          "#.Venezuela is satisfied with the current state of affairs",
+          "##.Without Venezuelan support, no Quitonian separatist movement would dare revolt"
+        ]
+      }
+    }
+  }
+}

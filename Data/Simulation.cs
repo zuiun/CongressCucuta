@@ -1,13 +1,11 @@
-﻿using static congress_cucuta.Data.Ballot;
-
-namespace congress_cucuta.Data;
+﻿namespace congress_cucuta.Data;
 
 internal class Simulation {
     public History History { get; }
-    public Dictionary<Role, Permissions> RolesPermissions { get; }
+    public Dictionary<IDType, Permissions> RolesPermissions { get; }
     public List<Faction> Regions { get; }
     public List<Faction> Parties { get; }
-    public Dictionary<Currency, sbyte> CurrenciesValues { get; }
+    public Dictionary<IDType, sbyte> CurrenciesValues { get; }
     public List<ProcedureImmediate> ProceduresGovernmental { get; }
     public List<ProcedureTargeted> ProceduresSpecial { get; }
     public List<ProcedureDeclared> ProceduresDeclared { get; }
@@ -17,10 +15,10 @@ internal class Simulation {
 
     public Simulation (
         History history,
-        Dictionary<Role, Permissions> rolesPermissions,
+        Dictionary<IDType, Permissions> rolesPermissions,
         List<Faction> regions,
         List<Faction> parties,
-        Dictionary<Currency, sbyte> currenciesValues,
+        Dictionary<IDType, sbyte> currenciesValues,
         List<ProcedureImmediate> proceduresGovernmental,
         List<ProcedureTargeted> proceduresSpecial,
         List<ProcedureDeclared> proceduresDeclared,
@@ -50,7 +48,7 @@ internal class Simulation {
      * (5) Region IDs and Party IDs cannot overlap
      * (6) Every Ballot Link must have a valid Ballot ID
      * (7) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
-     * (8) If any Party has a Currency, then every Party must have a Currency; same restriction applies to Regions
+     * (8) If any Region has a Currency, then every Region must have a Currency; same restriction applies to Party
      * (9) Every IID must have a Localisation entry
      * (10) Every IID of a certain type must have a unique ID that matches its container's index
      * (11) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise
@@ -63,7 +61,7 @@ internal class Simulation {
 #endregion
 
 #region (2)
-        foreach (Role ro in RolesPermissions.Keys) {
+        foreach (IDType ro in RolesPermissions.Keys) {
             if (
                 ro.ID != Role.MEMBER
                 && ro.ID != Role.HEAD_GOVERNMENT
@@ -99,8 +97,8 @@ internal class Simulation {
 #endregion
 
 #region (3)
-        foreach (Currency c in CurrenciesValues.Keys) {
-            if (c.ID != Currency.STATE) {
+        foreach (IDType c in CurrenciesValues.Keys) {
+            if (c != Currency.STATE) {
                 bool isRegion = false;
                 bool isParty = false;
 
@@ -180,17 +178,126 @@ internal class Simulation {
 #endregion
 
 #region (7)
-// TODO: Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
+        foreach (ProcedureImmediate pi in ProceduresGovernmental) {
+            foreach (Procedure.Effect e in pi.Effects) {
+                if (e.TargetIDs.Any (t => RolesPermissions.Keys.All (r => t != r.ID))) {
+                    throw new ArgumentException ($"ProcedureImmediate ID {pi.ID} targets an invalid Role ID");
+                }
+            }
+        }
 
+        foreach (ProcedureTargeted pt in ProceduresSpecial) {
+            if (pt.BallotIDs.Any (t => Ballots.All (b => t != b.ID))) {
+                throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} filters an invalid Ballot ID");
+            }
+
+            foreach (Procedure.Effect e in pt.Effects) {
+                switch (e.Action) {
+                    case Procedure.Effect.ActionType.CurrencyAdd:
+                    case Procedure.Effect.ActionType.CurrencySubtract:
+                        if (
+                            e.TargetIDs.Any (t => Regions.All (r => t != r.ID))
+                            && e.TargetIDs.Any (t => Parties.All (p => t != p.ID))
+                        ) {
+                            throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} targets an invalid Faction ID");
+                        }
+
+                        break;
+                    case Procedure.Effect.ActionType.ProcedureActivate:
+                        if (ProceduresGovernmental.All (pi => pi.ID != e.TargetIDs[0])) {
+                            throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} targets an invalid ProcedureImmediate ID");
+                        }
+
+                        break;
+                }
+            }
+        }
+
+        foreach (ProcedureDeclared pd in ProceduresDeclared) {
+            if (pd.DeclarerIDs.Any (t => RolesPermissions.Keys.All (r => t != r))) {
+                throw new ArgumentException ($"ProcedureDeclared ID {pd.ID} filters an invalid Role ID");
+            }
+
+            foreach (Procedure.Effect e in pd.Effects) {
+                if (e.TargetIDs.Any (t => RolesPermissions.Keys.All (r => t != r.ID))) {
+                    throw new ArgumentException ($"ProcedureDeclared ID {pd.ID} targets an invalid Role ID");
+                }
+            }
+        }
 #endregion
 
 #region (8)
+        if (Regions.Count > 0 && CurrenciesValues.Keys.Any (c => c.ID == Regions[0].ID)) {
+            foreach (Faction r in Regions) {
+                if (CurrenciesValues.Keys.All (c => r.ID != c.ID)) {
+                    throw new ArgumentException ($"Region ID {r.ID} does not correspond with any Currency ID");
+                }
+            }
+        }
 
-
+        if (Parties.Count > 0 && CurrenciesValues.Keys.Any (c => c.ID == Parties[0].ID)) {
+            foreach (Faction p in Parties) {
+                if (CurrenciesValues.Keys.All (c => p.ID != c.ID)) {
+                    throw new ArgumentException ($"Party ID {p.ID} does not correspond with any Currency ID");
+                }
+            }
+        }
 #endregion
 
 #region (9)
+        foreach (IDType r in RolesPermissions.Keys) {
+            if (! Localisation.Roles.ContainsKey (r)) {
+                throw new ArgumentException ($"Role ID {r} does not have a Localisation entry");
+            }
+        }
 
+        foreach (Faction r in Regions) {
+            if (! Localisation.Regions.ContainsKey (r.ID)) {
+                throw new ArgumentException ($"Region ID {r.ID} does not have a Localisation entry");
+            }
+        }
+
+        foreach (Faction p in Parties) {
+            if (! Localisation.Parties.ContainsKey (p.ID)) {
+                throw new ArgumentException ($"Party ID {p.ID} does not have a Localisation entry");
+            }
+        }
+
+        foreach (IDType c in CurrenciesValues.Keys) {
+            if (! Localisation.Currencies.ContainsKey (c.ID)) {
+                throw new ArgumentException ($"Currency ID {c.ID} does not have a Localisation entry");
+            }
+        }
+
+        foreach (ProcedureImmediate pi in ProceduresGovernmental) {
+            if (! Localisation.Procedures.ContainsKey (pi.ID)) {
+                throw new ArgumentException ($"ProcedureImmediate ID {pi.ID} does not have a Localisation entry");
+            }
+        }
+
+        foreach (ProcedureTargeted pt in ProceduresSpecial) {
+            if (! Localisation.Procedures.ContainsKey (pt.ID)) {
+                throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} does not have a Localisation entry");
+            }
+        }
+
+        foreach (ProcedureDeclared pd in ProceduresDeclared) {
+            if (! Localisation.Procedures.ContainsKey (pd.ID)) {
+                throw new ArgumentException ($"ProcedureDeclared ID {pd.ID} does not have a Localisation entry");
+            }
+        }
+
+        foreach (Ballot b in Ballots) {
+            if (! Localisation.Ballots.ContainsKey (b.ID)) {
+                throw new ArgumentException ($"Ballot ID {b.ID} does not have a Localisation entry");
+            }
+        }
+
+        foreach (Result r in Results) {
+            if (!Localisation.Results.ContainsKey (r.ID)) {
+                throw new ArgumentException ($"Result ID {r.ID} does not have a Localisation entry");
+            }
+        }
 #endregion
 
 #region (10)
@@ -212,7 +319,7 @@ internal class Simulation {
 
         for (byte i = 0; i < ProceduresGovernmental.Count; ++i) {
             if (ProceduresGovernmental[i].ID != i) {
-                throw new ArgumentException ($"ProcedureGovernmental ID {ProceduresGovernmental[i].ID} does not match its index in ProceduresGovernmental");
+                throw new ArgumentException ($"ProcedureImmediate ID {ProceduresGovernmental[i].ID} does not match its index in ProceduresGovernmental");
             }
         }
 
@@ -244,7 +351,6 @@ internal class Simulation {
             }
         }
 #endregion
-
 
 #region (11)
         if (CurrenciesValues.Count > 0) {

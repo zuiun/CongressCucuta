@@ -8,10 +8,6 @@
         mc:Ignorable="d"
         Title="{Binding State}" Height="720" Width="1280">
     <!-- TODO: Maybe this should be fullscreen -->
-    <!--TODO: This is for testing only!-->
-    <Window.DataContext>
-        <vm:SimulationViewModel/>
-    </Window.DataContext>
     <Window.Resources>
         <Style TargetType = "Border">
             <Setter Property = "BorderBrush" Value = "Black"/>

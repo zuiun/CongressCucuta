@@ -55,5 +55,6 @@ internal class SlideBranchingModel (
 internal class SlideConstantModel (
     IDType id,
     string title,
-    List<LineModel> description
-) : SlideModel (id, title, description, [], false, null) { }
+    List<LineModel> description,
+    bool isContent = false
+) : SlideModel (id, title, description, [], isContent, null) { }

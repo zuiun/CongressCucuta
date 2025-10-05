@@ -4,12 +4,9 @@
  * T indicates which object's ID is referenced
  * It serves no functional purpose and exists only to prevent mixing of different Link<T>
  */
-internal readonly struct Link<T> (Condition condition, IDType targetId)
+internal readonly record struct Link<T> (ICondition Condition, IDType TargetID)
 where T : IID {
-    public Condition Condition => condition;
-    public IDType TargetID => targetId;
+    public bool Evaluate (ref readonly SimulationContext context) => Condition.Evaluate (in context);
 
-    public bool Evaluate (ref readonly SimulationContext context) => condition.Evaluate (in context);
-
-    public string ToString (ref readonly Localisation localisation) => condition.ToString (in localisation);
+    public string ToString (ref readonly Localisation localisation) => Condition.ToString (in localisation);
 }
