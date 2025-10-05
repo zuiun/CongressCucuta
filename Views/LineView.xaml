@@ -13,11 +13,23 @@
         <c:IndentLevelToFontSizeConverter x:Key = "IndentLevelToFontSizeConverter"/>
         <c:IsImportantToForegroundConverter x:Key = "IsImportantToForegroundConverter"/>
         <c:DescriptionToTextDecorationsConverter x:Key = "DescriptionToTextDecorationsConverter"/>
+        <c:DescriptionToForegroundConverter x:Key = "DescriptionToForegroundConverter"/>
         <Style TargetType = "TextBlock">
             <Style.Triggers>
-                <DataTrigger Binding = "{Binding Path = IsContent}" Value = "true">
-                    <Setter Property = "Foreground" Value = "{Binding IsImportant, Converter = {StaticResource IsImportantToForegroundConverter}}"/>
-                </DataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding = "{Binding Path = IsContent}" Value = "true"/>
+                        <Condition Binding = "{Binding Path = IsImportant}" Value = "true"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property = "Foreground" Value = "Red"/>
+                </MultiDataTrigger>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition Binding = "{Binding Path = IsContent}" Value = "true"/>
+                        <Condition Binding = "{Binding Path = IsImportant}" Value = "false"/>
+                    </MultiDataTrigger.Conditions>
+                    <Setter Property = "Foreground" Value = "{Binding Description, Converter = {StaticResource DescriptionToForegroundConverter}}"/>
+                </MultiDataTrigger>
                 <DataTrigger Binding = "{Binding Path = IsContent}" Value = "false">
                     <Setter Property = "Foreground" Value = "Gray"/>
                 </DataTrigger>

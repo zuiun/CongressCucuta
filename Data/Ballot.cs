@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using congress_cucuta.Converters;
 
 namespace congress_cucuta.Data;
 
@@ -38,7 +39,7 @@ internal class Ballot (
             Value = value;
         }
 
-        public string ToString (ref readonly Localisation localisation) {
+        public string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
             switch (Action) {
                 case ActionType.CreateParty: {
                     List<string> parties = [];
@@ -68,21 +69,27 @@ internal class Ballot (
                     return $"Remove {string.Join (", ", procedures)}";
                 }
                 case ActionType.ReplaceProcedure: {
+                    List<string> result = [];
                     string procedureOriginal = localisation.Procedures[TargetIDs[0]].Item1;
-                    string procedureNew = localisation.Procedures[TargetIDs[0]].Item1;
-                    // TODO: Need to also show new's effects. That will require a Context NOOOOOOOOOOOOOOOOO
-                    return $"Replace {procedureOriginal} with {procedureNew}";
+                    string procedureNew = localisation.Procedures[TargetIDs[1]].Item1;
+                    string action = $"Replace {procedureOriginal} with {procedureNew}:";
+                    Procedure procedure = simulation.ProceduresSpecial[TargetIDs[1] - simulation.ProceduresGovernmental.Count];
+                    string procedureFull = procedure.ToString (in simulation, in localisation);
+                    string[] procedureSplit = procedureFull.Split ('\n');
+
+                    result.Add (action);
+                    result.AddRange (procedureSplit[1 ..]);
+                    return string.Join ('\n', result);
                 }
                 case ActionType.AddCurrency: {
                     string currency = localisation.Currencies[TargetIDs[0]];
 
                     if (TargetIDs[0] == Currency.STATE) {
-
                         return $"Gain {Value} {currency}";
                     } else if (TargetIDs[0] == Currency.PARTY) {
-                        return $"Every {localisation.Party.Item1}:\n#.Gains {Value} {currency}";
+                        return $"Every {localisation.Party.Item1}:\n{StringLineFormatter.Indent ($"Gains {Value} {currency}", 1)}";
                     } else if (TargetIDs[0] == Currency.REGION) {
-                        return $"Every {localisation.Region.Item1}:\n#.Gains {Value} {currency}";
+                        return $"Every {localisation.Region.Item1}:\n{StringLineFormatter.Indent ($"Gains {Value} {currency}", 1)}";
                     } else {
                         List<string> owners = [];
     
@@ -90,7 +97,7 @@ internal class Ballot (
                             owners.Add (localisation.GetFactionOrAbbreviation (t));
                         }
 
-                        return $"{string.Join (", ", owners)}:\n#.Gain {Value} {currency}";
+                        return $"{string.Join (", ", owners)}:\n{StringLineFormatter.Indent ($"Gain {Value} {currency}", 1)}";
                     }
 
                 }
@@ -100,9 +107,9 @@ internal class Ballot (
                     if (TargetIDs[0] == Currency.STATE) {
                         return $"Lose {Value} {currency}";
                     } else if (TargetIDs[0] == Currency.PARTY) {
-                        return $"Every {localisation.Party.Item1}:\n#.Loses {Value} {currency}";
+                        return $"Every {localisation.Party.Item1}:\n{StringLineFormatter.Indent ($"Loses {Value} {currency}", 1)}";
                     } else if (TargetIDs[0] == Currency.REGION) {
-                        return $"Every {localisation.Region.Item1}:\n#.Loses {Value} {currency}";
+                        return $"Every {localisation.Region.Item1}:\n{StringLineFormatter.Indent ($"Loses {Value} {currency}", 1)}";
                     } else {
                         List<string> owners = [];
 
@@ -110,7 +117,7 @@ internal class Ballot (
                             owners.Add (localisation.GetFactionOrAbbreviation (t));
                         }
 
-                        return $"{string.Join (", ", owners)}:\n#.Lose {Value} {currency}";
+                        return $"{string.Join (", ", owners)}:\n{StringLineFormatter.Indent ($"Lose {Value} {currency}", 1)}";
                     }
                 }
                 default:

@@ -1,4 +1,6 @@
-﻿namespace congress_cucuta.Data;
+﻿using static congress_cucuta.Data.Ballot;
+
+namespace congress_cucuta.Data;
 
 internal class Simulation {
     public History History { get; }
@@ -50,10 +52,10 @@ internal class Simulation {
      * (7) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
      * (8) If any Party has a Currency, then every Party must have a Currency; same restriction applies to Regions
      * (9) Every IID must have a Localisation entry
-     * (10) Every IID of a certain type must have a unique ID
+     * (10) Every IID of a certain type must have a unique ID that matches its container's index
+     * (11) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise
      */
     private void Validate () {
-        // TODO: test these FURIOUSLY
 #region (1)
         if (RolesPermissions.Keys.All (r => r.ID != Role.MEMBER)) {
             throw new ArgumentException ("There must be a MEMBER Role");
@@ -192,7 +194,77 @@ internal class Simulation {
 #endregion
 
 #region (10)
+        for (byte i = 0; i < Regions.Count; ++ i) {
+            byte regionIdxOffset = Regions[0].ID;
 
+            if (Regions[i].ID - regionIdxOffset != i) {
+                throw new ArgumentException ($"Region ID {Regions[i].ID} does not match its offset index in Regions");
+            }
+        }
+
+        for (byte i = 0; i < Parties.Count; ++i) {
+            byte partyIdxOffset = Parties[0].ID;
+
+            if (Parties[i].ID - partyIdxOffset != i) {
+                throw new ArgumentException ($"Party ID {Parties[i].ID} does not match its offset index in Parties");
+            }
+        }
+
+        for (byte i = 0; i < ProceduresGovernmental.Count; ++i) {
+            if (ProceduresGovernmental[i].ID != i) {
+                throw new ArgumentException ($"ProcedureGovernmental ID {ProceduresGovernmental[i].ID} does not match its index in ProceduresGovernmental");
+            }
+        }
+
+        for (byte i = 0; i < ProceduresSpecial.Count; ++i) {
+            byte procedureIdxOffset = ProceduresSpecial[0].ID;
+
+            if (ProceduresSpecial[i].ID - procedureIdxOffset != i) {
+                throw new ArgumentException ($"ProcedureTargeted ID {ProceduresSpecial[i].ID} does not match its offset index in ProceduresSpecial");
+            }
+        }
+
+        for (byte i = 0; i < ProceduresDeclared.Count; ++i) {
+            byte procedureIdxOffset = ProceduresDeclared[0].ID;
+
+            if (ProceduresDeclared[i].ID - procedureIdxOffset != i) {
+                throw new ArgumentException ($"ProcedureDeclared ID {ProceduresDeclared[i].ID} does not match its offset index in ProceduresDeclared");
+            }
+        }
+
+        for (byte i = 0; i < Ballots.Count; ++i) {
+            if (Ballots[i].ID != i) {
+                throw new ArgumentException ($"Ballot ID {Ballots[i].ID} does not match its index in Ballots");
+            }
+        }
+
+        for (byte i = 0; i < Results.Count; ++i) {
+            if (Results[i].ID != i) {
+                throw new ArgumentException ($"Result ID {Results[i].ID} does not match its index in Results");
+            }
+        }
+#endregion
+
+
+#region (11)
+        if (CurrenciesValues.Count > 0) {
+            if (ProceduresSpecial.Count == 0) {
+                throw new ArgumentException ("If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise");
+            } else {
+                bool isCurrencyInitialise = false;
+
+                foreach (Procedure.Effect e in ProceduresSpecial[0].Effects) {
+                    if (e.Action is Procedure.Effect.ActionType.CurrencyInitialise) {
+                        isCurrencyInitialise = true;
+                        break;
+                    }
+                }
+
+                if (! isCurrencyInitialise) {
+                    throw new ArgumentException ("If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise");
+                }
+            }
+        }
 #endregion
     }
 }

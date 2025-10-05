@@ -1,4 +1,6 @@
-﻿namespace congress_cucuta.Data;
+﻿using congress_cucuta.Converters;
+
+namespace congress_cucuta.Data;
 
 internal struct Permissions (
     bool canVote,
@@ -43,7 +45,7 @@ internal struct Permissions (
         List<string> result = [CanVote ? $"Can Vote" : "Cannot Vote"];
 
         if (CanVote) {
-            result.Add ($"#.Has {Votes} Vote(s)");
+            result.Add (StringLineFormatter.Indent ($"Has {Votes} Vote(s)", 1));
         }
 
         if (CanPass) {

@@ -1,4 +1,5 @@
-﻿using congress_cucuta.Data;
+﻿using congress_cucuta.Converters;
+using congress_cucuta.Data;
 
 namespace congress_cucuta.Simulations;
 
@@ -21,10 +22,31 @@ internal class Colombia {
         Faction venezuela = new (1);
         Faction quito = new (2);
         List<Faction> regions = [cundinamarca, venezuela, quito];
-        Dictionary<IDType, (string, string[], string)> regionsNames = [];
-        regionsNames[0] = ("Cundinamarca", ["#.Largest department", "#.Seeks centralisation"], Localisation.UNUSED);
-        regionsNames[1] = ("Venezuela", ["#.Wealthiest department", "#.Seeks federalisation"], Localisation.UNUSED);
-        regionsNames[2] = ("Quito", ["#.Smallest department", "#.Completely marginalised in national politics"], Localisation.UNUSED);
+        Dictionary<IDType, (string, string[], string)> regionsLocs = [];
+        regionsLocs[0] = (
+            "Cundinamarca",
+            [
+                StringLineFormatter.Indent ("Largest department", 1),
+                StringLineFormatter.Indent ("Seeks centralisation", 1),
+            ],
+            Localisation.UNUSED
+        );
+        regionsLocs[1] = (
+            "Venezuela",
+            [
+                StringLineFormatter.Indent ("Wealthiest department", 1),
+                StringLineFormatter.Indent ("Seeks federalisation", 1),
+            ],
+            Localisation.UNUSED
+        );
+        regionsLocs[2] = (
+            "Quito",
+            [
+                StringLineFormatter.Indent ("Smallest department", 1),
+                StringLineFormatter.Indent ("Completely marginalised in national politics", 1),
+            ],
+            Localisation.UNUSED
+        );
 
         Dictionary<Currency, sbyte> currenciesValues = [];
         Currency prosperityCundinamarca = new (0);
@@ -43,64 +65,84 @@ internal class Colombia {
             0,
             [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
         );
-        ProcedureImmediate constitutionCucuta = new (
-            1,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
-        );
-        List<ProcedureImmediate> proceduresGovernmental = [presidentialElection, constitutionCucuta];
-
+        //ProcedureImmediate constitutionCucuta = new (
+        //    1,
+        //    [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
+        //);
+        List<ProcedureImmediate> proceduresGovernmental = [presidentialElection/*, constitutionCucuta*/];
         ProcedureTargeted liberalReforms = new (
-            2,
+            1,
             [
+                new (Procedure.Effect.ActionType.CurrencyInitialise, []),
                 new (Procedure.Effect.ActionType.CurrencyAdd, [0, 1], 1),
                 new (Procedure.Effect.ActionType.CurrencySubtract, [2], 1),
             ]
         );
         ProcedureTargeted bolivarianism = new (
-            3,
+            2,
             [new (Procedure.Effect.ActionType.VotePassAdd, [1, 2], 1)]
         );
         ProcedureTargeted repressedFederalism = new (
-            4,
+            3,
             [
                 new (Procedure.Effect.ActionType.VotePassTwoThirds, [0]),
                 new (Procedure.Effect.ActionType.VotePassAdd, [3], 1),
             ]
         );
         List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism];
+        //ProcedureDeclared test = new (
+        //    4,
+        //    [
+        //        new (Procedure.Effect.ActionType.ElectionRegion, []),
+        //        new (Procedure.Effect.ActionType.VotersLimit, []),
+        //    ],
+        //    Procedure.ConfirmationType.DivisionChamber,
+        //    0,
+        //    [Role.HEAD_STATE]
+        //);
+        List<ProcedureDeclared> proceduresDeclared = [/*test*/];
         Dictionary<IDType, (string, string)> procedures = [];
         procedures[0] = (
             "Presidential Election",
             "This country has a powerful, elected executive who is separate from the legislature."
         );
+        //procedures[1] = (
+        //    "Constitution of Cucuta",
+        //    "Colombia was founded on the principles of federalism, but today departmental officials have few prerogatives and Colombia is essentially a unitary state."
+        //);
         procedures[1] = (
-            "Constitution of Cucuta",
-            "Colombia was founded on the principles of federalism, but today departmental officials have few prerogatives and Colombia is essentially a unitary state."
-        );
-        procedures[2] = (
             "Liberal Reforms",
             "Colombia has adopted liberal economic reforms to stimulate the economy, but not every department benefits from these reforms."
         );
-        procedures[3] = (
+        procedures[2] = (
             "Bolivarianism",
             "The ideals of Simón Bolívar, which most prominently include the liberation and unification of all of Latin America under a massive federation, are extremely popular in Colombia."
         );
-        procedures[4] = (
+        procedures[3] = (
             "Repressed Federalism",
             "Colombia was originally established as a federation, but the power of the departments has been suppressed in order to wage the war against Spain; this is an extremely unpopular measure in Venezuela, which sees itself as dominated by Cundinamarca."
+        );
+        procedures[4] = (
+            "Test",
+            "I am just a test"
         );
 
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [],
+                [
+                    //new Ballot.Effect (
+                    //    Ballot.Effect.ActionType.ReplaceProcedure,
+                    //    [2, 3]
+                    //)
+                ],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
                 [
                     new Ballot.Effect (
                         Ballot.Effect.ActionType.RemoveProcedure,
-                        [4]
+                        [3]
                     ),
                     new Ballot.Effect (
                         Ballot.Effect.ActionType.AddCurrency,
@@ -152,7 +194,7 @@ internal class Colombia {
                 [
                     new Ballot.Effect (
                         Ballot.Effect.ActionType.RemoveProcedure,
-                        [4]
+                        [3]
                     ),
                 ],
                 []
@@ -168,29 +210,29 @@ internal class Colombia {
             "Ballot A",
             "Divide the departments",
             [
-                "#.This will divide Gran Colombia into twelve departments, suppressing regional tendencies",
-                "##.This will abolish the current departments",
-                "##.Each of the twelve departments will answer directly to the President",
-                "##.This will improve the war effort against Spain, allowing the war to end more quickly",
-                "#.This arrangement is unacceptable to Venezuela and will be contested once Spain is defeated",
+                StringLineFormatter.Indent ("This will divide Gran Colombia into twelve departments, suppressing regional tendencies", 1),
+                StringLineFormatter.Indent ("This will abolish the current departments", 2),
+                StringLineFormatter.Indent ("Each of the twelve departments will answer directly to the President", 2),
+                StringLineFormatter.Indent ("This will improve the war effort against Spain, allowing the war to end more quickly", 2),
+                StringLineFormatter.Indent ("This arrangement is unacceptable to Venezuela and will be contested once Spain is defeated", 1),
             ],
             [
                 "With greater control over the departments, the President is able to better allocate resources without the interference of middle-men",
-                "#.Venezuelans agitate for the restoration of the old federalist system as soon as is expedient",
+                StringLineFormatter.Indent ("Venezuelans agitate for the restoration of the old federalist system as soon as is expedient", 1),
             ],
             [
                 "Federalism is preserved",
-                "#.Venezuelans are satisfied with their political position",
-                "#.Quitonians expect that civilian rule will come once the Spaniards are fully driven out of Quito",
+                StringLineFormatter.Indent ("Venezuelans are satisfied with their political position", 1),
+                StringLineFormatter.Indent ("Quitonians expect their own concessions once the Spaniards are fully driven out", 1),
             ]
         );
         ballotsLocs[1] = (
             "Ballot B",
             "Intervene in Peru",
             [
-                "#.This will lengthen the war against Spain",
-                "#.In order to properly fund an extended campaign, Quitonian and Venezuelan resources will need to be exploited",
-                "##.Quito will also be brought under direct military rule in order to better manage the frontline",
+                StringLineFormatter.Indent ("This will lengthen the war against Spain", 1),
+                StringLineFormatter.Indent ("In order to properly fund an extended campaign, Quitonian and Venezuelan resources will need to be exploited", 1),
+                StringLineFormatter.Indent ("Quito will also be brought under direct military rule in order to better manage the frontline", 2),
             ],
             ["Peru is liberated, but Venezuela and Quito are practically emptied to do so"],
             ["Intentionally left blank"]
@@ -199,14 +241,14 @@ internal class Colombia {
             "Incident A",
             "Intervene in Upper Peru",
             [
-                "#.Peru has largely been liberated, but Upper Peru is still fighting for independence",
-                "#.This will lengthen the war against Spain",
-                "#.With funding running low, all departments will need to make significant sacrifices",
-                "##.This includes appropriating church lands",
+                StringLineFormatter.Indent ("Peru has largely been liberated, but Upper Peru is still fighting for independence", 1),
+                StringLineFormatter.Indent ("This will lengthen the war against Spain", 1),
+                StringLineFormatter.Indent ("With funding running low, all departments will need to make significant sacrifices", 1),
+                StringLineFormatter.Indent ("This includes appropriating church lands", 2),
             ],
             [
                 "Upper Peru is liberated and named Bolivia",
-                "#.Venezuela and Quito are extremely angry at the usage of national resources for the purposes of ego",
+                StringLineFormatter.Indent ("Venezuela and Quito are extremely angry at the usage of national resources for the purposes of ego", 1),
             ],
             ["Intentionally left blank"]
         );
@@ -214,10 +256,10 @@ internal class Colombia {
             "Ballot C",
             "Adopt a federalist constitution",
             [
-                "#.Now that Spain has been defeated, Venezuela wants Colombia to be a permanent federation",
-                "##.Venezuela and Quito are extremely angry at being dragged into foreign wars",
-                "##.Venezuela relies heavily on trade and doesn't want any further disruptions",
-                "##.Quito wants to revert to civilian control",
+                StringLineFormatter.Indent ("Now that Spain has been defeated, Venezuela wants Colombia to be a permanent federation", 1),
+                StringLineFormatter.Indent ("Venezuela and Quito are extremely angry at being dragged into foreign wars", 2),
+                StringLineFormatter.Indent ("Venezuela relies heavily on trade and doesn't want any further disruptions", 2),
+                StringLineFormatter.Indent ("Quito wants to revert to civilian control", 2),
             ],
             [
                 "Venezuelans are happy with the government fulfilling its promises",
@@ -226,7 +268,7 @@ internal class Colombia {
             [
                 "Venezuelans are infuriated with the government for breaking its promises",
                 "Quitonians are starting to organise against the government for neglecting their needs",
-                "#.Separatism is starting to rise",
+                StringLineFormatter.Indent ("Separatism is starting to rise", 1),
             ]
         );
 
@@ -288,17 +330,17 @@ internal class Colombia {
             "No Repressed Federalism",
             [
                 "Colombia celebrates its victory over Spain as a united state",
-                "#.However, the state of the economy is very worrying to many",
+                StringLineFormatter.Indent ("However, the state of the economy is very worrying to many", 1),
             ]
         );
         resultsLocs[2] = (
             "Repressed Federalism",
             [
                 "Quitonians begin petitioning the administration for change",
-                "#.Some want federalism, some want centralism, and some want independence",
-                "#.In any case, tensions are high in Quito",
+                StringLineFormatter.Indent ("Some want federalism, some want centralism, and some want independence", 1),
+                StringLineFormatter.Indent ("In any case, tensions are high in Quito", 1),
                 "Venezuela is infuriated with broken promises",
-                "#.While popular opinion is not currently for independence, a few generals and politicians are preparing to revolt",
+                StringLineFormatter.Indent ("While popular opinion is not currently for independence, a few generals and politicians are preparing to revolt", 1),
                 "Colombia’s future seems very grim",
             ]
         );
@@ -306,8 +348,8 @@ internal class Colombia {
             "Less than Zero Prosperity",
             [
                 "Quito is devastated by exploitation",
-                "#.Appropriation of church lands was especially unpopular",
-                "#.Quitonians understand that they are far too weak to win independence, but separatism is spreading",
+                StringLineFormatter.Indent ("Appropriation of church lands was especially unpopular", 1),
+                StringLineFormatter.Indent ("Quitonians understand that they are far too weak to win independence, but separatism is spreading", 1),
             ]
         );
         resultsLocs[4] = (
@@ -315,27 +357,27 @@ internal class Colombia {
             [
                 "Quito may not be an economic powerhouse, but it has survived",
                 "For now, Quito is satisfied with the current state of affairs",
-                "#.However, if Quito is marginalised again in the future, it may demand independence",
+                StringLineFormatter.Indent ("However, if Quito is marginalised again in the future, it may demand independence", 1),
             ]
         );
         resultsLocs[5] = (
             "Less than Zero Prosperity",
             [
                 "Venezuela feels cheated by the war",
-                "#.There was practically nothing to gain by participating and Venezuela suffered for it",
-                "##.Venezuela considers itself subjugated by Cundinamarca",
-                "#.While popular opinion is not currently for independence, some generals and politicians are preparing to revolt",
-                "#.If Venezuelan grievances are not addressed soon, Colombia will fall apart",
-                "##.Quitonian separatists can count on Venezuelan support if the situation doesn’t improve",
+                StringLineFormatter.Indent ("There was practically nothing to gain by participating and Venezuela suffered for it", 1),
+                StringLineFormatter.Indent ("Venezuela considers itself subjugated by Cundinamarca", 2),
+                StringLineFormatter.Indent ("While popular opinion is not currently for independence, some generals and politicians are preparing to revolt", 1),
+                StringLineFormatter.Indent ("If Venezuelan grievances are not addressed soon, Colombia will fall apart", 1),
+                StringLineFormatter.Indent ("Quitonian separatists can count on Venezuelan support if the situation doesn’t improve", 2),
             ]
         );
         resultsLocs[6] = (
             "Zero or Greater Prosperity",
             [
                 "Venezuela remains a powerful partner within Colombia",
-                "#.It seems that the dream of a powerful federation in Latin America will come true",
-                "#.Venezuela is satisfied with the current state of affairs",
-                "##.Without Venezuelan support, no Quitonian separatist movement would dare revolt",
+                StringLineFormatter.Indent ("It seems that the dream of a powerful federation in Latin America will come true", 1),
+                StringLineFormatter.Indent ("Venezuela is satisfied with the current state of affairs", 1),
+                StringLineFormatter.Indent ("Without Venezuelan support, no Quitonian separatist movement would dare revolt", 2),
             ]
         );
 
@@ -350,7 +392,7 @@ internal class Colombia {
             currenciesValues,
             proceduresGovernmental,
             proceduresSpecial,
-            [],
+            proceduresDeclared,
             ballots,
             results,
             new Localisation (
@@ -358,11 +400,11 @@ internal class Colombia {
                 "Presidential Republic",
                 [
                     "New Granada was a Spanish viceroyalty",
-                    "#.While Spain was under French occupation, its Latin American colonies revolted for independence",
+                    StringLineFormatter.Indent ("While Spain was under French occupation, its Latin American colonies revolted for independence", 1),
                     "After multiple failed attempts, Simón Bolívar finally liberated New Granada and Venezuela",
-                    "#.Newly freed colonies united into what is now known as Great Colombia",
-                    "#.He later conquered Quito",
-                    "##.He wanted to unite all of Latin America under Great Colombia"
+                    StringLineFormatter.Indent ("Newly freed colonies united into what is now known as Great Colombia", 1),
+                    StringLineFormatter.Indent ("He later conquered Quito", 1),
+                    StringLineFormatter.Indent ("He wanted to unite all of Latin America under Great Colombia", 2),
                 ],
                 "13 July 1822",
                 "Annexation of Guayaquil",
@@ -371,7 +413,7 @@ internal class Colombia {
                 ("Deputy", "Deputies"),
                 "Congress President (Chairman)",
                 ("Department", "Departments"),
-                regionsNames,
+                regionsLocs,
                 (Localisation.UNUSED, Localisation.UNUSED),
                 [],
                 [],

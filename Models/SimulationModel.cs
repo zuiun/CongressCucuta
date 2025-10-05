@@ -1,13 +1,10 @@
 ﻿using congress_cucuta.Converters;
 using congress_cucuta.Data;
-using System.Windows;
-using System.Windows.Controls;
 
 namespace congress_cucuta.Models;
 
 internal class SimulationModel (Simulation simulation) {
-    private readonly SimulationContext _context = new ();
-    public string State = "State"; // TODO: Initialise
+    private readonly SimulationContext _context = new (simulation);
     public SimulationContext Context => _context;
     public Localisation Localisation => simulation.Localisation;
     public List<SlideModel> Slides { get; } = GenerateSlides (in simulation);
@@ -43,19 +40,60 @@ internal class SimulationModel (Simulation simulation) {
         ref List<SlideModel> slides,
         IDType slideCurrentIdx
     ) {
-        //for (byte i = 0; i < simulation.ProceduresGovernmental.Count; ++i) {
-        //    string title = i > 0 ? "Governmental Procedures (cont.)" : "Governmental Procedures";
+        for (byte i = 0; i < simulation.ProceduresGovernmental.Count; ++ i) {
+            string title = i > 0 ? "Governmental Procedures (cont.)" : "Governmental Procedures";
+            Procedure procedure = simulation.ProceduresGovernmental[i];
+            string procedureFull = procedure.ToString (in simulation, in localisation);
+            string[] procedureSplit = procedureFull.Split ('\n');
+            LineModel line = new (procedureSplit[0], description: localisation.Procedures[procedure.ID].Item2);
 
-        // SlideLinkedModel slideProcedure = new (
-        //    slideCurrentIdx,
-        //    title,
+            SlideBidirectionalModel slideProcedure = new (
+                slideCurrentIdx,
+                title,
+                [line, .. procedureSplit[1 ..]]
+            );
 
-        // );
-        //}
+            ++ slideCurrentIdx;
+            slides.Add (slideProcedure);
+        }
 
-        // TODO: gov procedures
-        // TODO: spec procedures
-        // TODO: dec procedures
+        for (byte i = 0; i < simulation.ProceduresSpecial.Count; ++i) {
+            string title = i > 0 ? "Special Procedures (cont.)" : "Special Procedures";
+            Procedure procedure = simulation.ProceduresSpecial[i];
+
+            if (procedure.IsActiveStart) {
+                string procedureFull = procedure.ToString (in simulation, in localisation);
+                string[] procedureSplit = procedureFull.Split ('\n');
+                LineModel line = new (procedureSplit[0], description: localisation.Procedures[procedure.ID].Item2);
+
+                SlideBidirectionalModel slideProcedure = new (
+                    slideCurrentIdx,
+                    title,
+                    [line, .. procedureSplit[1 ..]]
+                );
+
+                ++ slideCurrentIdx;
+                slides.Add (slideProcedure);
+            }
+        }
+
+        for (byte i = 0; i < simulation.ProceduresDeclared.Count; ++i) {
+            string title = i > 0 ? "Declared Procedures (cont.)" : "Declared Procedures";
+            Procedure procedure = simulation.ProceduresDeclared[i];
+            string procedureFull = procedure.ToString (in simulation, in localisation);
+            string[] procedureSplit = procedureFull.Split ('\n');
+            LineModel line = new (procedureSplit[0], description: localisation.Procedures[procedure.ID].Item2);
+
+            SlideBidirectionalModel slideProcedure = new (
+                slideCurrentIdx,
+                title,
+                [line, .. procedureSplit[1..]]
+            );
+
+            ++ slideCurrentIdx;
+            slides.Add (slideProcedure);
+        }
+
         return slideCurrentIdx;
     }
 
@@ -244,7 +282,7 @@ internal class SimulationModel (Simulation simulation) {
         Dictionary<IDType, IDType> ballotIDsFinalIdxs = [];
         Dictionary<IDType, IDType> resultBallotIDsFinalIdxs = [];
 
-        // First, every Ballot ID is mapped to its index
+        // Every Ballot ID is mapped to its index
         foreach (Ballot ballot in simulation.Ballots) {
             (string title, string name, string[] description, string[] _, string[] _) = localisation.Ballots[ballot.ID];
             SlideBranchingModel slideBallot = new (
@@ -252,7 +290,7 @@ internal class SimulationModel (Simulation simulation) {
                 title,
                 [name, .. description],
                 // Fail (left, first), pass (right, second)
-                // TODO: Convert Condition back to BallotVoteCondition later
+                // TODO: change back to BallotVoteCondition after finished with context
                 [
                     new (new AlwaysCondition (), resultBallotIdx),
                     new (new AlwaysCondition (), resultBallotIdx + 1)
@@ -267,7 +305,7 @@ internal class SimulationModel (Simulation simulation) {
 
         IDType resultEndIdx = resultBallotIdx;
 
-        // Then, Result Links can be corectly mapped from IDs to indexes
+        // Result Links are mapped from IDs to indexes
         foreach (Ballot ballot in simulation.Ballots) {
             (string title, string _, string[] _, string[] pass, string[] fail) = localisation.Ballots[ballot.ID];
             // Fail (left, first), pass (right, second)
@@ -281,9 +319,9 @@ internal class SimulationModel (Simulation simulation) {
             }
 
             foreach (Ballot.Effect e in ballot.FailResult.Effects) {
-                List<string> effect = [.. e.ToString (in localisation).Split ('\n')];
+                List<string> effect = [.. e.ToString (in simulation, in localisation).Split ('\n')];
 
-                effectsFail = effect.ConvertAll (l => new LineModel (l, true));
+                effectsFail.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
             }
 
             SlideBranchingModel slideBallotFail = new (
@@ -306,9 +344,9 @@ internal class SimulationModel (Simulation simulation) {
             }
 
             foreach (Ballot.Effect e in ballot.PassResult.Effects) {
-                List<string> effect = [.. e.ToString (in localisation).Split ('\n')];
+                List<string> effect = [.. e.ToString (in simulation, in localisation).Split ('\n')];
 
-                effectsPass = effect.ConvertAll (l => new LineModel (l, true));
+                effectsPass.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
             }
 
             SlideBranchingModel slideBallotPass = new (
@@ -340,7 +378,6 @@ internal class SimulationModel (Simulation simulation) {
 
         foreach (Result result in simulation.Results) {
             (string title, string[] description) = localisation.Results[result.ID];
-            // TODO: Convert Condition back to l.Condition later
             List<Link<SlideModel>> links = result.Links.ConvertAll (l =>
                 new Link<SlideModel> (l.Condition, l.TargetID + resultIdxOffset)
             );

@@ -1,7 +1,6 @@
 Finish Simulation Validate
 current issues with slideshow:
 without a proper SimulationContext, it's impossible to test the vote conditions
-procedures tostring and slides
 
 i wish i could centralise fonts
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
@@ -11,9 +10,8 @@ Simulation needs a way to know if it's on a Ballot slide or not; once entering a
 clicking on a ballot vote link confirms the vote and adds it (or not) to the ballotsPassed
 test the other Conditions (completed: And, Or, Always, Never)
 double check class vs struct
-once i figure out Permissions stuff, i need to make Procedures work with them because I LOVE CANADA
+once i figure out Permissions stuff, i need to make Procedures work with them because I LOVE CANADA (or it could be Ballot Effect, boring but easier probably)
 the netherlands is a good way to test if the unique localisation roles work
-maybe keyboard navigation, though that seems a little tough
 
 
 

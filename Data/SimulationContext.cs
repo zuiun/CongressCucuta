@@ -8,7 +8,7 @@
 internal class SimulationContext {
     internal class BallotContext (byte peopleCount, bool isSimpleMajority = true) {
         // 50% + 1
-        private readonly byte _majoritySimple = (byte) Math.Ceiling (peopleCount / 2m);
+        private readonly byte _majoritySimple = (byte) (Math.Floor (peopleCount / 2m) + 1);
         // 2 / 3
         private readonly byte _majoritySuper = (byte) Math.Ceiling ((peopleCount * 2) / 3m);
 
@@ -52,7 +52,6 @@ internal class SimulationContext {
     private readonly Dictionary<IDType, Permissions> _rolesPermissions = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleRoles = [];
     private readonly Dictionary<IDType, HashSet<IDType>> _peopleFactions = [];
-    private readonly Dictionary<IDType, sbyte> _currenciesValues = [];
     private readonly HashSet<IDType> _partiesActive = [];
     private readonly HashSet<IDType> _regionsActive = [];
     private readonly HashSet<IDType> _proceduresActive = [];
@@ -63,13 +62,22 @@ internal class SimulationContext {
     public Dictionary<IDType, Faction> Parties => [];
     public Dictionary<IDType, Faction> Regions => [];
     public Dictionary<IDType, Currency> Currencies => [];
+    public Dictionary<IDType, sbyte> CurrenciesValues => [];
     public Dictionary<IDType, Procedure> Procedures => [];
     public Dictionary<IDType, Ballot> Ballots => [];
     public BallotContext? Ballot { get; set; }
 
+    public SimulationContext (Simulation simulation) {
+        // TODO: populate
+        foreach (var k in simulation.RolesPermissions) {
+            Roles[k.Key.ID] = k.Key;
+            _rolesPermissions[k.Key.ID] = k.Value;
+        }
+    }
+
     public void PassBallot (IDType ballotId) => _ballotsPassed.Add (ballotId);
 
-    public void SetCurrencyValue (IDType currencyId, sbyte value) => _currenciesValues[currencyId] = value;
+    public void SetCurrencyValue (IDType currencyId, sbyte value) => CurrenciesValues[currencyId] = value;
 
     public void ActivateProcedure (IDType procedureId) => _proceduresActive.Add (procedureId);
 
@@ -81,7 +89,7 @@ internal class SimulationContext {
 
     public byte GetBallotsPassedCount () => (byte) _ballotsPassed.Count;
 
-    public sbyte GetCurrencyValue (IDType currencyId) => _currenciesValues.GetValueOrDefault (currencyId);
+    public sbyte GetCurrencyValue (IDType currencyId) => CurrenciesValues.GetValueOrDefault (currencyId);
 
     public bool IsProcedureActive (IDType procedureId) => _proceduresActive.Contains (procedureId);
 }
