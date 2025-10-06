@@ -19,7 +19,7 @@ internal class SimulationViewModel : ViewModel {
 
         _slide.Replace (in slide, _simulation.Localisation);
     }
-    
+
     public RelayCommand<Link<SlideModel>> SwitchSlideCommand => new (
         l => {
             IDType? result = _simulation.ResolveLink (l);

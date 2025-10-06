@@ -2,8 +2,8 @@
 
 namespace congress_cucuta.Views;
 
-public partial class FileWindow : Window {
-    public FileWindow () {
+public partial class SetupWindow : Window {
+    public SetupWindow () {
         InitializeComponent ();
     }
 }
