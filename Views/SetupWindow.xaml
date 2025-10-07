@@ -10,9 +10,16 @@
     <Window.DataContext>
         <vm:SetupViewModel/>
     </Window.DataContext>
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+    </Window.Resources>
 
     <Grid>
-        <local:FileView Visibility = "{Binding IsFileSetup, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
-        <local:PeopleView Visibility = "{Binding IsPeopleSetup, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
+        <Grid Visibility = "{Binding IsFileSetup, Converter = {StaticResource BooleanToVisibilityConverter}}">
+            <local:FileView DataContext = "{Binding File}"/>
+        </Grid>
+        <Grid Visibility = "{Binding IsPeopleSetup, Converter = {StaticResource BooleanToVisibilityConverter}}">
+            <local:PeopleView DataContext = "{Binding People}"/>
+        </Grid>
     </Grid>
 </Window>

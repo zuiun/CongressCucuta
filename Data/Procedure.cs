@@ -1,5 +1,6 @@
-﻿using System.Diagnostics;
-using congress_cucuta.Converters;
+﻿using congress_cucuta.Converters;
+using System.Diagnostics;
+using System.Text.Json.Serialization;
 
 namespace congress_cucuta.Data;
 
@@ -82,6 +83,7 @@ internal abstract class Procedure (
             ProcedureActivate,
             /*
              * Assigns Target Roles to Regions
+             * Elects LEADER_REGION if present
              *
              * Immediate, Declared
              * Targets Roles (empty: every, populated: excluded)
@@ -89,6 +91,7 @@ internal abstract class Procedure (
             ElectionRegion,
             /*
              * Assigns Target Roles to Parties
+             * Elects LEADER_PARTY if present
              *
              * Immediate, Declared
              * Targets Roles (empty: every, populated: excluded)
@@ -98,14 +101,14 @@ internal abstract class Procedure (
              * Elects Target Role
              *
              * Immediate, Declared
-             * Targets Roles (populated [one]: specified)
+             * Targets Roles (populated: specified [first], excluded [remainder])
              */
             ElectionNominated,
             /*
              * Appoints (randomly when Immediate) Target Role
              *
              * Immediate, Declared
-             * Targets Roles (populated [one]: specified)
+             * Targets Roles (populated: specified [first], excluded [remainder])
              */
             ElectionAppointed,
             /*
@@ -156,8 +159,21 @@ internal abstract class Procedure (
                     }
                 }
                 case ActionType.ElectionNominated:
-                case ActionType.ElectionAppointed:
-                    return localisation.Roles[effect.TargetIDs[0]].Item1;
+                case ActionType.ElectionAppointed: {
+                    string target = localisation.Roles[effect.TargetIDs[0]].Item1;
+
+                    if (effect.TargetIDs.Length > 1) {
+                        List<string> excluded = [];
+
+                        for (byte i = 0; i < effect.TargetIDs.Length; ++ i) {
+                            excluded.Add (localisation.Roles[effect.TargetIDs[i]].Item2);
+                        }
+
+                        return $"{target}\nEveryone except {string.Join (", ", excluded)}:";
+                    } else {
+                        return $"{target}\nEveryone:";
+                    }
+                }
                 case ActionType.VotersLimit: {
                     if (effect.TargetIDs.Length > 0) {
                         List<string> excluded = [];
@@ -330,17 +346,25 @@ internal abstract class Procedure (
                     break;
                 }
                 case ActionType.ElectionNominated: {
-                    string target = TargetToString (this, in localisation);
+                    string[] targets = TargetToString (this, in localisation).Split ('\n');
+                    string target = targets[0];
+                    string candidates = targets[1];
 
                     result.Add (StringLineFormatter.Indent ($"Election:", 1));
                     result.Add (StringLineFormatter.Indent ($"Nominate three candidates for {target}", 2));
                     result.Add (StringLineFormatter.Indent ($"Division of chamber", 2));
+                    result.Add (StringLineFormatter.Indent (candidates, 2));
+                    result.Add (StringLineFormatter.Indent ("Can be nominated", 3));
                     break;
                 }
                 case ActionType.ElectionAppointed: {
-                    string target = TargetToString (this, in localisation);
+                    string[] targets = TargetToString (this, in localisation).Split ('\n');
+                    string target = targets[0];
+                    string candidates = targets[1];
 
-                    result.Add (StringLineFormatter.Indent ($"Appoints a {target}", 1));
+                    result.Add (StringLineFormatter.Indent ($"Appoints {target}", 1));
+                    result.Add (StringLineFormatter.Indent (candidates, 2));
+                    result.Add (StringLineFormatter.Indent ("Can be nominated", 3));
                     break;
                 }
                 case ActionType.VotersLimit: {
@@ -359,10 +383,8 @@ internal abstract class Procedure (
         }
     }
 
-    // TODO: remove ProcedureImmediate after done with effects
     internal readonly record struct EffectBundle (
         Effect[] Effects,
-        IDType? ProcedureId = null,
         Confirmation? Confirmation = null,
         byte Value = 0
     );
@@ -371,7 +393,7 @@ internal abstract class Procedure (
     public Effect[] Effects => effects;
     public bool IsActiveStart => isActiveStart;
 
-    public abstract EffectBundle? YieldEffects (ref readonly SimulationContext context);
+    public abstract EffectBundle? YieldEffects (IDType ballotId);
     public abstract string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation);
 }
 
@@ -380,27 +402,27 @@ internal abstract class Procedure (
  * It is immediately deactivated after YieldEffect
  * It can only be activated again through a Procedure
  *
+ * effects: one
  * action: Election*
  */
 internal class ProcedureImmediate : Procedure {
-    public ProcedureImmediate (
-        IDType id,
-        Effect[] effects
-    ) : base (id, effects) {
-        foreach (Effect e in effects) {
-            switch (e.Action) {
-                case Effect.ActionType.ElectionRegion:
-                case Effect.ActionType.ElectionParty:
-                case Effect.ActionType.ElectionNominated:
-                case Effect.ActionType.ElectionAppointed:
-                    break;
-                default:
-                    throw new ArgumentException ($"ProcedureImmediate ID {id}: Action must be Election*");
-            }
+    public ProcedureImmediate (IDType id, Effect[] effects) : base (id, effects) {
+        if (effects.Length != 1) {
+            throw new ArgumentException ($"ProcedureImmediate ID {id}: ProcedureImmediate must have one Effect", nameof (effects));
+        }
+
+        switch (effects[0].Action) {
+            case Effect.ActionType.ElectionRegion:
+            case Effect.ActionType.ElectionParty:
+            case Effect.ActionType.ElectionNominated:
+            case Effect.ActionType.ElectionAppointed:
+                break;
+            default:
+                throw new ArgumentException ($"ProcedureImmediate ID {id}: Action must be Election*");
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (Effects, ID);
+    public override EffectBundle? YieldEffects (IDType ballotId) => new (Effects);
 
     public override string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];
@@ -409,7 +431,7 @@ internal class ProcedureImmediate : Procedure {
             string effect = e.ToString (in simulation, in localisation);
 
             if (e.Action is Effect.ActionType.ElectionAppointed) {
-                effect = effect.Replace ("A", "Randomly a");
+                effect = effect.Replace ("Appoints", "Randomly appoint");
             }
 
             result.Add (effect);
@@ -424,6 +446,7 @@ internal class ProcedureImmediate : Procedure {
  * filter controls on which ballots it activates
  * filterIDs only matters if filter is TargetType.Only or TargetType.Except
  *
+ * effects: at least one
  * action: Vote*, Currency*, ProcedureActivate
  * filter: Ballot
  */
@@ -431,11 +454,11 @@ internal class ProcedureTargeted : Procedure {
     // Filters Ballots (empty: every, populated: specified)
     public IDType[] BallotIDs { get; }
 
-    public ProcedureTargeted (
-        IDType id,
-        Effect[] effects,
-        IDType[] ballotIds
-    ) : base (id, effects) {
+    public ProcedureTargeted (IDType id, Effect[] effects, IDType[] ballotIds) : base (id, effects) {
+        if (effects.Length == 0) {
+            throw new ArgumentException ($"ProcedureTargeted ID {id}: ProcedureTargeted must have Effect");
+        }
+
         foreach (Effect e in effects) {
             switch (e.Action) {
                 case Effect.ActionType.VotePassAdd:
@@ -470,19 +493,25 @@ internal class ProcedureTargeted : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) =>
-        BallotIDs.Length == 0 || BallotIDs.Contains(context.BallotCurrentID)
-            ? new EffectBundle ([.. Effects])
-            : null;
+    public override EffectBundle? YieldEffects (IDType ballotId) =>
+        (BallotIDs.Length == 0 || BallotIDs.Contains (ballotId)) ? new EffectBundle (Effects) : null;
 
     public override string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];
         string filter = StringLineFormatter.Indent (FilterToString (in localisation), 1);
-
-        result.Add (filter);
+        bool isFilterAdded = false;
 
         foreach (Effect e in Effects) {
             result.Add (e.ToString (in simulation, in localisation));
+
+            if (e.Action is Effect.ActionType.CurrencyInitialise) {
+                result.Add (filter);
+                isFilterAdded = true;
+            }
+        }
+
+        if (! isFilterAdded) {
+            result.Insert (1, filter);
         }
 
         return string.Join ('\n', result);
@@ -493,8 +522,9 @@ internal class ProcedureTargeted : Procedure {
  * Activates declaratively
  * Empty confirmationIDs means it activates on every Ballot
  *
+ * effect: one
  * action: Election*, VotersLimit
- * filter: Role (declarer)
+ * declarerIds: Role (declarer)
  */
 internal class ProcedureDeclared : Procedure {
     private readonly Confirmation _confirmation;
@@ -507,34 +537,36 @@ internal class ProcedureDeclared : Procedure {
         Effect[] effects,
         Confirmation confirmation,
         byte value,
-        IDType[] declarerIDs
+        IDType[] declarerIds
     ) : base (id, effects) {
-        foreach (Effect e in effects) {
-            switch (e.Action) {
-                case Effect.ActionType.ElectionRegion:
-                case Effect.ActionType.ElectionParty:
-                case Effect.ActionType.VotersLimit:
-                    break;
-                case Effect.ActionType.ElectionNominated:
-                    if (e.TargetIDs.Length == 0) {
-                        throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionNominated Target must be populated");
-                    }
+        if (effects.Length != 1) {
+            throw new ArgumentException ($"ProcedureDeclared ID {id}: ProcedureDeclared must have one Effect", nameof (effects));
+        }
 
-                    break;
-                case Effect.ActionType.ElectionAppointed:
-                    if (e.TargetIDs.Length == 0) {
-                        throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionAppointed Target must be populated");
-                    }
+        switch (effects[0].Action) {
+            case Effect.ActionType.ElectionRegion:
+            case Effect.ActionType.ElectionParty:
+            case Effect.ActionType.VotersLimit:
+                break;
+            case Effect.ActionType.ElectionNominated:
+                if (effects[0].TargetIDs.Length == 0) {
+                    throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionNominated Target must be populated");
+                }
 
-                    break;
-                default:
-                    throw new ArgumentException ($"ProcedureDeclared ID {id}: Action must be Election* or VotersLimit");
-            }
+                break;
+            case Effect.ActionType.ElectionAppointed:
+                if (effects[0].TargetIDs.Length == 0) {
+                    throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionAppointed Target must be populated");
+                }
+
+                break;
+            default:
+                throw new ArgumentException ($"ProcedureDeclared ID {id}: Action must be Election* or VotersLimit");
         }
 
         _confirmation = confirmation;
         _value = value;
-        DeclarerIDs = declarerIDs;
+        DeclarerIDs = declarerIds;
     }
 
     private string DeclarerToString (ref readonly Localisation localisation) {
@@ -602,7 +634,7 @@ internal class ProcedureDeclared : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (ref readonly SimulationContext context) => new (Effects, Confirmation: _confirmation, Value: _value);
+    public override EffectBundle? YieldEffects (IDType ballotId) => new (Effects, Confirmation: _confirmation, Value: _value);
 
     public override string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];

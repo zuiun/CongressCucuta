@@ -1,3 +1,18 @@
+ELECTIONS (not sure if party (normal and leader), region (leader), appointed, or shuffle work)
+gameplay loop:
+context refreshes its state, queries all of its proceduresactive, and applies them -> create a ballot context once done
+(users vote and do whatever)
+vote is locked in
+simulation context applies ballot result effect to itself
+
+Procedure stuff:
+proceduresActive should contain all ProcedureTargeted and ProcedureImmediate (at start); procedureDeclared does not get added
+for ProcedureDeclared, it is only visible for people who meet its filters
+upon starting a ballot, yield all proceduresActive and apply their effects
+if EffectBundle has a procedureID, then remove that procedure from active procedures (it is ProcedureImmediate)
+
+
+
 i wish i could centralise fonts
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
 Australia is bicameral NOOOOOOOOOO
@@ -19,7 +34,7 @@ People ItemsControl (sorted by party (independents, eg heads of state come befor
 Name [Roles] | pass/fail/abstain RadioButton (default to abstain) | available ProcedureDeclared Expander (opens left)
 
 Ballots ItemsControl:
-Ballot/Incident | pass-fail-abstain (successful option highlighted and coloured green/red)
+Ballot/Incident | pass-fail-abstain (successful option bolded and coloured green/red)
 
 Procedures Expander (opens up, covers entire Grid):
 Governmental
@@ -41,12 +56,3 @@ space-between equivalent:
         <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
 </Grid>
-
-
-
-Procedure stuff:
-for ProcedureDeclared, it can only be pressed for people who meet its filters
-for ProcedureRepeating, automatically yield every ballot
-after YieldEffect
-if EffectBundle has a procedureID, then remove that procedure from active procedures (it is ProcedureImmediate)
-apply effects

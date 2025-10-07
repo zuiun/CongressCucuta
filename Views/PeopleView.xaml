@@ -11,19 +11,20 @@
         <Style TargetType = "Button">
             <Setter Property = "FontFamily" Value = "Candara"/>
             <Setter Property = "FontSize" Value = "16"/>
-            <Setter Property = "Padding" Value = "4"/>
+            <Setter Property = "Padding" Value = "12, 6, 12, 6"/>
+            <Setter Property = "HorizontalAlignment" Value = "Center"/>
+            <Setter Property = "Focusable" Value = "False"/>
         </Style>
         <Style TargetType = "TextBlock">
             <Setter Property = "FontFamily" Value = "Nirmala UI"/>
             <Setter Property = "FontSize" Value = "16"/>
         </Style>
-        <Style TargetType = "DataGrid">
-            <Setter Property = "AutoGenerateColumns" Value = "False"/>
-            <Setter Property = "CanUserAddRows" Value = "False"/>
-            <Setter Property = "CanUserDeleteRows" Value = "False"/>
-            <Setter Property = "CanUserResizeRows" Value = "False"/>
-            <Setter Property = "CanUserSortColumns" Value = "False"/>
-            <Setter Property = "HeadersVisibility" Value = "Column"/>
+        <Style TargetType = "TextBox">
+            <Setter Property = "FontFamily" Value = "Nirmala UI"/>
+        </Style>
+        <Style TargetType = "ListBox">
+            <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
+            <Setter Property = "FontSize" Value = "12"/>
         </Style>
         <Style x:Key = "Error" TargetType = "TextBlock" BasedOn = "{StaticResource {x:Type TextBlock}}">
             <Setter Property = "Foreground" Value = "Red"/>
@@ -40,7 +41,8 @@
                     <Setter Property = "Visibility" Value = "Visible"/>
                 </MultiDataTrigger>
             </Style.Triggers>
-
+            
+            <Setter Property = "FontFamily" Value = "Nirmala UI"/>
             <Setter Property = "Visibility" Value = "Collapsed"/>
             <Setter Property = "Foreground" Value = "Gray"/>
             <Setter Property = "IsHitTestVisible" Value = "False"/>
@@ -66,7 +68,7 @@
                 Add participants:
             </TextBlock>
             <Grid Margin = "0, 0, 0, 24">
-                <TextBlock Style = "{StaticResource Watermark}" Text = "Name" Panel.ZIndex = "1" Margin = "4, 0, 0, 0"/>
+                <TextBlock Style = "{StaticResource Watermark}" Text = "Name" Panel.ZIndex = "1" Margin = "3, 1, 0, 0"/>
                 <TextBox x:Name = "NameBox" Text = "{Binding Name, UpdateSourceTrigger = PropertyChanged}"/>
             </Grid>
             <Button Content = "Add" Command = "{Binding AddNameCommand}" Margin = "0, 0, 0, 24"/>
@@ -84,13 +86,28 @@
             </TextBlock>
             <Button Grid.Row = "1" Grid.Column = "1" Content = "Begin" Command = "{Binding FinishInputCommand}"/>
         </StackPanel>
-        <DataGrid Grid.Row = "1"
-                  Grid.Column = "3"
-                  ItemsSource = "{Binding Names}"
-                  SelectedIndex = "{Binding SelectedIdx}">
-            <DataGrid.Columns>
-                <DataGridTextColumn Header = "Name" Width = "*" Binding = "{Binding Name}"/>
-            </DataGrid.Columns>
-        </DataGrid>
+        <Grid Grid.Row = "1" Grid.Column = "3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height = "1*"/>
+                <RowDefinition Height = "9*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row = "0" Text = "Names" HorizontalAlignment = "Center" VerticalAlignment = "Center"/>
+            <ListBox Grid.Row = "1"
+                     ItemsSource = "{Binding Names}"
+                     SelectedIndex = "{Binding SelectedIdx}"
+                     HorizontalContentAlignment = "Stretch">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType = "ListBoxItem">
+                        <Setter Property = "Padding" Value = "0"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text = "{Binding Name}" Margin = "4, 0, 0, 2"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
     </Grid>
 </UserControl>

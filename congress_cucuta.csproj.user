@@ -5,7 +5,13 @@
     <Compile Update="Views\CompilerWindow.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\ElectionWindow.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
     <Compile Update="Views\FileView.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\GroupView.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Update="Views\LinkView.xaml.cs">

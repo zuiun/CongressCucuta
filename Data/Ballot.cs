@@ -12,28 +12,30 @@ internal class Ballot (
 ) : IID {
     internal readonly record struct Effect {
         internal enum ActionType {
-            CreateParty, // Targets Factions
-            DissolveParty, // Targets Factions
             // Regions are not intended to change
+            FoundParty, // Targets Factions, elects PARTY_LEADER (if present)
+            DissolveParty, // Targets Factions, elects PARTY_LEADER (if present)
             RemoveProcedure, // Targets Procedures
-            ReplaceProcedure, // Targets Procedures [original, new]
-            // Action *Currency should only Target same-name/-category Currencies
-            AddCurrency, // Targets Currencies (Faction ID, REGION, PARTY, STATE)
-            SubtractCurrency, // Targets Currencies (Faction ID, REGION, PARTY, STATE)
+            ReplaceProcedure, // Targets Procedures (original, new)
+            ModifyCurrency, // Targets Currencies (Faction ID [only same-category], REGION [one], PARTY [one], STATE [one])
         }
 
         public ActionType Action { get; }
-        public List<IDType> TargetIDs { get; }
-        public byte? Value { get; }
+        public IDType[] TargetIDs { get; }
+        public sbyte Value { get; }
 
         [JsonConstructor]
-        public Effect (ActionType action, List<IDType> targetIds, byte? value = null) {
-            if (targetIds.Count == 0) {
+        public Effect (ActionType action, IDType[] targetIds, sbyte value = 0) {
+            if (targetIds.Length == 0) {
                 throw new ArgumentException ("Target IDs must be populated", nameof (targetIds));
             }
 
-            if (action is ActionType.ReplaceProcedure && targetIds.Count != 2) {
+            if (action is ActionType.ReplaceProcedure && targetIds.Length != 2) {
                 throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceProcedure", nameof (targetIds));
+            }
+
+            if (action is ActionType.ModifyCurrency && value == 0) {
+                throw new ArgumentException ("Value must be non-zero for Action ModifyCurrency", nameof (targetIds));
             }
 
             Action = action;
@@ -43,14 +45,14 @@ internal class Ballot (
 
         public string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
             switch (Action) {
-                case ActionType.CreateParty: {
+                case ActionType.FoundParty: {
                     List<string> parties = [];
 
                     foreach (IDType t in TargetIDs) {
                         parties.Add (localisation.GetFactionAndAbbreviation (t));
                     }
 
-                    return $"Create {string.Join (", ", parties)}";
+                    return $"Found {string.Join (", ", parties)}";
                 }
                 case ActionType.DissolveParty: {
                     List<string> parties = [];
@@ -83,15 +85,17 @@ internal class Ballot (
                     result.AddRange (procedureSplit[1 ..]);
                     return string.Join ('\n', result);
                 }
-                case ActionType.AddCurrency: {
+                case ActionType.ModifyCurrency: {
                     string currency = localisation.Currencies[TargetIDs[0]];
+                    string action = Value > 0 ? "Gain" : "Lose";
+                    sbyte value = Math.Abs (Value);
 
                     if (TargetIDs[0] == Currency.STATE) {
-                        return $"Gain {Value} {currency}";
+                        return $"{action} {value} {currency}";
                     } else if (TargetIDs[0] == Currency.PARTY) {
-                        return $"Every {localisation.Party.Item1}:\n{StringLineFormatter.Indent ($"Gains {Value} {currency}", 1)}";
+                        return $"Every {localisation.Party.Item1}:\n{StringLineFormatter.Indent ($"{action}s {value} {currency}", 1)}";
                     } else if (TargetIDs[0] == Currency.REGION) {
-                        return $"Every {localisation.Region.Item1}:\n{StringLineFormatter.Indent ($"Gains {Value} {currency}", 1)}";
+                        return $"Every {localisation.Region.Item1}:\n{StringLineFormatter.Indent ($"{action}s {value} {currency}", 1)}";
                     } else {
                         List<string> owners = [];
     
@@ -99,27 +103,7 @@ internal class Ballot (
                             owners.Add (localisation.GetFactionOrAbbreviation (t));
                         }
 
-                        return $"{string.Join (", ", owners)}:\n{StringLineFormatter.Indent ($"Gain {Value} {currency}", 1)}";
-                    }
-
-                }
-                case ActionType.SubtractCurrency: {
-                    string currency = localisation.Currencies[TargetIDs[0]];
-
-                    if (TargetIDs[0] == Currency.STATE) {
-                        return $"Lose {Value} {currency}";
-                    } else if (TargetIDs[0] == Currency.PARTY) {
-                        return $"Every {localisation.Party.Item1}:\n{StringLineFormatter.Indent ($"Loses {Value} {currency}", 1)}";
-                    } else if (TargetIDs[0] == Currency.REGION) {
-                        return $"Every {localisation.Region.Item1}:\n{StringLineFormatter.Indent ($"Loses {Value} {currency}", 1)}";
-                    } else {
-                        List<string> owners = [];
-
-                        foreach (IDType t in TargetIDs) {
-                            owners.Add (localisation.GetFactionOrAbbreviation (t));
-                        }
-
-                        return $"{string.Join (", ", owners)}:\n{StringLineFormatter.Indent ($"Lose {Value} {currency}", 1)}";
+                        return $"{string.Join (", ", owners)}:\n{StringLineFormatter.Indent ($"{action} {value} {currency}", 1)}";
                     }
                 }
                 default:

@@ -56,12 +56,23 @@
         }
       ],
       "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 7,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
     }
   ],
   "ProceduresSpecial": [
     {
       "BallotIDs": [],
-      "ID": 1,
+      "ID": 2,
       "Effects": [
         {
           "Action": 5,
@@ -91,7 +102,7 @@
         1,
         2
       ],
-      "ID": 2,
+      "ID": 3,
       "Effects": [
         {
           "Action": 0,
@@ -105,26 +116,12 @@
       "BallotIDs": [
         3
       ],
-      "ID": 3,
+      "ID": 4,
       "Effects": [
         {
           "Action": 0,
           "TargetIDs": [],
           "Value": 1
-        }
-      ],
-      "IsActiveStart": true
-    },
-    {
-      "BallotIDs": [
-        0
-      ],
-      "ID": 4,
-      "Effects": [
-        {
-          "Action": 2,
-          "TargetIDs": [],
-          "Value": 0
         }
       ],
       "IsActiveStart": true
@@ -153,7 +150,7 @@
             "TargetIDs": [
               4
             ],
-            "Value": null
+            "Value": 0
           },
           {
             "Action": 4,
@@ -179,12 +176,12 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 5,
+            "Action": 4,
             "TargetIDs": [
               1,
               2
             ],
-            "Value": 2
+            "Value": -2
           }
         ],
         "Links": [
@@ -214,11 +211,11 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 5,
+            "Action": 4,
             "TargetIDs": [
               253
             ],
-            "Value": 2
+            "Value": -2
           }
         ],
         "Links": [
@@ -250,9 +247,9 @@
           {
             "Action": 2,
             "TargetIDs": [
-              3
+              4
             ],
-            "Value": null
+            "Value": 0
           }
         ],
         "Links": []
@@ -270,7 +267,7 @@
         {
           "Condition": {
             "$type": "ProcedureActiveCondition",
-            "ProcedureID": 3,
+            "ProcedureID": 4,
             "ShouldBeActive": false
           },
           "TargetID": 1
@@ -278,7 +275,7 @@
         {
           "Condition": {
             "$type": "ProcedureActiveCondition",
-            "ProcedureID": 3,
+            "ProcedureID": 4,
             "ShouldBeActive": true
           },
           "TargetID": 2
@@ -440,20 +437,20 @@
         "Item2": "This country has a powerful, elected executive who is separate from the legislature."
       },
       "1": {
+        "Item1": "Constitution of Cucuta",
+        "Item2": "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
+      },
+      "2": {
         "Item1": "Liberal Reforms",
         "Item2": "Colombia has adopted liberal economic reforms to stimulate the economy, but not every department benefits from these reforms."
       },
-      "2": {
+      "3": {
         "Item1": "Bolivarianism",
         "Item2": "The ideals of Sim\u00F3n Bol\u00EDvar, which most prominently include the liberation and unification of all of Latin America under a massive federation, are extremely popular in Colombia."
       },
-      "3": {
+      "4": {
         "Item1": "Repressed Federalism",
         "Item2": "Colombia was originally established as a federation, but the power of the departments has been suppressed in order to wage the war against Spain; this is an extremely unpopular measure in Venezuela, which sees itself as dominated by Cundinamarca."
-      },
-      "4": {
-        "Item1": "Constitution of Cucuta",
-        "Item2": "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
       }
     },
     "Ballots": {

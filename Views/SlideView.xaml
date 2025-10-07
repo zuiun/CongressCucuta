@@ -12,10 +12,6 @@
             <Setter Property = "FontFamily" Value = "Candara"/>
             <Setter Property = "FontSize" Value = "44"/>
         </Style>
-        <Style TargetType = "Button">
-            <Setter Property = "FontFamily" Value = "Candara"/>
-            <Setter Property = "FontSize" Value = "28"/>
-        </Style>
         <Style x:Key = "Content" TargetType = "Grid">
             <Setter Property = "Visibility" Value = "{Binding IsContent, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
         </Style>
@@ -23,6 +19,7 @@
             <Setter Property = "Visibility" Value = "{Binding IsSubtitle, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
         </Style>
     </UserControl.Resources>
+    
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height = "9*"/>

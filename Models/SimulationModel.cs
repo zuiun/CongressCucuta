@@ -3,12 +3,54 @@ using congress_cucuta.Data;
 
 namespace congress_cucuta.Models;
 
-internal class SimulationModel (Simulation simulation) {
-    private readonly SimulationContext _context = new (simulation);
-    public SimulationContext Context => _context;
-    public Localisation Localisation => simulation.Localisation;
-    public List<SlideModel> Slides { get; } = GenerateSlides (in simulation);
-    public IDType SlideCurrentIdx { get; set; } = 0;
+internal class CompletingElectionEventArgs (PreparingElectionEventArgs args, ref readonly Localisation localisation) {
+    public List<ElectionModel> Elections = args.Elections.ConvertAll (e => new ElectionModel (e));
+    public Dictionary<IDType, SortedSet<IDType>> PeopleRoles = args.PeopleRoles;
+    public Dictionary<IDType, (IDType?, IDType?)> PeopleFactions = args.PeopleFactions;
+    public HashSet<IDType> PartiesActive = args.PartiesActive;
+    public HashSet<IDType> RegionsActive = args.RegionsActive;
+    public SortedList<IDType, string> PeopleNames = new (args.People.ToDictionary (k => k.Key, k => k.Value.Name));
+    public Localisation Localisation = localisation;
+    public Dictionary<IDType, SortedSet<IDType>> PeopleRolesNew = [];
+    public Dictionary<IDType, (IDType?, IDType?)> PeopleFactionsNew = [];
+}
+
+internal class SimulationModel {
+    private readonly SimulationContext _context;
+    private readonly Localisation _localisation;
+    private IDType _slideCurrentIdx = 0;
+    private readonly IDType _slideTitleIdx;
+    private readonly Dictionary<IDType, IDType> _ballotIdxsIds;
+    public Localisation Localisation => _localisation;
+    public List<SlideModel> Slides { get; }
+    public IDType SlideCurrentIdx {
+        get => _slideCurrentIdx;
+        set {
+            _slideCurrentIdx = value;
+
+            if (_slideCurrentIdx == _slideTitleIdx) {
+                _context.StartSetup ();
+            } else if (_ballotIdxsIds.TryGetValue (_slideCurrentIdx, out IDType ballotId)) {
+                _context.BallotCurrentID = ballotId;
+            }
+        }
+    }
+    public event EventHandler<CompletingElectionEventArgs>? CompletingElection;
+
+    public SimulationModel (Simulation simulation) {
+        _context = new (simulation);
+        _context.PreparingElection += Context_PreparingElectionEventHandler;
+        _localisation = simulation.Localisation;
+        (Slides, _slideTitleIdx, _ballotIdxsIds) = GenerateSlides (in simulation);
+    }
+
+    private void Context_PreparingElectionEventHandler (object? sender, PreparingElectionEventArgs e) {
+        CompletingElectionEventArgs args = new (e, in _localisation);
+
+        CompletingElection?.Invoke (this, args);
+        e.PeopleRolesNew = args.PeopleRolesNew;
+        e.PeopleFactionsNew = args.PeopleFactionsNew;
+    }
 
     private static IDType GenerateSlidesIntroduction (ref readonly Localisation localisation, ref List<SlideModel> slides) {
         IDType slideCurrentIdx = 0;
@@ -21,16 +63,6 @@ internal class SimulationModel (Simulation simulation) {
 
         ++ slideCurrentIdx;
         slides.Add (slideContext);
-
-        SlideBidirectionalModel slideTitle = new (
-            slideCurrentIdx,
-            localisation.Period,
-            [localisation.Date, localisation.Situation],
-            false
-        );
-
-        ++ slideCurrentIdx;
-        slides.Add (slideTitle);
         return slideCurrentIdx;
     }
 
@@ -255,7 +287,7 @@ internal class SimulationModel (Simulation simulation) {
         return slideCurrentIdx;
     }
 
-    private static IDType GenerateSlidesBallots (
+    private static (IDType, IDType, Dictionary<IDType, IDType>) GenerateSlidesBallots (
         ref readonly Simulation simulation,
         ref readonly Localisation localisation,
         ref List<SlideModel> slides,
@@ -274,6 +306,17 @@ internal class SimulationModel (Simulation simulation) {
 
         ++ slideCurrentIdx;
         slides.Add (slideBallots);
+
+        IDType slideTitleIdx = slideCurrentIdx;
+        SlideBidirectionalModel slideTitle = new (
+            slideCurrentIdx,
+            localisation.Period,
+            [localisation.Date, localisation.Situation],
+            false
+        );
+
+        ++ slideCurrentIdx;
+        slides.Add (slideTitle);
 
         IDType ballotIdx = slideCurrentIdx;
         IDType resultBallotIdx = slideCurrentIdx + simulation.Ballots.Count;
@@ -362,7 +405,10 @@ internal class SimulationModel (Simulation simulation) {
 
         slides.AddRange (slidesBallots);
         slides.AddRange (slidesResultBallots);
-        return slideCurrentIdx;
+
+        Dictionary<IDType, IDType> ballotIdxsIds = ballotIDsFinalIdxs.ToDictionary (k => k.Value, k => k.Key);
+
+        return (slideCurrentIdx, slideTitleIdx, ballotIdxsIds);
     }
 
     private static IDType GenerateSlidesResults (
@@ -438,20 +484,21 @@ internal class SimulationModel (Simulation simulation) {
         slides.Add (slideEnd);
     }
 
-    private static List<SlideModel> GenerateSlides (ref readonly Simulation simulation) {
+    private static (List<SlideModel>, IDType, Dictionary<IDType, IDType>) GenerateSlides (ref readonly Simulation simulation) {
         Localisation localisation = simulation.Localisation;
         List<SlideModel> slides = [];
-        IDType slideCurrentIdx;
+        IDType slideCurrentIdx = GenerateSlidesIntroduction (in localisation, ref slides);
 
-        slideCurrentIdx = GenerateSlidesIntroduction (in localisation, ref slides);
         slideCurrentIdx = GenerateSlidesProcedures (in simulation, in localisation, ref slides, slideCurrentIdx);
         slideCurrentIdx = GenerateSlidesPermissions (in simulation, in localisation, ref slides, slideCurrentIdx);
         slideCurrentIdx = GenerateSlidesFactions (in simulation, in localisation, ref slides, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlidesBallots (in simulation, in localisation, ref slides, slideCurrentIdx);
+        (slideCurrentIdx, IDType slideTitleIdx, var ballotsIdxsIds) = GenerateSlidesBallots (in simulation, in localisation, ref slides, slideCurrentIdx);
         slideCurrentIdx = GenerateSlidesResults (in simulation, in localisation, ref slides, slideCurrentIdx);
         GenerateSlidesEnd (in simulation, in localisation, ref slides, slideCurrentIdx);
-        return slides;
+        return (slides, slideTitleIdx, ballotsIdxsIds);
     }
+
+    public void InitialisePeople (List<Person> people) => _context.InitialisePeople (people);
 
     public IDType? ResolveLink (Link<SlideModel> link) => link.Evaluate (in _context) ? link.TargetID : null;
 

@@ -65,53 +65,51 @@ internal class Colombia {
             0,
             [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
         );
-        List<ProcedureImmediate> proceduresGovernmental = [presidentialElection/*, constitutionCucuta*/];
-        ProcedureTargeted liberalReforms = new (
+        ProcedureImmediate constitutionCucuta = new (
             1,
+            [new (Procedure.Effect.ActionType.ElectionRegion, [])]
+        );
+        List<ProcedureImmediate> proceduresGovernmental = [presidentialElection, constitutionCucuta];
+        ProcedureTargeted liberalReforms = new (
+            2,
             [
                 new (Procedure.Effect.ActionType.CurrencyInitialise, []),
-                new (Procedure.Effect.ActionType.CurrencyAdd, [0, 1], 1),
-                new (Procedure.Effect.ActionType.CurrencySubtract, [2], 1),
+                new (Procedure.Effect.ActionType.CurrencyAdd, [prosperityCundinamarca, prosperityVenezuela], 1),
+                new (Procedure.Effect.ActionType.CurrencySubtract, [prosperityQuito], 1),
             ],
             []
         );
         ProcedureTargeted bolivarianism = new (
-            2,
+            3,
             [new (Procedure.Effect.ActionType.VotePassAdd, [], 1)],
             [1, 2]
         );
         ProcedureTargeted repressedFederalism = new (
-            3,
+            4,
             [new (Procedure.Effect.ActionType.VotePassAdd, [], 1)],
             [3]
         );
-        ProcedureTargeted constitutionCucuta = new (
-            4,
-            [new (Procedure.Effect.ActionType.VotePassTwoThirds, [])],
-            [0]
-        );
-        List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism, constitutionCucuta];
-        List<ProcedureDeclared> proceduresDeclared = [/*test*/];
+        List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism];
         Dictionary<IDType, (string, string)> procedures = [];
-        procedures[0] = (
+        procedures[presidentialElection.ID] = (
             "Presidential Election",
             "This country has a powerful, elected executive who is separate from the legislature."
         );
-        procedures[1] = (
+        procedures[constitutionCucuta.ID] = (
+            "Constitution of Cucuta",
+            "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
+        );
+        procedures[liberalReforms.ID] = (
             "Liberal Reforms",
             "Colombia has adopted liberal economic reforms to stimulate the economy, but not every department benefits from these reforms."
         );
-        procedures[2] = (
+        procedures[bolivarianism.ID] = (
             "Bolivarianism",
             "The ideals of Simón Bolívar, which most prominently include the liberation and unification of all of Latin America under a massive federation, are extremely popular in Colombia."
         );
-        procedures[3] = (
+        procedures[repressedFederalism.ID] = (
             "Repressed Federalism",
             "Colombia was originally established as a federation, but the power of the departments has been suppressed in order to wage the war against Spain; this is an extremely unpopular measure in Venezuela, which sees itself as dominated by Cundinamarca."
-        );
-        procedures[4] = (
-            "Constitution of Cucuta",
-            "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
         );
 
         Ballot ballotA = new (
@@ -124,11 +122,11 @@ internal class Colombia {
                 [
                     new Ballot.Effect (
                         Ballot.Effect.ActionType.RemoveProcedure,
-                        [4]
+                        [repressedFederalism.ID]
                     ),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.AddCurrency,
-                        [2],
+                        Ballot.Effect.ActionType.ModifyCurrency,
+                        [prosperityQuito],
                         2
                     ),
                 ],
@@ -140,9 +138,9 @@ internal class Colombia {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.SubtractCurrency,
-                        [1, 2],
-                        2
+                        Ballot.Effect.ActionType.ModifyCurrency,
+                        [prosperityVenezuela, prosperityQuito],
+                        -2
                     ),
                 ],
                 [new (new AlwaysCondition (), 2)]
@@ -157,9 +155,9 @@ internal class Colombia {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.SubtractCurrency,
+                        Ballot.Effect.ActionType.ModifyCurrency,
                         [Currency.REGION],
-                        2
+                        -2
                     ),
                 ],
                 [new (new AlwaysCondition (), 3)]
@@ -176,7 +174,7 @@ internal class Colombia {
                 [
                     new Ballot.Effect (
                         Ballot.Effect.ActionType.RemoveProcedure,
-                        [3]
+                        [repressedFederalism.ID]
                     ),
                 ],
                 []
@@ -188,7 +186,7 @@ internal class Colombia {
         );
         List<Ballot> ballots = [ballotA, ballotB, incidentA, ballotC];
         Dictionary<IDType, (string, string, string[], string[], string[])> ballotsLocs = [];
-        ballotsLocs[0] = (
+        ballotsLocs[ballotA.ID] = (
             "Ballot A",
             "Divide the departments",
             [
@@ -208,7 +206,7 @@ internal class Colombia {
                 StringLineFormatter.Indent ("Quitonians expect their own concessions once the Spaniards are fully driven out", 1),
             ]
         );
-        ballotsLocs[1] = (
+        ballotsLocs[ballotB.ID] = (
             "Ballot B",
             "Intervene in Peru",
             [
@@ -219,7 +217,7 @@ internal class Colombia {
             ["Peru is liberated, but Venezuela and Quito are practically emptied to do so"],
             ["Intentionally left blank"]
         );
-        ballotsLocs[2] = (
+        ballotsLocs[incidentA.ID] = (
             "Incident A",
             "Intervene in Upper Peru",
             [
@@ -234,7 +232,7 @@ internal class Colombia {
             ],
             ["Intentionally left blank"]
         );
-        ballotsLocs[3] = (
+        ballotsLocs[ballotC.ID] = (
             "Ballot C",
             "Adopt a federalist constitution",
             [
@@ -365,7 +363,7 @@ internal class Colombia {
 
         Simulation = new (
             new History (
-                [0, 1, 2],
+                [ballotA.ID, ballotB.ID, incidentA.ID],
                 []
             ),
             rolesPermissions,
@@ -374,7 +372,7 @@ internal class Colombia {
             currenciesValues,
             proceduresGovernmental,
             proceduresSpecial,
-            proceduresDeclared,
+            [],
             ballots,
             results,
             new Localisation (

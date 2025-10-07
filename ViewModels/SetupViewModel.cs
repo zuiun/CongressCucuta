@@ -1,26 +1,14 @@
-﻿using Microsoft.Win32;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Text.Json;
-using congress_cucuta.Converters;
-using congress_cucuta.Data;
+﻿using congress_cucuta.Data;
 using congress_cucuta.Views;
 
 namespace congress_cucuta.ViewModels;
 
 internal class SetupViewModel : ViewModel {
-    private readonly JsonSerializerOptions _options = new () {
-        Converters = { new IDTypeJsonConverter () },
-        IncludeFields = true,
-    };
     private Task<SimulationViewModel>? _simulation = null;
     private bool _isFileSetup = true;
     private bool _isPeopleSetup = false;
-    private bool _wasChoiceFailure = false;
-    private string _name = string.Empty;
-    private int _selectedIdx = -1;
-    private readonly ObservableCollection<NameViewModel> _names = [];
-    private bool _wasCreationFailure = false;
+    private readonly FileViewModel _file = new ();
+    private readonly PeopleViewModel _people = new ();
     public bool IsFileSetup {
         get => _isFileSetup;
         set {
@@ -35,105 +23,40 @@ internal class SetupViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public bool WasChoiceFailure {
-        get => _wasChoiceFailure;
-        set {
-            _wasChoiceFailure = value;
-            OnPropertyChanged ();
-        }
-    }
-    public ObservableCollection<NameViewModel> Names => _names;
-    public string Name {
-        get => _name;
-        set {
-            _name = value;
-            OnPropertyChanged ();
-        }
-    }
-    public int SelectedIdx {
-        get => _selectedIdx;
-        set {
-            _selectedIdx = value;
-            OnPropertyChanged ();
-        }
-    }
-    public bool WasCreationFailure {
-        get => _wasCreationFailure;
-        set {
-            _wasCreationFailure = value;
-            OnPropertyChanged ();
-        }
+    public FileViewModel File => _file;
+    public PeopleViewModel People => _people;
+
+    public SetupViewModel () {
+        _file.CreateSimulation += File_CreateSimulationEventHandler;
+        _people.InitialisePeople += People_InitialisePeopleEventHandler;
     }
 
-    public RelayCommand ChooseSimulationCommand => new (_ => {
-        OpenFileDialog file = new () {
-            Filter = "Simulation files (*.sim)|*.sim",
-        };
-        bool? result = file.ShowDialog ();
-
-        // TODO: Enable when context is done
-        if (result! == true) {
-            WasChoiceFailure = false;
-        } else {
-            WasChoiceFailure = true;
-            return;
-        }
-
-        Simulation simulation;
-
-        try {
-            string json = File.ReadAllText (file.FileName);
-            
-            simulation = JsonSerializer.Deserialize<Simulation> (json, _options)!;
-        } catch (Exception) {
-            WasChoiceFailure = true;
-            return;
-        }
-
+    private void File_CreateSimulationEventHandler (Simulation simulation) {
         IsFileSetup = false;
         IsPeopleSetup = true;
-        WasCreationFailure = false;
         _simulation = Task.Run (() => new SimulationViewModel (simulation));
-    });
+    }
 
-    public RelayCommand AddNameCommand => new (
-        _ => {
-            Names.Add (new (Name));
-            Name = string.Empty;
-        },
-        _ => ! string.IsNullOrWhiteSpace (Name)
-    );
+    private async void People_InitialisePeopleEventHandler (List<Person> people) {
+        SimulationViewModel simulation;
 
-    public RelayCommand RemoveNameCommand => new (
-        _ => Names.RemoveAt (SelectedIdx),
-        _ => SelectedIdx > -1
-    );
+        try {
+            simulation = await _simulation!;
+        } catch (Exception) {
+            _people.WasCreationFailure = true;
+            return;
+        }
 
-    public RelayCommand FinishInputCommand => new (
-        async _ => {
-            List<Person> people = [.. Names.Select ((n, i) => new Person (i, n.Name))];
-            SimulationViewModel simulation;
+        simulation.InitialisePeople (people);
 
-            try {
-                simulation = await _simulation!;
-            } catch (Exception) {
-                WasCreationFailure = true;
-                return;
-            }
+        SimulationWindow window = new () {
+            DataContext = simulation,
+        };
 
-            simulation.Simulation.Context.InitialisePeople (people);
-
-            SimulationWindow window = new () {
-                DataContext = simulation,
-            };
-
-            IsPeopleSetup = false;
-            IsFileSetup = true;
-            Name = string.Empty;
-            Names.Clear ();
-            SelectedIdx = -1;
-            window.ShowDialog ();
-        },
-        _ => Names.Count > 0
-    );
+        _file.Reset ();
+        _people.Reset ();
+        IsPeopleSetup = false;
+        IsFileSetup = true;
+        window.ShowDialog ();
+    }
 }

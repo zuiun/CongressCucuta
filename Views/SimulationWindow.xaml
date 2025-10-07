@@ -17,17 +17,18 @@
             <Setter Property = "Background" Value = "Black"/>
         </Style>
     </Window.Resources>
-    <Border>
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width = "3*"/>
-                <ColumnDefinition Width = "1*"/>
-            </Grid.ColumnDefinitions>
 
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width = "3*"/>
+            <ColumnDefinition Width = "1*"/>
+        </Grid.ColumnDefinitions>
+
+        <Border>
             <local:SlideView Grid.Column = "0" DataContext = "{Binding Slide}"/>
-            <Grid Grid.Column = "1" Style = "{StaticResource Data}">
-                <!--TODO: This should contain simulation context information-->
-            </Grid>
+        </Border>
+        <Grid Grid.Column = "1" Style = "{StaticResource Data}">
+            <!--TODO: This should contain simulation context information-->
         </Grid>
-    </Border>
+    </Grid>
 </Window>

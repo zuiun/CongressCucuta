@@ -52,6 +52,7 @@ internal class Simulation {
      * (9) Every IID must have a Localisation entry
      * (10) Every IID of a certain type must have a unique ID that matches its container's index
      * (11) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise
+     * (12) Every Ballot Result must target valid Faction IDs, Procedure IDs, and Currency IDs
      */
     private void Validate () {
 #region (1)
@@ -368,6 +369,98 @@ internal class Simulation {
 
                 if (! isCurrencyInitialise) {
                     throw new ArgumentException ("If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise");
+                }
+            }
+        }
+#endregion
+
+#region (12)
+        foreach (Ballot b in Ballots) {
+            foreach (Ballot.Effect e in b.PassResult.Effects) {
+                switch (e.Action) {
+                    case Ballot.Effect.ActionType.FoundParty:
+                    case Ballot.Effect.ActionType.DissolveParty:
+                        foreach (IDType f in e.TargetIDs) {
+                            if (Parties.All (p => f != p.ID)) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Party ID");
+                            }
+                        }
+
+                        break;
+                    case Ballot.Effect.ActionType.RemoveProcedure:
+                    case Ballot.Effect.ActionType.ReplaceProcedure:
+                        foreach (IDType p in e.TargetIDs) {
+                            if (ProceduresSpecial.All (pt => p != pt.ID)) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Procedure ID");
+                            }
+                        }
+
+                        break;
+                    case Ballot.Effect.ActionType.ModifyCurrency:
+                        if (e.TargetIDs[0] == Currency.STATE) {
+                            if (!CurrenciesValues.ContainsKey (Currency.STATE)) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                            }
+                        } else if (e.TargetIDs[0] == Currency.PARTY) {
+                            if (Parties.Any (p => CurrenciesValues.Keys.All (c => p.ID != c.ID))) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                            }
+                        } else if (e.TargetIDs[0] == Currency.REGION) {
+                            if (Regions.Any (r => CurrenciesValues.Keys.All (c => r.ID != c.ID))) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                            }
+                        } else if (
+                            ! e.TargetIDs.All (c => Parties.Select (p => p.ID).Contains (c))
+                            && ! e.TargetIDs.All (c => Regions.Select (r => r.ID).Contains (c))
+                        ) {
+                            throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with the same type of Faction IDs");
+                        }
+
+                        break;
+                }
+            }
+
+            foreach (Ballot.Effect e in b.FailResult.Effects) {
+                switch (e.Action) {
+                    case Ballot.Effect.ActionType.FoundParty:
+                    case Ballot.Effect.ActionType.DissolveParty:
+                        foreach (IDType f in e.TargetIDs) {
+                            if (Parties.All (p => f != p.ID)) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Party ID");
+                            }
+                        }
+
+                        break;
+                    case Ballot.Effect.ActionType.RemoveProcedure:
+                    case Ballot.Effect.ActionType.ReplaceProcedure:
+                        foreach (IDType p in e.TargetIDs) {
+                            if (ProceduresSpecial.All (pt => p != pt.ID)) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Procedure ID");
+                            }
+                        }
+
+                        break;
+                    case Ballot.Effect.ActionType.ModifyCurrency:
+                        if (e.TargetIDs[0] == Currency.STATE) {
+                            if (!CurrenciesValues.ContainsKey (Currency.STATE)) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                            }
+                        } else if (e.TargetIDs[0] == Currency.PARTY) {
+                            if (Parties.Any (p => CurrenciesValues.Keys.All (c => p.ID != c.ID))) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                            }
+                        } else if (e.TargetIDs[0] == Currency.REGION) {
+                            if (Regions.Any (r => CurrenciesValues.Keys.All (c => r.ID != c.ID))) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                            }
+                        } else if (
+                            ! e.TargetIDs.All (c => Parties.Select (p => p.ID).Contains (c))
+                            && ! e.TargetIDs.All (c => Regions.Select (r => r.ID).Contains (c))
+                        ) {
+                            throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with the same type of Faction IDs");
+                        }
+
+                        break;
                 }
             }
         }
