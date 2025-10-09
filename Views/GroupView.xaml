@@ -24,7 +24,7 @@
         <ItemsControl ItemsSource = "{Binding People}" HorizontalContentAlignment = "Stretch">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Grid>
+                    <Grid Margin = "0, 0, 0, 2">
                         <TextBlock FontFamily = "Nirmala UI Semilight"  FontSize = "12" Text = "{Binding Name}" Margin = "2, 0, 0, 0"/>
                         <RadioButton GroupName = "{Binding FactionID}"
                                      IsChecked = "{Binding IsSelected}"

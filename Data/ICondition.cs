@@ -23,20 +23,24 @@ internal interface ICondition {
     }
 
     public bool Evaluate (ref readonly SimulationContext context);
-
     public string ToString (ref readonly Localisation localisation);
+    public bool? YieldBallotVote ();
 }
 
 internal readonly record struct AlwaysCondition : ICondition {
     public bool Evaluate (ref readonly SimulationContext context) => true;
 
     public string ToString (ref readonly Localisation localisation) => "Next";
+
+    public bool? YieldBallotVote () => null;
 }
 
 internal readonly record struct NeverCondition : ICondition {
     public bool Evaluate (ref readonly SimulationContext context) => false;
 
     public string ToString (ref readonly Localisation localisation) => "End";
+
+    public bool? YieldBallotVote () => null;
 }
 
 internal readonly record struct AndCondition (ICondition[] Conditions) : ICondition {
@@ -51,6 +55,8 @@ internal readonly record struct AndCondition (ICondition[] Conditions) : ICondit
     }
 
     public string ToString (ref readonly Localisation localisation) => string.Join (" and ", Conditions.Select (c => c.ToString ()));
+
+    public bool? YieldBallotVote () => null;
 }
 
 internal readonly record struct OrCondition (ICondition[] Conditions) : ICondition {
@@ -65,6 +71,8 @@ internal readonly record struct OrCondition (ICondition[] Conditions) : IConditi
     }
 
     public string ToString (ref readonly Localisation localisation) => string.Join (" or ", Conditions.Select (c => c.ToString ()));
+
+    public bool? YieldBallotVote () => null;
 }
 
 /*
@@ -79,6 +87,8 @@ internal readonly record struct BallotVoteCondition (bool ShouldBePassed) : ICon
     }
 
     public string ToString (ref readonly Localisation localisation) => ShouldBePassed ? "Pass" : "Fail";
+
+    public bool? YieldBallotVote () => ShouldBePassed;
 }
 
 internal readonly record struct BallotPassedCondition (IDType BallotID, bool ShouldBePassed = true) : ICondition {
@@ -89,6 +99,8 @@ internal readonly record struct BallotPassedCondition (IDType BallotID, bool Sho
 
         return ShouldBePassed ? $"{title} Passed" : $"{title} Failed";
     }
+
+    public bool? YieldBallotVote () => null;
 }
 
 internal readonly record struct BallotsPassedCountCondition (ICondition.ComparisonType Comparison, byte Count) : ICondition {
@@ -113,6 +125,8 @@ internal readonly record struct BallotsPassedCountCondition (ICondition.Comparis
             _ => throw new UnreachableException (),
         };
     }
+
+    public bool? YieldBallotVote () => null;
 }
 
 internal readonly record struct CurrencyValueCondition (IDType CurrencyID, ICondition.ComparisonType Comparison, byte Value) : ICondition {
@@ -139,6 +153,8 @@ internal readonly record struct CurrencyValueCondition (IDType CurrencyID, ICond
             _ => throw new UnreachableException (),
         };
     }
+
+    public bool? YieldBallotVote () => null;
 }
 
 internal readonly record struct ProcedureActiveCondition (IDType ProcedureID, bool ShouldBeActive) : ICondition {
@@ -149,4 +165,6 @@ internal readonly record struct ProcedureActiveCondition (IDType ProcedureID, bo
 
         return ShouldBeActive ? $"{name} is Active" : $"{name} is not Active";
     }
+
+    public bool? YieldBallotVote () => null;
 }

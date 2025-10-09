@@ -1,6 +1,5 @@
-﻿using congress_cucuta.Converters;
-using System.Diagnostics;
-using System.Text.Json.Serialization;
+﻿using System.Diagnostics;
+using congress_cucuta.Converters;
 
 namespace congress_cucuta.Data;
 
@@ -329,6 +328,7 @@ internal abstract class Procedure (
                     result.Add (action);
                     break;
                 }
+                // TODO: if LEADER_REGION or LEADER_PARTY, elect them too
                 case ActionType.ElectionRegion: {
                     string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Randomly aligns with a {localisation.Region.Item1}", 2);

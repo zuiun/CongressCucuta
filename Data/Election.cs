@@ -27,9 +27,7 @@ internal readonly record struct Election : IComparable<Election> {
         FilterIDs = filterIds;
     }
 
-    public Election (IDType procedureId, Procedure.EffectBundle effects) {
-        Procedure.Effect effect = effects.Effects[0];
-
+    public Election (IDType procedureId, Procedure.Effect effect, bool isImmediate) {
         ProcedureID = procedureId;
 
         switch (effect.Action) {
@@ -58,14 +56,13 @@ internal readonly record struct Election : IComparable<Election> {
                     FilterIDs = effect.TargetIDs[1 ..];
                 }
 
-                // ProcedureImmediate
-                if (effects.Confirmation is null) {
+                if (isImmediate) {
                     IsRandom = true;
                 }
 
                 break;
             default:
-                throw new UnreachableException ();
+                throw new NotSupportedException ();
         }
     }
 

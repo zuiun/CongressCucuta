@@ -7,21 +7,25 @@ namespace congress_cucuta.ViewModels;
 internal class SimulationViewModel : ViewModel {
     private readonly SimulationModel _simulation;
     private readonly SlideViewModel _slide = new ();
+    private readonly ContextViewModel _context;
     private readonly string _state;
     public SlideViewModel Slide => _slide;
+    public ContextViewModel Context => _context;
     public string State => _state;
 
     public SimulationViewModel (Simulation simulation) {
         _simulation = new (simulation);
         _simulation.CompletingElection += Simulation_CompletingElectionEventHandler;
         _state = _simulation.Localisation.State;
+        _context = new (in _simulation);
+        _context.Voting += _simulation.Context_VotingEventHandler;
 
         SlideModel slide = _simulation.Slides[0];
 
         _slide.Replace (in slide, _simulation.Localisation);
     }
 
-    private void Simulation_CompletingElectionEventHandler (object? sender, CompletingElectionEventArgs e) {
+    private void Simulation_CompletingElectionEventHandler (CompletingElectionEventArgs e) {
         ElectionViewModel election = new (e);
         ElectionWindow window = new () {
             DataContext = election,
@@ -33,7 +37,6 @@ internal class SimulationViewModel : ViewModel {
         window.ShowDialog ();
         e.PeopleRolesNew = election.PeopleRolesNew;
         e.PeopleFactionsNew = election.PeopleFactionsNew;
-
     }
 
     public void InitialisePeople (List<Person> people) => _simulation.InitialisePeople (people);
@@ -45,6 +48,10 @@ internal class SimulationViewModel : ViewModel {
             if (result is not null) {
                 IDType slideIdx = (IDType) result!;
                 SlideModel slide = _simulation.Slides[slideIdx];
+
+                if (l.YieldBallotVote () is bool isPass) {
+                    _simulation.VoteBallot (isPass);
+                }
 
                 _slide.Replace (in slide, _simulation.Localisation);
                 _simulation.SlideCurrentIdx = slideIdx;

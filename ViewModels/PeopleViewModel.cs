@@ -36,7 +36,7 @@ internal class PeopleViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public event Action<List<Person>>? InitialisePeople = null;
+    public event Action<List<Person>>? InitialisingPeople = null;
 
     public void Reset () {
         Name = string.Empty;
@@ -59,7 +59,7 @@ internal class PeopleViewModel : ViewModel {
     );
 
     public RelayCommand FinishInputCommand => new (
-        _ => InitialisePeople?.Invoke ([.. Names.Select ((n, i) => new Person (i, n.Name))]),
-        _ => Names.Count > 0
+        _ => InitialisingPeople?.Invoke ([.. Names.Select ((n, i) => new Person (i, n.Name))]),
+        _ => Names.Count > 1
     );
 }

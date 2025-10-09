@@ -1,58 +1,22 @@
-ELECTIONS (not sure if party (normal and leader), region (leader), appointed, or shuffle work)
-gameplay loop:
-context refreshes its state, queries all of its proceduresactive, and applies them -> create a ballot context once done
-(users vote and do whatever)
-vote is locked in
-simulation context applies ballot result effect to itself
-
-Procedure stuff:
-proceduresActive should contain all ProcedureTargeted and ProcedureImmediate (at start); procedureDeclared does not get added
+display procedures now :skull:
 for ProcedureDeclared, it is only visible for people who meet its filters
-upon starting a ballot, yield all proceduresActive and apply their effects
-if EffectBundle has a procedureID, then remove that procedure from active procedures (it is ProcedureImmediate)
 
-
+convert pass/vetoes into declared procedures
 
 i wish i could centralise fonts
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
-Australia is bicameral NOOOOOOOOOO
-each new ballot should start with a blank slate (i.e. regenerate all information like permissions, majority needed from context), then compose permissions
-Simulation needs a way to know if it's on a Ballot slide or not; once entering a Ballot slide, it needs to apply all Procedures, and once exiting, it needs to apply Results
-clicking on a ballot vote link confirms the vote and adds it (or not) to the ballotsPassed
-test the other Conditions (completed: And, Or, Always, Never)
 double check class vs struct
+Australia is bicameral NOOOOOOOOOO -> this could be represented through "regional assent," forcing all regions (houses) to have a majority in favour
 once i figure out Permissions stuff, i need to make Procedures work with them because I LOVE CANADA (or it could be Ballot Effect, boring but easier probably)
+
+Testing:
+test the other Conditions (completed: And, Or, Always, Never)
 the netherlands is a good way to test if the unique localisation roles work
-
-
+ELECTIONS (not sure if party (normal and leader), region (leader), appointed, or shuffle work)
+not sure if state currency displays properly
+test can speak (poland)
 
 Context Grid:
-State Currencies
-People ItemsControl (sorted by party (independents, eg heads of state come before parties), then region; faction leaders first):
-[party, with currency if exists]
-[region, with currency if exists; a well-formed simulation is not likely to have both party and region currencies]
-Name [Roles] | pass/fail/abstain RadioButton (default to abstain) | available ProcedureDeclared Expander (opens left)
-
-Ballots ItemsControl:
-Ballot/Incident | pass-fail-abstain (successful option bolded and coloured green/red)
-
+still needs to finish ProcedureDeclared Expander (opens left)
+pass-fail-abstain (successful option bolded and coloured green/red)
 Procedures Expander (opens up, covers entire Grid):
-Governmental
-Special
-Declared
-
-space-between equivalent:
-<Grid>
-    <Grid.ColumnDefinitions>
-        <!-- Flexible space on the left -->
-        <ColumnDefinition Width="*" />
-        <!-- Auto-sized content -->
-        <ColumnDefinition Width="Auto" />
-        <!-- Flexible space between columns -->
-        <ColumnDefinition Width="*" />
-        <!-- Auto-sized content -->
-        <ColumnDefinition Width="Auto" />
-        <!-- Flexible space on the right -->
-        <ColumnDefinition Width="*" />
-    </Grid.ColumnDefinitions>
-</Grid>

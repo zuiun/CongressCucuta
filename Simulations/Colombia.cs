@@ -10,8 +10,8 @@ internal class Colombia {
         Dictionary<IDType, Permissions> rolesPermissions = [];
         IDType deputy = Role.MEMBER;
         IDType president = Role.HEAD_STATE;
-        Permissions normal = new (canVote: true);
-        Permissions cantVoteCanVeto = new (canVote: false, votes: 0, canVeto: true);
+        Permissions normal = new (CanVote: true);
+        Permissions cantVoteCanVeto = new (CanVote: false, Votes: 0);
         rolesPermissions[deputy] = normal;
         rolesPermissions[president] = cantVoteCanVeto;
         Dictionary<IDType, (string, string)> roles = [];
@@ -90,13 +90,15 @@ internal class Colombia {
             [3]
         );
         List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism];
+        // TODO: add a presidential veto
+        List<ProcedureDeclared> proceduresDeclared = [];
         Dictionary<IDType, (string, string)> procedures = [];
         procedures[presidentialElection.ID] = (
             "Presidential Election",
             "This country has a powerful, elected executive who is separate from the legislature."
         );
         procedures[constitutionCucuta.ID] = (
-            "Constitution of Cucuta",
+            "Congress of Angostura",
             "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
         );
         procedures[liberalReforms.ID] = (
@@ -372,7 +374,7 @@ internal class Colombia {
             currenciesValues,
             proceduresGovernmental,
             proceduresSpecial,
-            [],
+            proceduresDeclared,
             ballots,
             results,
             new Localisation (

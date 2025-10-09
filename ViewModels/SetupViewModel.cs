@@ -27,17 +27,17 @@ internal class SetupViewModel : ViewModel {
     public PeopleViewModel People => _people;
 
     public SetupViewModel () {
-        _file.CreateSimulation += File_CreateSimulationEventHandler;
-        _people.InitialisePeople += People_InitialisePeopleEventHandler;
+        _file.CreatingSimulation += File_CreatingSimulationEventHandler;
+        _people.InitialisingPeople += People_InitialisingPeopleEventHandler;
     }
 
-    private void File_CreateSimulationEventHandler (Simulation simulation) {
+    private void File_CreatingSimulationEventHandler (Simulation simulation) {
         IsFileSetup = false;
         IsPeopleSetup = true;
         _simulation = Task.Run (() => new SimulationViewModel (simulation));
     }
 
-    private async void People_InitialisePeopleEventHandler (List<Person> people) {
+    private async void People_InitialisingPeopleEventHandler (List<Person> people) {
         SimulationViewModel simulation;
 
         try {

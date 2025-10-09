@@ -1,5 +1,6 @@
 ﻿using congress_cucuta.Converters;
 using congress_cucuta.Data;
+using congress_cucuta.ViewModels;
 
 namespace congress_cucuta.Models;
 
@@ -15,12 +16,28 @@ internal class CompletingElectionEventArgs (PreparingElectionEventArgs args, ref
     public Dictionary<IDType, (IDType?, IDType?)> PeopleFactionsNew = [];
 }
 
+internal class StartingBallotEventArgs (
+    byte votesPassThreshold,
+    byte votesFailThreshold,
+    byte votesPass,
+    byte votesFail,
+    byte votesTotal
+) {
+    public byte VotesPassThreshold = votesPassThreshold;
+    public byte VotesFailThreshold = votesFailThreshold;
+    public byte VotesPass = votesPass;
+    public byte VotesFail = votesFail;
+    public byte VotesTotal = votesTotal;
+}
+
 internal class SimulationModel {
     private readonly SimulationContext _context;
     private readonly Localisation _localisation;
     private IDType _slideCurrentIdx = 0;
     private readonly IDType _slideTitleIdx;
     private readonly Dictionary<IDType, IDType> _ballotIdxsIds;
+    private bool _isBallot = false;
+    public SimulationContext Context => _context;
     public Localisation Localisation => _localisation;
     public List<SlideModel> Slides { get; }
     public IDType SlideCurrentIdx {
@@ -32,10 +49,26 @@ internal class SimulationModel {
                 _context.StartSetup ();
             } else if (_ballotIdxsIds.TryGetValue (_slideCurrentIdx, out IDType ballotId)) {
                 _context.BallotCurrentID = ballotId;
+                _isBallot = true;
+
+                StartingBallotEventArgs args = new (
+                    _context.Context.CalculateVotesPassThreshold (),
+                    _context.Context.CalculateVotesFailThreshold (),
+                    _context.Context.CalculateVotesPass (),
+                    _context.Context.CalculateVotesFail (),
+                    _context.Context.CalculateVotesTotal ()
+                );
+
+                StartingBallot?.Invoke (args);
+            } else if (_isBallot) {
+                _isBallot = false;
+                EndingBallot?.Invoke ();
             }
         }
     }
-    public event EventHandler<CompletingElectionEventArgs>? CompletingElection;
+    public event Action<CompletingElectionEventArgs>? CompletingElection;
+    public event Action<StartingBallotEventArgs>? StartingBallot;
+    public event Action? EndingBallot;
 
     public SimulationModel (Simulation simulation) {
         _context = new (simulation);
@@ -44,12 +77,24 @@ internal class SimulationModel {
         (Slides, _slideTitleIdx, _ballotIdxsIds) = GenerateSlides (in simulation);
     }
 
-    private void Context_PreparingElectionEventHandler (object? sender, PreparingElectionEventArgs e) {
+    private void Context_PreparingElectionEventHandler (PreparingElectionEventArgs e) {
         CompletingElectionEventArgs args = new (e, in _localisation);
 
-        CompletingElection?.Invoke (this, args);
+        CompletingElection?.Invoke (args);
         e.PeopleRolesNew = args.PeopleRolesNew;
         e.PeopleFactionsNew = args.PeopleFactionsNew;
+    }
+
+    public void Context_VotingEventHandler (VotingEventArgs e) {
+        if (e.IsPass is bool isPass) {
+            e.Votes = _context.VotePass (e.PersonID, isPass);
+        } else if (e.IsFail is bool isFail) {
+            e.Votes = _context.VoteFail (e.PersonID, isFail);
+        } else if (e.IsAbstain is bool isAbstain) {
+            e.Votes = _context.VoteAbstain (e.PersonID, isAbstain);
+        } else {
+            throw new NotSupportedException ();
+        }
     }
 
     private static IDType GenerateSlidesIntroduction (ref readonly Localisation localisation, ref List<SlideModel> slides) {
@@ -332,11 +377,10 @@ internal class SimulationModel {
                 slideCurrentIdx,
                 title,
                 [name, .. description],
-                // Fail (left, first), pass (right, second)
-                // TODO: change back to BallotVoteCondition after finished with context
+                // Pass (left), fail (right)
                 [
-                    new (new AlwaysCondition (), resultBallotIdx),
-                    new (new AlwaysCondition (), resultBallotIdx + 1)
+                    new (new BallotVoteCondition (true), resultBallotIdx),
+                    new (new BallotVoteCondition (false), resultBallotIdx + 1),
                 ]
             );
 
@@ -351,32 +395,7 @@ internal class SimulationModel {
         // Result Links are mapped from IDs to indexes
         foreach (Ballot ballot in simulation.Ballots) {
             (string title, string _, string[] _, string[] pass, string[] fail) = localisation.Ballots[ballot.ID];
-            // Fail (left, first), pass (right, second)
-            List<Link<SlideModel>> linksFail = ballot.FailResult.Links.ConvertAll (l =>
-                new Link<SlideModel> (l.Condition, ballotIDsFinalIdxs[l.TargetID])
-            );
-            List<LineModel> effectsFail = [];
-
-            if (linksFail.Count == 0) {
-                linksFail = [new (new AlwaysCondition (), resultEndIdx)];
-            }
-
-            foreach (Ballot.Effect e in ballot.FailResult.Effects) {
-                List<string> effect = [.. e.ToString (in simulation, in localisation).Split ('\n')];
-
-                effectsFail.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
-            }
-
-            SlideBranchingModel slideBallotFail = new (
-                slideCurrentIdx,
-                $"{title} Failed",
-                [.. effectsFail, .. fail],
-                linksFail
-            );
-
-            ++ slideCurrentIdx;
-            slidesResultBallots.Add (slideBallotFail);
-
+            // Pass (left), fail (right)
             List<Link<SlideModel>> linksPass = ballot.PassResult.Links.ConvertAll (l =>
                 new Link<SlideModel> (l.Condition, ballotIDsFinalIdxs[l.TargetID])
             );
@@ -399,8 +418,33 @@ internal class SimulationModel {
                 linksPass
             );
 
-            ++ slideCurrentIdx; // On the final iteration, this should point to the end results
+            ++ slideCurrentIdx;
             slidesResultBallots.Add (slideBallotPass);
+
+            List<Link<SlideModel>> linksFail = ballot.FailResult.Links.ConvertAll (l =>
+                new Link<SlideModel> (l.Condition, ballotIDsFinalIdxs[l.TargetID])
+            );
+            List<LineModel> effectsFail = [];
+
+            if (linksFail.Count == 0) {
+                linksFail = [new (new AlwaysCondition (), resultEndIdx)];
+            }
+
+            foreach (Ballot.Effect e in ballot.FailResult.Effects) {
+                List<string> effect = [.. e.ToString (in simulation, in localisation).Split ('\n')];
+
+                effectsFail.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
+            }
+
+            SlideBranchingModel slideBallotFail = new (
+                slideCurrentIdx,
+                $"{title} Failed",
+                [.. effectsFail, .. fail],
+                linksFail
+            );
+
+            ++ slideCurrentIdx; // On the final iteration, this should point to the end results
+            slidesResultBallots.Add (slideBallotFail);
         }
 
         slides.AddRange (slidesBallots);
@@ -503,4 +547,8 @@ internal class SimulationModel {
     public IDType? ResolveLink (Link<SlideModel> link) => link.Evaluate (in _context) ? link.TargetID : null;
 
     public bool EvaluateLink (Link<SlideModel> link) => link.Evaluate (in _context);
+
+    public void VoteBallot (bool isPass) => _context.VoteBallot (isPass);
+
+    public bool IsBallotSlide () => _ballotIdxsIds.ContainsKey (_slideCurrentIdx);
 }

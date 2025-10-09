@@ -27,7 +27,7 @@ internal class FileViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public event Action<Simulation>? CreateSimulation = null;
+    public event Action<Simulation>? CreatingSimulation = null;
 
     public void Reset () {
         WasChoiceFailure = false;
@@ -59,6 +59,6 @@ internal class FileViewModel : ViewModel {
         }
 
         WasCreationFailure = false;
-        CreateSimulation?.Invoke (simulation);
+        CreatingSimulation?.Invoke (simulation);
     });
 }

@@ -15,6 +15,12 @@
         <Style TargetType = "ListBox">
             <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
             <Setter Property = "FontSize" Value = "12"/>
+            <Setter Property = "Padding" Value = "0, 0, 0, 0"/>
+        </Style>
+        <Style TargetType = "ListBoxItem">
+            <Setter Property = "Focusable" Value = "False"/>
+            <Setter Property = "Padding" Value = "0"/>
+            <Setter Property = "Margin" Value = "0, 0, 0, 0"/>
         </Style>
         <Style TargetType = "Button">
             <Setter Property = "FontFamily" Value = "Candara"/>
@@ -58,7 +64,7 @@
                        Grid.Column = "0"
                        Text = "Name"
                        VerticalAlignment = "Center"
-                       Margin = "6, 0, 0, 2"/>
+                       Margin = "6, 0, 0, 0"/>
             <TextBlock FontFamily = "Nirmala UI"
                        FontSize = "14"
                        Grid.Row = "0"
@@ -66,19 +72,13 @@
                        Text = "Choice"
                        HorizontalAlignment = "Right"
                        VerticalAlignment = "Center"
-                       Margin = "0, 0, 6, 2"
+                       Margin = "0, 0, 6, 0"
                        Visibility = "{Binding Election.IsLeaderNeeded, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
             <ListBox Grid.Row = "1"
                      Grid.Column = "0"
                      Grid.ColumnSpan = "2"
                      ItemsSource = "{Binding Election.GroupsPeople}"
                      HorizontalContentAlignment = "Stretch">
-                <ListBox.ItemContainerStyle>
-                    <Style TargetType = "ListBoxItem">
-                        <Setter Property = "Focusable" Value = "False"/>
-                        <Setter Property = "Padding" Value = "0"/>
-                    </Style>
-                </ListBox.ItemContainerStyle>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <local:GroupView/>
