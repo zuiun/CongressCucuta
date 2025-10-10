@@ -1,11 +1,5 @@
 ﻿using congress_cucuta.Converters;
 using congress_cucuta.Data;
-using System.IO;
-using System.Security.Policy;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace congress_cucuta.Simulations;
 
@@ -23,6 +17,10 @@ internal class Indonesia {
         Permissions cantVote = new (CanVote: false, Votes: 0);
         rolesPermissions[member] = normal;
         rolesPermissions[president] = cantVote;
+        rolesPermissions[chiefStaff] = normal;
+        rolesPermissions[generalSecretary] = normal;
+        rolesPermissions[chairman] = normal;
+        rolesPermissions[Role.LEADER_PARTY] = normal;
         Dictionary<IDType, (string, string)> roles = [];
         roles[member] = ("Member", "Members");
         roles[president] = ("President", "Presidents");
@@ -59,6 +57,10 @@ internal class Indonesia {
             ],
             "Chairman"
         );
+        Dictionary<IDType, string> abbreviations = [];
+        abbreviations[abri.ID] = "ABRI";
+        abbreviations[pki.ID] = "PKI";
+        abbreviations[masyumi.ID] = "Masyumi";
 
         Dictionary<IDType, sbyte> currenciesValues = [];
         IDType influenceAbri = 0;
@@ -82,37 +84,62 @@ internal class Indonesia {
             [new (Procedure.Effect.ActionType.ElectionParty, [Role.HEAD_STATE])]
         );
         List<ProcedureImmediate> proceduresGovernmental = [constitution1945, nasakom];
-        ProcedureTargeted houseIslam = new (
+        ProcedureTargeted pancasila = new (
             2,
-            [
-                new (Procedure.Effect.ActionType.CurrencyInitialise, []),
-                new (Procedure.Effect.ActionType.CurrencySubtract, [influenceMasyumi], 1),
-            ],
+            [new (Procedure.Effect.ActionType.CurrencyInitialise, [])],
+            []
+        );
+        ProcedureTargeted houseIslam = new (
+            3,
+            [new (Procedure.Effect.ActionType.CurrencySubtract, [influenceMasyumi], 1)],
             []
         );
         ProcedureTargeted eastSuez = new (
-            3,
-            [
-                new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri, influencePki], 1),
-            ],
+            4,
+            [new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri, influencePki], 1)],
             []
         );
-        List<ProcedureTargeted> proceduresSpecial = [houseIslam, eastSuez];
-        ProcedureDeclared industryTakeover = new (
-            4,
-            [],
-            new Procedure.Confirmation (),
+        List<ProcedureTargeted> proceduresSpecial = [pancasila, houseIslam, eastSuez];
+        //ProcedureDeclared industryTakeover = new (
+        //    4,
+        //    [],
+        //    new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+        //    0,
+        //    []
+        //);
+        ProcedureDeclared rubberStamp = new (
+            5,
+            [
+                new (Procedure.Effect.ActionType.BallotPass, [])
+            ],
+            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
             0,
-            []
+            [president]
+        );
+        ProcedureDeclared veto = new (
+            6,
+            [
+                new (Procedure.Effect.ActionType.BallotFail, [])
+            ],
+            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            0,
+            [president]
         );
         ProcedureDeclared purge = new (
-            5,
-            [],
-            new Procedure.Confirmation (),
+            7,
+            [new (Procedure.Effect.ActionType.ElectionAppointed, [president])],
+            new Procedure.Confirmation (Procedure.Confirmation.CostType.CurrencyValue, 4),
             0,
-            []
+            [abri.ID]
         );
-        List<ProcedureDeclared> proceduresDeclared = [industryTakeover, purge];
+        ProcedureDeclared coup = new (
+            8,
+            [new (Procedure.Effect.ActionType.ElectionAppointed, [president])],
+            new Procedure.Confirmation (Procedure.Confirmation.CostType.SingleDiceCurrency),
+            0,
+            [pki.ID, masyumi.ID]
+        );
+        List<ProcedureDeclared> proceduresDeclared = [/*industryTakeover, */rubberStamp, veto, purge, coup];
         Dictionary<IDType, (string, string)> procedures = [];
         procedures[constitution1945.ID] = (
             "Constitution of 1945",
@@ -122,6 +149,10 @@ internal class Indonesia {
             "Nasakom",
             "Nasakom is a combination of nationalism, religion, and communism and was an attempt to fuse the three major ideologies of Indonesia into one government-mandated ideology, ostensibly to maintain stability."
         );
+        procedures[pancasila.ID] = (
+            "Pancasila",
+            "Pancasila is Indonesia's founding ideology, a form of socialist nationalism that has proven rather controversial, especially to the Islamists. The end of Liberal Democracy put an end to legislative opposition to the ideology, and political factions are now primarily evaluated by their adherence to it."
+        );
         procedures[houseIslam.ID] = (
             "House of Islam",
             "The House of Islam, an Islamist organisation, has been rebelling across Indonesia for a decade, thereby damaging popular and governmental support for Islamists."
@@ -130,9 +161,25 @@ internal class Indonesia {
             "East of Suez",
             "Indonesia's foreign policy is primarily concerned with the UK's East of Suez policy, which is seen as a threat to Indonesian influence and independence."
         );
-        procedures[industryTakeover.ID] = (
-            "Industry Takeover",
-            "The communists have unilaterally seized foreign industry in the past, and many in the government believe that the only way to stop this is to pre-empt the communists and seize foreign industry in the name of the government."
+        //procedures[industryTakeover.ID] = (
+        //    "Industry Takeover",
+        //    "The communists have unilaterally seized foreign industry in the past, and many in the government believe that the only way to stop this is to pre-empt the communists and seize foreign industry in the name of the government."
+        //);
+        procedures[rubberStamp.ID] = (
+            "Rubber Stamp",
+            "Reverting to the Constitution of 1945 has several implications - among them, that the president is also the head of government. In other words, he wields extraordinary legislative power, in addition to his moral authority."
+        );
+        procedures[veto.ID] = (
+            "Veto",
+            "This country's head of state is empowered to reject legislation that does not conform to his political beliefs."
+        );
+        procedures[purge.ID] = (
+            "Purge",
+            "The military has a special perception in Indonesian society, and if any faction grows too powerful or misguided, the military could step in to eliminate such a threat."
+        );
+        procedures[coup.ID] = (
+            "Coup",
+            "The military may play a powerful role in politics, but its officers are extremely politicised and not necessarily loyal. It might not take much convincing to turn a military parade into a march on Jakarta."
         );
 
         Ballot ballotA = new (
@@ -222,8 +269,13 @@ internal class Indonesia {
                         [influencePki],
                         1
                     ),
+                    new Ballot.Effect (
+                        Ballot.Effect.ActionType.ModifyCurrency,
+                        [influenceMasyumi],
+                        1
+                    ),
                 ],
-                []
+                [new (new AlwaysCondition (), 4)]
             ),
             new Ballot.Result (
                 [
@@ -250,7 +302,8 @@ internal class Indonesia {
             new Ballot.Result (
                 [],
                 []
-            )
+            ),
+            true
         );
         List<Ballot> ballots = [ballotA, ballotB, incidentA, ballotC, incidentB];
         Dictionary<IDType, (string, string, string[], string[], string[])> ballotsLocs = [];
@@ -262,7 +315,7 @@ internal class Indonesia {
                 StringLineFormatter.Indent ("It wants to establish an Islamic state in Indonesia", 2),
                 StringLineFormatter.Indent ("However, the rebellion is almost defeated", 2),
                 StringLineFormatter.Indent ("Aceh and Borneo are on the verge of reclamation", 3),
-                StringLineFormatter.Indent ("Sunda and Celebes will take longer to pacify", 3),
+                StringLineFormatter.Indent ("Pasundan and Celebes will take longer to pacify", 3),
                 StringLineFormatter.Indent ("Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the ABRI", 3),
                 StringLineFormatter.Indent ("This would lessen tensions, especially in Aceh", 2),
                 "House of Islam will be militarily suppressed if this ballot fails",
@@ -270,7 +323,7 @@ internal class Indonesia {
             [
                 "House of Islam is destroyed",
                 StringLineFormatter.Indent ("Aceh becomes an autonomous province", 1),
-                StringLineFormatter.Indent ("Borneo, Celebes, and Sunda surrender after a few years, receiving no concessions", 1),
+                StringLineFormatter.Indent ("Borneo, Celebes, and Pasundan surrender after a few years, receiving no concessions", 1),
                 "Masyumi loses influence in the government",
                 StringLineFormatter.Indent ("However, political circumstances could change this", 1),
             ],
@@ -340,12 +393,12 @@ internal class Indonesia {
         );
         ballotsLocs[ballotC.ID] = (
             "Ballot C",
-            "Implement BERDIKARI",
+            "Implement Berdikari",
             [
-                StringLineFormatter.Indent ("BERDIKARI is an economic idea stressing autarky", 1),
+                StringLineFormatter.Indent ("Berdikari is an economic idea stressing autarky", 1),
                 StringLineFormatter.Indent ("This has only been adopted thus far as a motto, though some tenets have been previously implemented to some degree", 2),
                 StringLineFormatter.Indent ("Government has previously relied upon the useless Eight Year Plan", 3),
-                StringLineFormatter.Indent ("BERDIKARI:", 1),
+                StringLineFormatter.Indent ("Berdikari:", 1),
                 StringLineFormatter.Indent ("Complete all vital or unfinished infrastructure projects from the Eight Year Plan", 2),
                 StringLineFormatter.Indent ("Limit imports to goods that can’t be produced domestically and expand exports", 2),
                 StringLineFormatter.Indent ("Nationalise all foreign investment and industries", 2),
@@ -360,6 +413,7 @@ internal class Indonesia {
                 StringLineFormatter.Indent ("This pushes Indonesia into the communist sphere", 3),
                 StringLineFormatter.Indent ("This is hailed as a victory for the anti-imperialist cause", 1),
                 StringLineFormatter.Indent ("However, living conditions are getting worse and worse", 2),
+                StringLineFormatter.Indent ("This drives the poor towards the Islamists, who are generally more pragmatic about economic issues", 3),
             ],
             [
                 "PKI attempts to seize foreign assets anyway",
@@ -487,7 +541,7 @@ internal class Indonesia {
         resultsLocs[ballotCPassed.ID] = (
             "Ballot C Passed",
             [
-                "Indonesia, now in the communist sphere, struggles to satisfactorily implement BERDIKARI",
+                "Indonesia, now in the communist sphere, struggles to satisfactorily implement Berdikari",
                 StringLineFormatter.Indent ("Soviet and Chinese aid and expertise is instrumental in improving Indonesian industries", 1),
                 StringLineFormatter.Indent ("However, there are almost no targets for export", 1),
                 StringLineFormatter.Indent ("This makes Indonesia even more reliant on Soviet and Chinese goodwill", 2),
@@ -592,14 +646,18 @@ internal class Indonesia {
             ]
         );
 
+        Dictionary<IDType, SortedSet<IDType>> ballotsProceduresDeclared = [];
+        ballotsProceduresDeclared[incidentB.ID] = [coup.ID, purge.ID];
+        History history = new (
+            [ballotA.ID, ballotB.ID, incidentA.ID, ballotC.ID],
+            ballotsProceduresDeclared
+        );
+
         Simulation = new (
-            new History (
-                [ballotA.ID, ballotB.ID, incidentA.ID],
-                []
-            ),
+            history,
             rolesPermissions,
-            factions,
             [],
+            factions,
             currenciesValues,
             proceduresGovernmental,
             proceduresSpecial,
@@ -626,7 +684,7 @@ internal class Indonesia {
                 [],
                 ("Faction", "Factions"),
                 factionsLocs,
-                [],
+                abbreviations,
                 currencies,
                 procedures,
                 ballotsLocs,

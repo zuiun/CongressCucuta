@@ -30,22 +30,31 @@ internal class PreparingElectionEventArgs {
     }
 }
 
-internal class VotedBallotEventArgs (IDType id, SimulationContext.BallotContext context) {
+internal class VotedBallotEventArgs (IDType id, bool isPassed, SimulationContext.BallotContext context) {
     public IDType ID = id;
     public byte VotesPass = context.CalculateVotesPass ();
     public byte VotesFail = context.CalculateVotesFail ();
     public byte VotesAbstain = context.CalculateVotesAbstain ();
+    public bool IsPass = isPassed;
     public List<IDType> ProceduresDeclared = context.ProceduresDeclared;
 }
 
 internal class CompletedElectionEventArgs (
     Dictionary<IDType, Person> people,
     Dictionary<IDType, SortedSet<IDType>> peopleRoles,
-    Dictionary<IDType, (IDType?, IDType?)> peopleFactions
+    Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
+    bool isBallot
 ) {
     public Dictionary<IDType, Person> People = people;
     public Dictionary<IDType, SortedSet<IDType>> PeopleRoles = peopleRoles;
     public Dictionary<IDType, (IDType?, IDType?)> PeopleFactions = peopleFactions;
+    public bool IsBallot = isBallot;
+}
+
+internal class UpdatedVotesEventArgs (SimulationContext.BallotContext context) {
+    public byte VotesPass = context.CalculateVotesPass ();
+    public byte VotesFail = context.CalculateVotesFail ();
+    public byte VotesAbstain = context.CalculateVotesAbstain ();
 }
 
 // Must call InitialisePeople () after construction to complete initialisation
@@ -60,6 +69,7 @@ internal class SimulationContext (Simulation simulation) {
         public byte VotesFailBonus { get; set; } = 0;
         public bool IsSimpleMajority { get; set; } = true;
         public List<IDType> ProceduresDeclared = [];
+        public event Action<UpdatedVotesEventArgs>? UpdatedVotes;
 
         public void Reset () {
             VotesPass.Clear ();
@@ -67,6 +77,16 @@ internal class SimulationContext (Simulation simulation) {
             ProceduresDeclared.Clear ();
             VotesPassBonus = 0;
             VotesFailBonus = 0;
+        }
+
+        // For ProcedureDeclared
+        public void ResetVotes () {
+            VotesPass.Clear ();
+            VotesFail.Clear ();
+
+            UpdatedVotesEventArgs args = new (this);
+
+            UpdatedVotes?.Invoke (args);
         }
 
         public byte CalculateVotesTotal () {
@@ -169,6 +189,7 @@ internal class SimulationContext (Simulation simulation) {
     public Dictionary<IDType, ProcedureTargeted> ProceduresSpecial { get; } = simulation.ProceduresSpecial.ToDictionary (pt => pt.ID, pt => pt);
     public Dictionary<IDType, ProcedureDeclared> ProceduresDeclared { get; } = simulation.ProceduresDeclared.ToDictionary (pd => pd.ID, pd => pd);
     public Dictionary<IDType, Ballot> Ballots { get; } = simulation.Ballots.ToDictionary (b => b.ID, b => b);
+    public bool IsBallot { get; set; }
     public event Action<Dictionary<IDType, Person>>? InitialisedPeople;
     public event Action<PreparingElectionEventArgs>? PreparingElection;
     public event Action<CompletedElectionEventArgs>? CompletedElection;
@@ -220,7 +241,7 @@ internal class SimulationContext (Simulation simulation) {
                 }
             }
             case Procedure.Confirmation.CostType.SingleDiceValue: {
-                int dice = _random.Next (7);
+                int dice = _random.Next (1, 7);
 
                 if (dice >= confirmation.Value) {
                     return (true, string.Empty);
@@ -230,7 +251,7 @@ internal class SimulationContext (Simulation simulation) {
             }
             case Procedure.Confirmation.CostType.SingleDiceCurrency: {
                 IDType currencyId = ChooseCurrencyOwner (personId);
-                int dice = _random.Next (7);
+                int dice = _random.Next (1, 7);
 
                 if (CurrenciesValues[currencyId] >= dice) {
                     CurrenciesValues[currencyId] -= (sbyte) dice;
@@ -245,7 +266,7 @@ internal class SimulationContext (Simulation simulation) {
         }
     }
 
-    public void DeclareProcedure (IDType personId, IDType procedureId) {
+    public bool? DeclareProcedure (IDType personId, IDType procedureId) {
         ProcedureDeclared procedure = ProceduresDeclared[procedureId];
         Procedure.Effect effect = procedure.Effects[0];
 
@@ -253,59 +274,74 @@ internal class SimulationContext (Simulation simulation) {
             case Procedure.Effect.ActionType.ElectionRegion: {
                 Election election = new (procedureId, effect, false);
 
+                Context.ResetVotes ();
                 OnPrepareElection ([election]);
                 break;
             }
             case Procedure.Effect.ActionType.ElectionParty: {
                 Election election = new (procedureId, effect, false);
 
+                Context.ResetVotes ();
                 OnPrepareElection ([election]);
                 break;
             }
             case Procedure.Effect.ActionType.ElectionNominated: {
                 Election election = new (procedureId, effect, false);
 
+                Context.ResetVotes ();
                 OnPrepareElection ([election]);
                 break;
             }
             case Procedure.Effect.ActionType.ElectionAppointed: {
                 Election election = new (procedureId, effect, false);
 
+                Context.ResetVotes ();
                 OnPrepareElection ([election]);
                 break;
             }
             case Procedure.Effect.ActionType.BallotLimit: {
                 foreach (IDType p in Context.PeoplePermissions.Keys) {
-                    if (p != personId && PeopleRoles[p].All (r => ! effect.TargetIDs.Contains (r))) {
+                    if (
+                        p != personId
+                        && PeopleRoles[p].All (r => ! effect.TargetIDs.Contains (r))
+                        && PeopleFactions[p].Item1 != p
+                        && PeopleFactions[p].Item2 != p
+                    ) {
                         Context.PeoplePermissions[p] += new Permissions.Composition (CanVote: false);
                     }
                 }
 
+                Context.ResetVotes ();
                 UpdatedPermissions?.Invoke (Context.PeoplePermissions);
                 break;
             }
             case Procedure.Effect.ActionType.BallotPass: {
                 VoteBallot (true);
-                break;
+                return true;
             }
             case Procedure.Effect.ActionType.BallotFail: {
                 VoteBallot (false);
-                break;
+                return false;
             }
         }
+
+        return null;
+    }
+
+    private void OnCompleteElection () {
+        CompletedElectionEventArgs args = new (People, PeopleRoles, PeopleFactions, IsBallot);
+
+        CompletedElection?.Invoke (args);
+        ComposePermissions ();
     }
 
     private void OnPrepareElection (List<Election> elections) {
-        PreparingElectionEventArgs argsPreparing = new (elections, in PeopleRoles, in PeopleFactions, in _partiesActive, in _regionsActive, in _people);
+        PreparingElectionEventArgs args = new (elections, in PeopleRoles, in PeopleFactions, in _partiesActive, in _regionsActive, in _people);
 
-        PreparingElection?.Invoke (argsPreparing);
-        PeopleRoles = argsPreparing.PeopleRolesNew;
-        PeopleFactions = argsPreparing.PeopleFactionsNew;
-
-        CompletedElectionEventArgs argsCompleted = new (People, PeopleRoles, PeopleFactions);
-
-        CompletedElection?.Invoke (argsCompleted);
-        ComposePermissions ();
+        PreparingElection?.Invoke (args);
+        PeopleRoles = args.PeopleRolesNew;
+        PeopleFactions = args.PeopleFactionsNew;
+        OnCompleteElection ();
     }
 
     private void OnModifiedCurrencies () => ModifiedCurrencies?.Invoke (CurrenciesValues);
@@ -407,9 +443,6 @@ internal class SimulationContext (Simulation simulation) {
 
             OnPrepareElection (elections);
         }
-
-        // TODO: another event that tells context how many votes are needed to pass
-        // TODO: every vote should also result in a return event that tells how many votes there are right now
     }
 
     private void EndBallot (bool isPass) {
@@ -441,12 +474,29 @@ internal class SimulationContext (Simulation simulation) {
 
                     elections.Add (new (Election.ElectionType.ShuffleRemove, e.TargetIDs));
                     break;
-                case Ballot.Effect.ActionType.ReplaceParty:
-                    _partiesActive.Remove (e.TargetIDs[0]);
-                    _partiesActive.Add (e.TargetIDs[1]);
+                //case Ballot.Effect.ActionType.ReplaceParty:
+                //    IDType partyOriginal = e.TargetIDs[0];
+                //    IDType partyNew = e.TargetIDs[1];
 
+                //    _partiesActive.Remove (partyOriginal);
+                //    _partiesActive.Add (partyNew);
 
-                    break;
+                //    foreach (var kv in PeopleFactions) {
+                //        if (kv.Value.Item1 is IDType p && p == partyOriginal) {
+                //            PeopleFactions[kv.Key] = (partyNew, kv.Value.Item2);
+                //        }
+                //    }
+
+                //    foreach (var kv in PeopleRoles) {
+                //        if (kv.Value.Remove (partyOriginal)) {
+                //            kv.Value.Add (partyNew);
+                //        }
+                //    }
+
+                //    // TODO: update currencies, which seems impossible to maintain consistently
+
+                //    OnCompleteElection ();
+                //    break;
                 case Ballot.Effect.ActionType.RemoveProcedure:
                     _proceduresActive.RemoveWhere (p => e.TargetIDs.Contains (p));
                     isModifiedProcedures = true;
@@ -545,7 +595,7 @@ internal class SimulationContext (Simulation simulation) {
             _ballotsPassed.Add (_ballotCurrentId);
         }
 
-        VotedBallotEventArgs args = new (_ballotCurrentId, Context);
+        VotedBallotEventArgs args = new (_ballotCurrentId, isPass, Context);
 
         VotedBallot?.Invoke (args);
         EndBallot (isPass);

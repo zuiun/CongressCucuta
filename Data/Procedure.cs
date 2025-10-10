@@ -107,14 +107,14 @@ internal abstract class Procedure (
              * Appoints (randomly when Immediate) Target Role
              *
              * Immediate, Declared
-             * Targets Roles (populated: specified [first], excluded [remainder])
+             * Targets Roles (populated: specified [one])
              */
             ElectionAppointed,
             /*
-             * Only allows Target Roles to vote on current Ballot
+             * Only allows Target Roles or Factions to vote on current Ballot
              *
              * Declared
-             * Targets Roles (empty: declarer, populated: specified)
+             * Targets Roles and Factions (empty: declarer, populated: specified [whichever is found at that ID])
              */
             BallotLimit,
             /*
@@ -309,10 +309,10 @@ internal abstract class Procedure (
 
                             currencyParty = localisation.Currencies[party.ID];
 
-                            if (currencyRegions.TryGetValue (value, out var parties)) {
-                                parties.Add (localisation.Regions[party.ID].Item1);
+                            if (currencyParties.TryGetValue (value, out var parties)) {
+                                parties.Add (localisation.Parties[party.ID].Item1);
                             } else {
-                                currencyRegions[value] = [localisation.Regions[party.ID].Item1];
+                                currencyParties[value] = [localisation.Parties[party.ID].Item1];
                             }
                         }
                     }
@@ -340,7 +340,6 @@ internal abstract class Procedure (
                     result.Add (action);
                     break;
                 }
-                // TODO: if LEADER_REGION or LEADER_PARTY, elect them too
                 case ActionType.ElectionRegion: {
                     string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Randomly aligns with a {localisation.Region.Item1}", 2);
@@ -541,7 +540,10 @@ internal class ProcedureTargeted : Procedure {
             result.Add (e.ToString (in simulation, in localisation));
 
             if (e.Action is Effect.ActionType.CurrencyInitialise) {
-                result.Add (filter);
+                if (Effects.Length > 1) {
+                    result.Add (filter);
+                }
+
                 isFilterAdded = true;
             }
         }
@@ -558,19 +560,19 @@ internal class ProcedureTargeted : Procedure {
  * Activates declaratively
  *
  * effect: one
- * action: Election*, VotersLimit
+ * action: Election*, Ballot*
  * declarerIds: Role (declarer)
  */
 internal class ProcedureDeclared : Procedure {
-    private readonly Confirmation _confirmation;
-    private readonly byte _value;
+    public Confirmation Confirm { get; }
+    public byte Value { get; }
     // Filters Roles (empty: every, populated: specified)
     public IDType[] DeclarerIDs { get; }
 
     public ProcedureDeclared (
         IDType id,
         Effect[] effects,
-        Confirmation confirmation,
+        Confirmation confirm,
         byte value,
         IDType[] declarerIds
     ) : base (id, effects) {
@@ -601,8 +603,8 @@ internal class ProcedureDeclared : Procedure {
                 throw new ArgumentException ($"ProcedureDeclared ID {id}: Action must be Election* or VotersLimit");
         }
 
-        _confirmation = confirmation;
-        _value = value;
+        Confirm = confirm;
+        Value = value;
         DeclarerIDs = declarerIds;
     }
 
@@ -617,7 +619,7 @@ internal class ProcedureDeclared : Procedure {
     }
 
     private string ConfirmationToString (ref readonly Localisation localisation) {
-        switch (_confirmation.Cost) {
+        switch (Confirm.Cost) {
             case Confirmation.CostType.Always:
                 return "Always";
             case Confirmation.CostType.DivisionChamber:
@@ -641,10 +643,10 @@ internal class ProcedureDeclared : Procedure {
                     }
                 }
 
-                return $"Can subtract {_confirmation.Value} from {string.Join (", ", currencies)}";
+                return $"Can subtract {Confirm.Value} from {string.Join (", ", currencies)}";
             }
             case Confirmation.CostType.SingleDiceValue:
-                return $"Dice roll greater than or equal to {_confirmation.Value}";
+                return $"Dice roll greater than or equal to {Confirm.Value}";
             case Confirmation.CostType.SingleDiceCurrency: {
                 HashSet<string> currencies = [];
 
@@ -671,7 +673,7 @@ internal class ProcedureDeclared : Procedure {
         }
     }
 
-    public override EffectBundle? YieldEffects (IDType ballotId) => new (Effects, Confirmation: _confirmation, Value: _value);
+    public override EffectBundle? YieldEffects (IDType ballotId) => new (Effects, Confirmation: Confirm, Value: Value);
 
     public override string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];

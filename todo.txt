@@ -1,20 +1,17 @@
-ballot replace party effect
-convert pass/vetoes into declared procedures
-when a ballot suffers a declared, display it on the ballot list
-
-i wish i could centralise fonts
-should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
-double check class vs struct
-Australia is bicameral NOOOOOOOOOO -> this could be represented through "regional assent," forcing all regions (houses) to have a majority in favour
+features:
+Australia is bicameral NOOOOOOOOOO -> this could be represented through "regional assent," forcing all "regions" (houses) to have a majority in favour -> that sounds like way too much work.
 once i figure out Permissions stuff, i need to make Procedures work with them because I LOVE CANADA (or it could be Ballot Effect, boring but easier probably)
+someday, consider implementing replacing factions
 
 Testing:
-test the other Conditions (completed: And, Or, Always, Never)
-unique localisation roles : indonesia
-ELECTIONS (not sure if party (normal and leader : poland), region (leader : canada), appointed : canada, or shuffle : canada work)
-not sure if state currency displays properly (china)
-can speak (poland)
-declared procedures (indonesia has a few)
+other Conditions (BallotsCount : australia...)
+ELECTIONS (region (leader : canada), appointed (ie random) : canada, shuffle : canada)
+not sure if state currency displays properly (canada)
+can speak (canada)
+declared procedures (canada has division of chamber, need to test singledice, all elections (not appointed))
+parties and factions - voting should only activate once for duplicates for people (canada)
+replacing procedures
 
-Context Grid:
-pass-fail-abstain (successful option bolded and coloured green/red)
+double check class vs struct
+i wish i could centralise fonts
+do not go back on end slide?

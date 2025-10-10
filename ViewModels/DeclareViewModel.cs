@@ -13,7 +13,7 @@ internal class ConfirmingProcedureEventArgs (IDType personId, IDType procedureId
 
 internal class DeclareViewModel : ViewModel {
     internal class ProcedureGroup (IDType id, string name): ViewModel, IID {
-        private bool _isActive = false;
+        private bool _isActive = true;
         public IDType ID => id;
         public string Name => name;
         public bool IsActive {
@@ -75,6 +75,7 @@ internal class DeclareViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
+    public Action? CloseWindow { get; set; }
     public event Action<ConfirmingProcedureEventArgs>? ConfirmingProcedure;
 
     public DeclareViewModel (IDType personId, SimulationContext context, Localisation localisation) {
@@ -84,10 +85,10 @@ internal class DeclareViewModel : ViewModel {
         foreach (ProcedureDeclared p in context.ProceduresDeclared.Values) {
             ProcedureGroup procedure = new (p.ID, localisation.Procedures[p.ID].Item1);
 
-            if (context.Context.ProceduresDeclared.Contains (p.ID)) {
+            if (p.DeclarerIDs.All (d => ! context.PeopleRoles[personId].Contains (d))) {
                 procedure.IsActive = false;
-                procedure.Error = "Not allowed to declare";
-            } else if (p.DeclarerIDs.All (d => ! context.PeopleRoles[personId].Contains (d))) {
+                procedure.Error = "Not allowed";
+            } else if (context.Context.ProceduresDeclared.Contains (p.ID)) {
                 procedure.IsActive = false;
                 procedure.Error = "Already declared";
             } else if (p.YieldEffects (0) is Procedure.EffectBundle effects) {
@@ -120,8 +121,7 @@ internal class DeclareViewModel : ViewModel {
             _manualId = e;
             IsManual = true;
         } else if (args.IsConfirmed) {
-            IsConfirmation = true;
-            ConfirmationMessage = $"Success";
+            CloseWindow?.Invoke ();
         } else {
             IsConfirmation = true;
             ConfirmationMessage = args.FailureMessage;
@@ -132,8 +132,6 @@ internal class DeclareViewModel : ViewModel {
         ConfirmingProcedureEventArgs args = new (PersonID, _manualId, true);
 
         ConfirmingProcedure?.Invoke (args);
-        IsManual = false;
-        IsConfirmation = true;
-        ConfirmationMessage = $"Success";
+        CloseWindow?.Invoke ();
     });
 }

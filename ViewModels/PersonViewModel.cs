@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 namespace congress_cucuta.ViewModels;
 
 // TODO: some way to hide the Declare button if it's not possible. you'd have to make a map in simulationcontext
-internal class PersonViewModel (IDType id, string name) : ViewModel, IID {
+internal class PersonViewModel (IDType id, string name, bool isInteractable) : ViewModel, IID {
     internal class RoleGroup : ViewModel, IID {
         private readonly string _name;
         private readonly string _abbreviation;
@@ -29,7 +29,8 @@ internal class PersonViewModel (IDType id, string name) : ViewModel, IID {
     private bool _isAbstain = true;
     private bool _canVote = true;
     private bool _canSpeak = true;
-    private bool _isInteractable = false;
+    private bool _isInteractable = isInteractable;
+    private bool _canDeclare = false;
     public IDType ID => id;
     public string Name {
         get => _name;
@@ -103,6 +104,13 @@ internal class PersonViewModel (IDType id, string name) : ViewModel, IID {
         get => _canSpeak;
         set {
             _canSpeak = value;
+            OnPropertyChanged ();
+        }
+    }
+    public bool CanDeclare {
+        get => _canDeclare;
+        set {
+            _canDeclare = value;
             OnPropertyChanged ();
         }
     }

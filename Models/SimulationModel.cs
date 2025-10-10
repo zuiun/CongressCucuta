@@ -50,6 +50,7 @@ internal class SimulationModel {
             } else if (_ballotIdxsIds.TryGetValue (_slideCurrentIdx, out IDType ballotId)) {
                 _context.BallotCurrentID = ballotId;
                 _isBallot = true;
+                _context.IsBallot = true;
 
                 StartingBallotEventArgs args = new (
                     _context.Context.CalculateVotesPassThreshold (),
@@ -62,6 +63,7 @@ internal class SimulationModel {
                 StartingBallot?.Invoke (args);
             } else if (_isBallot) {
                 _isBallot = false;
+                _context.IsBallot = false;
                 EndingBallot?.Invoke ();
             }
         }
@@ -97,7 +99,7 @@ internal class SimulationModel {
         }
     }
 
-    public void DeclareProcedure (IDType personId, IDType procedureId) => _context.DeclareProcedure (personId, procedureId);
+    public bool? DeclareProcedure (IDType personId, IDType procedureId) => _context.DeclareProcedure (personId, procedureId);
 
     private static IDType GenerateSlidesIntroduction (ref readonly Localisation localisation, ref List<SlideModel> slides) {
         IDType slideCurrentIdx = 0;
@@ -355,7 +357,7 @@ internal class SimulationModel {
         slides.Add (slideBallots);
 
         IDType slideTitleIdx = slideCurrentIdx;
-        SlideBidirectionalModel slideTitle = new (
+        SlideForwardModel slideTitle = new (
             slideCurrentIdx,
             localisation.Period,
             [localisation.Date, localisation.Situation],

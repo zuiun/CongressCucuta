@@ -97,7 +97,8 @@
                      HorizontalAlignment = "Center"
                      VerticalAlignment = "Center"
                      IsEnabled = "{Binding IsInteractable}"/>
-        <Button Grid.Column = "6"
+        <Button Visibility = "{Binding CanDeclare, Converter = {StaticResource BooleanToVisibilityConverter}}"
+                Grid.Column = "6"
                 HorizontalAlignment = "Center"
                 VerticalAlignment = "Center"
                 IsEnabled = "{Binding IsInteractable}"

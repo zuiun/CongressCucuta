@@ -92,28 +92,38 @@ internal class SimulationViewModel : ViewModel {
             _simulation.Context,
             _simulation.Localisation
         );
-
-        declare.ConfirmingProcedure += Declare_ConfirmingProcedureEventHandler;
-
         DeclareWindow window = new () {
             DataContext = declare,
         };
 
+        declare.ConfirmingProcedure += Declare_ConfirmingProcedureEventHandler;
+        declare.CloseWindow = window.Close;
         window.ShowDialog ();
     }
 
     private void Declare_ConfirmingProcedureEventHandler (ConfirmingProcedureEventArgs e) {
         if (e.IsManual) {
             _simulation.DeclareProcedure (e.PersonID, e.ProcedureID);
+            e.IsConfirmed = true;
         } else {
             (bool, string)? result = _simulation.Context.TryConfirmProcedure (e.PersonID, e.ProcedureID);
 
             if (result is (bool isConfirmed, string failureMessage)) {
                 e.IsConfirmed = isConfirmed;
-                e.FailureMessage = failureMessage;
 
                 if (isConfirmed) {
-                    _simulation.DeclareProcedure (e.PersonID, e.ProcedureID);
+                    bool? vote = _simulation.DeclareProcedure (e.PersonID, e.ProcedureID);
+
+                    if (vote is bool isPass) {
+                        LinkViewModel link = isPass ? _slide.Links[0] : _slide.Links[1];
+                        IDType slideIdx = link.Link.TargetID;
+                        SlideModel slide = _simulation.Slides[slideIdx];
+
+                        _slide.Replace (in slide, _simulation.Localisation);
+                        _simulation.SlideCurrentIdx = slideIdx;
+                    }
+                } else {
+                    e.FailureMessage = failureMessage;
                 }
             } else {
                 e.IsManual = true;

@@ -4,6 +4,7 @@ using congress_cucuta.Data;
 namespace congress_cucuta.ViewModels;
 
 internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
+    public static readonly IDType INDEPENDENT = byte.MaxValue;
     private string _name = name;
     private sbyte _value = 0;
     private ObservableCollection<PersonViewModel> _people = [];

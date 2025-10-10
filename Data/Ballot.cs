@@ -15,7 +15,7 @@ internal class Ballot (
             // Regions are not intended to change
             FoundParty, // Targets Factions, elects PARTY_LEADER (if present)
             DissolveParty, // Targets Factions, elects PARTY_LEADER (if present)
-            ReplaceParty, // Targets Factions (original, new), retains PARTY_LEADER (if present)
+            //ReplaceParty, // Targets Factions (original, new), retains PARTY_LEADER (if present)
             RemoveProcedure, // Targets Procedures
             ReplaceProcedure, // Targets Procedures (original, new)
             ModifyCurrency, // Targets Currencies (Faction ID [only same-category], REGION [one], PARTY [one], STATE [one])
@@ -31,9 +31,9 @@ internal class Ballot (
                 throw new ArgumentException ("Target IDs must be populated", nameof (targetIds));
             }
 
-            if (action is ActionType.ReplaceParty && targetIds.Length != 2) {
-                throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceParty", nameof (targetIds));
-            }
+            //if (action is ActionType.ReplaceParty && targetIds.Length != 2) {
+            //    throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceParty", nameof (targetIds));
+            //}
 
             if (action is ActionType.ReplaceProcedure && targetIds.Length != 2) {
                 throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceProcedure", nameof (targetIds));
@@ -68,12 +68,12 @@ internal class Ballot (
 
                     return $"Dissolve {string.Join (", ", parties)}";
                 }
-                case ActionType.ReplaceParty: {
-                    string partyOriginal = localisation.GetFactionAndAbbreviation (TargetIDs[0]);
-                    string partyNew = localisation.GetFactionAndAbbreviation (TargetIDs[1]);
+                //case ActionType.ReplaceParty: {
+                //    string partyOriginal = localisation.GetFactionAndAbbreviation (TargetIDs[0]);
+                //    string partyNew = localisation.GetFactionAndAbbreviation (TargetIDs[1]);
 
-                    return $"Replace {partyOriginal} with {partyNew}";
-                }
+                //    return $"Replace {partyOriginal} with {partyNew}";
+                //}
                 case ActionType.RemoveProcedure: {
                     List<string> procedures = [];
 

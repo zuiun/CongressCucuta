@@ -142,14 +142,14 @@
       "FailResult": {
         "Effects": [
           {
-            "Action": 3,
+            "Action": 2,
             "TargetIDs": [
               4
             ],
             "Value": 0
           },
           {
-            "Action": 5,
+            "Action": 4,
             "TargetIDs": [
               2
             ],
@@ -172,7 +172,7 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 5,
+            "Action": 4,
             "TargetIDs": [
               1,
               2
@@ -207,7 +207,7 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 5,
+            "Action": 4,
             "TargetIDs": [
               253
             ],
@@ -241,7 +241,7 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 3,
+            "Action": 2,
             "TargetIDs": [
               4
             ],

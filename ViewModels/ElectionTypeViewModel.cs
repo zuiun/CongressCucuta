@@ -86,6 +86,7 @@ internal abstract class ElectionTypeViewModel (
                 new ElectionNominatedViewModel (
                     election,
                     peopleRoles,
+                    peopleFactions,
                     localisation,
                     people
                 ),
@@ -93,6 +94,7 @@ internal abstract class ElectionTypeViewModel (
                 new ElectionAppointedViewModel (
                     election,
                     peopleRoles,
+                    peopleFactions,
                     localisation,
                     people
                 ),
@@ -104,12 +106,11 @@ internal abstract class ElectionTypeViewModel (
 
         foreach (IDType roleId in roleIds) {
             if (e) {
-                if (PeopleRolesNew.TryGetValue (sender.ID, out var r)) {
-                    r.Add (roleId);
+                if (PeopleRolesNew.TryGetValue (sender.ID, out var rs)) {
+                    rs.Add (roleId);
                 } else {
                     // Everyone should have a MEMBER Role
                     throw new UnreachableException ();
-                    // PeopleRolesNew[sender.ID] = [roleId];
                 }
             } else {
                 PeopleRolesNew[sender.ID].Remove (roleId);
@@ -124,13 +125,28 @@ internal abstract class ElectionTypeViewModel (
         }
     }
 
+    protected string GenerateName (IDType personId, string name) {
+        string result = name;
+
+        if (PeopleFactionsNew[personId].Item1 is IDType p) {
+            result += $" [{_localisation.GetFactionOrAbbreviation (p)}]";
+        }
+
+        if (PeopleFactionsNew[personId].Item2 is IDType r) {
+            result += $" [{_localisation.GetFactionOrAbbreviation (r)}]";
+        }
+
+        return result;
+    }
+
     protected void AddPerson (IDType factionId, IDType personId, string personName, bool isCandidate = false) {
-        GroupViewModel.PersonGroup person = new (personId, factionId, personName, isCandidate);
+        string name = GenerateName (personId, personName);
+        GroupViewModel.PersonGroup person = new (personId, factionId, name, isCandidate);
 
         person.SelectedChanged += PersonGroup_SelectedChangedEventHandler;
 
         if (_groupsPeople.All (f => f.ID != factionId)) {
-            _groupsPeople.Add (new (factionId, _localisation.GetFactionAndAbbreviation (factionId), IsLeaderNeeded));
+            _groupsPeople.Add (new (factionId, _localisation.GetFactionOrAbbreviation (factionId), IsLeaderNeeded));
         }
 
         _groupsPeople.Where (f => f.ID == factionId).First ().AddPerson (person);
@@ -170,13 +186,14 @@ internal class ElectionShuffleRemoveViewModel : ElectionTypeViewModel {
             if (election.FilterIDs.Any (p => kv.Value.Item1 == p)) {
                 int partyIdx = _random.Next (partiesActive.Count);
                 IDType partyId = partiesIds[partyIdx];
+                string name = people[kv.Key];
 
                 PeopleFactionsNew[kv.Key] = (partyId, kv.Value.Item2);
                 AddPerson (partyId, kv.Key, people[kv.Key]);
             }
         }
 
-        Title = $"Dissolution of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionAndAbbreviation (p)))}";
+        Title = $"Dissolution of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionOrAbbreviation (p)))}";
         Sort ();
     }
 
@@ -224,7 +241,7 @@ internal class ElectionShuffleAddViewModel : ElectionTypeViewModel {
             }
         }
 
-        Title = $"Founding of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionAndAbbreviation (p)))}";
+        Title = $"Founding of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionOrAbbreviation (p)))}";
         Sort ();
     }
 
@@ -242,6 +259,18 @@ internal class ElectionRegionViewModel : ElectionTypeViewModel {
     ) : base (peopleRoles, peopleFactions, localisation, localisation.Roles.ContainsKey (Role.LEADER_REGION)) {
         List<IDType> regionIds = [.. regionsActive];
         List<IDType> regionsUnassigned = [.. regionsActive];
+
+        if (IsLeaderNeeded) {
+            _targetIds = [Role.LEADER_REGION];
+
+            foreach (var rs in peopleRoles.Values) {
+                rs.Remove (Role.LEADER_REGION);
+
+                foreach (IDType l in regionsActive) {
+                    rs.Remove (l);
+                }
+            }
+        }
 
         foreach (var kv in peopleFactions) {
             if (peopleRoles[kv.Key].All (r => ! election.FilterIDs.Contains (r))) {
@@ -283,6 +312,14 @@ internal class ElectionPartyViewModel : ElectionTypeViewModel {
 
         if (IsLeaderNeeded) {
             _targetIds = [Role.LEADER_PARTY];
+
+            foreach (var rs in peopleRoles.Values) {
+                rs.Remove (Role.LEADER_PARTY);
+
+                foreach (IDType l in partiesActive) {
+                    rs.Remove (l);
+                }
+            }
         }
 
         foreach (var kv in peopleFactions) {
@@ -315,11 +352,16 @@ internal class ElectionNominatedViewModel : ElectionTypeViewModel {
     public ElectionNominatedViewModel (
         ElectionModel election,
         Dictionary<IDType, SortedSet<IDType>> peopleRoles,
+        Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
         Localisation localisation,
         List<string> people
-    ) : base (peopleRoles, [], localisation, true) {
+    ) : base (peopleRoles, peopleFactions, localisation, true) {
         _targetIds = [election.TargetID];
         TryAddFaction (election.TargetID, "Candidates");
+
+        foreach (var kv in peopleRoles) {
+            kv.Value.Remove (election.TargetID);
+        }
 
         foreach (var kv in peopleRoles) {
             if (kv.Value.All (r => ! election.FilterIDs.Contains (r))) {
@@ -340,17 +382,22 @@ internal class ElectionAppointedViewModel : ElectionTypeViewModel {
     public ElectionAppointedViewModel (
         ElectionModel election,
         Dictionary<IDType, SortedSet<IDType>> peopleRoles,
+        Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
         Localisation localisation,
         List<string> people
-    ) : base (peopleRoles, [], localisation, ! election.IsRandom) {
+    ) : base (peopleRoles, peopleFactions, localisation, ! election.IsRandom) {
         _targetIds = [election.TargetID];
         _isRandom = election.IsRandom;
+
+        foreach (var kv in peopleRoles) {
+            kv.Value.Remove (election.TargetID);
+        }
 
         if (_isRandom) {
             List<IDType> peopleIds = [];
 
             foreach (var kv in peopleRoles) {
-                if (kv.Value.All (r => !election.FilterIDs.Contains (r))) {
+                if (kv.Value.All (r => ! election.FilterIDs.Contains (r))) {
                     peopleIds.Add (kv.Key);
                 }
             }

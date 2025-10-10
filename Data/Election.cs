@@ -66,5 +66,16 @@ internal readonly record struct Election : IComparable<Election> {
         }
     }
 
-    public int CompareTo (Election other) => Type.CompareTo (other.Type);
+    public int CompareTo (Election other) {
+        if (
+            Type is ElectionType.ShuffleRemove or ElectionType.ShuffleAdd
+            || other.Type is ElectionType.ShuffleRemove or ElectionType.ShuffleAdd
+        ) {
+            return Type.CompareTo (other.Type);
+        } else if (ProcedureID is IDType p1 && other.ProcedureID is IDType p2) {
+            return p1.CompareTo (p2);
+        } else {
+            throw new UnreachableException ();
+        }
+    }
 }

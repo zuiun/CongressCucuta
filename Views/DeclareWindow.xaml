@@ -5,23 +5,13 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:congress_cucuta.Views"
         mc:Ignorable="d"
-        Title="Declared Procedures" Height="640" Width="480">
+        Title="Declare Procedure" Height="640" Width="480">
     <Window.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style TargetType = "TextBlock">
             <Setter Property = "FontFamily" Value = "Nirmala UI"/>
             <Setter Property = "FontSize" Value = "16"/>
         </Style>
-        <!--<Style TargetType = "ListBox">
-            <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
-            <Setter Property = "FontSize" Value = "12"/>
-            <Setter Property = "Padding" Value = "0, 0, 0, 0"/>
-        </Style>
-        <Style TargetType = "ListBoxItem">
-            <Setter Property = "Focusable" Value = "False"/>
-            <Setter Property = "Padding" Value = "0"/>
-            <Setter Property = "Margin" Value = "0, 0, 0, 0"/>
-        </Style>-->
         <Style TargetType = "Button">
             <Setter Property = "FontFamily" Value = "Candara"/>
             <Setter Property = "FontSize" Value = "16"/>
@@ -47,7 +37,9 @@
                    Text = "{Binding Name}"
                    HorizontalAlignment = "Center"
                    VerticalAlignment = "Center"/>
-        <Grid Grid.Row = "1" Grid.Column = "1">
+        <Grid Grid.Row = "1"
+              Grid.Column = "1"
+              Visibility = "{Binding IsDisplay, Converter = {StaticResource BooleanToVisibilityConverter}}">
             <Grid.RowDefinitions>
                 <RowDefinition Height = "1*"/>
                 <RowDefinition Height = "14*"/>
@@ -58,21 +50,21 @@
             </Grid.ColumnDefinitions>
 
             <TextBlock FontFamily = "Nirmala UI"
-                       FontSize = "14"
+                       FontSize = "16"
                        Grid.Row = "0"
                        Grid.Column = "0"
                        Text = "Procedures"
                        VerticalAlignment = "Center"
-                       Margin = "6, 0, 0, 0"/>
+                       Margin = "6, 0, 0, 2"/>
             <TextBlock FontFamily = "Nirmala UI"
-                       FontSize = "14"
+                       FontSize = "16"
                        Grid.Row = "0"
                        Grid.Column = "0"
                        Text = "Permissions"
                        HorizontalAlignment = "Right"
                        VerticalAlignment = "Center"
-                       Margin = "6, 0, 0, 0"/>
-            <Grid Visibility = "{Binding IsDisplay, Converter = {StaticResource BooleanToVisibilityConverter}}">
+                       Margin = "6, 0, 0, 2"/>
+            <Grid Grid.Row = "1">
                 <ItemsControl Grid.Row = "1"
                               Grid.Column = "0"
                               Grid.ColumnSpan = "2"
@@ -82,25 +74,42 @@
                         <DataTemplate>
                             <Grid>
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width = "*"/>
                                     <ColumnDefinition Width = "Auto"/>
+                                    <ColumnDefinition Width = "*"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Button Grid.Column = "1"
+                                <Button Grid.Column = "0"
                                         Content = "{Binding Name}"
                                         Command = "{Binding DeclareProcedureCommand}"/>
-                                <TextBlock Text = "{Binding Error}" HorizontalAlignment = "Right"/>
+                                <TextBlock Foreground = "Red"
+                                           FontFamily = "Nirmala UI"
+                                           FontSize = "14"
+                                           Grid.Column = "1"
+                                           Text = "{Binding Error}"
+                                           HorizontalAlignment = "Right"
+                                           VerticalAlignment = "Center"
+                                           Margin = "0, 0, 0, 12"/>
                             </Grid>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </Grid>
         </Grid>
-        <Grid Visibility = "{Binding IsManual, Converter = {StaticResource BooleanToVisibilityConverter}}">
-            <Button Content = "Confirm declaration" HorizontalAlignment = "Center" VerticalAlignment = "Center"/>
+        <Grid Grid.Row = "1"
+              Grid.Column = "1"
+              Visibility = "{Binding IsManual, Converter = {StaticResource BooleanToVisibilityConverter}}">
+            <Button Content = "Confirm declaration"
+                    HorizontalAlignment = "Center"
+                    VerticalAlignment = "Center"
+                    Command = "{Binding ConfirmProcedureCommand}"/>
         </Grid>
-        <Grid Visibility = "{Binding IsConfirmation, Converter = {StaticResource BooleanToVisibilityConverter}}">
-            <TextBlock Text = "{Binding ConfirmationMessage}" HorizontalAlignment = "Center" VerticalAlignment = "Center"/>
+        <Grid Grid.Row = "1"
+              Grid.Column = "1"
+              Visibility = "{Binding IsConfirmation, Converter = {StaticResource BooleanToVisibilityConverter}}">
+            <TextBlock Foreground = "Red"
+                       Text = "{Binding ConfirmationMessage}"
+                       HorizontalAlignment = "Center"
+                       VerticalAlignment = "Center"/>
         </Grid>
     </Grid>
 </Window>

@@ -1,6 +1,5 @@
 ﻿<!--
     Entry points:
-    MainWindow.xaml (testing)
     Views/SetupWindow.xaml (application)
     Views/CompilerWindow.xaml (compile .sim file)
 -->

@@ -33,6 +33,27 @@
             <Setter Property = "Padding" Value = "0"/>
             <Setter Property = "Margin" Value = "0, 0, 1, 0"/>
         </Style>
+        <Style x:Key = "Ballot" TargetType = "TextBlock">
+            <Setter Property = "Foreground" Value = "White"/>
+            <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
+            <Setter Property = "FontSize" Value = "14"/>
+        </Style>
+        <Style x:Key = "Pass" TargetType = "TextBlock" BasedOn = "{StaticResource Ballot}">
+            <Style.Triggers>
+                <DataTrigger Binding = "{Binding IsPass}" Value = "true">
+                    <Setter Property = "Foreground" Value = "LightGreen"/>
+                    <Setter Property = "FontFamily" Value = "Nirmala UI"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style x:Key = "Fail" TargetType = "TextBlock" BasedOn = "{StaticResource Ballot}">
+            <Style.Triggers>
+                <DataTrigger Binding = "{Binding IsPass}" Value = "false">
+                    <Setter Property = "Foreground" Value = "Red"/>
+                    <Setter Property = "FontFamily" Value = "Nirmala UI"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
     </UserControl.Resources>
 
     <Grid Background = "Black">
@@ -174,6 +195,10 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height = "Auto"/>
+                                <RowDefinition Height = "Auto"/>
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width = "5*"/>
                                 <ColumnDefinition Width = "2*"/>
@@ -182,34 +207,57 @@
                                 <ColumnDefinition Width = "1*"/>
                             </Grid.ColumnDefinitions>
 
-                            <TextBlock Grid.Column = "0"
+                            <TextBlock Grid.Row = "0"
+                                       Grid.Column = "0"
                                        Foreground = "White"
                                        FontFamily = "Nirmala UI Semilight"
                                        FontSize = "14"
                                        Text = "{Binding Title}"
                                        HorizontalAlignment = "Left"
                                        Margin = "6, 0, 0, 4"/>
-                            <TextBlock Grid.Column = "1"
-                                       Foreground = "White"
-                                       FontFamily = "Nirmala UI Semilight"
-                                       FontSize = "14"
+                            <TextBlock Grid.Row = "0"
+                                       Grid.Column = "1"
+                                       Style = "{StaticResource Pass}"
                                        Text = "{Binding VotesPass}"
                                        HorizontalAlignment = "Center"
                                        Margin = "0, 0, 0, 4"/>
-                            <TextBlock Grid.Column = "2"
-                                       Foreground = "White"
-                                       FontFamily = "Nirmala UI Semilight"
-                                       FontSize = "14"
+                            <TextBlock Grid.Row = "0"
+                                       Grid.Column = "2"
+                                       Style = "{StaticResource Fail}"
                                        Text = "{Binding VotesFail}"
                                        HorizontalAlignment = "Center"
-                                       Margin = "0, 0, 0, 4"/>
-                            <TextBlock Grid.Column = "3"
-                                       Foreground = "White"
-                                       FontFamily = "Nirmala UI Semilight"
-                                       FontSize = "14"
+                                       Margin = "0, 0, 0, 4">
+                            </TextBlock>
+                            <TextBlock Grid.Row = "0"
+                                       Grid.Column = "3"
+                                       Style = "{StaticResource Ballot}"
                                        Text = "{Binding VotesAbstain}"
                                        HorizontalAlignment = "Center"
                                        Margin = "0, 0, 0, 4"/>
+                            <ComboBox Grid.Row = "1"
+                                      Grid.Column = "0"
+                                      Grid.ColumnSpan = "5"
+                                      Visibility = "{Binding Procedures.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                                      ItemsSource = "{Binding Procedures}">
+                                <ComboBox.ItemContainerStyle>
+                                    <Style TargetType = "ComboBoxItem">
+                                        <Setter Property = "IsEnabled" Value = "False"/>
+                                        <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
+                                        <Setter Property = "FontSize" Value = "12"/>
+                                    </Style>
+                                </ComboBox.ItemContainerStyle>
+                            </ComboBox>
+                            <TextBlock Grid.Row = "1"
+                                       Grid.Column = "0"
+                                       Grid.ColumnSpan = "5"
+                                       Visibility = "{Binding Procedures.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                                       Foreground = "Black"
+                                       FontFamily = "Nirmala UI"
+                                       FontSize = "12"
+                                       Text = "Declared"
+                                       HorizontalAlignment = "Center"
+                                       VerticalAlignment = "Center"
+                                       IsHitTestVisible = "False"/>
                         </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

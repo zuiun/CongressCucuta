@@ -11,7 +11,7 @@ internal class CompilerViewModel : ViewModel {
     private bool _wasCompilationSuccess = false;
     private bool _wasCompilationFailure = false;
     // This is the compilation target
-    private readonly Simulation _simulation = new Colombia ().Simulation;
+    private readonly Simulation _simulation = new Indonesia ().Simulation;
     private readonly JsonSerializerOptions _options = new () {
         WriteIndented = true,
         Converters = { new IDTypeJsonConverter () },
