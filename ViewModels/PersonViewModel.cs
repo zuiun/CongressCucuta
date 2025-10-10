@@ -3,36 +3,33 @@ using System.Collections.ObjectModel;
 
 namespace congress_cucuta.ViewModels;
 
+// TODO: some way to hide the Declare button if it's not possible. you'd have to make a map in simulationcontext
 internal class PersonViewModel (IDType id, string name) : ViewModel, IID {
-    internal class RoleGroup : ViewModel {
+    internal class RoleGroup : ViewModel, IID {
         private readonly string _name;
         private readonly string _abbreviation;
+        public IDType ID { get; }
         public string Name => _name;
         public string Abbreviation => _abbreviation;
 
-        public RoleGroup (string name) {
+        public RoleGroup (IDType id, string name) {
             string[] words = name.Split (' ');
             string abbreviation = string.Join (string.Empty, words.Select (w => w.First ()));
             
             _name = name;
             _abbreviation = $"[{abbreviation}]";
+            ID = id;
         }
-    }
-
-    internal class ProcedureGroup : ViewModel {
-
     }
 
     private string _name = name;
     private ObservableCollection<RoleGroup> _roles = [];
-    // TODO needs to fire an event that goes to simulationmodel, which goes to context and changes votes
     private bool _isPass = false;
     private bool _isFail = false;
     private bool _isAbstain = true;
     private bool _canVote = true;
     private bool _canSpeak = true;
     private bool _isInteractable = false;
-    private readonly ObservableCollection<ProcedureGroup> _procedures = [];
     public IDType ID => id;
     public string Name {
         get => _name;
@@ -109,13 +106,15 @@ internal class PersonViewModel (IDType id, string name) : ViewModel, IID {
             OnPropertyChanged ();
         }
     }
-    // These three need to get how many votes the person was worth
     public event EventHandler<bool>? VotingPass = null;
     public event EventHandler<bool>? VotingFail = null;
     public event EventHandler<bool>? VotingAbstain = null;
+    public event Action<IDType>? DeclaringProcedure = null;
 
     public void UpdatePermissions (Permissions permissions) {
         CanVote = permissions.CanVote;
         CanSpeak = permissions.CanSpeak;
     }
+
+    public RelayCommand DeclareProcedureCommand => new (_ => DeclaringProcedure?.Invoke (ID));
 }

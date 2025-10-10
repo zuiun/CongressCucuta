@@ -4,10 +4,12 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:congress_cucuta.Views"
+             xmlns:c="clr-namespace:congress_cucuta.Converters"
              mc:Ignorable="d" 
              d:DesignHeight="720" d:DesignWidth="320">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <c:CountToVisibilityConverter x:Key = "CountToVisibilityConverter"/>
         <Style TargetType = "ItemsControl">
             <Setter Property = "Background" Value = "#00000000"/>
             <Setter Property = "Padding" Value = "0, 4, 0, 0"/>
@@ -215,8 +217,55 @@
         </Grid>
         <StackPanel Grid.Row = "2">
             <TextBlock Text = "Procedures" HorizontalAlignment = "Center"/>
-            <Expander ExpandDirection = "Up" HorizontalAlignment = "Center" Margin = "4, 0, 0, 4">
-
+            <Expander ExpandDirection = "Up" HorizontalAlignment = "Stretch" Margin = "0, 0, 0, 4">
+                <StackPanel>
+                    <TextBlock Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                               Text = "Governmental Procedures"
+                               HorizontalAlignment = "Center"/>
+                    <ListBox Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                             ItemsSource = "{Binding ProceduresGovernmental}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Foreground = "White"
+                                           FontFamily = "Nirmala UI Semilight"
+                                           FontSize = "14"
+                                           Text = "{Binding Name}"
+                                           ToolTip = "{Binding Effects}"
+                                           Margin = "4, 0, 0, 2"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                               Text = "Special Procedures" HorizontalAlignment = "Center"/>
+                    <ListBox Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                             ItemsSource = "{Binding ProceduresSpecial}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Foreground = "White"
+                                           FontFamily = "Nirmala UI Semilight"
+                                           FontSize = "14"
+                                           Text = "{Binding Name}"
+                                           ToolTip = "{Binding Effects}"
+                                           Margin = "4, 0, 0, 2"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                    <TextBlock Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                               Text = "Declared Procedures" HorizontalAlignment = "Center"/>
+                    <ListBox Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                             ItemsSource = "{Binding ProceduresDeclared}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock Foreground = "White"
+                                           FontFamily = "Nirmala UI Semilight"
+                                           FontSize = "14"
+                                           Text = "{Binding Name}"
+                                           ToolTip = "{Binding Effects}"
+                                           Margin = "4, 0, 0, 2"/>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </StackPanel>
             </Expander>
         </StackPanel>
     </Grid>

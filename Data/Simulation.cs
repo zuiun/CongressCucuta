@@ -51,7 +51,7 @@ internal class Simulation {
      * (8) If any Region has a Currency, then every Region must have a Currency; same restriction applies to Party
      * (9) Every IID must have a Localisation entry
      * (10) Every IID of a certain type must have a unique ID that matches its container's index
-     * (11) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise
+     * (11) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise and no other ProcedureImmediate may have it
      * (12) Every Ballot Result must target valid Faction IDs, Procedure IDs, and Currency IDs
      */
     private void Validate () {
@@ -370,6 +370,15 @@ internal class Simulation {
                 if (! isCurrencyInitialise) {
                     throw new ArgumentException ("If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise");
                 }
+
+                for (byte i = 1; i < ProceduresSpecial.Count; ++ i) {
+                    foreach (Procedure.Effect e in ProceduresSpecial[i].Effects) {
+                        if (e.Action is Procedure.Effect.ActionType.CurrencyInitialise) {
+                            throw new ArgumentException ("Only the first ProcedureImmediate may have Action CurrencyInitialise");
+                        }
+                    }
+                }
+
             }
         }
 #endregion

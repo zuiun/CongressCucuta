@@ -11,15 +11,11 @@
     "255": {
       "CanVote": true,
       "Votes": 1,
-      "CanPass": false,
-      "CanVeto": false,
       "CanSpeak": true
     },
     "253": {
       "CanVote": false,
       "Votes": 0,
-      "CanPass": false,
-      "CanVeto": true,
       "CanSpeak": true
     }
   },
@@ -146,14 +142,14 @@
       "FailResult": {
         "Effects": [
           {
-            "Action": 2,
+            "Action": 3,
             "TargetIDs": [
               4
             ],
             "Value": 0
           },
           {
-            "Action": 4,
+            "Action": 5,
             "TargetIDs": [
               2
             ],
@@ -176,7 +172,7 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 4,
+            "Action": 5,
             "TargetIDs": [
               1,
               2
@@ -211,7 +207,7 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 4,
+            "Action": 5,
             "TargetIDs": [
               253
             ],
@@ -245,7 +241,7 @@
       "PassResult": {
         "Effects": [
           {
-            "Action": 2,
+            "Action": 3,
             "TargetIDs": [
               4
             ],
@@ -437,7 +433,7 @@
         "Item2": "This country has a powerful, elected executive who is separate from the legislature."
       },
       "1": {
-        "Item1": "Constitution of Cucuta",
+        "Item1": "Congress of Angostura",
         "Item2": "Despite the erosion of departmental powers, Colombia remains a federation in name and in vision. It will be very difficult to change this state of affairs through constitutional means."
       },
       "2": {

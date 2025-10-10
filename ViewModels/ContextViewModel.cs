@@ -1,7 +1,7 @@
-﻿using congress_cucuta.Data;
+﻿using System.Collections.ObjectModel;
+using congress_cucuta.Converters;
+using congress_cucuta.Data;
 using congress_cucuta.Models;
-using System.Collections.ObjectModel;
-using static congress_cucuta.ViewModels.PersonViewModel;
 
 namespace congress_cucuta.ViewModels;
 
@@ -21,6 +21,22 @@ internal class ContextViewModel : ViewModel {
         public byte VotesAbstain => votesAbstain;
     }
 
+    internal class ProcedureGroup : ViewModel, IID {
+        public IDType ID { get; }
+        public string Name { get; }
+        public string Effects { get; }
+
+        public ProcedureGroup (IDType id, string name, string effects) {
+            string[] lines = effects.Split ('\n');
+            string[] clean = lines[1 ..];
+            string result = string.Join ('\n', clean);
+
+            ID = id;
+            Name = name;
+            Effects = StringLineFormatter.Convert (result);
+        }
+    }
+
     private readonly Localisation _localisation;
     private bool _isPeople = true;
     private bool _isFaction = false;
@@ -37,6 +53,9 @@ internal class ContextViewModel : ViewModel {
     private bool _isBallotCount = false;
     private byte _votesPassThreshold = 0;
     private byte _votesFailThreshold = 0;
+    private ObservableCollection<ProcedureGroup> _proceduresGovernmental = [];
+    private ObservableCollection<ProcedureGroup> _proceduresSpecial = [];
+    private ObservableCollection<ProcedureGroup> _proceduresDeclared = [];
     public bool IsPeople {
         get => _isPeople;
         set {
@@ -129,13 +148,34 @@ internal class ContextViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
+    public ObservableCollection<ProcedureGroup> ProceduresGovernmental {
+        get => _proceduresGovernmental;
+        set {
+            _proceduresGovernmental = value;
+            OnPropertyChanged ();
+        }
+    }
+    public ObservableCollection<ProcedureGroup> ProceduresSpecial {
+        get => _proceduresSpecial;
+        set {
+            _proceduresSpecial = value;
+            OnPropertyChanged ();
+        }
+    }
+    public ObservableCollection<ProcedureGroup> ProceduresDeclared {
+        get => _proceduresDeclared;
+        set {
+            _proceduresDeclared = value;
+            OnPropertyChanged ();
+        }
+    }
     public event Action<VotingEventArgs>? Voting;
+    public event Action<IDType>? DeclaringProcedure;
 
     public ContextViewModel (ref readonly SimulationModel simulation) {
         _localisation = simulation.Localisation;
         simulation.StartingBallot += Simulation_StartingBallotEventHandler;
         simulation.EndingBallot += Simulation_EndingBallotEventHandler;
-        ;
         simulation.Context.InitialisedPeople += Context_InitialisedPeopleEventHandler;
         simulation.Context.CompletedElection += Context_CompletedElectionEventHandler;
         simulation.Context.UpdatedPermissions += Context_UpdatedPermissionsEventHandler;
@@ -143,20 +183,26 @@ internal class ContextViewModel : ViewModel {
         simulation.Context.ModifiedCurrencies += Context_ModifiedCurrenciesEventHandler;
     }
 
+    public void Sort () {
+        ProceduresGovernmental = [.. ProceduresGovernmental.OrderBy (p => p.ID)];
+        ProceduresSpecial = [.. ProceduresSpecial.OrderBy (p => p.ID)];
+        ProceduresDeclared = [.. ProceduresDeclared.OrderBy (p => p.ID)];
+    }
+
     private PersonViewModel CreatePerson (IDType id, string name, SortedSet<IDType> roles) {
         PersonViewModel person = new (id, name);
 
-        person.Roles.Clear ();
-
         foreach (IDType r in roles) {
             if (r != Role.MEMBER) {
-                person.Roles.Add (new (_localisation.Roles[r].Item1));
+                person.Roles.Add (new (r, _localisation.Roles[r].Item1));
             }
         }
 
+        person.Roles = [.. person.Roles.OrderBy (r => r.ID)];
         person.VotingPass += Person_VotingPassEventHandler;
         person.VotingFail += Person_VotingFailEventHandler;
         person.VotingAbstain += Person_VotingAbstainEventHandler;
+        person.DeclaringProcedure += Person_DeclaringProcedureEventHandler;
         return person;
     }
 
@@ -306,6 +352,10 @@ internal class ContextViewModel : ViewModel {
 
         Voting?.Invoke (args);
         VotesAbstain = args.Votes;
+    }
+
+    private void Person_DeclaringProcedureEventHandler (IDType e) {
+        DeclaringProcedure?.Invoke (e);
     }
 
     private void Context_CompletedElectionEventHandler (CompletedElectionEventArgs e) {

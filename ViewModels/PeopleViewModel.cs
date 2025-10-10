@@ -60,6 +60,6 @@ internal class PeopleViewModel : ViewModel {
 
     public RelayCommand FinishInputCommand => new (
         _ => InitialisingPeople?.Invoke ([.. Names.Select ((n, i) => new Person (i, n.Name))]),
-        _ => Names.Count > 1
+        _ => Names.Count > 2
     );
 }

@@ -97,6 +97,8 @@ internal class SimulationModel {
         }
     }
 
+    public void DeclareProcedure (IDType personId, IDType procedureId) => _context.DeclareProcedure (personId, procedureId);
+
     private static IDType GenerateSlidesIntroduction (ref readonly Localisation localisation, ref List<SlideModel> slides) {
         IDType slideCurrentIdx = 0;
         SlideForwardModel slideIntro = new (slideCurrentIdx, localisation.State, [localisation.Government], false);

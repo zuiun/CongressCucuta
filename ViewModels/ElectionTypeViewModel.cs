@@ -1,10 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics;
 using congress_cucuta.Data;
 using congress_cucuta.Models;
 
 namespace congress_cucuta.ViewModels;
 
-// TODO sort everything upon completing construction
 internal abstract class ElectionTypeViewModel (
     Dictionary<IDType, SortedSet<IDType>> peopleRoles,
     Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
@@ -14,7 +14,7 @@ internal abstract class ElectionTypeViewModel (
     protected static readonly Random _random = new ();
     protected string _title = string.Empty;
     protected ObservableCollection<GroupViewModel> _groupsPeople = [];
-    protected IDType? _targetId = null;
+    protected IDType[] _targetIds = [];
     protected Localisation _localisation = localisation;
     public Dictionary<IDType, SortedSet<IDType>> PeopleRolesNew => peopleRoles;
     public Dictionary<IDType, (IDType?, IDType?)> PeopleFactionsNew => peopleFactions;
@@ -100,16 +100,20 @@ internal abstract class ElectionTypeViewModel (
         };
 
     private void PersonGroup_SelectedChangedEventHandler (GroupViewModel.PersonGroup sender, bool e) {
-        IDType roleId = _targetId is null ? sender.FactionID : (IDType) _targetId!;
+        List<IDType> roleIds = [.. _targetIds, sender.FactionID];
 
-        if (e) {
-            if (PeopleRolesNew.TryGetValue (sender.ID, out var roleIds)) {
-                roleIds.Add (roleId);
+        foreach (IDType roleId in roleIds) {
+            if (e) {
+                if (PeopleRolesNew.TryGetValue (sender.ID, out var r)) {
+                    r.Add (roleId);
+                } else {
+                    // Everyone should have a MEMBER Role
+                    throw new UnreachableException ();
+                    // PeopleRolesNew[sender.ID] = [roleId];
+                }
             } else {
-                PeopleRolesNew[sender.ID] = [roleId];
+                PeopleRolesNew[sender.ID].Remove (roleId);
             }
-        } else {
-            PeopleRolesNew[sender.ID].Remove (roleId);
         }
     }
 
@@ -124,7 +128,11 @@ internal abstract class ElectionTypeViewModel (
         GroupViewModel.PersonGroup person = new (personId, factionId, personName, isCandidate);
 
         person.SelectedChanged += PersonGroup_SelectedChangedEventHandler;
-        TryAddFaction (factionId, _localisation.GetFactionAndAbbreviation (factionId));
+
+        if (_groupsPeople.All (f => f.ID != factionId)) {
+            _groupsPeople.Add (new (factionId, _localisation.GetFactionAndAbbreviation (factionId), IsLeaderNeeded));
+        }
+
         _groupsPeople.Where (f => f.ID == factionId).First ().AddPerson (person);
     }
 
@@ -184,6 +192,9 @@ internal class ElectionShuffleAddViewModel : ElectionTypeViewModel {
         Localisation localisation,
         List<string> people
     ) : base (peopleRoles, peopleFactions, localisation, localisation.Roles.ContainsKey (Role.LEADER_PARTY)) {
+        List<IDType> unassignedIds = [];
+        HashSet<IDType> factionsAssigned = [];
+
         foreach (var kv in peopleFactions) {
             if (
                 kv.Value.Item1 is not null
@@ -196,7 +207,20 @@ internal class ElectionShuffleAddViewModel : ElectionTypeViewModel {
 
                     PeopleFactionsNew[kv.Key] = (partyId, kv.Value.Item2);
                     AddPerson (partyId, kv.Key, people[kv.Key], IsLeaderNeeded);
+                    factionsAssigned.Add (partyId);
+                } else {
+                    unassignedIds.Add (kv.Key);
                 }
+            }
+        }
+
+        foreach (IDType f in election.FilterIDs) {
+            if (! factionsAssigned.Contains (f)) {
+                int unassignedIdx = _random.Next (unassignedIds.Count);
+                IDType unassignedId = unassignedIds[unassignedIdx];
+
+                PeopleFactionsNew[unassignedId] = (f, PeopleFactionsNew[unassignedId].Item2);
+                AddPerson (unassignedId, f, people[unassignedId], IsLeaderNeeded);
             }
         }
 
@@ -257,6 +281,10 @@ internal class ElectionPartyViewModel : ElectionTypeViewModel {
         List<IDType> partyIds = [.. partiesActive];
         List<IDType> partiesUnassigned = [.. partiesActive];
 
+        if (IsLeaderNeeded) {
+            _targetIds = [Role.LEADER_PARTY];
+        }
+
         foreach (var kv in peopleFactions) {
             if (peopleRoles[kv.Key].All (r => ! election.FilterIDs.Contains (r))) {
                 int partyIdx;
@@ -290,12 +318,12 @@ internal class ElectionNominatedViewModel : ElectionTypeViewModel {
         Localisation localisation,
         List<string> people
     ) : base (peopleRoles, [], localisation, true) {
-        _targetId = election.TargetID;
-        TryAddFaction (0, "Candidates");
+        _targetIds = [election.TargetID];
+        TryAddFaction (election.TargetID, "Candidates");
 
         foreach (var kv in peopleRoles) {
             if (kv.Value.All (r => ! election.FilterIDs.Contains (r))) {
-                AddPerson (0, kv.Key, people[kv.Key], true);
+                AddPerson (election.TargetID, kv.Key, people[kv.Key], true);
             }
         }
 
@@ -315,7 +343,7 @@ internal class ElectionAppointedViewModel : ElectionTypeViewModel {
         Localisation localisation,
         List<string> people
     ) : base (peopleRoles, [], localisation, ! election.IsRandom) {
-        _targetId = election.TargetID;
+        _targetIds = [election.TargetID];
         _isRandom = election.IsRandom;
 
         if (_isRandom) {
@@ -330,14 +358,14 @@ internal class ElectionAppointedViewModel : ElectionTypeViewModel {
             int personIdx = _random.Next (peopleIds.Count);
             IDType personId = peopleIds[personIdx];
 
-            TryAddFaction (0, "Appointment");
-            AddPerson (0, personId, people[personId], false);
+            TryAddFaction (election.TargetID, "Appointment");
+            AddPerson (election.TargetID, personId, people[personId], false);
         } else {
-            TryAddFaction (0, "Candidates");
+            TryAddFaction (election.TargetID, "Candidates");
 
             foreach (var kv in peopleRoles) {
                 if (kv.Value.All (r => ! election.FilterIDs.Contains (r))) {
-                    AddPerson (0, kv.Key, people[kv.Key], true);
+                    AddPerson (election.TargetID, kv.Key, people[kv.Key], true);
                 }
             }
         }

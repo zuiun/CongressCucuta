@@ -44,8 +44,16 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Column = "0" Orientation = "Horizontal">
-            <TextBlock Grid.Row = "1" Text = "{Binding Name}" VerticalAlignment = "Center" TextWrapping = "Wrap"/>
-            <ItemsControl ItemsSource = "{Binding Roles}"
+            <ScrollViewer Grid.Column = "0"
+                          VerticalScrollBarVisibility = "Disabled"
+                          HorizontalScrollBarVisibility = "Auto"
+                          MaxWidth = "98"
+                          Margin = "1, 0, 0, 1">
+                <!--148.04722222222222-->
+                <TextBlock Text = "{Binding Name}" VerticalAlignment = "Center"/>
+            </ScrollViewer>
+            <ItemsControl Grid.Column = "1"
+                          ItemsSource = "{Binding Roles}"
                           BorderThickness = "0"
                           VerticalContentAlignment = "Stretch"
                           Padding = "0">
@@ -61,9 +69,9 @@
                                    FontSize = "12"
                                    Text = "{Binding Abbreviation}"
                                    ToolTip = "{Binding Name}"
-                                   VerticalAlignment = "Top"
+                                   VerticalAlignment = "Center"
                                    Padding = "0"
-                                   Margin = "0, 0, 2, 0"/>
+                                   Margin = "0, 0, 2, 24"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
@@ -89,10 +97,21 @@
                      HorizontalAlignment = "Center"
                      VerticalAlignment = "Center"
                      IsEnabled = "{Binding IsInteractable}"/>
-        <Expander Grid.Column = "6"
-                  ExpandDirection = "Left"
-                  HorizontalAlignment = "Center"
-                  VerticalAlignment = "Center"
-                  IsEnabled = "{Binding IsInteractable}"/>
+        <Button Grid.Column = "6"
+                HorizontalAlignment = "Center"
+                VerticalAlignment = "Center"
+                IsEnabled = "{Binding IsInteractable}"
+                Margin = "0, 0, 0, 4"
+                Command = "{Binding DeclareProcedureCommand}">
+            <Button.LayoutTransform>
+                <RotateTransform Angle = "90"/>
+            </Button.LayoutTransform>
+            
+            <TextBlock Foreground = "Black"
+                       FontFamily = "Candara"
+                       FontSize = "12"
+                       Text = "Declare"
+                       Margin = "0"/>
+        </Button>
     </Grid>
 </UserControl>

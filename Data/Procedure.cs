@@ -111,12 +111,24 @@ internal abstract class Procedure (
              */
             ElectionAppointed,
             /*
-             * Prevents Target Roles from voting current Ballot
+             * Only allows Target Roles to vote on current Ballot
              *
              * Declared
-             * Targets Roles (empty: declarer excluded, populated: specified excluded)
+             * Targets Roles (empty: declarer, populated: specified)
              */
-            VotersLimit,
+            BallotLimit,
+            /*
+             * Immediately passes current Ballot
+             *
+             * Declared
+             */
+            BallotPass,
+            /*
+             * Immediately fails current Ballot
+             *
+             * Declared
+             */
+            BallotFail,
         }
 
         private static string TargetToString (Effect effect, ref readonly Localisation localisation) {
@@ -173,7 +185,7 @@ internal abstract class Procedure (
                         return $"{target}\nEveryone:";
                     }
                 }
-                case ActionType.VotersLimit: {
+                case ActionType.BallotLimit: {
                     if (effect.TargetIDs.Length > 0) {
                         List<string> excluded = [];
 
@@ -335,6 +347,12 @@ internal abstract class Procedure (
 
                     result.Add (target);
                     result.Add (action);
+
+                    if (localisation.Roles.TryGetValue (Role.LEADER_REGION, out (string, string) locs)) {
+                        result.Add (StringLineFormatter.Indent ("Election:", 1));
+                        result.Add (StringLineFormatter.Indent (locs.Item2, 2));
+                    }
+
                     break;
                 }
                 case ActionType.ElectionParty: {
@@ -343,6 +361,12 @@ internal abstract class Procedure (
 
                     result.Add (target);
                     result.Add (action);
+
+                    if (localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) locs)) {
+                        result.Add (StringLineFormatter.Indent ("Election:", 1));
+                        result.Add (StringLineFormatter.Indent (locs.Item2, 2));
+                    }
+
                     break;
                 }
                 case ActionType.ElectionNominated: {
@@ -350,9 +374,8 @@ internal abstract class Procedure (
                     string target = targets[0];
                     string candidates = targets[1];
 
-                    result.Add (StringLineFormatter.Indent ($"Election:", 1));
-                    result.Add (StringLineFormatter.Indent ($"Nominate three candidates for {target}", 2));
-                    result.Add (StringLineFormatter.Indent ($"Division of chamber", 2));
+                    result.Add (StringLineFormatter.Indent ("Election:", 1));
+                    result.Add (StringLineFormatter.Indent ($"{target}", 2));
                     result.Add (StringLineFormatter.Indent (candidates, 2));
                     result.Add (StringLineFormatter.Indent ("Can be nominated", 3));
                     break;
@@ -367,13 +390,29 @@ internal abstract class Procedure (
                     result.Add (StringLineFormatter.Indent ("Can be nominated", 3));
                     break;
                 }
-                case ActionType.VotersLimit: {
+                case ActionType.BallotLimit: {
                     string filter = StringLineFormatter.Indent ("Current ballot:", 1);
                     string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 2);
                     string action = StringLineFormatter.Indent ("Cannot vote", 3);
 
                     result.Add (filter);
                     result.Add (target);
+                    result.Add (action);
+                    break;
+                }
+                case ActionType.BallotPass: {
+                    string filter = StringLineFormatter.Indent ("Current ballot:", 1);
+                    string action = StringLineFormatter.Indent ("Immediately passes", 2);
+
+                    result.Add (filter);
+                    result.Add (action);
+                    break;
+                }
+                case ActionType.BallotFail: {
+                    string filter = StringLineFormatter.Indent ("Current ballot:", 1);
+                    string action = StringLineFormatter.Indent ("Immediately fails", 2);
+
+                    result.Add (filter);
                     result.Add (action);
                     break;
                 }
@@ -398,8 +437,7 @@ internal abstract class Procedure (
 }
 
 /*
- * Activated once only at the beginning of a simulation
- * It is immediately deactivated after YieldEffect
+ * Activated once at the beginning of a simulation
  * It can only be activated again through a Procedure
  *
  * effects: one
@@ -442,9 +480,7 @@ internal class ProcedureImmediate : Procedure {
 }
 
 /*
- * Activates on targeted Ballots
- * filter controls on which ballots it activates
- * filterIDs only matters if filter is TargetType.Only or TargetType.Except
+ * Activates on filtered Ballots
  *
  * effects: at least one
  * action: Vote*, Currency*, ProcedureActivate
@@ -520,7 +556,6 @@ internal class ProcedureTargeted : Procedure {
 
 /*
  * Activates declaratively
- * Empty confirmationIDs means it activates on every Ballot
  *
  * effect: one
  * action: Election*, VotersLimit
@@ -546,7 +581,9 @@ internal class ProcedureDeclared : Procedure {
         switch (effects[0].Action) {
             case Effect.ActionType.ElectionRegion:
             case Effect.ActionType.ElectionParty:
-            case Effect.ActionType.VotersLimit:
+            case Effect.ActionType.BallotLimit:
+            case Effect.ActionType.BallotPass:
+            case Effect.ActionType.BallotFail:
                 break;
             case Effect.ActionType.ElectionNominated:
                 if (effects[0].TargetIDs.Length == 0) {

@@ -1,7 +1,6 @@
-display procedures now :skull:
-for ProcedureDeclared, it is only visible for people who meet its filters
-
+ballot replace party effect
 convert pass/vetoes into declared procedures
+when a ballot suffers a declared, display it on the ballot list
 
 i wish i could centralise fonts
 should SimulationWindow be fullscreen? maybe allow it to switch to smaller windowed
@@ -11,12 +10,11 @@ once i figure out Permissions stuff, i need to make Procedures work with them be
 
 Testing:
 test the other Conditions (completed: And, Or, Always, Never)
-the netherlands is a good way to test if the unique localisation roles work
-ELECTIONS (not sure if party (normal and leader), region (leader), appointed, or shuffle work)
-not sure if state currency displays properly
-test can speak (poland)
+unique localisation roles : indonesia
+ELECTIONS (not sure if party (normal and leader : poland), region (leader : canada), appointed : canada, or shuffle : canada work)
+not sure if state currency displays properly (china)
+can speak (poland)
+declared procedures (indonesia has a few)
 
 Context Grid:
-still needs to finish ProcedureDeclared Expander (opens left)
 pass-fail-abstain (successful option bolded and coloured green/red)
-Procedures Expander (opens up, covers entire Grid):

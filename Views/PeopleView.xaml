@@ -64,8 +64,11 @@
         </Grid.ColumnDefinitions>
 
         <StackPanel Grid.Row = "1" Grid.Column = "1" VerticalAlignment = "Top">
-            <TextBlock HorizontalAlignment = "Center" Margin = "0, 0, 0, 6">
+            <TextBlock HorizontalAlignment = "Center" Margin = "0">
                 Add participants:
+            </TextBlock>
+            <TextBlock HorizontalAlignment = "Center" Margin = "0, 0, 0, 6">
+                (At least three)
             </TextBlock>
             <Grid Margin = "0, 0, 0, 24">
                 <TextBlock Style = "{StaticResource Watermark}" Text = "Name" Panel.ZIndex = "1" Margin = "3, 1, 0, 0"/>
