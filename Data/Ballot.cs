@@ -4,12 +4,7 @@ using congress_cucuta.Converters;
 
 namespace congress_cucuta.Data;
 
-internal class Ballot (
-    IDType id,
-    Ballot.Result passResult,
-    Ballot.Result failResult,
-    bool isIncident = false
-) : IID {
+internal readonly record struct Ballot (IDType ID, Ballot.Result PassResult, Ballot.Result FailResult, bool IsIncident = false) : IID {
     internal readonly record struct Effect {
         internal enum ActionType {
             // Regions are not intended to change
@@ -124,9 +119,4 @@ internal class Ballot (
     }
 
     internal readonly record struct Result (List <Effect> Effects, List<Link<Ballot>> Links);
-
-    public IDType ID => id;
-    public bool IsIncident => isIncident;
-    public Result PassResult => passResult;
-    public Result FailResult => failResult;
 }

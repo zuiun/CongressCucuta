@@ -8,10 +8,11 @@ using congress_cucuta.Converters;
 namespace congress_cucuta.ViewModels;
 
 internal class CompilerViewModel : ViewModel {
+    // This is the compilation target
+    public static Simulation Simulation => new Canada ().Simulation;
+    public static string Name => Simulation.Localisation.State;
     private bool _wasCompilationSuccess = false;
     private bool _wasCompilationFailure = false;
-    // This is the compilation target
-    private readonly Simulation _simulation = new Indonesia ().Simulation;
     private readonly JsonSerializerOptions _options = new () {
         WriteIndented = true,
         Converters = { new IDTypeJsonConverter () },
@@ -48,7 +49,7 @@ internal class CompilerViewModel : ViewModel {
         string filename = file.FileName;
 
         try {
-            string json = JsonSerializer.Serialize (_simulation, _options);
+            string json = JsonSerializer.Serialize (Simulation, _options);
             File.WriteAllText (filename, json);
         } catch (Exception) {
             WasCompilationSuccess = false;

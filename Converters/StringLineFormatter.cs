@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 
 namespace congress_cucuta.Converters;
 
@@ -46,5 +47,13 @@ internal class StringLineFormatter {
         string tabs = joined.Replace ($"{INDENT}", SPACE);
 
         return tabs;
+    }
+
+    public static string Outdent (string text) {
+        string[] lines = text.Split ('\n');
+        string[] trimmed = [.. lines.Select (l => l[1..])];
+        string result = string.Join ('\n', trimmed);
+
+        return result;
     }
 }

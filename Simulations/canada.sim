@@ -1,0 +1,1324 @@
+{
+  "History": {
+    "BallotsPassed": [
+      0,
+      1,
+      2,
+      4,
+      5
+    ],
+    "BallotsProceduresDeclared": {}
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "254": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "253": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "251": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "252": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "0": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "1": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "2": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "3": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "4": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "5": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "6": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [
+    {
+      "ID": 0,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "IsActiveStart": true
+    }
+  ],
+  "Parties": [
+    {
+      "ID": 3,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 4,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 5,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 6,
+      "IsActiveStart": false
+    }
+  ],
+  "CurrenciesValues": {
+    "255": 0
+  },
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 10,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 7,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 15,
+          "TargetIDs": [
+            251
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 8,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253,
+            251
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 5,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 6,
+          "TargetIDs": [
+            2
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        0,
+        1
+      ],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 15,
+          "TargetIDs": [
+            254
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 6,
+      "Effects": [
+        {
+          "Action": 4,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 7,
+      "Effects": [
+        {
+          "Action": 15,
+          "TargetIDs": [
+            1,
+            254
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [],
+      "ID": 8,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [],
+          "Value": 1
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 16,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [],
+      "ID": 9,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [],
+      "ID": 10,
+      "Effects": [
+        {
+          "Action": 15,
+          "TargetIDs": [
+            2
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    }
+  ],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 11,
+      "Effects": [
+        {
+          "Action": 13,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 1,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [],
+      "ID": 12,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253,
+            251
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        254
+      ],
+      "ID": 13,
+      "Effects": [
+        {
+          "Action": 10,
+          "TargetIDs": [
+            253,
+            254,
+            252,
+            251
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "Ballots": [
+    {
+      "ID": 0,
+      "IsIncident": false,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 0,
+            "TargetIDs": [
+              6
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": 1
+          },
+          {
+            "Action": 0,
+            "TargetIDs": [
+              6
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      }
+    },
+    {
+      "ID": 1,
+      "IsIncident": true,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              5,
+              7
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 1,
+            "TargetIDs": [
+              5
+            ],
+            "Value": 0
+          },
+          {
+            "Action": 3,
+            "TargetIDs": [
+              5,
+              8
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      }
+    },
+    {
+      "ID": 2,
+      "IsIncident": false,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 1,
+            "TargetIDs": [
+              5
+            ],
+            "Value": 0
+          },
+          {
+            "Action": 3,
+            "TargetIDs": [
+              4,
+              9
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              4,
+              10
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      }
+    },
+    {
+      "ID": 3,
+      "IsIncident": false,
+      "PassResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "BallotPassedCondition",
+              "BallotID": 2,
+              "ShouldBePassed": true
+            },
+            "TargetID": 4
+          },
+          {
+            "Condition": {
+              "$type": "BallotPassedCondition",
+              "BallotID": 2,
+              "ShouldBePassed": false
+            },
+            "TargetID": 5
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "BallotPassedCondition",
+              "BallotID": 2,
+              "ShouldBePassed": true
+            },
+            "TargetID": 4
+          },
+          {
+            "Condition": {
+              "$type": "BallotPassedCondition",
+              "BallotID": 2,
+              "ShouldBePassed": false
+            },
+            "TargetID": 5
+          }
+        ]
+      }
+    },
+    {
+      "ID": 4,
+      "IsIncident": true,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 5
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 5
+          }
+        ]
+      }
+    },
+    {
+      "ID": 5,
+      "IsIncident": false,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      }
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 4,
+            "Value": 1
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "AndCondition",
+            "Conditions": [
+              {
+                "$type": "CurrencyValueCondition",
+                "CurrencyID": 255,
+                "Comparison": 1,
+                "Value": 1
+              },
+              {
+                "$type": "CurrencyValueCondition",
+                "CurrencyID": 255,
+                "Comparison": 2,
+                "Value": 5
+              }
+            ]
+          },
+          "TargetID": 4
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 3,
+            "Value": 5
+          },
+          "TargetID": 11
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": true
+          },
+          "TargetID": 2
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": false
+          },
+          "TargetID": 3
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Links": []
+    },
+    {
+      "ID": 3,
+      "Links": []
+    },
+    {
+      "ID": 4,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": true
+          },
+          "TargetID": 5
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": false
+          },
+          "TargetID": 10
+        }
+      ]
+    },
+    {
+      "ID": 5,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 9
+        }
+      ]
+    },
+    {
+      "ID": 6,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": true
+          },
+          "TargetID": 7
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": false
+          },
+          "TargetID": 8
+        }
+      ]
+    },
+    {
+      "ID": 7,
+      "Links": []
+    },
+    {
+      "ID": 8,
+      "Links": []
+    },
+    {
+      "ID": 9,
+      "Links": []
+    },
+    {
+      "ID": 10,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 9
+        }
+      ]
+    },
+    {
+      "ID": 11,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 12
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 13
+        }
+      ]
+    },
+    {
+      "ID": 12,
+      "Links": []
+    },
+    {
+      "ID": 13,
+      "Links": []
+    }
+  ],
+  "Localisation": {
+    "State": "Canada",
+    "Government": "Constitutional Monarchy",
+    "Context": [
+      "Canada is going through major societal changes",
+      "#.Maple leaf flag has just been adopted",
+      "#.Quebec is going through the Quiet Revolution, spearheaded by the Quebec Liberal Party",
+      "##.This has led to an outpouring of Quebecer nationalism",
+      "Canada now has an opportunity to unite its disparate peoples into one nation",
+      "#.There is a strong desire for constitutional independence",
+      "##.However, Quebec\u2019s wariness is not easy to overcome"
+    ],
+    "Date": "20 April 1968",
+    "Situation": "Ascension of Pierre Trudeau",
+    "Period": "Patriation",
+    "Roles": {
+      "255": {
+        "Item1": "Member",
+        "Item2": "Members"
+      },
+      "254": {
+        "Item1": "Prime Minister",
+        "Item2": "Prime Ministers"
+      },
+      "253": {
+        "Item1": "Governor General",
+        "Item2": "Governors General"
+      },
+      "0": {
+        "Item1": "Premier of Ontario",
+        "Item2": "Premiers of Ontario"
+      },
+      "1": {
+        "Item1": "Premier of Quebec",
+        "Item2": "Premiers of Quebec"
+      },
+      "2": {
+        "Item1": "Premier of Western Canada",
+        "Item2": "Premiers of Western Canada"
+      },
+      "3": {
+        "Item1": "Party Leader of LPC",
+        "Item2": "Party Leaders of LPC"
+      },
+      "4": {
+        "Item1": "Party Leader of PC",
+        "Item2": "Party Leaders of PC"
+      },
+      "5": {
+        "Item1": "Party Leader of RC",
+        "Item2": "Party Leaders of RC"
+      },
+      "6": {
+        "Item1": "Party Leader of NDP",
+        "Item2": "Party Leaders of NDP"
+      },
+      "251": {
+        "Item1": "Premier",
+        "Item2": "Premiers"
+      },
+      "252": {
+        "Item1": "Party Leader",
+        "Item2": "Party Leaders"
+      }
+    },
+    "Speaker": "Speaker",
+    "Region": {
+      "Item1": "Province",
+      "Item2": "Provinces"
+    },
+    "Regions": {
+      "0": {
+        "Item1": "Ontario",
+        "Item2": [
+          "#.Predominantly Anglophone",
+          "#.Split between liberals and conservatives",
+          "#.Largely dominates Anglophone politics"
+        ],
+        "Item3": "Premier"
+      },
+      "1": {
+        "Item1": "Quebec",
+        "Item2": [
+          "#.Predominantly Francophone",
+          "#.Liberal and social creditist stronghold",
+          "#.Seeks wide-ranging provincial powers"
+        ],
+        "Item3": "Premier"
+      },
+      "2": {
+        "Item1": "Western Canada",
+        "Item2": [
+          "#.Predominantly Anglophone, but with large Chinese and First Nations populations",
+          "#.Generally conservative with some social creditists",
+          "#.Rapidly growing population and economy",
+          "##.Has significantly less political representation than the eastern provinces"
+        ],
+        "Item3": "Premier"
+      }
+    },
+    "Party": {
+      "Item1": "Party",
+      "Item2": "Parties"
+    },
+    "Parties": {
+      "3": {
+        "Item1": "Liberal Party of Canada",
+        "Item2": [
+          "#.Economically and socially centre-left",
+          "#.Supports a strong federal government"
+        ],
+        "Item3": "Party Leader"
+      },
+      "4": {
+        "Item1": "Progressive Conservative Party of Canada",
+        "Item2": [
+          "#.Economically and socially centre-right",
+          "#.Supports increasing provincial rights"
+        ],
+        "Item3": "Party Leader"
+      },
+      "5": {
+        "Item1": "Social Credit Rally",
+        "Item2": [
+          "#.Economically populist, socially right",
+          "#.Only federal supporter of Quebec sovereignty"
+        ],
+        "Item3": "Party Leader"
+      },
+      "6": {
+        "Item1": "New Democratic Party",
+        "Item2": [],
+        "Item3": "Party Leader"
+      }
+    },
+    "Abbreviations": {
+      "3": "LPC",
+      "4": "PC",
+      "5": "RC",
+      "6": "NDP"
+    },
+    "Currencies": {
+      "255": "Tension"
+    },
+    "Procedures": {
+      "0": {
+        "Item1": "Commonwealth Realm",
+        "Item2": "This country\u0027s head of state is chosen based on familial lineage, but exercises his prerogatives through a representative."
+      },
+      "1": {
+        "Item1": "Federal-Provincial Conferences",
+        "Item2": "Canada is a federation with a long tradition of inter-governmental enmity. In order to better coordinate policy, the government semi-regularly holds meetings between the Prime Minister and the Premiers. These are often used by the provinces to pressure the federal government into making concessions."
+      },
+      "2": {
+        "Item1": "General Election",
+        "Item2": "This country has a legislature with regular elections, along with an empowered head of government."
+      },
+      "3": {
+        "Item1": "Great Flag Debate",
+        "Item2": "The Maple Leaf is like no other flag in the world, but its adoption, marred with ugly rhetoric, was symbolic of the conflict between the Anglophone and Francophone communities."
+      },
+      "4": {
+        "Item1": "Trudeaumania",
+        "Item2": "The current Prime Minister is unusually young, which has bolstered his popularity among younger voters and could lead to a new current in politics."
+      },
+      "5": {
+        "Item1": "Coffee-Table Revolutionaries",
+        "Item2": "Separatists in Quebec dream of blood on the streets, cheering on the terrorist Quebec Liberation Front. The question is, just how much violence is too much for these privileged observers?"
+      },
+      "6": {
+        "Item1": "New Federalism",
+        "Item2": "Provincial power has grown at the expense of federal power over the past decade, but support for a stronger federal government has been increasing as of late."
+      },
+      "7": {
+        "Item1": "Just Watch Me",
+        "Item2": ""
+      },
+      "8": {
+        "Item1": "We Will Vanquish",
+        "Item2": ""
+      },
+      "9": {
+        "Item1": "Western Alienation",
+        "Item2": ""
+      },
+      "10": {
+        "Item1": "Abandoned Petro-Canada",
+        "Item2": ""
+      },
+      "11": {
+        "Item1": "Royal Veto",
+        "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
+      },
+      "12": {
+        "Item1": "Vote of No Confidence",
+        "Item2": "This country\u0027s head of government is responsible to the legislature, which means that he can be removed if he is seen to be inept."
+      },
+      "13": {
+        "Item1": "Viceregal Appointment",
+        "Item2": "By convention, the Governor General is replaced every five years, alternating between native English- and French-speakers."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Adopt official bilingualism",
+        "Item3": [
+          "#.Currently, both English and French can be used in government, but English heavily dominates",
+          "##.There are French-speaking minorities in several provinces who generally cannot access public services in French",
+          "##.Quebec is ironically the only province with significant linguistic rights for its English-speaking minority",
+          "#.This would give English and French equal force in all federal services and legal proceedings",
+          "##.This means some proportion of public servants must be bilingual to provide services in both languages"
+        ],
+        "Item4": [
+          "This is very popular in Quebec and unpopular outside of it",
+          "#.Bilingual education is especially ineffective",
+          "#.Non-Francophone minorities don\u2019t want to learn two non-native languages",
+          "#.Still, there is little active Anglophone opposition",
+          "In time this may be seen as a unifying measure",
+          "#.For now, this is just a hurdle to entering public service"
+        ],
+        "Item5": [
+          "This leads to massive discontent in Quebec, but little reaction elsewhere",
+          "#.Anglophone community in Quebec is especially fearful that their protections may be repealed without federal protection",
+          "#.This is seen in Quebec as proof that Quebec does not belong to the Canadian nation"
+        ]
+      },
+      "1": {
+        "Item1": "Incident A",
+        "Item2": "Dismantle the Quebec Liberation Front",
+        "Item3": [
+          "#.Quebec Liberation Front (FLQ) is a terrorist, secessionist organisation",
+          "##.It is especially popular among students",
+          "#.FLQ has kidnapped two high-ranking ministers and threatened to execute them",
+          "##.It also claims to be able to mobilise nearly a hundred-thousand armed workers if its demands are not met",
+          "#.This will invoke the War Measures Act",
+          "##.This means Quebec will be militarily occupied until the FLQ is no longer an insurrection threat",
+          "##.Police will have the unlimited right to detain anyone, even without charge"
+        ],
+        "Item4": [
+          "Violent separatism is eliminated as a political force",
+          "#.However, this heavy-handed approach will only encourage separatism in the future",
+          "##.Further attempts to secede will be more moderate",
+          "##.For now, Canada is united in opposition to terrorism"
+        ],
+        "Item5": [
+          "Apparent weakness emboldens separatists",
+          "#.This bodes poorly for national unity"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot B",
+        "Item2": "Establish oil price controls",
+        "Item3": [
+          "#.Arab oil embargo has severely increased oil prices across Canada",
+          "##.This benefits Alberta, which is Canada\u2019s largest oil producer",
+          "##.Price controls would overwhelmingly benefit the eastern provinces, which import almost all of their energy",
+          "##.Additionally, the federal government would have to pay the difference in prices, which would be funded through taxes",
+          "#.This could lay the framework for further oil controls",
+          "##.This would be extremely unpopular across the western provinces, which would no longer benefit from resource production"
+        ],
+        "Item4": [
+          "Western provinces fear continued government intervention to their detriment",
+          "#.This destroys the credibility of the social creditists",
+          "#.This widens the traditional Anglophone-Francophone conflict to an east-west conflict"
+        ],
+        "Item5": [
+          "Oil prices fall naturally over time",
+          "#.However, this sets the precedent that the provinces can threaten the federal government with finances",
+          "##.This is ironically unpopular in Quebec and Ontario",
+          "##.Eventually, the government gives up all remaining public ownership of oil"
+        ]
+      },
+      "3": {
+        "Item1": "Ballot C",
+        "Item2": "Prohibit a Quebec sovereignty referendum",
+        "Item3": [
+          "#.Quebec is currently under the control of the Quebec Party (PQ)",
+          "##.PQ has made a sovereignty referendum central to its agenda",
+          "##.PQ wants \u201Csovereignty-association\u201D",
+          "###.This is political independence for Quebec, but economic union with Canada",
+          "##.This referendum could go either way",
+          "###.Francophone voters are very divided on independence",
+          "###.Anglophone voters are overwhelmingly opposed to independence",
+          "##.This referendum may not be legally binding",
+          "###.Supreme Court has not made a judgement on it yet"
+        ],
+        "Item4": [
+          "Referendum goes ahead anyway",
+          "#.Police allow the referendum to happen",
+          "#.Anger with federal intervention could result in a \u201CYes\u201D victory",
+          "Federal government refuses to negotiate with the Quebecer government",
+          "#.Supreme Court declares the referendum non-binding",
+          "#.Anglophone Quebecers begin to fear for their language rights",
+          "This is a very tense situation"
+        ],
+        "Item5": [
+          "Referendum goes ahead as planned",
+          "#.Federal government may intervene on behalf of the \u201CNo\u201D case",
+          "##.In addition, it may choose to refuse negotiations if the referendum passes",
+          "#.Quebec Liberals are poorly organised and haughty",
+          "##.They are very unlikely to make a good \u201CNo\u201D case",
+          "##.No other federal-level party has enough of a presence in Quebec to affect the outcome",
+          "#.PQ is putting every effort into the \u201CYes\u201D case",
+          "##.However, there are some tensions between male and female Francophone voters"
+        ]
+      },
+      "4": {
+        "Item1": "Incident B",
+        "Item2": "Adopt the National Energy Program",
+        "Item3": [
+          "#.National Energy Program:",
+          "##.Levies a tax on oil producers",
+          "##.Subsidises oil costs",
+          "##.Further limits the price of oil below American oil",
+          "##.Financially incentivises oil production and exploration on federally owned land",
+          "###.This could improve overall oil production capabilities",
+          "#.This is obviously extremely unpopular in Alberta",
+          "##.Should oil prices fall naturally, this program could make oil outright unprofitable to produce"
+        ],
+        "Item4": [
+          "Alberta is extremely angry with this",
+          "#.Provincial government threatens to massively decrease oil production to force prices up",
+          "#.Economic growth slows down further",
+          "#.There is even some talk of Albertan separatism",
+          "This reduces Canada\u2019s reliance on foreign oil"
+        ],
+        "Item5": [
+          "Alberta is satisfied with the rejection of further controls",
+          "#.This does come at a cost in the eastern provinces, which see Alberta as greedy and insular",
+          "##.This irony is not lost on Quebec",
+          "This increases Canada\u2019s reliance on foreign oil",
+          "#.However, falling oil prices may remedy this somewhat"
+        ]
+      },
+      "5": {
+        "Item1": "Ballot D",
+        "Item2": "Adopt a charter of rights",
+        "Item3": [
+          "#.Canada already has a bill of rights",
+          "##.However, this is just a federal law, rather than a constitutional document",
+          "###.It doesn\u2019t apply to the provinces",
+          "#.This will significantly strengthen the federal government",
+          "##.Supreme Court will be given the authority to overturn all laws, both federal and provincial, that run contrary to the charter",
+          "##.Notably, this only protects the language rights of Anglophone and Francophone communities"
+        ],
+        "Item4": [
+          "Unsurprisingly, constitutionally protecting basic rights is very popular",
+          "#.This is especially poignant given the debate over invoking the War Measures Act in Quebec",
+          "#.This does lead to concerns of judicial overreach",
+          "Provincial opposition leads to the adoption of the Notwithstanding Clause",
+          "#.This allows provincial and federal legislatures to temporarily override some basic rights"
+        ],
+        "Item5": [
+          "This is seen as a victory for the provinces",
+          "#.This is very likely to make any other constitutional changes very difficult without provincial approval",
+          "##.This could hamper efforts to gain constitutional independence",
+          "There is some outrage, but also understanding",
+          "#.Westminster systems generally have parliamentary supremacy",
+          "##.Courts normally don\u2019t have strong override powers",
+          "#.It may have been difficult to get British approval for this change"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "One or Fewer Tension",
+        "Item2": [
+          "Quebec votes against sovereignty",
+          "#.This gives impetus to the constitutional independence movement",
+          "#.This does not preclude another referendum if Quebec\u2019s demands are not satisfied",
+          "##.However, tensions have cooled down somewhat and violent revolt is extremely unlikely"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot D Passed",
+        "Item2": [
+          "Approval of a charter leads to provincial backlash",
+          "#.Quebec sees this as a betrayal",
+          "Federal government threatens to go ahead with patriation without provincial approval",
+          "#.Eventually, all provinces except Quebec agree to patriation",
+          "Canada becomes constitutionally independent",
+          "#.Canada, though divided, may unite around the Charter as a symbol of civic identity"
+        ]
+      },
+      "3": {
+        "Item1": "Ballot D Failed",
+        "Item2": [
+          "Rejection of a charter leads to popular backlash",
+          "Federal government refuses to go ahead with patriation without a charter",
+          "#.British wipe their hands of Canada and patriate the constitution with an amending formula subject to referendum",
+          "Constitutional debates will dominate politics for the coming years",
+          "#.Though this may detract from policy issues, it is still much better than a more divided nation"
+        ]
+      },
+      "4": {
+        "Item1": "Greater than One and Fewer than Five Tension",
+        "Item2": [
+          "British are very reluctant to patriate the constitution",
+          "#.They don\u2019t believe that there is enough consensus in Canadian society to grant constitutional independence"
+        ]
+      },
+      "5": {
+        "Item1": "Incident A Passed",
+        "Item2": [
+          "Quebec barely votes for sovereignty",
+          "#.Federal government refuses to recognise this result",
+          "#.Massive civil unrest breaks out, but no large-scale violence"
+        ]
+      },
+      "6": {
+        "Item1": "Ballot B Passed",
+        "Item2": [
+          "Tensions in Quebec contribute to civil unrest in the west",
+          "#.This is especially true for Alberta and Saskatchewan",
+          "#.Quebec is very unlikely to remain in Canada by choice"
+        ]
+      },
+      "7": {
+        "Item1": "Incident B Passed",
+        "Item2": [
+          "Without support from the west, the British refuse to patriate the constitution",
+          "#.Negotiations on oil revenues sharing will have to be resolved for anything to change",
+          "#.Alberta\u2019s successful opposition to the federal government also empowers British Columbia",
+          "##.This especially impacts Chinese and First Nations who don\u2019t have federal protections",
+          "Canada is badly divided and at an impasse",
+          "#.Constitutional projects will have to be put on hold"
+        ]
+      },
+      "8": {
+        "Item1": "Incident B Failed",
+        "Item2": [
+          "Negotiations with Alberta result in some begrudging agreement",
+          "#.British warily patriate the constitution with a 7/50 amending formula",
+          "##.This is seen in Quebec as a betrayal by Anglophone Canada",
+          "Canada faces severe issues over identity",
+          "#.Federal government has much to do to create a united nation",
+          "##.Anglophone-Francophone conflict continues",
+          "##.East-West conflict will likely get worse"
+        ]
+      },
+      "9": {
+        "Item1": "Incident B Failed",
+        "Item2": [
+          "With support from the west, the federal government convinces the British that it has provincial support",
+          "#.British warily patriate the constitution with a 7/50 amending formula",
+          "##.This is seen in Quebec as a betrayal by Anglophone Canada",
+          "Canada faces severe issues over identity",
+          "#.Federal government has much to do to create a united nation",
+          "##.Anglophone-Francophone conflict continues"
+        ]
+      },
+      "10": {
+        "Item1": "Incident A Failed",
+        "Item2": [
+          "Quebec votes for sovereignty",
+          "#.Federal government refuses to recognise this result",
+          "#.FLQ makes good on its threat to raise a rebellion, although it is nowhere near as massive as threatened",
+          "##.Separatists are eventually suppressed, but this is extremely bad for Canada\u2019s global image"
+        ]
+      },
+      "11": {
+        "Item1": "Five or Greater Tension",
+        "Item2": [
+          "Federal-provincial relations are horrific",
+          "#.British categorically refuse to patriate the constitution on account of provincial opposition",
+          "Quebec unilaterally declares independence",
+          "#.Revolt is suppressed, but guerrilla warfare continues across the province"
+        ]
+      },
+      "12": {
+        "Item1": "Ballot B Passed",
+        "Item2": [
+          "Albertan separatists begin agitating for independence",
+          "#.This agitation spills over into Saskatchewan",
+          "If the federal government doesn\u2019t find a solution to these tensions, Canada could collapse",
+          "#.International outrage at the status of Quebec is especially severe",
+          "#.Maritime provinces draw closer, believing the federal government is unreliable",
+          "##.Some even float the idea of joining the US",
+          "#.Western provinces may declare independence soon"
+        ]
+      },
+      "13": {
+        "Item1": "Ballot B Failed",
+        "Item2": [
+          "Western support keeps Anglophone Canada largely united",
+          "#.This bodes extremely poorly for the future of Canada as a bilingual nation",
+          "##.Acadians in New Brunswick question their future and status",
+          "If the federal government doesn\u2019t find a solution to these tensions, Quebec will probably become independent",
+          "#.International outrage at the status of Quebec is especially severe"
+        ]
+      }
+    }
+  }
+}

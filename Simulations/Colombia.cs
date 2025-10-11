@@ -3,20 +3,16 @@ using congress_cucuta.Data;
 
 namespace congress_cucuta.Simulations;
 
-internal class Colombia {
+internal class Colombia : ISimulation {
     public Simulation Simulation { get; }
 
     public Colombia () {
-        Dictionary<IDType, Permissions> rolesPermissions = [];
         IDType deputy = Role.MEMBER;
         IDType president = Role.HEAD_STATE;
-        Permissions normal = new (CanVote: true);
-        Permissions cantVoteCanVeto = new (CanVote: false, Votes: 0);
-        rolesPermissions[deputy] = normal;
-        rolesPermissions[president] = cantVoteCanVeto;
-        Dictionary<IDType, (string, string)> roles = [];
-        roles[deputy] = ("Deputy", "Deputies");
-        roles[president] = ("President", "Presidents");
+        List<IDType> roles = [deputy, president];
+        Dictionary<IDType, (string, string)> rolesLocs = [];
+        rolesLocs[deputy] = ("Deputy", "Deputies");
+        rolesLocs[president] = ("President", "Presidents");
 
         Faction cundinamarca = new (0);
         Faction venezuela = new (1);
@@ -63,11 +59,14 @@ internal class Colombia {
 
         ProcedureImmediate presidentialElection = new (
             0,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
+            [new (Procedure.Effect.ActionType.ElectionNominated, [president])]
         );
         ProcedureImmediate constitutionCucuta = new (
             1,
-            [new (Procedure.Effect.ActionType.ElectionRegion, [])]
+            [
+                new (Procedure.Effect.ActionType.ElectionRegion, []),
+                new (Procedure.Effect.ActionType.PermissionsCanVote, [president], 0),
+            ]
         );
         List<ProcedureImmediate> proceduresGovernmental = [presidentialElection, constitutionCucuta];
         ProcedureTargeted liberalReforms = new (
@@ -368,7 +367,7 @@ internal class Colombia {
                 [ballotA.ID, ballotB.ID, incidentA.ID],
                 []
             ),
-            rolesPermissions,
+            roles,
             regions,
             [],
             currenciesValues,
@@ -391,7 +390,7 @@ internal class Colombia {
                 "13 July 1822",
                 "Annexation of Guayaquil",
                 "The Campaigns of the South",
-                roles,
+                rolesLocs,
                 "Congress President (Chairman)",
                 ("Department", "Departments"),
                 regionsLocs,

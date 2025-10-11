@@ -1,4 +1,6 @@
-﻿namespace congress_cucuta.Data;
+﻿using System.Text.Json.Serialization;
+
+namespace congress_cucuta.Data;
 
 internal class Simulation {
     public History History { get; }
@@ -13,6 +15,34 @@ internal class Simulation {
     public List<Result> Results { get; }
     public Localisation Localisation { get; }
 
+    public Simulation (
+        History history,
+        List<IDType> roles,
+        List<Faction> regions,
+        List<Faction> parties,
+        Dictionary<IDType, sbyte> currenciesValues,
+        List<ProcedureImmediate> proceduresGovernmental,
+        List<ProcedureTargeted> proceduresSpecial,
+        List<ProcedureDeclared> proceduresDeclared,
+        List<Ballot> ballots,
+        List<Result> results,
+        Localisation localisation
+    ) {
+        History = history;
+        RolesPermissions = roles.ToDictionary (r => r, _ => new Permissions (true));
+        Regions = regions;
+        Parties = parties;
+        CurrenciesValues = currenciesValues;
+        ProceduresGovernmental = proceduresGovernmental;
+        ProceduresSpecial = proceduresSpecial;
+        ProceduresDeclared = proceduresDeclared;
+        Ballots = ballots;
+        Results = results;
+        Localisation = localisation;
+        Validate ();
+    }
+
+    [JsonConstructor]
     public Simulation (
         History history,
         Dictionary<IDType, Permissions> rolesPermissions,
@@ -196,11 +226,17 @@ internal class Simulation {
                 switch (e.Action) {
                     case Procedure.Effect.ActionType.CurrencyAdd:
                     case Procedure.Effect.ActionType.CurrencySubtract:
-                        if (
-                            e.TargetIDs.Any (t => Regions.All (r => t != r.ID))
-                            && e.TargetIDs.Any (t => Parties.All (p => t != p.ID))
-                        ) {
-                            throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} targets an invalid Faction ID");
+                        foreach (IDType c in e.TargetIDs) {
+                            if (
+                                ! CurrenciesValues.ContainsKey (c)
+                                || (
+                                    c != Currency.STATE
+                                    && Regions.All (r => r.ID != c)
+                                    && Parties.All (p => p.ID != c)
+                                )
+                            ) {
+                                throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} targets an invalid Faction ID");
+                            }
                         }
 
                         break;

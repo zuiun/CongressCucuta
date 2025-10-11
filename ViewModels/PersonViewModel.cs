@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 
 namespace congress_cucuta.ViewModels;
 
-// TODO: some way to hide the Declare button if it's not possible. you'd have to make a map in simulationcontext
 internal class PersonViewModel (IDType id, string name, bool isInteractable) : ViewModel, IID {
     internal class RoleGroup : ViewModel, IID {
         private readonly string _name;

@@ -7,7 +7,6 @@
         xmlns:vm = "clr-namespace:congress_cucuta.ViewModels"
         mc:Ignorable="d"
         Title="{Binding State}" Height="720" Width="1280">
-    <!-- TODO: Maybe this should be fullscreen -->
     <Window.Resources>
         <Style TargetType = "Border">
             <Setter Property = "BorderBrush" Value = "Black"/>

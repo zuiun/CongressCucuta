@@ -55,15 +55,15 @@ internal abstract class Procedure (
             /*
              * Adds Value to Target Currency during Filter Ballot
              *
-             * Targeted
-             * Targets Factions (populated: specified), Currencies (empty: STATE)
+             * Targeted, Declared
+             * Targets Factions (populated: specified), Currencies (empty: STATE or declarer)
              */
             CurrencyAdd,
             /*
              * Subtracts Value from Target Currency during Filter Ballot
              *
-             * Targeted
-             * Targets Factions (populated: specified), Currencies (empty: STATE)
+             * Targeted, Declared
+             * Targets Factions (populated: specified), Currencies (empty: STATE or declarer)
              */
             CurrencySubtract,
             /*
@@ -77,7 +77,7 @@ internal abstract class Procedure (
              * Activates Target ProcedureImmediate during Filter Ballot
              *
              * Targeted
-             * Targets Procedure (populated [one]: specified)
+             * Targets Procedure (populated: specified)
              */
             ProcedureActivate,
             /*
@@ -85,7 +85,7 @@ internal abstract class Procedure (
              * Elects LEADER_REGION if present
              *
              * Immediate, Declared
-             * Targets Roles (empty: every, populated: excluded)
+             * Targets Roles (populated: excluded)
              */
             ElectionRegion,
             /*
@@ -93,7 +93,7 @@ internal abstract class Procedure (
              * Elects LEADER_PARTY if present
              *
              * Immediate, Declared
-             * Targets Roles (empty: every, populated: excluded)
+             * Targets Roles (populated: excluded)
              */
             ElectionParty,
             /*
@@ -107,14 +107,14 @@ internal abstract class Procedure (
              * Appoints (randomly when Immediate) Target Role
              *
              * Immediate, Declared
-             * Targets Roles (populated: specified [one])
+             * Targets Roles (populated: specified [first], excluded [remainder])
              */
             ElectionAppointed,
             /*
              * Only allows Target Roles or Factions to vote on current Ballot
              *
              * Declared
-             * Targets Roles and Factions (empty: declarer, populated: specified [whichever is found at that ID])
+             * Targets Roles and Factions (empty: declarer, populated: specified [whichever is found at that ID, with Faction taking priority])
              */
             BallotLimit,
             /*
@@ -129,6 +129,29 @@ internal abstract class Procedure (
              * Declared
              */
             BallotFail,
+            /*
+             * Sets Target Role voting Permissions to Value during Filter Ballot (when Targeted)
+             *
+             * Immediate, Targeted
+             * Targets Roles (empty: random [person, only Targeted], populated: specified)
+             * Value (0: false, anything else: true)
+             */
+            PermissionsCanVote,
+            /*
+             * Sets Target Role votes Permissions to Value during Filter Ballot (when Targeted)
+             *
+             * Immediate, Targeted
+             * Targets Roles (empty: random [person, only Targeted], populated: specified)
+             */
+            PermissionsVotes,
+            /*
+             * Sets Target Role speaking Permissions to Value during Filter Ballot (when Targeted)
+             *
+             * Immediate, Targeted
+             * Targets Roles (empty: random [person, only Targeted], populated: specified)
+             * Value (0: false, anything else: true)
+             */
+            PermissionsCanSpeak,
         }
 
         private static string TargetToString (Effect effect, ref readonly Localisation localisation) {
@@ -176,7 +199,7 @@ internal abstract class Procedure (
                     if (effect.TargetIDs.Length > 1) {
                         List<string> excluded = [];
 
-                        for (byte i = 0; i < effect.TargetIDs.Length; ++ i) {
+                        for (byte i = 1; i < effect.TargetIDs.Length; ++ i) {
                             excluded.Add (localisation.Roles[effect.TargetIDs[i]].Item2);
                         }
 
@@ -196,6 +219,21 @@ internal abstract class Procedure (
                         return $"Everyone except {string.Join (", ", excluded)}:";
                     } else {
                         return "Everyone except Declarer:";
+                    }
+                }
+                case ActionType.PermissionsCanVote:
+                case ActionType.PermissionsVotes:
+                case ActionType.PermissionsCanSpeak: {
+                    if (effect.TargetIDs.Length > 0) {
+                        List<string> specified = [];
+
+                        foreach (IDType t in effect.TargetIDs) {
+                            specified.Add (localisation.Roles[t].Item2);
+                        }
+
+                        return $"{string.Join (", ", specified)}:";
+                    } else {
+                        return "Random person:";
                     }
                 }
                 default:
@@ -415,6 +453,42 @@ internal abstract class Procedure (
                     result.Add (action);
                     break;
                 }
+                case ActionType.PermissionsCanVote: {
+                    string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 2);
+                    string action;
+
+                    if (Value > 0) {
+                        action = StringLineFormatter.Indent ("Can vote", 3);
+                    } else {
+                        action = StringLineFormatter.Indent ("Cannot vote", 3);
+                    }
+
+                    result.Add (target);
+                    result.Add (action);
+                    break;
+                }
+                case ActionType.PermissionsVotes: {
+                    string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 2);
+                    string action = StringLineFormatter.Indent ($"Gain {Value} vote(s)", 3);
+
+                    result.Add (target);
+                    result.Add (action);
+                    break;
+                }
+                case ActionType.PermissionsCanSpeak: {
+                    string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 2);
+                    string action;
+
+                    if (Value > 0) {
+                        action = StringLineFormatter.Indent ("Can speak", 3);
+                    } else {
+                        action = StringLineFormatter.Indent ("Cannot speak", 3);
+                    }
+
+                    result.Add (target);
+                    result.Add (action);
+                    break;
+                }
             }
 
             return string.Join ('\n', result);
@@ -439,23 +513,43 @@ internal abstract class Procedure (
  * Activated once at the beginning of a simulation
  * It can only be activated again through a Procedure
  *
- * effects: one
- * action: Election*
+ * effects: populated
+ * action: Election*, Permissions*
  */
 internal class ProcedureImmediate : Procedure {
     public ProcedureImmediate (IDType id, Effect[] effects) : base (id, effects) {
-        if (effects.Length != 1) {
-            throw new ArgumentException ($"ProcedureImmediate ID {id}: ProcedureImmediate must have one Effect", nameof (effects));
+        if (effects.Length == 0) {
+            throw new ArgumentException ($"ProcedureImmediate ID {id}: ProcedureImmediate must have Effect", nameof (effects));
         }
+        
+        foreach (Effect e in effects) {
+            switch (e.Action) {
+                case Effect.ActionType.ElectionRegion:
+                case Effect.ActionType.ElectionParty:
+                case Effect.ActionType.ElectionNominated:
+                case Effect.ActionType.ElectionAppointed:
+                    break;
+                case Effect.ActionType.PermissionsCanVote:
+                    if (e.TargetIDs.Length == 0) {
+                        throw new ArgumentException ($"ProcedureImmediate ID {id}: PermissionsCanSpeak Target must be populated", nameof (effects));
+                    }
 
-        switch (effects[0].Action) {
-            case Effect.ActionType.ElectionRegion:
-            case Effect.ActionType.ElectionParty:
-            case Effect.ActionType.ElectionNominated:
-            case Effect.ActionType.ElectionAppointed:
-                break;
-            default:
-                throw new ArgumentException ($"ProcedureImmediate ID {id}: Action must be Election*");
+                    break;
+                case Effect.ActionType.PermissionsVotes:
+                    if (e.TargetIDs.Length == 0) {
+                        throw new ArgumentException ($"ProcedureImmediate ID {id}: PermissionsCanSpeak Target must be populated", nameof (effects));
+                    }
+
+                    break;
+                case Effect.ActionType.PermissionsCanSpeak:
+                    if (e.TargetIDs.Length == 0) {
+                        throw new ArgumentException ($"ProcedureImmediate ID {id}: PermissionsCanSpeak Target must be populated", nameof (effects));
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentException ($"ProcedureImmediate ID {id}: Action must be Election* or Permissions*");
+            }
         }
     }
 
@@ -469,6 +563,12 @@ internal class ProcedureImmediate : Procedure {
 
             if (e.Action is Effect.ActionType.ElectionAppointed) {
                 effect = effect.Replace ("Appoints", "Randomly appoint");
+            } else if (
+                e.Action is Effect.ActionType.PermissionsCanVote
+                or Effect.ActionType.PermissionsVotes
+                or Effect.ActionType.PermissionsCanSpeak
+            ) {
+                effect = StringLineFormatter.Outdent (effect);
             }
 
             result.Add (effect);
@@ -482,14 +582,19 @@ internal class ProcedureImmediate : Procedure {
  * Activates on filtered Ballots
  *
  * effects: at least one
- * action: Vote*, Currency*, ProcedureActivate
+ * action: Vote*, Currency*, ProcedureActivate, Permissions*
  * filter: Ballot
  */
 internal class ProcedureTargeted : Procedure {
     // Filters Ballots (empty: every, populated: specified)
     public IDType[] BallotIDs { get; }
 
-    public ProcedureTargeted (IDType id, Effect[] effects, IDType[] ballotIds) : base (id, effects) {
+    public ProcedureTargeted (
+        IDType id,
+        Effect[] effects,
+        IDType[] ballotIds,
+        bool isActiveStart = true
+    ) : base (id, effects, isActiveStart) {
         if (effects.Length == 0) {
             throw new ArgumentException ($"ProcedureTargeted ID {id}: ProcedureTargeted must have Effect");
         }
@@ -502,6 +607,9 @@ internal class ProcedureTargeted : Procedure {
                 case Effect.ActionType.CurrencyAdd:
                 case Effect.ActionType.CurrencySubtract:
                 case Effect.ActionType.CurrencyInitialise:
+                case Effect.ActionType.PermissionsCanVote:
+                case Effect.ActionType.PermissionsVotes:
+                case Effect.ActionType.PermissionsCanSpeak:
                     break;
                 case Effect.ActionType.ProcedureActivate:
                     if (e.TargetIDs.Length == 0) {
@@ -510,7 +618,7 @@ internal class ProcedureTargeted : Procedure {
 
                     break;
                 default:
-                    throw new ArgumentException ($"ProcedureTargeted ID {id}: Action must be Vote*, Currency*, or ProcedureActivate");
+                    throw new ArgumentException ($"ProcedureTargeted ID {id}: Action must be Vote*, Currency*, ProcedureActivate, or Permissions*");
             }
         }
 
@@ -559,7 +667,7 @@ internal class ProcedureTargeted : Procedure {
 /*
  * Activates declaratively
  *
- * effect: one
+ * effects: at least one
  * action: Election*, Ballot*
  * declarerIds: Role (declarer)
  */
@@ -576,31 +684,52 @@ internal class ProcedureDeclared : Procedure {
         byte value,
         IDType[] declarerIds
     ) : base (id, effects) {
-        if (effects.Length != 1) {
-            throw new ArgumentException ($"ProcedureDeclared ID {id}: ProcedureDeclared must have one Effect", nameof (effects));
+        if (effects.Length == 0) {
+            throw new ArgumentException ($"ProcedureDeclared ID {id}: ProcedureDeclared must have Effect", nameof (effects));
         }
 
-        switch (effects[0].Action) {
-            case Effect.ActionType.ElectionRegion:
-            case Effect.ActionType.ElectionParty:
-            case Effect.ActionType.BallotLimit:
-            case Effect.ActionType.BallotPass:
-            case Effect.ActionType.BallotFail:
-                break;
-            case Effect.ActionType.ElectionNominated:
-                if (effects[0].TargetIDs.Length == 0) {
-                    throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionNominated Target must be populated");
-                }
+        bool isPass = false;
+        bool isFail = false;
 
-                break;
-            case Effect.ActionType.ElectionAppointed:
-                if (effects[0].TargetIDs.Length == 0) {
-                    throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionAppointed Target must be populated");
-                }
+        foreach (Effect e in effects) {
+            switch (e.Action) {
+                case Effect.ActionType.CurrencyAdd:
+                case Effect.ActionType.CurrencySubtract:
+                case Effect.ActionType.ElectionRegion:
+                case Effect.ActionType.ElectionParty:
+                case Effect.ActionType.BallotLimit:
+                    break;
+                case Effect.ActionType.BallotPass:
+                    if (isFail) {
+                        throw new ArgumentException ($"ProcedureDeclared ID {id}: Cannot have both BallotPass and BallotFail");
+                    } else {
+                        isPass = true;
+                    }
 
-                break;
-            default:
-                throw new ArgumentException ($"ProcedureDeclared ID {id}: Action must be Election* or VotersLimit");
+                    break;
+                case Effect.ActionType.BallotFail:
+                    if (isPass) {
+                        throw new ArgumentException ($"ProcedureDeclared ID {id}: Cannot have both BallotPass and BallotFail");
+                    } else {
+                        isFail = true;
+                    }
+
+                    break;
+                case Effect.ActionType.ElectionNominated:
+                    if (e.TargetIDs.Length == 0) {
+                        throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionNominated Target must be populated");
+                    }
+
+                    break;
+                case Effect.ActionType.ElectionAppointed:
+                    if (e.TargetIDs.Length == 0) {
+                        throw new ArgumentException ($"ProcedureDeclared ID {id}: ElectionAppointed Target must be populated");
+                    }
+
+                    break;
+                default:
+                    throw new ArgumentException ($"ProcedureDeclared ID {id}: Action must be Election* or VotersLimit");
+            }
         }
 
         Confirm = confirm;
@@ -643,7 +772,7 @@ internal class ProcedureDeclared : Procedure {
                     }
                 }
 
-                return $"Can subtract {Confirm.Value} from {string.Join (", ", currencies)}";
+                return $"Can spend {Confirm.Value} from {string.Join (", ", currencies)}";
             }
             case Confirmation.CostType.SingleDiceValue:
                 return $"Dice roll greater than or equal to {Confirm.Value}";
@@ -666,7 +795,7 @@ internal class ProcedureDeclared : Procedure {
                     }
                 }
 
-                return $"Can subtract dice roll from {string.Join (", ", currencies)}";
+                return $"Can spend dice roll from {string.Join (", ", currencies)}";
             }
             default:
                 throw new UnreachableException ();
@@ -686,7 +815,13 @@ internal class ProcedureDeclared : Procedure {
         result.Add (confirmation);
 
         foreach (Effect e in Effects) {
-            result.Add (e.ToString (in simulation, in localisation));
+            string action = e.ToString (in simulation, in localisation);
+
+            if (e.Action is Effect.ActionType.CurrencyAdd or Effect.ActionType.CurrencySubtract) {
+                action = StringLineFormatter.Outdent (action);
+            }
+
+            result.Add (action);
         }
 
         return string.Join ('\n', result);

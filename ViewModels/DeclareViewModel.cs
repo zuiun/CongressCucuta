@@ -8,7 +8,7 @@ internal class ConfirmingProcedureEventArgs (IDType personId, IDType procedureId
     public IDType ProcedureID => procedureId;
     public bool IsManual { get; set; } = isManual;
     public bool IsConfirmed { get; set; } = false;
-    public string FailureMessage { get; set; } = string.Empty;
+    public string Message { get; set; } = string.Empty;
 }
 
 internal class DeclareViewModel : ViewModel {
@@ -33,10 +33,11 @@ internal class DeclareViewModel : ViewModel {
     }
 
     private ObservableCollection<ProcedureGroup> _procedures = [];
-    private string _confirmationMessage = string.Empty;
+    private string _message = string.Empty;
     private bool _isDisplay = true;
     private bool _isManual = false;
     private bool _isConfirmation = false;
+    private bool _isSuccess = false;
     private IDType _manualId;
     public IDType PersonID { get; set; }
     public string Name { get; }
@@ -47,10 +48,10 @@ internal class DeclareViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public string ConfirmationMessage {
-        get => _confirmationMessage;
+    public string Message {
+        get => _message;
         set {
-            _confirmationMessage = value;
+            _message = value;
             OnPropertyChanged ();
         }
     }
@@ -75,7 +76,13 @@ internal class DeclareViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public Action? CloseWindow { get; set; }
+    public bool IsSuccess {
+        get => _isSuccess;
+        set {
+            _isSuccess = value;
+            OnPropertyChanged ();
+        }
+    }
     public event Action<ConfirmingProcedureEventArgs>? ConfirmingProcedure;
 
     public DeclareViewModel (IDType personId, SimulationContext context, Localisation localisation) {
@@ -85,27 +92,33 @@ internal class DeclareViewModel : ViewModel {
         foreach (ProcedureDeclared p in context.ProceduresDeclared.Values) {
             ProcedureGroup procedure = new (p.ID, localisation.Procedures[p.ID].Item1);
 
-            if (p.DeclarerIDs.All (d => ! context.PeopleRoles[personId].Contains (d))) {
-                procedure.IsActive = false;
-                procedure.Error = "Not allowed";
-            } else if (context.Context.ProceduresDeclared.Contains (p.ID)) {
-                procedure.IsActive = false;
-                procedure.Error = "Already declared";
-            } else if (p.YieldEffects (0) is Procedure.EffectBundle effects) {
-                if (effects.Confirmation is Procedure.Confirmation confirmation) {
-                    if (confirmation.Cost is Procedure.Confirmation.CostType.CurrencyValue) {
-                        IDType currencyId = context.ChooseCurrencyOwner (personId);
-
-                        if (context.CurrenciesValues[currencyId] < confirmation.Value) {
-                            procedure.IsActive = false;
-                            procedure.Error = $"Insufficient {localisation.Currencies[currencyId]}";
-                        }
-                    }
-                }
-            }
-
             procedure.DeclaringProcedure += Procedure_DeclaringProcedureEventHandler;
             Procedures.Add (procedure);
+
+            if (p.DeclarerIDs.Length > 0 && p.DeclarerIDs.All (d => ! context.PeopleRoles[personId].Contains (d))) {
+                procedure.IsActive = false;
+                procedure.Error = "Not allowed";
+                continue;
+            }
+
+            if (context.Context.ProceduresDeclared.Contains (p.ID)) {
+                procedure.IsActive = false;
+                procedure.Error = "Already declared";
+                continue;
+            }
+            
+            if (
+                p.YieldEffects (0) is Procedure.EffectBundle effects
+                && effects.Confirmation is Procedure.Confirmation confirmation
+                && confirmation.Cost is Procedure.Confirmation.CostType.CurrencyValue
+            ) {
+                IDType currencyId = context.ChooseCurrencyOwner (personId);
+
+                if (context.CurrenciesValues[currencyId] < confirmation.Value) {
+                    procedure.IsActive = false;
+                    procedure.Error = $"Insufficient {localisation.Currencies[currencyId]}";
+                }
+            }
         }
 
         Procedures = [.. Procedures.OrderBy (p => p.ID)];
@@ -120,11 +133,10 @@ internal class DeclareViewModel : ViewModel {
         if (args.IsManual) {
             _manualId = e;
             IsManual = true;
-        } else if (args.IsConfirmed) {
-            CloseWindow?.Invoke ();
         } else {
+            IsSuccess = args.IsConfirmed;
             IsConfirmation = true;
-            ConfirmationMessage = args.FailureMessage;
+            Message = args.Message;
         }
     }
 
@@ -132,6 +144,10 @@ internal class DeclareViewModel : ViewModel {
         ConfirmingProcedureEventArgs args = new (PersonID, _manualId, true);
 
         ConfirmingProcedure?.Invoke (args);
-        CloseWindow?.Invoke ();
+        IsDisplay = false;
+        IsManual = args.IsManual;
+        IsSuccess = args.IsConfirmed;
+        IsConfirmation = true;
+        Message = args.Message;
     });
 }

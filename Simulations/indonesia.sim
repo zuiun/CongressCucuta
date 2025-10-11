@@ -20,8 +20,8 @@
       "CanSpeak": true
     },
     "253": {
-      "CanVote": false,
-      "Votes": 0,
+      "CanVote": true,
+      "Votes": 1,
       "CanSpeak": true
     },
     "0": {
@@ -71,6 +71,13 @@
       "Effects": [
         {
           "Action": 9,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 14,
           "TargetIDs": [
             253
           ],
@@ -177,12 +184,13 @@
     },
     {
       "Confirm": {
-        "Cost": 2,
-        "Value": 4
+        "Cost": 4,
+        "Value": 0
       },
       "Value": 0,
       "DeclarerIDs": [
-        0
+        1,
+        2
       ],
       "ID": 7,
       "Effects": [
@@ -192,19 +200,25 @@
             253
           ],
           "Value": 0
+        },
+        {
+          "Action": 3,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 1
         }
       ],
       "IsActiveStart": true
     },
     {
       "Confirm": {
-        "Cost": 4,
-        "Value": 0
+        "Cost": 2,
+        "Value": 4
       },
       "Value": 0,
       "DeclarerIDs": [
-        1,
-        2
+        0
       ],
       "ID": 8,
       "Effects": [
@@ -692,12 +706,12 @@
         "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
       },
       "7": {
-        "Item1": "Purge",
-        "Item2": "The military has a special perception in Indonesian society, and if any faction grows too powerful or misguided, the military could step in to eliminate such a threat."
-      },
-      "8": {
         "Item1": "Coup",
         "Item2": "The military may play a powerful role in politics, but its officers are extremely politicised and not necessarily loyal. It might not take much convincing to turn a military parade into a march on Jakarta."
+      },
+      "8": {
+        "Item1": "Purge",
+        "Item2": "The military has a special perception in Indonesian society, and if any faction grows too powerful or misguided, the military could step in to eliminate such a threat."
       }
     },
     "Ballots": {
@@ -848,10 +862,10 @@
         "Item1": "Ballot B Passed",
         "Item2": [
           "Annexation of Dutch New Guinea greatly enhances Indonesia\u2019s prestige",
-          "##.Indonesia is now the dominant power in the Malay Archipelago",
-          "#.New Guineans are extremely furious",
-          "##.Though nothing has happened yet, there will certainly be an insurgency in the future",
-          "###.New Guinea will be a major issue for the foreseeable future"
+          "#.Indonesia is now the dominant power in the Malay Archipelago",
+          "New Guineans are extremely furious",
+          "#.Though nothing has happened yet, there will certainly be an insurgency in the future",
+          "##.New Guinea will be a major issue for the foreseeable future"
         ]
       },
       "2": {

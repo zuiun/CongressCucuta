@@ -194,8 +194,12 @@ internal class ContextViewModel : ViewModel {
         simulation.Context.Context.UpdatedVotes += Context_UpdatedVotesEventHandler;
 
         foreach (ProcedureDeclared pd in simulation.Context.ProceduresDeclared.Values) {
-            foreach (IDType r in pd.DeclarerIDs) {
-                _declarerRoles.Add (r);
+            if (pd.DeclarerIDs.Length > 0) {
+                foreach (IDType r in pd.DeclarerIDs) {
+                    _declarerRoles.Add (r);
+                }
+            } else {
+                _declarerRoles.Add (Role.MEMBER);
             }
         }
     }
@@ -227,7 +231,7 @@ internal class ContextViewModel : ViewModel {
         PersonViewModel person = new (id, name, isBallot);
 
         foreach (IDType r in roles) {
-            if (r != Role.MEMBER) {
+            if (r != Role.MEMBER && r != Role.LEADER_PARTY && r != Role.LEADER_REGION) {
                 person.Roles.Add (new (r, _localisation.Roles[r].Item1));
             }
 

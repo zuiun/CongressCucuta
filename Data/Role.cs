@@ -10,11 +10,8 @@ internal static class Role {
     /*
      * The following reserved IDs exist for Target purposes and should not be used to create a Role
      *
-     * When creating Localisation and Permissions, these should be used for common Roles used by PARTY and/or REGION,
+     * When creating Localisation and Permissions, these should be used to indicate the existence of such common Roles,
      * alongside the corresponding Role for each Faction ID
-     *
-     * If there are no common Localisations between Roles,
-     * then these should not be defined in Localisation or Permissions at all
      */
     public static readonly IDType LEADER_PARTY = HEAD_STATE - 1;
     public static readonly IDType LEADER_REGION = LEADER_PARTY - 1;

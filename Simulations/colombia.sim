@@ -14,8 +14,8 @@
       "CanSpeak": true
     },
     "253": {
-      "CanVote": false,
-      "Votes": 0,
+      "CanVote": true,
+      "Votes": 1,
       "CanSpeak": true
     }
   },
@@ -59,6 +59,13 @@
         {
           "Action": 7,
           "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            253
+          ],
           "Value": 0
         }
       ],

@@ -3,31 +3,30 @@ using congress_cucuta.Data;
 
 namespace congress_cucuta.Simulations;
 
-internal class Indonesia {
+internal class Indonesia : ISimulation {
     public Simulation Simulation { get; }
 
     public Indonesia () {
-        Dictionary<IDType, Permissions> rolesPermissions = [];
         IDType member = Role.MEMBER;
         IDType president = Role.HEAD_STATE;
         IDType chiefStaff = 0;
         IDType generalSecretary = 1;
         IDType chairman = 2;
-        Permissions normal = new (CanVote: true);
-        Permissions cantVote = new (CanVote: false, Votes: 0);
-        rolesPermissions[member] = normal;
-        rolesPermissions[president] = cantVote;
-        rolesPermissions[chiefStaff] = normal;
-        rolesPermissions[generalSecretary] = normal;
-        rolesPermissions[chairman] = normal;
-        rolesPermissions[Role.LEADER_PARTY] = normal;
-        Dictionary<IDType, (string, string)> roles = [];
-        roles[member] = ("Member", "Members");
-        roles[president] = ("President", "Presidents");
-        roles[chiefStaff] = ("Chief of Staff", "Chiefs of Staff");
-        roles[generalSecretary] = ("General Secretary", "General Secretaries");
-        roles[chairman] = ("Chairman", "Chairmen");
-        roles[Role.LEADER_PARTY] = ("Faction Leader", "Faction Leaders");
+        List<IDType> roles = [
+            member,
+            president,
+            chiefStaff,
+            generalSecretary,
+            chairman,
+            Role.LEADER_PARTY,
+        ];
+        Dictionary<IDType, (string, string)> rolesLocs = [];
+        rolesLocs[member] = ("Member", "Members");
+        rolesLocs[president] = ("President", "Presidents");
+        rolesLocs[chiefStaff] = ("Chief of Staff", "Chiefs of Staff");
+        rolesLocs[generalSecretary] = ("General Secretary", "General Secretaries");
+        rolesLocs[chairman] = ("Chairman", "Chairmen");
+        rolesLocs[Role.LEADER_PARTY] = ("Faction Leader", "Faction Leaders");
 
         Faction abri = new (0);
         Faction pki = new (1);
@@ -77,11 +76,14 @@ internal class Indonesia {
 
         ProcedureImmediate constitution1945 = new (
             0,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [Role.HEAD_STATE])]
+            [
+                new (Procedure.Effect.ActionType.ElectionNominated, [president]),
+                new (Procedure.Effect.ActionType.PermissionsCanVote, [president], 0),
+            ]
         );
         ProcedureImmediate nasakom = new (
             1,
-            [new (Procedure.Effect.ActionType.ElectionParty, [Role.HEAD_STATE])]
+            [new (Procedure.Effect.ActionType.ElectionParty, [president])]
         );
         List<ProcedureImmediate> proceduresGovernmental = [constitution1945, nasakom];
         ProcedureTargeted pancasila = new (
@@ -125,21 +127,24 @@ internal class Indonesia {
             0,
             [president]
         );
-        ProcedureDeclared purge = new (
+        ProcedureDeclared coup = new (
             7,
+            [
+                new (Procedure.Effect.ActionType.ElectionAppointed, [president]),
+                new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri], 1),
+            ],
+            new Procedure.Confirmation (Procedure.Confirmation.CostType.SingleDiceCurrency),
+            0,
+            [pki.ID, masyumi.ID]
+        );
+        ProcedureDeclared purge = new (
+            8,
             [new (Procedure.Effect.ActionType.ElectionAppointed, [president])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.CurrencyValue, 4),
             0,
             [abri.ID]
         );
-        ProcedureDeclared coup = new (
-            8,
-            [new (Procedure.Effect.ActionType.ElectionAppointed, [president])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.SingleDiceCurrency),
-            0,
-            [pki.ID, masyumi.ID]
-        );
-        List<ProcedureDeclared> proceduresDeclared = [/*industryTakeover, */rubberStamp, veto, purge, coup];
+        List<ProcedureDeclared> proceduresDeclared = [/*industryTakeover, */rubberStamp, veto, coup, purge];
         Dictionary<IDType, (string, string)> procedures = [];
         procedures[constitution1945.ID] = (
             "Constitution of 1945",
@@ -173,13 +178,13 @@ internal class Indonesia {
             "Veto",
             "This country's head of state is empowered to reject legislation that does not conform to his political beliefs."
         );
-        procedures[purge.ID] = (
-            "Purge",
-            "The military has a special perception in Indonesian society, and if any faction grows too powerful or misguided, the military could step in to eliminate such a threat."
-        );
         procedures[coup.ID] = (
             "Coup",
             "The military may play a powerful role in politics, but its officers are extremely politicised and not necessarily loyal. It might not take much convincing to turn a military parade into a march on Jakarta."
+        );
+        procedures[purge.ID] = (
+            "Purge",
+            "The military has a special perception in Indonesian society, and if any faction grows too powerful or misguided, the military could step in to eliminate such a threat."
         );
 
         Ballot ballotA = new (
@@ -532,10 +537,10 @@ internal class Indonesia {
             "Ballot B Passed",
             [
                 "Annexation of Dutch New Guinea greatly enhances Indonesia’s prestige",
-                StringLineFormatter.Indent ("Indonesia is now the dominant power in the Malay Archipelago", 2),
-                StringLineFormatter.Indent ("New Guineans are extremely furious", 1),
-                StringLineFormatter.Indent ("Though nothing has happened yet, there will certainly be an insurgency in the future", 2),
-                StringLineFormatter.Indent ("New Guinea will be a major issue for the foreseeable future", 3),
+                StringLineFormatter.Indent ("Indonesia is now the dominant power in the Malay Archipelago", 1),
+                "New Guineans are extremely furious",
+                StringLineFormatter.Indent ("Though nothing has happened yet, there will certainly be an insurgency in the future", 1),
+                StringLineFormatter.Indent ("New Guinea will be a major issue for the foreseeable future", 2),
             ]
         );
         resultsLocs[ballotCPassed.ID] = (
@@ -655,7 +660,7 @@ internal class Indonesia {
 
         Simulation = new (
             history,
-            rolesPermissions,
+            roles,
             [],
             factions,
             currenciesValues,
@@ -678,7 +683,7 @@ internal class Indonesia {
                 "5 July 1959",
                 "Restoration of the Constitution of 1945",
                 "Guided Democracy",
-                roles,
+                rolesLocs,
                 "Speaker",
                 (Localisation.UNUSED, Localisation.UNUSED),
                 [],

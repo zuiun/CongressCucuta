@@ -68,7 +68,8 @@
                 Add participants:
             </TextBlock>
             <TextBlock HorizontalAlignment = "Center" Margin = "0, 0, 0, 6">
-                (At least three)
+                <Run Text = "{Binding PeopleMin, Mode = OneWay}"/>
+                <Run Text = "minimum"/>
             </TextBlock>
             <Grid Margin = "0, 0, 0, 24">
                 <TextBlock Style = "{StaticResource Watermark}" Text = "Name" Panel.ZIndex = "1" Margin = "3, 1, 0, 0"/>

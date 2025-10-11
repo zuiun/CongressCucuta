@@ -231,13 +231,15 @@ internal class ElectionShuffleAddViewModel : ElectionTypeViewModel {
             }
         }
 
-        foreach (IDType f in election.FilterIDs) {
-            if (! factionsAssigned.Contains (f)) {
-                int unassignedIdx = _random.Next (unassignedIds.Count);
-                IDType unassignedId = unassignedIds[unassignedIdx];
+        if (unassignedIds.Count > 0) {
+            foreach (IDType f in election.FilterIDs) {
+                if (! factionsAssigned.Contains (f)) {
+                    int unassignedIdx = _random.Next (unassignedIds.Count);
+                    IDType unassignedId = unassignedIds[unassignedIdx];
 
-                PeopleFactionsNew[unassignedId] = (f, PeopleFactionsNew[unassignedId].Item2);
-                AddPerson (unassignedId, f, people[unassignedId], IsLeaderNeeded);
+                    PeopleFactionsNew[unassignedId] = (f, PeopleFactionsNew[unassignedId].Item2);
+                    AddPerson (f, unassignedId, people[unassignedId], IsLeaderNeeded);
+                }
             }
         }
 
@@ -405,6 +407,7 @@ internal class ElectionAppointedViewModel : ElectionTypeViewModel {
             int personIdx = _random.Next (peopleIds.Count);
             IDType personId = peopleIds[personIdx];
 
+            PeopleRolesNew[personId].Add (election.TargetID);
             TryAddFaction (election.TargetID, "Appointment");
             AddPerson (election.TargetID, personId, people[personId], false);
         } else {

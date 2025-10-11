@@ -43,7 +43,7 @@ internal readonly record struct NeverCondition : ICondition {
     public bool? YieldBallotVote () => null;
 }
 
-internal readonly record struct AndCondition (ICondition[] Conditions) : ICondition {
+internal readonly record struct AndCondition (params ICondition[] Conditions) : ICondition {
     public bool Evaluate (ref readonly SimulationContext context) {
         foreach (ICondition c in Conditions) {
             if (! c.Evaluate (in context)) {
@@ -54,12 +54,20 @@ internal readonly record struct AndCondition (ICondition[] Conditions) : ICondit
         return true;
     }
 
-    public string ToString (ref readonly Localisation localisation) => string.Join (" and ", Conditions.Select (c => c.ToString ()));
+    public string ToString (ref readonly Localisation localisation) {
+        List<string> conditions = [];
+
+        foreach (ICondition c in Conditions) {
+            conditions.Add (c.ToString (in localisation));
+        }
+
+        return string.Join (" and ", conditions);
+    }
 
     public bool? YieldBallotVote () => null;
 }
 
-internal readonly record struct OrCondition (ICondition[] Conditions) : ICondition {
+internal readonly record struct OrCondition (params ICondition[] Conditions) : ICondition {
     public bool Evaluate (ref readonly SimulationContext context) {
         foreach (ICondition c in Conditions) {
             if (c.Evaluate (in context)) {
@@ -70,7 +78,15 @@ internal readonly record struct OrCondition (ICondition[] Conditions) : IConditi
         return false;
     }
 
-    public string ToString (ref readonly Localisation localisation) => string.Join (" or ", Conditions.Select (c => c.ToString ()));
+    public string ToString (ref readonly Localisation localisation) {
+        List<string> conditions = [];
+
+        foreach (ICondition c in Conditions) {
+            conditions.Add (c.ToString (in localisation));
+        }
+
+        return string.Join (" or ", conditions);
+    }
 
     public bool? YieldBallotVote () => null;
 }

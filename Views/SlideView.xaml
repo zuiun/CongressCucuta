@@ -28,9 +28,8 @@
         
         <Grid Grid.Row = "0" Style = "{StaticResource Content}">
             <Grid.RowDefinitions>
-                <RowDefinition Height = "1*"/>
-                <RowDefinition Height = "6*"/>
-                <RowDefinition Height = "24*"/>
+                <RowDefinition Height = "5*"/>
+                <RowDefinition Height = "25*"/>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width = "1*"/>
@@ -38,12 +37,13 @@
                 <ColumnDefinition Width = "1*"/>
             </Grid.ColumnDefinitions>
 
-            <TextBlock Grid.Row = "1"
+            <TextBlock Grid.Row = "0"
                        Grid.Column = "1"
                        Text = "{Binding Title}"
                        HorizontalAlignment = "Center"
+                       VerticalAlignment = "Center"
                        TextWrapping = "Wrap"/>
-            <ItemsControl Grid.Row = "2" Grid.Column = "1" ItemsSource = "{Binding Description}" VerticalAlignment = "Top">
+            <ItemsControl Grid.Row = "1" Grid.Column = "1" ItemsSource = "{Binding Description}" VerticalAlignment = "Top">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <local:LineView/>

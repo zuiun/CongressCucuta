@@ -9,7 +9,7 @@ internal readonly record struct Localisation (
     string Period,
     // (singular, plural)
     Dictionary<IDType, (string, string)> Roles,
-    string Speaker, // TODO: this is currently unused
+    string Speaker,
     // (singular, plural)
     (string, string) Region,
     // (name, description, leader)

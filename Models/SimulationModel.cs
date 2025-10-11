@@ -178,118 +178,67 @@ internal class SimulationModel {
         return slideCurrentIdx;
     }
 
-    private static IDType GenerateSlidesPermissions (
+    private static IDType GenerateSlideTitles (
         ref readonly Simulation simulation,
         ref readonly Localisation localisation,
         ref List<SlideModel> slides,
         IDType slideCurrentIdx
     ) {
-        Permissions member = simulation.RolesPermissions.Where (k => k.Key.ID == Role.MEMBER)
-            .Select (k => k.Value)
-            .First ();
-        SlideBidirectionalModel slideMember = new (
-            slideCurrentIdx,
-            localisation.Roles[Role.MEMBER].Item1,
-            [.. member.ToString ().Split ('\n')]
-        );
+        List<string> titles = [];
+        string speaker = localisation.Speaker;
+        string member = localisation.Roles[Role.MEMBER].Item1;
 
-        ++ slideCurrentIdx;
-        slides.Add (slideMember);
+        titles.Add (speaker);
+        titles.Add (member);
 
-        if (localisation.Roles.TryGetValue (Role.HEAD_GOVERNMENT, out (string, string) headGovernmentTitle)) {
-            Permissions headGovernment = simulation.RolesPermissions.Where (k => k.Key.ID == Role.HEAD_GOVERNMENT)
-                .Select (k => k.Value)
-                .First ();
-            SlideBidirectionalModel slideHeadGovernment = new (
-                slideCurrentIdx,
-                headGovernmentTitle.Item1,
-                [.. headGovernment.ToString ().Split ('\n')]
-            );
-
-            ++ slideCurrentIdx;
-            slides.Add (slideHeadGovernment);
+        if (localisation.Roles.TryGetValue (Role.HEAD_GOVERNMENT, out (string, string) headGovernment)) {
+            titles.Add (headGovernment.Item1);
         }
 
-        if (localisation.Roles.TryGetValue (Role.HEAD_STATE, out (string, string) headStateTitle)) {
-            Permissions headState = simulation.RolesPermissions.Where (k => k.Key.ID == Role.HEAD_STATE)
-                .Select (k => k.Value)
-                .First ();
-            SlideBidirectionalModel slideHeadState = new (
-                slideCurrentIdx,
-                headStateTitle.Item1,
-                [.. headState.ToString ().Split ('\n')]
-            );
-
-            ++ slideCurrentIdx;
-            slides.Add (slideHeadState);
+        if (localisation.Roles.TryGetValue (Role.HEAD_STATE, out (string, string) headState)) {
+            titles.Add (headState.Item1);
         }
 
         if (simulation.Parties.Count > 0) {
-            IDType anyId = simulation.Parties[0].ID;
+            if (localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) leaderParty)) {
+                List<string> leadersParties = [];
 
-            if (localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) leaderPartyTitles)) {
-                Permissions leaderParty = simulation.RolesPermissions.Where (k => k.Key.ID == Role.LEADER_PARTY)
-                    .Select (k => k.Value)
-                    .First ();
-                SlideBidirectionalModel slideLeaderParty = new (
-                    slideCurrentIdx,
-                    leaderPartyTitles.Item2,
-                    [.. leaderParty.ToString ().Split ('\n')]
-                );
+                titles.Add ($"{leaderParty.Item2}:");
 
-                ++ slideCurrentIdx;
-                slides.Add (slideLeaderParty);
-            } else if (localisation.Roles.Keys.Any (r => r.ID == anyId)) {
                 foreach (Faction party in simulation.Parties) {
-                    string leaderPartyTitle = localisation.Roles[party.ID].Item1;
-                    Permissions leaderParty = simulation.RolesPermissions.Where (k => k.Key.ID == party.ID)
-                        .Select (k => k.Value)
-                        .First ();
-                    SlideBidirectionalModel slideLeaderParty = new (
-                        slideCurrentIdx,
-                        leaderPartyTitle,
-                        [.. leaderParty.ToString ().Split ('\n')]
-                    );
+                    string leaderPartyIndividual = localisation.Roles[party.ID].Item1;
 
-                    ++ slideCurrentIdx;
-                    slides.Add (slideLeaderParty);
+                    leadersParties.Add (leaderPartyIndividual);
                 }
+
+                titles.Add (StringLineFormatter.Indent (string.Join (", ", leadersParties), 1));
             }
         }
-        
+
         if (simulation.Regions.Count > 0) {
-            IDType anyId = simulation.Regions[0].ID;
+            if (localisation.Roles.TryGetValue (Role.LEADER_REGION, out (string, string) leaderRegion)) {
+                List<string> leadersRegions = [];
 
-            if (localisation.Roles.TryGetValue (Role.LEADER_REGION, out (string, string) leaderRegionTitles)) {
-                Permissions leaderRegion = simulation.RolesPermissions.Where (k => k.Key.ID == Role.LEADER_REGION)
-                    .Select (k => k.Value)
-                    .First ();
-                SlideBidirectionalModel slideLeaderRegion = new (
-                    slideCurrentIdx,
-                    leaderRegionTitles.Item2,
-                    [.. leaderRegion.ToString ().Split ('\n')]
-                );
+                titles.Add ($"{leaderRegion.Item2}:");
 
-                ++ slideCurrentIdx;
-                slides.Add (slideLeaderRegion);
-            } else if (localisation.Roles.Keys.Any (r => r.ID == anyId)) {
                 foreach (Faction region in simulation.Regions) {
-                    string leaderRegionTitle = localisation.Roles[region.ID].Item1;
-                    Permissions leaderRegion = simulation.RolesPermissions.Where (k => k.Key.ID == region.ID)
-                        .Select (k => k.Value)
-                        .First ();
-                    SlideBidirectionalModel slideLeaderRegion = new (
-                        slideCurrentIdx,
-                        leaderRegionTitle,
-                        [.. leaderRegion.ToString ().Split ('\n')]
-                    );
+                    string leaderRegionIndividual = localisation.Roles[region.ID].Item1;
 
-                    ++ slideCurrentIdx;
-                    slides.Add (slideLeaderRegion);
+                    leadersRegions.Add (leaderRegionIndividual);
                 }
+                
+                titles.Add (StringLineFormatter.Indent (string.Join (", ", leadersRegions), 1));
             }
         }
-        
+
+        SlideBidirectionalModel slideTitles = new (
+            slideCurrentIdx,
+            "Titles",
+            [.. titles]
+        );
+
+        ++ slideCurrentIdx;
+        slides.Add (slideTitles);
         return slideCurrentIdx;
     }
 
@@ -538,7 +487,7 @@ internal class SimulationModel {
         IDType slideCurrentIdx = GenerateSlidesIntroduction (in localisation, ref slides);
 
         slideCurrentIdx = GenerateSlidesProcedures (in simulation, in localisation, ref slides, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlidesPermissions (in simulation, in localisation, ref slides, slideCurrentIdx);
+        slideCurrentIdx = GenerateSlideTitles (in simulation, in localisation, ref slides, slideCurrentIdx);
         slideCurrentIdx = GenerateSlidesFactions (in simulation, in localisation, ref slides, slideCurrentIdx);
         (slideCurrentIdx, IDType slideTitleIdx, var ballotsIdxsIds) = GenerateSlidesBallots (in simulation, in localisation, ref slides, slideCurrentIdx);
         slideCurrentIdx = GenerateSlidesResults (in simulation, in localisation, ref slides, slideCurrentIdx);

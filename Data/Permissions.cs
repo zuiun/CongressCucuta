@@ -13,6 +13,7 @@ internal readonly record struct Permissions (
         bool? CanSpeak = null
     );
 
+    // Always prefer right
     public static Permissions operator + (Permissions left, Composition right) => new (
             right.CanVote ?? left.CanVote,
             (byte) (left.Votes + (right.Votes ?? 0)),

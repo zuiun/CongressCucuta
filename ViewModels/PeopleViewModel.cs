@@ -4,6 +4,7 @@ using congress_cucuta.Data;
 namespace congress_cucuta.ViewModels;
 
 internal class PeopleViewModel : ViewModel {
+    private const byte PEOPLE_MIN = 9;
     private string _name = string.Empty;
     private int _selectedIdx = -1;
     private ObservableCollection<NameViewModel> _names = [];
@@ -36,6 +37,7 @@ internal class PeopleViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
+    public static byte PeopleMin => PEOPLE_MIN;
     public event Action<List<Person>>? InitialisingPeople = null;
 
     public void Reset () {
@@ -60,6 +62,6 @@ internal class PeopleViewModel : ViewModel {
 
     public RelayCommand FinishInputCommand => new (
         _ => InitialisingPeople?.Invoke ([.. Names.Select ((n, i) => new Person (i, n.Name))]),
-        _ => Names.Count > 2
+        _ => Names.Count >= PEOPLE_MIN
     );
 }
