@@ -1,12 +1,26 @@
-features:
+Features:
 Australia is bicameral NOOOOOOOOOO
 -> this could be represented through "regional assent," forcing all "regions" (houses) to have a majority in favour
 -> that sounds like way too much work. but whitlam my beloved
-someday, consider implementing replacing factions
+someday, consider replacing factions (would require reworking literally everything)
 
 Testing:
 other Conditions (BallotsCount : australia)
-declared procedures (singledice : argentina?, electionparty : australia, electionregion : doesn't generally ever happen, ballotlimit : malaysia)
+declared procedures (electionparty : australia, ballotlimit : malaysia, argentina [coup])
+(make an actually robust test suite at some point...)
 
-i wish i could centralise fonts
+Convert (in order of how much I like them):
+Australia (very difficult)
+Malaysia
+Argentine
+Brazil
+Finland
+China?
+Poland?
+Spain?
+Japan?
+Hungary?
+Germany?
+
+i wish i could centralise fonts (not so relevant now that all views are complete)
 do not go back on end slide?

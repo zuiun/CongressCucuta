@@ -123,7 +123,7 @@ internal class Indonesia : ISimulation {
             [
                 new (Procedure.Effect.ActionType.BallotFail, [])
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new (Procedure.Confirmation.CostType.Always),
             0,
             [president]
         );
@@ -133,14 +133,14 @@ internal class Indonesia : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionAppointed, [president]),
                 new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri], 1),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.SingleDiceCurrency),
+            new (Procedure.Confirmation.CostType.SingleDiceCurrency),
             0,
             [pki.ID, masyumi.ID]
         );
         ProcedureDeclared purge = new (
             8,
             [new (Procedure.Effect.ActionType.ElectionAppointed, [president])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.CurrencyValue, 4),
+            new (Procedure.Confirmation.CostType.CurrencyValue, 4),
             0,
             [abri.ID]
         );

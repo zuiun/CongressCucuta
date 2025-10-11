@@ -364,7 +364,6 @@
   "Ballots": [
     {
       "ID": 0,
-      "IsIncident": false,
       "PassResult": {
         "Effects": [
           {
@@ -409,11 +408,11 @@
             "TargetID": 1
           }
         ]
-      }
+      },
+      "IsIncident": false
     },
     {
       "ID": 1,
-      "IsIncident": true,
       "PassResult": {
         "Effects": [
           {
@@ -460,11 +459,11 @@
             "TargetID": 2
           }
         ]
-      }
+      },
+      "IsIncident": true
     },
     {
       "ID": 2,
-      "IsIncident": false,
       "PassResult": {
         "Effects": [
           {
@@ -511,11 +510,11 @@
             "TargetID": 3
           }
         ]
-      }
+      },
+      "IsIncident": false
     },
     {
       "ID": 3,
-      "IsIncident": false,
       "PassResult": {
         "Effects": [],
         "Links": [
@@ -565,11 +564,11 @@
             "TargetID": 5
           }
         ]
-      }
+      },
+      "IsIncident": false
     },
     {
       "ID": 4,
-      "IsIncident": true,
       "PassResult": {
         "Effects": [
           {
@@ -599,11 +598,11 @@
             "TargetID": 5
           }
         ]
-      }
+      },
+      "IsIncident": true
     },
     {
       "ID": 5,
-      "IsIncident": false,
       "PassResult": {
         "Effects": [
           {
@@ -619,7 +618,8 @@
       "FailResult": {
         "Effects": [],
         "Links": []
-      }
+      },
+      "IsIncident": false
     }
   ],
   "Results": [

@@ -89,8 +89,14 @@ internal class Colombia : ISimulation {
             [3]
         );
         List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism];
-        // TODO: add a presidential veto
-        List<ProcedureDeclared> proceduresDeclared = [];
+        ProcedureDeclared veto = new (
+            5,
+            [new (Procedure.Effect.ActionType.BallotFail, [])],
+            new (Procedure.Confirmation.CostType.Always),
+            0,
+            [president]
+        );
+        List<ProcedureDeclared> proceduresDeclared = [veto];
         Dictionary<IDType, (string, string)> procedures = [];
         procedures[presidentialElection.ID] = (
             "Presidential Election",
@@ -111,6 +117,10 @@ internal class Colombia : ISimulation {
         procedures[repressedFederalism.ID] = (
             "Repressed Federalism",
             "Colombia was originally established as a federation, but the power of the departments has been suppressed in order to wage the war against Spain; this is an extremely unpopular measure in Venezuela, which sees itself as dominated by Cundinamarca."
+        );
+        procedures[veto.ID] = (
+            "Veto",
+            "This country's head of state is empowered to reject legislation that does not conform to his political beliefs."
         );
 
         Ballot ballotA = new (

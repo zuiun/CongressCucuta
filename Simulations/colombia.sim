@@ -130,11 +130,30 @@
       "IsActiveStart": true
     }
   ],
-  "ProceduresDeclared": [],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 13,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
   "Ballots": [
     {
       "ID": 0,
-      "IsIncident": false,
       "PassResult": {
         "Effects": [],
         "Links": [
@@ -171,11 +190,11 @@
             "TargetID": 1
           }
         ]
-      }
+      },
+      "IsIncident": false
     },
     {
       "ID": 1,
-      "IsIncident": false,
       "PassResult": {
         "Effects": [
           {
@@ -206,11 +225,11 @@
             "TargetID": 3
           }
         ]
-      }
+      },
+      "IsIncident": false
     },
     {
       "ID": 2,
-      "IsIncident": true,
       "PassResult": {
         "Effects": [
           {
@@ -240,11 +259,11 @@
             "TargetID": 3
           }
         ]
-      }
+      },
+      "IsIncident": true
     },
     {
       "ID": 3,
-      "IsIncident": false,
       "PassResult": {
         "Effects": [
           {
@@ -260,7 +279,8 @@
       "FailResult": {
         "Effects": [],
         "Links": []
-      }
+      },
+      "IsIncident": false
     }
   ],
   "Results": [
@@ -454,6 +474,10 @@
       "4": {
         "Item1": "Repressed Federalism",
         "Item2": "Colombia was originally established as a federation, but the power of the departments has been suppressed in order to wage the war against Spain; this is an extremely unpopular measure in Venezuela, which sees itself as dominated by Cundinamarca."
+      },
+      "5": {
+        "Item1": "Veto",
+        "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
       }
     },
     "Ballots": {
