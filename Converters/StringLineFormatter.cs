@@ -5,7 +5,7 @@ namespace congress_cucuta.Converters;
 
 internal class StringLineFormatter {
     private const char INDENT = '#';
-    private const char DELIMITER = '.';
+    private const char DELIMITER = '|';
     private const string SPACE = "    ";
 
     public static string Indent (string line, byte indentLevel) {
@@ -33,14 +33,14 @@ internal class StringLineFormatter {
             indentLevel = (byte) parameters[0].Count (c => c == INDENT);
             line = parameters[1];
         } else {
-            throw new ArgumentException ("Expected '#.Text' format", nameof (text));
+            throw new ArgumentException ($"Expected '{INDENT}{DELIMITER}Text' format", nameof (text));
         }
 
         return (line, indentLevel);
     }
 
     public static string Convert (string text) {
-        string clean = text.Replace (".", string.Empty);
+        string clean = text.Replace ($"{DELIMITER}", string.Empty);
         string[] lines = clean.Split ('\n');
         string[] reduced = [.. lines.Select (l => l[1 ..])];
         string joined = string.Join ('\n', reduced);

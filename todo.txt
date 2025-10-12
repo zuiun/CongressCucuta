@@ -1,26 +1,17 @@
-Features:
-Australia is bicameral NOOOOOOOOOO
--> this could be represented through "regional assent," forcing all "regions" (houses) to have a majority in favour
--> that sounds like way too much work. but whitlam my beloved
-someday, consider replacing factions (would require reworking literally everything)
+powerpoint has this horribly ugly ' and "" that need to be replaced
 
 Testing:
-other Conditions (BallotsCount : australia)
-declared procedures (electionparty : australia, ballotlimit : malaysia, argentina [coup])
-(make an actually robust test suite at some point...)
+write test suite
 
-Convert (in order of how much I like them):
-Australia (very difficult)
-Malaysia
-Argentine
+Convert:
 Brazil
 Finland
 China?
 Poland?
 Spain?
+Argentina
 Japan?
 Hungary?
-Germany?
 
-i wish i could centralise fonts (not so relevant now that all views are complete)
+adversarial die (japan)
 do not go back on end slide?

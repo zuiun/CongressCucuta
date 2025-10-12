@@ -4,7 +4,7 @@ using congress_cucuta.Data;
 namespace congress_cucuta.ViewModels;
 
 internal class PeopleViewModel : ViewModel {
-    private const byte PEOPLE_MIN = 9;
+    private const byte PEOPLE_MIN = 5;
     private string _name = string.Empty;
     private int _selectedIdx = -1;
     private ObservableCollection<NameViewModel> _names = [];

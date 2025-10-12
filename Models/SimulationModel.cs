@@ -21,13 +21,13 @@ internal class StartingBallotEventArgs (
     byte votesFailThreshold,
     byte votesPass,
     byte votesFail,
-    byte votesTotal
+    byte votesAbstain
 ) {
     public byte VotesPassThreshold = votesPassThreshold;
     public byte VotesFailThreshold = votesFailThreshold;
     public byte VotesPass = votesPass;
     public byte VotesFail = votesFail;
-    public byte VotesTotal = votesTotal;
+    public byte VotesAbstain = votesAbstain;
 }
 
 internal class SimulationModel {
@@ -57,7 +57,7 @@ internal class SimulationModel {
                     _context.Context.CalculateVotesFailThreshold (),
                     _context.Context.CalculateVotesPass (),
                     _context.Context.CalculateVotesFail (),
-                    _context.Context.CalculateVotesTotal ()
+                    _context.Context.CalculateVotesAbstain ()
                 );
 
                 StartingBallot?.Invoke (args);
@@ -89,11 +89,11 @@ internal class SimulationModel {
 
     public void Context_VotingEventHandler (VotingEventArgs e) {
         if (e.IsPass is bool isPass) {
-            e.Votes = _context.VotePass (e.PersonID, isPass);
+            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VotePass (e.PersonID, isPass);
         } else if (e.IsFail is bool isFail) {
-            e.Votes = _context.VoteFail (e.PersonID, isFail);
+            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VoteFail (e.PersonID, isFail);
         } else if (e.IsAbstain is bool isAbstain) {
-            e.Votes = _context.VoteAbstain (e.PersonID, isAbstain);
+            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VoteAbstain (e.PersonID, isAbstain);
         } else {
             throw new NotSupportedException ();
         }
@@ -231,6 +231,18 @@ internal class SimulationModel {
             }
         }
 
+        if (localisation.Roles.TryGetValue (Role.RESERVED_1, out (string, string) reserved1)) {
+            titles.Add (reserved1.Item1);
+        }
+
+        if (localisation.Roles.TryGetValue (Role.RESERVED_2, out (string, string) reserved2)) {
+            titles.Add (reserved2.Item1);
+        }
+
+        if (localisation.Roles.TryGetValue (Role.RESERVED_3, out (string, string) reserved3)) {
+            titles.Add (reserved3.Item1);
+        }
+
         SlideBidirectionalModel slideTitles = new (
             slideCurrentIdx,
             "Titles",
@@ -252,7 +264,7 @@ internal class SimulationModel {
 
         foreach (Faction region in simulation.Regions) {
             if (region.IsActiveStart) {
-                (string name, string[] description, string _) = localisation.Regions[region.ID];
+                (string name, string[] description) = localisation.Regions[region.ID];
 
                 regions.Add (name);
                 regions.AddRange (description);
@@ -330,7 +342,7 @@ internal class SimulationModel {
                 slideCurrentIdx,
                 title,
                 [name, .. description],
-                // Pass (left), fail (right)
+                // Pass, fail
                 [
                     new (new BallotVoteCondition (true), resultBallotIdx),
                     new (new BallotVoteCondition (false), resultBallotIdx + 1),
@@ -347,12 +359,18 @@ internal class SimulationModel {
 
         // Result Links are mapped from IDs to indexes
         foreach (Ballot ballot in simulation.Ballots) {
+            // Pass, fail
             (string title, string _, string[] _, string[] pass, string[] fail) = localisation.Ballots[ballot.ID];
-            // Pass (left), fail (right)
-            List<Link<SlideModel>> linksPass = ballot.PassResult.Links.ConvertAll (l =>
-                new Link<SlideModel> (l.Condition, ballotIDsFinalIdxs[l.TargetID])
-            );
+            List<Link<SlideModel>> linksPass = [];
             List<LineModel> effectsPass = [];
+
+            foreach (Link<Ballot> l in ballot.PassResult.Links) {
+                if (l.TargetID == Ballot.END) {
+                    linksPass.Add (new (l.Condition, resultEndIdx));
+                } else {
+                    linksPass.Add (new (l.Condition, ballotIDsFinalIdxs[l.TargetID]));
+                }
+            }
 
             if (linksPass.Count == 0) {
                 linksPass = [new (new AlwaysCondition (), resultEndIdx)];
@@ -374,10 +392,16 @@ internal class SimulationModel {
             ++ slideCurrentIdx;
             slidesResultBallots.Add (slideBallotPass);
 
-            List<Link<SlideModel>> linksFail = ballot.FailResult.Links.ConvertAll (l =>
-                new Link<SlideModel> (l.Condition, ballotIDsFinalIdxs[l.TargetID])
-            );
+            List<Link<SlideModel>> linksFail = [];
             List<LineModel> effectsFail = [];
+
+            foreach (Link<Ballot> l in ballot.FailResult.Links) {
+                if (l.TargetID == Ballot.END) {
+                    linksFail.Add (new (l.Condition, resultEndIdx));
+                } else {
+                    linksFail.Add (new (l.Condition, ballotIDsFinalIdxs[l.TargetID]));
+                }
+            }
 
             if (linksFail.Count == 0) {
                 linksFail = [new (new AlwaysCondition (), resultEndIdx)];
@@ -469,6 +493,14 @@ internal class SimulationModel {
             } else {
                 ballotsFailed.Add (line);
             }
+        }
+
+        if (ballotsPassed.Count == 0) {
+            ballotsPassed.Add (StringLineFormatter.Indent ("None", 1));
+        }
+
+        if (ballotsFailed.Count == 0) {
+            ballotsFailed.Add (StringLineFormatter.Indent ("None", 1));
         }
 
         SlideForwardModel slideHistorical = new (slideCurrentIdx, "Historical Results", ["Passed", .. ballotsPassed, "Failed", .. ballotsFailed]);

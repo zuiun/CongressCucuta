@@ -10,7 +10,9 @@ internal class VotingEventArgs (IDType personId, bool? isPass = null, bool? isFa
     public bool? IsPass => isPass;
     public bool? IsFail => isFail;
     public bool? IsAbstain => isAbstain;
-    public byte Votes { get; set; } = 0;
+    public byte VotesPass { get; set; } = 0;
+    public byte VotesFail { get; set; } = 0;
+    public byte VotesAbstain { get; set; } = 0;
 }
 
 internal class ContextViewModel : ViewModel {
@@ -351,7 +353,7 @@ internal class ContextViewModel : ViewModel {
         VotesFailThreshold = e.VotesFailThreshold;
         VotesPass = e.VotesPass;
         VotesFail = e.VotesFail;
-        VotesAbstain = e.VotesTotal;
+        VotesAbstain = e.VotesAbstain;
         IsBallotCount = true;
     }
 
@@ -392,7 +394,9 @@ internal class ContextViewModel : ViewModel {
         );
 
         Voting?.Invoke (args);
-        VotesPass = args.Votes;
+        VotesPass = args.VotesPass;
+        VotesFail = args.VotesFail;
+        VotesAbstain = args.VotesAbstain;
     }
 
     private void Person_VotingFailEventHandler (object? sender, bool e) {
@@ -405,7 +409,9 @@ internal class ContextViewModel : ViewModel {
         );
 
         Voting?.Invoke (args);
-        VotesFail = args.Votes;
+        VotesPass = args.VotesPass;
+        VotesFail = args.VotesFail;
+        VotesAbstain = args.VotesAbstain;
     }
 
     private void Person_VotingAbstainEventHandler (object? sender, bool e) {
@@ -418,13 +424,17 @@ internal class ContextViewModel : ViewModel {
         );
 
         Voting?.Invoke (args);
-        VotesAbstain = args.Votes;
+        VotesPass = args.VotesPass;
+        VotesFail = args.VotesFail;
+        VotesAbstain = args.VotesAbstain;
     }
 
     private void Context_UpdatedVotesEventHandler (UpdatedVotesEventArgs e) {
         VotesPass = e.VotesPass;
         VotesFail = e.VotesFail;
         VotesAbstain = e.VotesAbstain;
+        VotesPassThreshold = e.VotesPassThreshold;
+        VotesFailThreshold = e.VotesFailThreshold;
     }
 
     private void Person_DeclaringProcedureEventHandler (IDType e) {

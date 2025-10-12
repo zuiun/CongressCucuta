@@ -18,30 +18,27 @@ internal class Colombia : ISimulation {
         Faction venezuela = new (1);
         Faction quito = new (2);
         List<Faction> regions = [cundinamarca, venezuela, quito];
-        Dictionary<IDType, (string, string[], string)> regionsLocs = [];
+        Dictionary<IDType, (string, string[])> regionsLocs = [];
         regionsLocs[cundinamarca.ID] = (
             "Cundinamarca",
             [
                 StringLineFormatter.Indent ("Largest department", 1),
                 StringLineFormatter.Indent ("Seeks centralisation", 1),
-            ],
-            Localisation.UNUSED
+            ]
         );
         regionsLocs[venezuela.ID] = (
             "Venezuela",
             [
                 StringLineFormatter.Indent ("Wealthiest department", 1),
                 StringLineFormatter.Indent ("Seeks federalisation", 1),
-            ],
-            Localisation.UNUSED
+            ]
         );
         regionsLocs[quito.ID] = (
             "Quito",
             [
                 StringLineFormatter.Indent ("Smallest department", 1),
                 StringLineFormatter.Indent ("Completely marginalised in national politics", 1),
-            ],
-            Localisation.UNUSED
+            ]
         );
 
         Dictionary<IDType, sbyte> currenciesValues = [];
@@ -332,7 +329,7 @@ internal class Colombia : ISimulation {
                 StringLineFormatter.Indent ("In any case, tensions are high in Quito", 1),
                 "Venezuela is infuriated with broken promises",
                 StringLineFormatter.Indent ("While popular opinion is not currently for independence, a few generals and politicians are preparing to revolt", 1),
-                "Colombia’s future seems very grim",
+                "Colombia's future seems very grim",
             ]
         );
         resultsLocs[quitoLessProsperity.ID] = (
@@ -359,7 +356,7 @@ internal class Colombia : ISimulation {
                 StringLineFormatter.Indent ("Venezuela considers itself subjugated by Cundinamarca", 2),
                 StringLineFormatter.Indent ("While popular opinion is not currently for independence, some generals and politicians are preparing to revolt", 1),
                 StringLineFormatter.Indent ("If Venezuelan grievances are not addressed soon, Colombia will fall apart", 1),
-                StringLineFormatter.Indent ("Quitonian separatists can count on Venezuelan support if the situation doesn’t improve", 2),
+                StringLineFormatter.Indent ("Quitonian separatists can count on Venezuelan support if the situation doesn't improve", 2),
             ]
         );
         resultsLocs[venezuelaGreaterEqualProsperity.ID] = (

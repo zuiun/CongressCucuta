@@ -24,9 +24,9 @@ internal class LineModel {
     }
     
     /*
-     * Constructed from a text that consists of #.Text
+     * Constructed from a text that consists of #|Text
      * Number of # determines IndentLevel
-     * . separates # from Text
+     * | separates # from Text
      */
     public LineModel (string text, bool isImportant = false, string? description = null, bool isContent = true) {
         (Text, _indentLevel) = StringLineFormatter.Split (text);

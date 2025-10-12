@@ -55,6 +55,8 @@ internal class UpdatedVotesEventArgs (SimulationContext.BallotContext context) {
     public byte VotesPass = context.CalculateVotesPass ();
     public byte VotesFail = context.CalculateVotesFail ();
     public byte VotesAbstain = context.CalculateVotesAbstain ();
+    public byte VotesPassThreshold = context.CalculateVotesPassThreshold ();
+    public byte VotesFailThreshold = context.CalculateVotesFailThreshold ();
 }
 
 // Must call InitialisePeople () after construction to complete initialisation
@@ -167,6 +169,9 @@ internal class SimulationContext (Simulation simulation) {
     private readonly HashSet<IDType> _ballotsPassed = [];
     private IDType _ballotCurrentId = 0;
     private readonly Random _random = new ();
+    // (person, composition)
+    private readonly List<(IDType, Permissions.Composition)> _compositions = [];
+    private readonly List<Procedure.Effect> _effectsPermissions = [];
     public readonly BallotContext Context = new ();
     public IDType BallotCurrentID {
         get => _ballotCurrentId;
@@ -197,7 +202,7 @@ internal class SimulationContext (Simulation simulation) {
     public event Action<Dictionary<IDType, sbyte>>? ModifiedCurrencies;
     public event Action<HashSet<ProcedureTargeted>>? ModifiedProcedures;
 
-    private void ComposePermissions (List<(IDType, Permissions.Composition)> compositions) {
+    private void ComposePermissions () {
         Dictionary<IDType, Permissions> peoplePermissions = [];
 
         foreach (var kv in PeopleRoles) {
@@ -210,7 +215,71 @@ internal class SimulationContext (Simulation simulation) {
             peoplePermissions[kv.Key] = permissions;
         }
 
-        foreach ((IDType personId, Permissions.Composition composition) in compositions) {
+        foreach (Procedure.Effect e in _effectsPermissions) {
+            switch (e.Action) {
+                case Procedure.Effect.ActionType.PermissionsCanVote: {
+                    bool canVote = e.Value > 0;
+                    Permissions.Composition composition = new (CanVote: canVote);
+
+                    if (e.TargetIDs.Length > 0) {
+                        foreach (IDType r in e.TargetIDs) {
+                            foreach (var kv in PeopleRoles) {
+                                if (kv.Value.Contains (r)) {
+                                    peoplePermissions[kv.Key] += composition;
+                                }
+                            }
+                        }
+                    } else {
+                        IDType personId = _random.Next (People.Count);
+
+                        peoplePermissions[personId] += composition;
+                    }
+
+                    break;
+                }
+                case Procedure.Effect.ActionType.PermissionsVotes: {
+                    Permissions.Composition composition = new (Votes: e.Value);
+
+                    if (e.TargetIDs.Length > 0) {
+                        foreach (IDType r in e.TargetIDs) {
+                            foreach (var kv in PeopleRoles) {
+                                if (kv.Value.Contains (r)) {
+                                    peoplePermissions[kv.Key] += composition;
+                                }
+                            }
+                        }
+                    } else {
+                        IDType personId = _random.Next (People.Count);
+
+                        peoplePermissions[personId] += composition;
+                    }
+
+                    break;
+                }
+                case Procedure.Effect.ActionType.PermissionsCanSpeak: {
+                    bool canSpeak = e.Value > 0;
+                    Permissions.Composition composition = new (CanSpeak: canSpeak);
+
+                    if (e.TargetIDs.Length > 0) {
+                        foreach (IDType r in e.TargetIDs) {
+                            foreach (var kv in PeopleRoles) {
+                                if (kv.Value.Contains (r)) {
+                                    peoplePermissions[kv.Key] += composition;
+                                }
+                            }
+                        }
+                    } else {
+                        IDType personId = _random.Next (People.Count);
+
+                        peoplePermissions[personId] += composition;
+                    }
+
+                    break;
+                }
+            }
+        }
+
+        foreach ((IDType personId, Permissions.Composition composition) in _compositions) {
             peoplePermissions[personId] += composition;
         }
 
@@ -270,11 +339,9 @@ internal class SimulationContext (Simulation simulation) {
     }
 
     public bool? DeclareProcedure (IDType personId, IDType procedureId) {
-        ProcedureDeclared procedure = ProceduresDeclared[procedureId];
-        bool isModifiedCurrencies = false;
         bool? isPass = null;
 
-        foreach (Procedure.Effect e in procedure.Effects) {
+        foreach (Procedure.Effect e in ProceduresDeclared[procedureId].Effects) {
             switch (e.Action) {
                 case Procedure.Effect.ActionType.CurrencyAdd: {
                     if (e.TargetIDs.Length > 0) {
@@ -287,7 +354,7 @@ internal class SimulationContext (Simulation simulation) {
                         CurrenciesValues[currencyId] += (sbyte) e.Value;
                     }
 
-                    isModifiedCurrencies = true;
+                    OnModifiedCurrencies ();
                     break;
                 }
                 case Procedure.Effect.ActionType.CurrencySubtract: {
@@ -301,51 +368,53 @@ internal class SimulationContext (Simulation simulation) {
                         CurrenciesValues[currencyId] -= (sbyte) e.Value;
                     }
 
-                    isModifiedCurrencies = true;
+                    OnModifiedCurrencies ();
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionRegion: {
                     Election election = new (procedureId, e, false);
 
-                    Context.ResetVotes ();
                     OnPrepareElection ([election]);
+                    Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionParty: {
                     Election election = new (procedureId, e, false);
 
-                    Context.ResetVotes ();
                     OnPrepareElection ([election]);
+                    Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionNominated: {
                     Election election = new (procedureId, e, false);
 
-                    Context.ResetVotes ();
                     OnPrepareElection ([election]);
+                    Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionAppointed: {
                     Election election = new (procedureId, e, false);
 
-                    Context.ResetVotes ();
                     OnPrepareElection ([election]);
+                    Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.ActionType.BallotLimit: {
-                    foreach (IDType p in Context.PeoplePermissions.Keys) {
+                    foreach (IDType p in People.Keys) {
                         if (
-                            p != personId
-                            && PeopleRoles[p].All (r => ! e.TargetIDs.Contains (r))
-                            && PeopleFactions[p].Item1 != p
-                            && PeopleFactions[p].Item2 != p
+                            p == personId
+                            || PeopleRoles[p].Any (r => e.TargetIDs.Contains (r))
+                            || e.TargetIDs.Any (r => r == PeopleFactions[p].Item1)
+                            || e.TargetIDs.Any (r => r == PeopleFactions[p].Item2)
                         ) {
-                            Context.PeoplePermissions[p] += new Permissions.Composition (CanVote: false);
+                            _compositions.Add ((p, new Permissions.Composition (CanVote: true)));
+                        } else {
+                            _compositions.Add ((p, new Permissions.Composition (CanVote: false)));
                         }
                     }
 
+                    ComposePermissions ();
                     Context.ResetVotes ();
-                    UpdatedPermissions?.Invoke (Context.PeoplePermissions);
                     break;
                 }
                 case Procedure.Effect.ActionType.BallotPass: {
@@ -361,10 +430,6 @@ internal class SimulationContext (Simulation simulation) {
             }
         }
 
-        if (isModifiedCurrencies) {
-            OnModifiedCurrencies ();
-        }
-
         return isPass;
     }
 
@@ -372,7 +437,7 @@ internal class SimulationContext (Simulation simulation) {
         CompletedElectionEventArgs args = new (People, PeopleRoles, PeopleFactions, IsBallot);
 
         CompletedElection?.Invoke (args);
-        ComposePermissions ([]);
+        ComposePermissions ();
     }
 
     private void OnPrepareElection (List<Election> elections) {
@@ -464,9 +529,10 @@ internal class SimulationContext (Simulation simulation) {
             .Select (e => (Procedure.EffectBundle) e!);
         List<(IDType, Procedure.Effect)> effectsElections = [];
         bool isModifiedCurrencies = false;
-        List<(IDType, Permissions.Composition)> compositions = [];
 
         Context.Reset ();
+        _effectsPermissions.Clear ();
+        _compositions.Clear ();
 
         foreach (Procedure.EffectBundle eb in effects) {
             foreach (Procedure.Effect e in eb.Effects) {
@@ -529,65 +595,15 @@ internal class SimulationContext (Simulation simulation) {
 
                         break;
                     }
-                    case Procedure.Effect.ActionType.PermissionsCanVote: {
-                        bool canVote = e.Value > 0;
-                        Permissions.Composition composition = new (CanVote: canVote);
-
-                        if (e.TargetIDs.Length > 0) {
-                            foreach (IDType r in e.TargetIDs) {
-                                foreach (var kv in PeopleRoles) {
-                                    if (kv.Value.Contains (r)) {
-                                        compositions.Add ((kv.Key, composition));
-                                    }
-                                }
-                            }
-                        } else {
-                            IDType personId = _random.Next (People.Count);
-
-                            compositions.Add ((personId, composition));
-                        }
-
+                    case Procedure.Effect.ActionType.PermissionsCanVote:
+                        _effectsPermissions.Add (e);
                         break;
-                    }
-                    case Procedure.Effect.ActionType.PermissionsVotes: {
-                        Permissions.Composition composition = new (Votes: e.Value);
-
-                        if (e.TargetIDs.Length > 0) {
-                            foreach (IDType r in e.TargetIDs) {
-                                foreach (var kv in PeopleRoles) {
-                                    if (kv.Value.Contains (r)) {
-                                        compositions.Add ((kv.Key, composition));
-                                    }
-                                }
-                            }
-                        } else {
-                            IDType personId = _random.Next (People.Count);
-
-                            compositions.Add ((personId, composition));
-                        }
-
+                    case Procedure.Effect.ActionType.PermissionsVotes:
+                        _effectsPermissions.Add (e);
                         break;
-                    }
-                    case Procedure.Effect.ActionType.PermissionsCanSpeak: {
-                        bool canSpeak = e.Value > 0;
-                        Permissions.Composition composition = new (CanSpeak: canSpeak);
-
-                        if (e.TargetIDs.Length > 0) {
-                            foreach (IDType r in e.TargetIDs) {
-                                foreach (var kv in PeopleRoles) {
-                                    if (kv.Value.Contains (r)) {
-                                        compositions.Add ((kv.Key, composition));
-                                    }
-                                }
-                            }
-                        } else {
-                            IDType personId = _random.Next (People.Count);
-
-                            compositions.Add ((personId, composition));
-                        }
-
+                    case Procedure.Effect.ActionType.PermissionsCanSpeak:
+                        _effectsPermissions.Add (e);
                         break;
-                    }
                 }
             }
         }
@@ -602,8 +618,8 @@ internal class SimulationContext (Simulation simulation) {
             OnPrepareElection (elections);
         }
 
-        if (compositions.Count > 0) {
-            ComposePermissions (compositions);
+        if (_effectsPermissions.Count > 0) {
+            ComposePermissions ();
         }
     }
 
@@ -713,33 +729,33 @@ internal class SimulationContext (Simulation simulation) {
         return Currency.STATE;
     }
 
-    public byte VotePass (IDType personId, bool isPass) {
+    public (byte, byte, byte) VotePass (IDType personId, bool isPass) {
         if (isPass) {
             Context.VotesPass.Add (personId);
         } else {
             Context.VotesPass.Remove (personId);
         }
 
-        return Context.CalculateVotesPass ();
+        return (Context.CalculateVotesPass (), Context.CalculateVotesFail (), Context.CalculateVotesAbstain ());
     }
 
-    public byte VoteFail (IDType personId, bool isFail) {
+    public (byte, byte, byte) VoteFail (IDType personId, bool isFail) {
         if (isFail) {
             Context.VotesFail.Add (personId);
         } else {
             Context.VotesFail.Remove (personId);
         }
 
-        return Context.CalculateVotesFail ();
+        return (Context.CalculateVotesPass (), Context.CalculateVotesFail (), Context.CalculateVotesAbstain ());
     }
 
-    public byte VoteAbstain (IDType personId, bool isAbstain) {
+    public (byte, byte, byte) VoteAbstain (IDType personId, bool isAbstain) {
         if (isAbstain) {
             Context.VotesPass.Remove (personId);
             Context.VotesFail.Remove (personId);
         }
 
-        return Context.CalculateVotesAbstain ();
+        return (Context.CalculateVotesPass (), Context.CalculateVotesFail (), Context.CalculateVotesAbstain ());
     }
 
     public void InitialisePeople (List<Person> people) {

@@ -595,11 +595,11 @@
     "Government": "Oligarchic Dictatorship",
     "Context": [
       "Indonesia has been extremely unstable after gaining independence",
-      "#.Indonesia is made of hundreds of different ethnicities",
-      "##.However, the Javanese are the dominant ethnicity and Java is the dominant polity, which has led to regionalist rebellions",
-      "#.Economic recession has begun due to lack of experience managing the economy",
-      "#.Government, previously a parliamentary republic, has been completely paralysed",
-      "##.As a result, Sukarno, the president and a war hero, declared Guided Democracy to solve the country\u2019s problems"
+      "#|Indonesia is made of hundreds of different ethnicities",
+      "##|However, the Javanese are the dominant ethnicity and Java is the dominant polity, which has led to regionalist rebellions",
+      "#|Economic recession has begun due to lack of experience managing the economy",
+      "#|Government, previously a parliamentary republic, has been completely paralysed",
+      "##|As a result, Sukarno, the president and a war hero, declared Guided Democracy to solve the country\u0027s problems"
     ],
     "Date": "5 July 1959",
     "Situation": "Restoration of the Constitution of 1945",
@@ -644,25 +644,22 @@
       "0": {
         "Item1": "Republic of Indonesia Armed Forces",
         "Item2": [
-          "#.Anti-imperialist, anti-communist, and nationalist",
-          "#.Seen as a bastion of stability and independence"
-        ],
-        "Item3": "Chief of Staff"
+          "#|Anti-imperialist, anti-communist, and nationalist",
+          "#|Seen as a bastion of stability and independence"
+        ]
       },
       "1": {
         "Item1": "Communist Party of Indonesia",
         "Item2": [
-          "#.Anti-imperialist, secularist, and nationalist",
-          "#.Seeks to implement socialism on a national scale"
-        ],
-        "Item3": "General Secretary"
+          "#|Anti-imperialist, secularist, and nationalist",
+          "#|Seeks to implement socialism on a national scale"
+        ]
       },
       "2": {
         "Item1": "Council of Indonesian Muslim Associations",
         "Item2": [
-          "#.Relatively rightist and supports Sharia law"
-        ],
-        "Item3": "Chairman"
+          "#|Relatively rightist and supports Sharia law"
+        ]
       }
     },
     "Abbreviations": {
@@ -719,129 +716,129 @@
         "Item1": "Ballot A",
         "Item2": "Reconcile with the House of Islam",
         "Item3": [
-          "#.House of Islam has been rebelling for a decade",
-          "##.It wants to establish an Islamic state in Indonesia",
-          "##.However, the rebellion is almost defeated",
-          "###.Aceh and Borneo are on the verge of reclamation",
-          "###.Pasundan and Celebes will take longer to pacify",
-          "###.Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the ABRI",
-          "##.This would lessen tensions, especially in Aceh",
+          "#|House of Islam has been rebelling for a decade",
+          "##|It wants to establish an Islamic state in Indonesia",
+          "##|However, the rebellion is almost defeated",
+          "###|Aceh and Borneo are on the verge of reclamation",
+          "###|Pasundan and Celebes will take longer to pacify",
+          "###|Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the ABRI",
+          "##|This would lessen tensions, especially in Aceh",
           "House of Islam will be militarily suppressed if this ballot fails"
         ],
         "Item4": [
           "House of Islam is destroyed",
-          "#.Aceh becomes an autonomous province",
-          "#.Borneo, Celebes, and Pasundan surrender after a few years, receiving no concessions",
+          "#|Aceh becomes an autonomous province",
+          "#|Borneo, Celebes, and Pasundan surrender after a few years, receiving no concessions",
           "Masyumi loses influence in the government",
-          "#.However, political circumstances could change this"
+          "#|However, political circumstances could change this"
         ],
         "Item5": [
           "House of Islam is brutally crushed",
-          "#.Masyumi is purged and NU is closely monitored",
-          "#.ABRI is hailed as a bringer of stability"
+          "#|Masyumi is purged and NU is closely monitored",
+          "#|ABRI is hailed as a bringer of stability"
         ]
       },
       "1": {
         "Item1": "Ballot B",
         "Item2": "Invade Dutch New Guinea",
         "Item3": [
-          "#.Dutch New Guinea was originally part of the Dutch East Indies",
-          "##.However, in the process of gaining independence, the Netherlands retained control over western New Guinea",
-          "###.This has led to anti-imperialist sentiment among Indonesians",
-          "###.Nobody in Dutch New Guinea wants to be part of Indonesia",
-          "####.New Guineans are Melanesians, not Malayic, and are Christian",
-          "####.In fact, Dutch New Guinea is on the verge of independence",
-          "#.Military has been bolstered by Soviet aid",
-          "##.Though the Netherlands is still better equipped and prepared, their supply lines are extremely long and untenable"
+          "#|Dutch New Guinea was originally part of the Dutch East Indies",
+          "##|However, in the process of gaining independence, the Netherlands retained control over western New Guinea",
+          "###|This has led to anti-imperialist sentiment among Indonesians",
+          "###|Nobody in Dutch New Guinea wants to be part of Indonesia",
+          "####|New Guineans are Melanesians, not Malayic, and are Christian",
+          "####|In fact, Dutch New Guinea is on the verge of independence",
+          "#|Military has been bolstered by Soviet aid",
+          "##|Though the Netherlands is still better equipped and prepared, their supply lines are extremely long and untenable"
         ],
         "Item4": [
           "Invasion fails spectacularly",
-          "#.Dutch forces were already aware of invasion points and easily repel most attacks",
-          "##.Some airdrops succeed and now there is a small contingent of Indonesian troops in Dutch New Guinea",
-          "##.However, the Dutch are unwilling to fight another long war to defend a colonial territory",
-          "####.As a result, the UN transfers ownership of Dutch New Guinea to Indonesia"
+          "#|Dutch forces were already aware of invasion points and easily repel most attacks",
+          "##|Some airdrops succeed and now there is a small contingent of Indonesian troops in Dutch New Guinea",
+          "##|However, the Dutch are unwilling to fight another long war to defend a colonial territory",
+          "###|As a result, the UN transfers ownership of Dutch New Guinea to Indonesia"
         ],
         "Item5": [
           "Anti-imperialist rhetoric is seen as posturing",
-          "#.Many Indonesians see Dutch New Guinea as part of the Indonesian homeland",
-          "##.As a result, the people begin to distrust the ABRI and the PKI",
-          "#.However, this reassures the US and the UK",
-          "##.This should draw Indonesia out of the Soviet sphere",
-          "###.Therefore, there may be an opportunity for foreign investment or alliances"
+          "#|Many Indonesians see Dutch New Guinea as part of the Indonesian homeland",
+          "##|As a result, the people begin to distrust the ABRI and the PKI",
+          "#|However, this reassures the US and the UK",
+          "##|This should draw Indonesia out of the Soviet sphere",
+          "###|Therefore, there may be an opportunity for foreign investment or alliances"
         ]
       },
       "2": {
         "Item1": "Incident A",
         "Item2": "Adopt the policy of Confrontation",
         "Item3": [
-          "#.This will begin a border conflict with Malaysia",
-          "##.Goal is to force Malaysia to cede Sarawak and Sabah",
-          "#.Malaya has united with Sarawak, Sabah, and Singapore to form Malaysia",
-          "##.However, Malaysia remains firmly within the British sphere and is key to the British East of Suez policy",
-          "##.This also directly inhibits Indonesia\u2019s historical ambitions to unite the Malay Archipelago",
-          "##.Sarawak and Sabah both have significant ethnic minorities which do not appreciate Malayan dominance",
-          "###.However, they likely will not appreciate Indonesian dominance either"
+          "#|This will begin a border conflict with Malaysia",
+          "##|Goal is to force Malaysia to cede Sarawak and Sabah",
+          "#|Malaya has united with Sarawak, Sabah, and Singapore to form Malaysia",
+          "##|However, Malaysia remains firmly within the British sphere and is key to the British East of Suez policy",
+          "##|This also directly inhibits Indonesia\u0027s historical ambitions to unite the Malay Archipelago",
+          "##|Sarawak and Sabah both have significant ethnic minorities which do not appreciate Malayan dominance",
+          "###|However, they likely will not appreciate Indonesian dominance either"
         ],
         "Item4": [
           "Confrontation is a complete failure",
-          "#.UK, Australia, and New Zealand help defend Malaysia",
-          "#.President declares the Year of Living Dangerously",
-          "##.Conflict expands unsuccessfully to the Malay Peninsula",
-          "##.British and Malaysian units start counter-infiltrations",
-          "##.Though the operations continue, many people question the government\u2019s competence and intentions"
+          "#|UK, Australia, and New Zealand help defend Malaysia",
+          "#|President declares the Year of Living Dangerously",
+          "##|Conflict expands unsuccessfully to the Malay Peninsula",
+          "##|British and Malaysian units start counter-infiltrations",
+          "##|Though the operations continue, many people question the government\u0027s competence and intentions"
         ],
         "Item5": [
           "There is little reaction from most people",
-          "#.ABRI is relieved, but concerned with British influence",
-          "#.However, the PKI is dissatisfied with inaction",
-          "##.It claims that Malaysia is an imperialist puppet that the UK will use to dominate the Malay Archipelago",
+          "#|ABRI is relieved, but concerned with British influence",
+          "#|However, the PKI is dissatisfied with inaction",
+          "##|It claims that Malaysia is an imperialist puppet that the UK will use to dominate the Malay Archipelago",
           "Malaysia reaches out for mutual investment",
-          "#.Peace could have great benefits for both Malaysia and the declining Indonesia"
+          "#|Peace could have great benefits for both Malaysia and the declining Indonesia"
         ]
       },
       "3": {
         "Item1": "Ballot C",
         "Item2": "Implement Berdikari",
         "Item3": [
-          "#.Berdikari is an economic idea stressing autarky",
-          "##.This has only been adopted thus far as a motto, though some tenets have been previously implemented to some degree",
-          "###.Government has previously relied upon the useless Eight Year Plan",
-          "#.Berdikari:",
-          "##.Complete all vital or unfinished infrastructure projects from the Eight Year Plan",
-          "##.Limit imports to goods that can\u2019t be produced domestically and expand exports",
-          "##.Nationalise all foreign investment and industries",
-          "###.In practice, this means Dutch, British, and American companies"
+          "#|Berdikari is an economic idea stressing autarky",
+          "##|This has only been adopted thus far as a motto, though some tenets have been previously implemented to some degree",
+          "###|Government has previously relied upon the useless Eight Year Plan",
+          "#|Berdikari:",
+          "##|Complete all vital or unfinished infrastructure projects from the Eight Year Plan",
+          "##|Limit imports to goods that can\u0027t be produced domestically and expand exports",
+          "##|Nationalise all foreign investment and industries",
+          "###|In practice, this means Dutch, British, and American companies"
         ],
         "Item4": [
           "All foreign industry is seized",
-          "#.Economy falls further into collapse",
-          "##.Most fields controlled by foreign industry were in fields where domestic industry had little-to-no experience",
-          "#.US-aligned powers declare an embargo",
-          "##.Indonesia can only trade with the USSR and China",
-          "###.This pushes Indonesia into the communist sphere",
-          "#.This is hailed as a victory for the anti-imperialist cause",
-          "##.However, living conditions are getting worse and worse",
-          "###.This drives the poor towards the Islamists, who are generally more pragmatic about economic issues"
+          "#|Economy falls further into collapse",
+          "##|Most fields controlled by foreign industry were in fields where domestic industry had little-to-no experience",
+          "#|US-aligned powers declare an embargo",
+          "##|Indonesia can only trade with the USSR and China",
+          "###|This pushes Indonesia into the communist sphere",
+          "#|This is hailed as a victory for the anti-imperialist cause",
+          "##|However, living conditions are getting worse and worse",
+          "###|This drives the poor towards the Islamists, who are generally more pragmatic about economic issues"
         ],
         "Item5": [
           "PKI attempts to seize foreign assets anyway",
-          "#.It is eventually stopped by the ABRI",
+          "#|It is eventually stopped by the ABRI",
           "Relations with the West are gradually restored",
-          "#.Most foreign assets seized over the years are returned",
-          "##.However, foreign powers don\u2019t want to bail out Indonesia",
-          "###.Much more drastic measures will be needed to save the economy"
+          "#|Most foreign assets seized over the years are returned",
+          "##|However, foreign powers don\u0027t want to bail out Indonesia",
+          "###|Much more drastic measures will be needed to save the economy"
         ]
       },
       "4": {
         "Item1": "Incident B",
         "Item2": "Reorganise the armed forces",
         "Item3": [
-          "#.This will Nasakomise the armed forces and create a Fifth Force",
-          "##.Nasakomisation will subject the armed forces to total government control",
-          "###.This will be achieved through the use of political commissars and re-education",
-          "##.Fifth Force would be made of armed militias not subject to governmental control",
-          "###.This would essentially create an army for the PKI",
-          "##.All of these measures would drastically weaken the influence and the independence of the ABRI"
+          "#|This will Nasakomise the armed forces and create a Fifth Force",
+          "##|Nasakomisation will subject the armed forces to total government control",
+          "###|This will be achieved through the use of political commissars and re-education",
+          "##|Fifth Force would be made of armed militias not subject to governmental control",
+          "###|This would essentially create an army for the PKI",
+          "##|All of these measures would drastically weaken the influence and the independence of the ABRI"
         ],
         "Item4": [
           "Intentionally left blank"
@@ -861,118 +858,118 @@
       "1": {
         "Item1": "Ballot B Passed",
         "Item2": [
-          "Annexation of Dutch New Guinea greatly enhances Indonesia\u2019s prestige",
-          "#.Indonesia is now the dominant power in the Malay Archipelago",
+          "Annexation of Dutch New Guinea greatly enhances Indonesia\u0027s prestige",
+          "#|Indonesia is now the dominant power in the Malay Archipelago",
           "New Guineans are extremely furious",
-          "#.Though nothing has happened yet, there will certainly be an insurgency in the future",
-          "##.New Guinea will be a major issue for the foreseeable future"
+          "#|Though nothing has happened yet, there will certainly be an insurgency in the future",
+          "##|New Guinea will be a major issue for the foreseeable future"
         ]
       },
       "2": {
         "Item1": "Ballot C Passed",
         "Item2": [
           "Indonesia, now in the communist sphere, struggles to satisfactorily implement Berdikari",
-          "#.Soviet and Chinese aid and expertise is instrumental in improving Indonesian industries",
-          "#.However, there are almost no targets for export",
-          "##.This makes Indonesia even more reliant on Soviet and Chinese goodwill"
+          "#|Soviet and Chinese aid and expertise is instrumental in improving Indonesian industries",
+          "#|However, there are almost no targets for export",
+          "##|This makes Indonesia even more reliant on Soviet and Chinese goodwill"
         ]
       },
       "3": {
         "Item1": "Incident B Passed",
         "Item2": [
           "Indonesia becomes a communist state",
-          "#.With the gradual weakening of the ABRI and the Islamists, the PKI is able to seize power",
-          "#.This leads to total collapse",
-          "##.Many industries were already being run inefficiently",
-          "##.Inexperienced PKI ministers are unable to repair the state of the economy",
+          "#|With the gradual weakening of the ABRI and the Islamists, the PKI is able to seize power",
+          "#|This leads to total collapse",
+          "##|Many industries were already being run inefficiently",
+          "##|Inexperienced PKI ministers are unable to repair the state of the economy",
           "Eventually, Indonesia requests a Chinese bailout, but this comes at the cost of ministerial positions",
-          "#.Indonesia becomes a Chinese puppet state"
+          "#|Indonesia becomes a Chinese puppet state"
         ]
       },
       "4": {
         "Item1": "Incident B Failed",
         "Item2": [
           "Indonesia attempts to lessen its reliance on the communist sphere",
-          "#.However, this is largely unsuccessful",
-          "##.Outside of Africa, there are few states that need or want Indonesian products",
-          "##.Indonesia needs imports of most consumer goods",
+          "#|However, this is largely unsuccessful",
+          "##|Outside of Africa, there are few states that need or want Indonesian products",
+          "##|Indonesia needs imports of most consumer goods",
           "China, the US, and the USSR all fail to influence Indonesia",
-          "#.Isolationism will continue to impede Indonesia\u2019s development, barring a major regime change"
+          "#|Isolationism will continue to impede Indonesia\u0027s development, barring a major regime change"
         ]
       },
       "5": {
         "Item1": "Ballot C Failed",
         "Item2": [
           "PKI is marginalised and eventually destroyed",
-          "#.This pushes Indonesia into the Western sphere",
-          "##.US greatly expands aid and investment to secure Indonesia",
-          "###.Though this improves the economy, it doesn\u2019t result in universal growth",
-          "#.ABRI institutes a military dictatorship without the PKI to counterbalance",
-          "##.This causes serious concerns about whether democracy can be restored or not"
+          "#|This pushes Indonesia into the Western sphere",
+          "##|US greatly expands aid and investment to secure Indonesia",
+          "###|Though this improves the economy, it doesn\u0027t result in universal growth",
+          "#|ABRI institutes a military dictatorship without the PKI to counterbalance",
+          "##|This causes serious concerns about whether democracy can be restored or not"
         ]
       },
       "6": {
         "Item1": "Ballot A Passed",
         "Item2": [
           "Islamists begin resurging in popularity",
-          "#.Rebellion begins in Aceh to oppose foreign exploitation",
-          "##.NU supports the rebellion, which prevents it from being suppressed",
-          "#.With the emergence of an opposition faction, there is now a possibility for a return to democracy",
-          "#.If the ABRI can\u2019t improve living conditions, then it will likely be overthrown"
+          "#|Rebellion begins in Aceh to oppose foreign exploitation",
+          "##|NU supports the rebellion, which prevents it from being suppressed",
+          "#|With the emergence of an opposition faction, there is now a possibility for a return to democracy",
+          "#|If the ABRI can\u0027t improve living conditions, then it will likely be overthrown"
         ]
       },
       "7": {
         "Item1": "Ballot A Failed",
         "Item2": [
           "Without any other opposition factions, the ABRI completely dominates",
-          "#.Regionalist dissent and rebellions are easily crushed",
+          "#|Regionalist dissent and rebellions are easily crushed",
           "Economy only improves somewhat",
-          "#.There is no good reason for the Western states to invest in Indonesia",
-          "#.Overall, Indonesia remains impoverished and the people are rebellious",
-          "##.If the ABRI can\u2019t maintain total dominance, this could result in a coup"
+          "#|There is no good reason for the Western states to invest in Indonesia",
+          "#|Overall, Indonesia remains impoverished and the people are rebellious",
+          "##|If the ABRI can\u0027t maintain total dominance, this could result in a coup"
         ]
       },
       "8": {
         "Item1": "Ballot B Failed",
         "Item2": [
           "Indonesia loses its credibility as an anti-imperialist power",
-          "#.Netherlands and the UK were the last major colonial powers in the Malay Archipelago",
-          "#.Australia expands its influence",
-          "##.Australia had previously focused on the Pacific, but realises that it must guarantee the Malay Archipelago\u2019s stability"
+          "#|Netherlands and the UK were the last major colonial powers in the Malay Archipelago",
+          "#|Australia expands its influence",
+          "##|Australia had previously focused on the Pacific, but realises that it must guarantee the Malay Archipelago\u0027s stability"
         ]
       },
       "9": {
         "Item1": "Ballot C Passed",
         "Item2": [
           "Indonesia has no allies",
-          "#.Western states are infuriated by the seizure of their industry",
-          "#.Passivity convinces China and the USSR that Indonesia isn\u2019t worth supporting",
-          "#.This means no financial aid or investment",
-          "##.Population remains incredibly impoverished",
+          "#|Western states are infuriated by the seizure of their industry",
+          "#|Passivity convinces China and the USSR that Indonesia isn\u0027t worth supporting",
+          "#|This means no financial aid or investment",
+          "##|Population remains incredibly impoverished",
           "ABRI splits into radical, opposing factions",
-          "#.After a failed coup, Indonesia collapses into civil war",
-          "##.Indonesia becomes a proxy battleground"
+          "#|After a failed coup, Indonesia collapses into civil war",
+          "##|Indonesia becomes a proxy battleground"
         ]
       },
       "10": {
         "Item1": "Ballot C Failed",
         "Item2": [
           "PKI slowly loses influence",
-          "#.Indonesia is seen as having accepting Western dominance",
-          "##.This greatly improves Western opinions of Indonesia",
-          "##.US greatly expands investment to make use of its new client state",
-          "###.Though revenues are unequally distributed, the large quantity of investment slowly increases prosperity overall"
+          "#|Indonesia is seen as having accepting Western dominance",
+          "##|This greatly improves Western opinions of Indonesia",
+          "##|US greatly expands investment to make use of its new client state",
+          "###|Though revenues are unequally distributed, the large quantity of investment slowly increases prosperity overall"
         ]
       },
       "11": {
         "Item1": "Ballot A Failed",
         "Item2": [
           "Without any other opposition factions, the ABRI completely dominates",
-          "#.Regionalist dissent is easily suppressed",
+          "#|Regionalist dissent is easily suppressed",
           "Economy improves steadily",
-          "#.Though there are always those who clamour for democracy, most are satisfied with the current state of affairs",
-          "##.Indonesia remains a rare example of a functional and stable military dictatorship",
-          "###.However, the ABRI will likely peacefully hand over power to civilian successors as international and domestic opinions shift"
+          "#|Though there are always those who clamour for democracy, most are satisfied with the current state of affairs",
+          "##|Indonesia remains a rare example of a functional and stable military dictatorship",
+          "###|However, the ABRI will likely peacefully hand over power to civilian successors as international and domestic opinions shift"
         ]
       }
     }

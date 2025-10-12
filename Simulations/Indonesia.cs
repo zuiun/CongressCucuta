@@ -32,29 +32,26 @@ internal class Indonesia : ISimulation {
         Faction pki = new (1);
         Faction masyumi = new (2);
         List<Faction> factions = [abri, pki, masyumi];
-        Dictionary<IDType, (string, string[], string)> factionsLocs = [];
+        Dictionary<IDType, (string, string[])> factionsLocs = [];
         factionsLocs[abri.ID] = (
             "Republic of Indonesia Armed Forces",
             [
                 StringLineFormatter.Indent ("Anti-imperialist, anti-communist, and nationalist", 1),
                 StringLineFormatter.Indent ("Seen as a bastion of stability and independence", 1),
-            ],
-            "Chief of Staff"
+            ]
         );
         factionsLocs[pki.ID] = (
             "Communist Party of Indonesia",
             [
                 StringLineFormatter.Indent ("Anti-imperialist, secularist, and nationalist", 1),
                 StringLineFormatter.Indent ("Seeks to implement socialism on a national scale", 1),
-            ],
-            "General Secretary"
+            ]
         );
         factionsLocs[masyumi.ID] = (
             "Council of Indonesian Muslim Associations",
             [
                 StringLineFormatter.Indent ("Relatively rightist and supports Sharia law", 1),
-            ],
-            "Chairman"
+            ]
         );
         Dictionary<IDType, string> abbreviations = [];
         abbreviations[abri.ID] = "ABRI";
@@ -111,18 +108,14 @@ internal class Indonesia : ISimulation {
         //);
         ProcedureDeclared rubberStamp = new (
             5,
-            [
-                new (Procedure.Effect.ActionType.BallotPass, [])
-            ],
+            [new (Procedure.Effect.ActionType.BallotPass, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
             0,
             [president]
         );
         ProcedureDeclared veto = new (
             6,
-            [
-                new (Procedure.Effect.ActionType.BallotFail, [])
-            ],
+            [new (Procedure.Effect.ActionType.BallotFail, [])],
             new (Procedure.Confirmation.CostType.Always),
             0,
             [president]
@@ -356,7 +349,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Dutch forces were already aware of invasion points and easily repel most attacks", 1),
                 StringLineFormatter.Indent ("Some airdrops succeed and now there is a small contingent of Indonesian troops in Dutch New Guinea", 2),
                 StringLineFormatter.Indent ("However, the Dutch are unwilling to fight another long war to defend a colonial territory", 2),
-                StringLineFormatter.Indent ("As a result, the UN transfers ownership of Dutch New Guinea to Indonesia", 4),
+                StringLineFormatter.Indent ("As a result, the UN transfers ownership of Dutch New Guinea to Indonesia", 3),
             ],
             [
                 "Anti-imperialist rhetoric is seen as posturing",
@@ -375,7 +368,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Goal is to force Malaysia to cede Sarawak and Sabah", 2),
                 StringLineFormatter.Indent ("Malaya has united with Sarawak, Sabah, and Singapore to form Malaysia", 1),
                 StringLineFormatter.Indent ("However, Malaysia remains firmly within the British sphere and is key to the British East of Suez policy", 2),
-                StringLineFormatter.Indent ("This also directly inhibits Indonesia’s historical ambitions to unite the Malay Archipelago", 2),
+                StringLineFormatter.Indent ("This also directly inhibits Indonesia's historical ambitions to unite the Malay Archipelago", 2),
                 StringLineFormatter.Indent ("Sarawak and Sabah both have significant ethnic minorities which do not appreciate Malayan dominance", 2),
                 StringLineFormatter.Indent ("However, they likely will not appreciate Indonesian dominance either", 3),
             ],
@@ -385,7 +378,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("President declares the Year of Living Dangerously", 1),
                 StringLineFormatter.Indent ("Conflict expands unsuccessfully to the Malay Peninsula", 2),
                 StringLineFormatter.Indent ("British and Malaysian units start counter-infiltrations", 2),
-                StringLineFormatter.Indent ("Though the operations continue, many people question the government’s competence and intentions", 2),
+                StringLineFormatter.Indent ("Though the operations continue, many people question the government's competence and intentions", 2),
             ],
             [
                 "There is little reaction from most people",
@@ -405,7 +398,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Government has previously relied upon the useless Eight Year Plan", 3),
                 StringLineFormatter.Indent ("Berdikari:", 1),
                 StringLineFormatter.Indent ("Complete all vital or unfinished infrastructure projects from the Eight Year Plan", 2),
-                StringLineFormatter.Indent ("Limit imports to goods that can’t be produced domestically and expand exports", 2),
+                StringLineFormatter.Indent ("Limit imports to goods that can't be produced domestically and expand exports", 2),
                 StringLineFormatter.Indent ("Nationalise all foreign investment and industries", 2),
                 StringLineFormatter.Indent ("In practice, this means Dutch, British, and American companies", 3),
             ],
@@ -425,7 +418,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("It is eventually stopped by the ABRI", 1),
                 "Relations with the West are gradually restored",
                 StringLineFormatter.Indent ("Most foreign assets seized over the years are returned", 1),
-                StringLineFormatter.Indent ("However, foreign powers don’t want to bail out Indonesia", 2),
+                StringLineFormatter.Indent ("However, foreign powers don't want to bail out Indonesia", 2),
                 StringLineFormatter.Indent ("Much more drastic measures will be needed to save the economy", 3),
             ]
         );
@@ -536,7 +529,7 @@ internal class Indonesia : ISimulation {
         resultsLocs[ballotBPassed.ID] = (
             "Ballot B Passed",
             [
-                "Annexation of Dutch New Guinea greatly enhances Indonesia’s prestige",
+                "Annexation of Dutch New Guinea greatly enhances Indonesia's prestige",
                 StringLineFormatter.Indent ("Indonesia is now the dominant power in the Malay Archipelago", 1),
                 "New Guineans are extremely furious",
                 StringLineFormatter.Indent ("Though nothing has happened yet, there will certainly be an insurgency in the future", 1),
@@ -572,7 +565,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Outside of Africa, there are few states that need or want Indonesian products", 2),
                 StringLineFormatter.Indent ("Indonesia needs imports of most consumer goods", 2),
                 "China, the US, and the USSR all fail to influence Indonesia",
-                StringLineFormatter.Indent ("Isolationism will continue to impede Indonesia’s development, barring a major regime change", 1),
+                StringLineFormatter.Indent ("Isolationism will continue to impede Indonesia's development, barring a major regime change", 1),
             ]
         );
         resultsLocs[ballotCFailed.ID] = (
@@ -581,7 +574,7 @@ internal class Indonesia : ISimulation {
                 "PKI is marginalised and eventually destroyed",
                 StringLineFormatter.Indent ("This pushes Indonesia into the Western sphere", 1),
                 StringLineFormatter.Indent ("US greatly expands aid and investment to secure Indonesia", 2),
-                StringLineFormatter.Indent ("Though this improves the economy, it doesn’t result in universal growth", 3),
+                StringLineFormatter.Indent ("Though this improves the economy, it doesn't result in universal growth", 3),
                 StringLineFormatter.Indent ("ABRI institutes a military dictatorship without the PKI to counterbalance", 1),
                 StringLineFormatter.Indent ("This causes serious concerns about whether democracy can be restored or not", 2),
             ]
@@ -593,7 +586,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Rebellion begins in Aceh to oppose foreign exploitation", 1),
                 StringLineFormatter.Indent ("NU supports the rebellion, which prevents it from being suppressed", 2),
                 StringLineFormatter.Indent ("With the emergence of an opposition faction, there is now a possibility for a return to democracy", 1),
-                StringLineFormatter.Indent ("If the ABRI can’t improve living conditions, then it will likely be overthrown", 1),
+                StringLineFormatter.Indent ("If the ABRI can't improve living conditions, then it will likely be overthrown", 1),
             ]
         );
         resultsLocs[ballotAFailed.ID] = (
@@ -604,7 +597,7 @@ internal class Indonesia : ISimulation {
                 "Economy only improves somewhat",
                 StringLineFormatter.Indent ("There is no good reason for the Western states to invest in Indonesia", 1),
                 StringLineFormatter.Indent ("Overall, Indonesia remains impoverished and the people are rebellious", 1),
-                StringLineFormatter.Indent ("If the ABRI can’t maintain total dominance, this could result in a coup", 2),
+                StringLineFormatter.Indent ("If the ABRI can't maintain total dominance, this could result in a coup", 2),
             ]
         );
         resultsLocs[ballotBFailed.ID] = (
@@ -613,7 +606,7 @@ internal class Indonesia : ISimulation {
                 "Indonesia loses its credibility as an anti-imperialist power",
                 StringLineFormatter.Indent ("Netherlands and the UK were the last major colonial powers in the Malay Archipelago", 1),
                 StringLineFormatter.Indent ("Australia expands its influence", 1),
-                StringLineFormatter.Indent ("Australia had previously focused on the Pacific, but realises that it must guarantee the Malay Archipelago’s stability", 2),
+                StringLineFormatter.Indent ("Australia had previously focused on the Pacific, but realises that it must guarantee the Malay Archipelago's stability", 2),
             ]
         );
         resultsLocs[ballotCPassed2.ID] = (
@@ -621,7 +614,7 @@ internal class Indonesia : ISimulation {
             [
                 "Indonesia has no allies",
                 StringLineFormatter.Indent ("Western states are infuriated by the seizure of their industry", 1),
-                StringLineFormatter.Indent ("Passivity convinces China and the USSR that Indonesia isn’t worth supporting", 1),
+                StringLineFormatter.Indent ("Passivity convinces China and the USSR that Indonesia isn't worth supporting", 1),
                 StringLineFormatter.Indent ("This means no financial aid or investment", 1),
                 StringLineFormatter.Indent ("Population remains incredibly impoverished", 2),
                 "ABRI splits into radical, opposing factions",
@@ -678,7 +671,7 @@ internal class Indonesia : ISimulation {
                     StringLineFormatter.Indent ("However, the Javanese are the dominant ethnicity and Java is the dominant polity, which has led to regionalist rebellions", 2),
                     StringLineFormatter.Indent ("Economic recession has begun due to lack of experience managing the economy", 1),
                     StringLineFormatter.Indent ("Government, previously a parliamentary republic, has been completely paralysed", 1),
-                    StringLineFormatter.Indent ("As a result, Sukarno, the president and a war hero, declared Guided Democracy to solve the country’s problems", 2),
+                    StringLineFormatter.Indent ("As a result, Sukarno, the president and a war hero, declared Guided Democracy to solve the country's problems", 2),
                 ],
                 "5 July 1959",
                 "Restoration of the Constitution of 1945",

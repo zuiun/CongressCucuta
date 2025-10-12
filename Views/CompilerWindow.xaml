@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:congress_cucuta.Views"
         xmlns:vm="clr-namespace:congress_cucuta.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding Name}" Height="480" Width="640">
+        Title="Constitution of Cúcuta" Height="480" Width="640">
     <Window.DataContext>
         <vm:CompilerViewModel/>
     </Window.DataContext>
@@ -14,8 +14,8 @@
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
         <Style TargetType = "Button">
             <Setter Property = "FontFamily" Value = "Candara"/>
-            <Setter Property = "FontSize" Value = "44"/>
-            <Setter Property = "Padding" Value = "44"/>
+            <Setter Property = "FontSize" Value = "16"/>
+            <Setter Property = "Padding" Value = "12, 6, 12, 6"/>
         </Style>
         <Style TargetType = "TextBlock">
             <Setter Property = "FontFamily" Value = "Nirmala UI"/>
@@ -25,27 +25,69 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height = "*"/>
-            <RowDefinition Height = "Auto"/>
-            <RowDefinition Height = "*"/>
+            <RowDefinition Height = "1*"/>
+            <RowDefinition Height = "4*"/>
+            <RowDefinition Height = "1*"/>
+            <RowDefinition Height = "4*"/>
+            <RowDefinition Height = "1*"/>
         </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width = "1*"/>
+            <ColumnDefinition Width = "2*"/>
+            <ColumnDefinition Width = "2*"/>
+            <ColumnDefinition Width = "1*"/>
+        </Grid.ColumnDefinitions>
 
-        <Button Grid.Row = "1" Command = "{Binding CompileSimulationCommand}" HorizontalAlignment = "Center">
+        <TextBlock Grid.Row = "1"
+           Grid.Column = "1"
+           HorizontalAlignment = "Center"
+           VerticalAlignment = "Bottom"
+           Margin = "0, 0, 0, 6">
+            Select simulation
+        </TextBlock>
+        <ComboBox Grid.Row = "2"
+                  Grid.Column = "1"
+                  ItemsSource = "{Binding Simulations}"
+                  SelectedIndex = "{Binding SelectedIdx}"
+                  HorizontalAlignment = "Center"
+                  VerticalAlignment = "Center"
+                  Padding = "6, 0, 0, 2">
+            <ComboBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock FontFamily = "Nirmala UI Semilight" FontSize = "16" Text = "{Binding Name}"/>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>
+        <Button Grid.Row = "2"
+                Grid.Column = "2"
+                Command = "{Binding CompileSimulationCommand}"
+                HorizontalAlignment = "Center"
+                VerticalAlignment = "Center">
             Compile simulation
         </Button>
-        <TextBlock Grid.Row = "2"
+        <TextBlock Grid.Row = "3"
+                   Grid.Column = "1"
+                   Grid.ColumnSpan = "2"
                    Visibility = "{Binding WasCompilationSuccess, Converter = {StaticResource BooleanToVisibilityConverter}}"
                    Foreground = "Green"
                    HorizontalAlignment = "Center"
                    Margin = "6">
-            Successfully compiled simulation
+            <Run Text = "Successfully compiled"/>
+            <Run Text = "{Binding Name}"/>
+            <Run Text = "to"/>
+            <Run Text = "{Binding Filename}"/>
         </TextBlock>
-        <TextBlock Grid.Row = "2"
+        <TextBlock Grid.Row = "3"
+                   Grid.Column = "1"
+                   Grid.ColumnSpan = "2"
                    Visibility = "{Binding WasCompilationFailure, Converter = {StaticResource BooleanToVisibilityConverter}}"
                    Foreground = "Red"        
                    HorizontalAlignment = "Center"
                    Margin = "6">
-            Failed to compile simulation
+            <Run Text = "Failed to compile"/>
+            <Run Text = "{Binding Name}"/>
+            <Run Text = "to"/>
+            <Run Text = "{Binding Filename}"/>
         </TextBlock>
     </Grid>
 </Window>

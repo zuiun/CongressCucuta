@@ -54,6 +54,34 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style x:Key = "Open" TargetType = "TextBlock" BasedOn = "{StaticResource {x:Type TextBlock}}">
+            <Style.Triggers>
+                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "true">
+                    <Setter Property = "Visibility" Value = "Collapsed"/>
+                </DataTrigger>
+                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "false">
+                    <Setter Property = "Visibility" Value = "Visible"/>
+                </DataTrigger>
+            </Style.Triggers>
+
+            <Setter Property = "Foreground" Value = "Black"/>
+            <Setter Property = "FontFamily" Value = "Candara"/>
+            <Setter Property = "FontSize" Value = "12"/>
+        </Style>
+        <Style x:Key = "Close" TargetType = "TextBlock" BasedOn = "{StaticResource {x:Type TextBlock}}">
+            <Style.Triggers>
+                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "true">
+                    <Setter Property = "Visibility" Value = "Visible"/>
+                </DataTrigger>
+                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "false">
+                    <Setter Property = "Visibility" Value = "Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+
+            <Setter Property = "Foreground" Value = "Black"/>
+            <Setter Property = "FontFamily" Value = "Candara"/>
+            <Setter Property = "FontSize" Value = "12"/>
+        </Style>
     </UserControl.Resources>
 
     <Grid Background = "Black">
@@ -265,56 +293,63 @@
         </Grid>
         <StackPanel Grid.Row = "2">
             <TextBlock Text = "Procedures" HorizontalAlignment = "Center"/>
-            <Expander ExpandDirection = "Up" HorizontalAlignment = "Stretch" Margin = "0, 0, 0, 4">
-                <StackPanel>
-                    <TextBlock Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                               Text = "Governmental Procedures"
-                               HorizontalAlignment = "Center"/>
-                    <ListBox Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                             ItemsSource = "{Binding ProceduresGovernmental}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Foreground = "White"
-                                           FontFamily = "Nirmala UI Semilight"
-                                           FontSize = "14"
-                                           Text = "{Binding Name}"
-                                           ToolTip = "{Binding Effects}"
-                                           Margin = "4, 0, 0, 2"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                    <TextBlock Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                               Text = "Special Procedures" HorizontalAlignment = "Center"/>
-                    <ListBox Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                             ItemsSource = "{Binding ProceduresSpecial}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Foreground = "White"
-                                           FontFamily = "Nirmala UI Semilight"
-                                           FontSize = "14"
-                                           Text = "{Binding Name}"
-                                           ToolTip = "{Binding Effects}"
-                                           Margin = "4, 0, 0, 2"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                    <TextBlock Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                               Text = "Declared Procedures" HorizontalAlignment = "Center"/>
-                    <ListBox Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                             ItemsSource = "{Binding ProceduresDeclared}">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <TextBlock Foreground = "White"
-                                           FontFamily = "Nirmala UI Semilight"
-                                           FontSize = "14"
-                                           Text = "{Binding Name}"
-                                           ToolTip = "{Binding Effects}"
-                                           Margin = "4, 0, 0, 2"/>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
-            </Expander>
+            <StackPanel Visibility = "{Binding IsChecked, ElementName = Procedures, Converter = {StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                           Text = "Governmental Procedures"
+                           HorizontalAlignment = "Center"/>
+                <ListBox Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                         ItemsSource = "{Binding ProceduresGovernmental}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground = "White"
+                                       FontFamily = "Nirmala UI Semilight"
+                                       FontSize = "14"
+                                       Text = "{Binding Name}"
+                                       ToolTip = "{Binding Effects}"
+                                       Margin = "4, 0, 0, 2"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                           Text = "Special Procedures" HorizontalAlignment = "Center"/>
+                <ListBox Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                         ItemsSource = "{Binding ProceduresSpecial}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground = "White"
+                                       FontFamily = "Nirmala UI Semilight"
+                                       FontSize = "14"
+                                       Text = "{Binding Name}"
+                                       ToolTip = "{Binding Effects}"
+                                       Margin = "4, 0, 0, 2"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+                <TextBlock Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                           Text = "Declared Procedures" HorizontalAlignment = "Center"/>
+                <ListBox Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
+                         ItemsSource = "{Binding ProceduresDeclared}">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Foreground = "White"
+                                       FontFamily = "Nirmala UI Semilight"
+                                       FontSize = "14"
+                                       Text = "{Binding Name}"
+                                       ToolTip = "{Binding Effects}"
+                                       Margin = "4, 0, 0, 2"/>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+            <ToggleButton x:Name = "Procedures"
+                          Focusable = "False"
+                          HorizontalAlignment = "Stretch"
+                          Padding = "0, 2, 0, 2">
+                <Grid>
+                    <TextBlock Style = "{StaticResource Open}" Text = "Open" Margin = "0, 0, 0, 2"/>
+                    <TextBlock Style = "{StaticResource Close}" Text = "Close" Margin = "0, 0, 0, 2"/>
+                </Grid>
+            </ToggleButton>
         </StackPanel>
     </Grid>
 </UserControl>

@@ -1,0 +1,904 @@
+{
+  "History": {
+    "BallotsPassed": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "BallotsProceduresDeclared": {
+      "2": [
+        10
+      ],
+      "3": [
+        10
+      ]
+    }
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "253": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "248": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "249": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "250": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [],
+  "Parties": [],
+  "CurrenciesValues": {
+    "255": 0
+  },
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            248
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            249,
+            248
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            250,
+            248,
+            249
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            253,
+            248,
+            249,
+            250
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [],
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 5,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            255
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            253,
+            248,
+            249,
+            250
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        0,
+        1,
+        2
+      ],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 1,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 4,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        1,
+        2
+      ],
+      "ID": 6,
+      "Effects": [
+        {
+          "Action": 1,
+          "TargetIDs": [],
+          "Value": 1
+        },
+        {
+          "Action": 3,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [],
+      "ID": 7,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [],
+          "Value": 2
+        }
+      ],
+      "IsActiveStart": false
+    }
+  ],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 8,
+      "Effects": [
+        {
+          "Action": 12,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 9,
+      "Effects": [
+        {
+          "Action": 13,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        248
+      ],
+      "ID": 10,
+      "Effects": [
+        {
+          "Action": 10,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 10,
+          "TargetIDs": [
+            248,
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 3,
+        "Value": 4
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        249,
+        250
+      ],
+      "ID": 11,
+      "Effects": [
+        {
+          "Action": 10,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 10,
+          "TargetIDs": [
+            248,
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 10,
+          "TargetIDs": [
+            249,
+            253,
+            248
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 10,
+          "TargetIDs": [
+            250,
+            253,
+            248,
+            249
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "Ballots": [
+    {
+      "ID": 0,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              3,
+              6
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 1,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              4
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 2,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              5,
+              7
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 3,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              5,
+              7
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 4,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": []
+      },
+      "IsIncident": true
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 4
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 4,
+            "Value": 1
+          },
+          "TargetID": 2
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 3,
+            "Value": 2
+          },
+          "TargetID": 3
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Links": []
+    },
+    {
+      "ID": 3,
+      "Links": []
+    },
+    {
+      "ID": 4,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 4,
+            "Value": 1
+          },
+          "TargetID": 5
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 3,
+            "Value": 2
+          },
+          "TargetID": 6
+        }
+      ]
+    },
+    {
+      "ID": 5,
+      "Links": []
+    },
+    {
+      "ID": 6,
+      "Links": []
+    }
+  ],
+  "Localisation": {
+    "State": "Argentina",
+    "Government": "Military Dictatorship",
+    "Context": [
+      "Juan Per\u00F3n, a populist, was elected president",
+      "#|His interventionist policies and labour protections were extremely popular",
+      "##|These ideals came to be known as Peronism",
+      "##|However, these policies angered conservative Catholics",
+      "More than a decade of instability passed",
+      "#|Peronist and anti-Peronist tensions toppled both military and civilian governments alike",
+      "##|Eventually, the military launched a final coup to end the cycle and create a new Argentina",
+      "###|This military dictatorship was intended to be permanent"
+    ],
+    "Date": "29 June 1966",
+    "Situation": "Ascension of Juan Ongan\u00EDa",
+    "Period": "The Argentine Revolution",
+    "Roles": {
+      "255": {
+        "Item1": "Minister",
+        "Item2": "Ministers"
+      },
+      "253": {
+        "Item1": "President",
+        "Item2": "Presidents"
+      },
+      "249": {
+        "Item1": "Admiral",
+        "Item2": "Admirals"
+      },
+      "248": {
+        "Item1": "Lieutenant General",
+        "Item2": "Lieutenant Generals"
+      },
+      "250": {
+        "Item1": "Brigadier General",
+        "Item2": "Brigadier Generals"
+      }
+    },
+    "Speaker": "Secretary of the Government",
+    "Region": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Regions": {},
+    "Party": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Parties": {},
+    "Abbreviations": {},
+    "Currencies": {
+      "255": "Opposition"
+    },
+    "Procedures": {
+      "0": {
+        "Item1": "Authoritarian-Bureaucratic State",
+        "Item2": "This country has resorted to military rule in order to restore stability."
+      },
+      "1": {
+        "Item1": "Statute of the Argentine Revolution",
+        "Item2": "Unlike many other countries with military regimes, this country is planning to institutionalise its dictatorship as a revolutionary government."
+      },
+      "2": {
+        "Item1": "Violet Dominance",
+        "Item2": "The Blues and the Reds have just concluded a military conflict and have since united as the Violets in order to save Argentina from Peronism."
+      },
+      "3": {
+        "Item1": "Peronists",
+        "Item2": "The Peronists are a powerful political movement represented by the Justicialist Party and whose ideologue, Juan Per\u00F3n, is currently exiled in Spain. The movement may be fractured over policy, but it remains a dangerous threat to the military regime."
+      },
+      "4": {
+        "Item1": "Vandorists",
+        "Item2": "While Per\u00F3n may personally abhor the military regime, one faction has united behind Augusto Vandor in the belief that Peronism is better off without him. This faction is willing to cooperate with the military if it leads to real change."
+      },
+      "5": {
+        "Item1": "Political Violence",
+        "Item2": "Argentine politics have always been coloured by political violence, and the current peace is unlikely to last for very long."
+      },
+      "6": {
+        "Item1": "Night of the Long Batons",
+        "Item2": ""
+      },
+      "7": {
+        "Item1": "Cycle of the Azos",
+        "Item2": ""
+      },
+      "8": {
+        "Item1": "Decree Law",
+        "Item2": "This country\u0027s head of state is empowered to promulgate legislation without legislative oversight."
+      },
+      "9": {
+        "Item1": "Veto",
+        "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
+      },
+      "10": {
+        "Item1": "Coup",
+        "Item2": "This country\u0027s head of government is part of the military and could be forcibly replaced if he is seen to be inept."
+      },
+      "11": {
+        "Item1": "Rebellion",
+        "Item2": "This country\u0027s government relies on the support of the military and could fall if the military decided to overthrow the government."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Reverse university reforms",
+        "Item3": [
+          "#|Argentina has several freedoms guaranteed for universities",
+          "##|These reforms include institutional autonomy, democratic co-governance, and secular education",
+          "#|Many students and professors oppose the regime",
+          "##|Economy was improving, so there was no real reason to overthrow the democratically elected government",
+          "##|There are some concerns that the universities may harbour communist sympathisers",
+          "##|Reversing reforms would mean violent suppression",
+          "###|Opposition is so vehement that the students will forcibly occupy the universities to prevent them from falling under government control"
+        ],
+        "Item4": [
+          "Students and professors forcibly occupy the universities to prevent the reversal of reforms",
+          "#|Police violently expel the occupiers, including foreigners",
+          "##|This leads to massive brain drain and international outrage",
+          "#|This clamps down on dissident elements",
+          "##|However, this will promote more dissent in the long run"
+        ],
+        "Item5": [
+          "Students remain the most outspoken critics of the regime",
+          "#|Respecting university autonomy does nothing to quiet their opposition to totalitarianism",
+          "##|However, this does prevent the students from gaining much support",
+          "###|Nobody really knows what to criticise about a regime that has just come into power, other than its illegitimacy",
+          "##|Regime will likely never win the support of the students",
+          "###|Public support will have to come from other sectors of society"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot B",
+        "Item2": "Suppress the unions",
+        "Item3": [
+          "#|This would suspend collective bargaining and outlaw strikes",
+          "##|This will cause labour unions to become extremely weak",
+          "##|However, this will greatly please the companies, who have historically been greatly restricted under Peronism",
+          "#|General Confederation of Labour (CGT) has split over its support for the regime",
+          "##|Vandor\u0027s CGT-Azopardo wants to collaborate, if only to preserve existing privileges",
+          "##|CGT of the Argentines (CGTA) opposes the regime at every turn and has support from the clergy (liberation theology)"
+        ],
+        "Item4": [
+          "There is little support for this measure",
+          "#|CGT-Azopardo begins to oppose the regime",
+          "#|CGTA begins violent demonstrations and rebellions",
+          "#|Guerrilla organisations begin to form",
+          "#|Businesses are pleased with the suppression",
+          "##|However, opposition by the CGTA decreases production, driving up prices and greatly weakening the economy"
+        ],
+        "Item5": [
+          "CGT-Azopardo slowly overcomes the CGTA",
+          "#|Without too much anti-union action, the CGTA loses much of its appeal and its members return to the CGT-Azopardo",
+          "##|Eventually, the CGTA is dismantled by lack of support and military suppression",
+          "#|For now, the CGT-Azopardo agrees to cooperate with companies",
+          "##|This is essentially reverting to the pre-coup situation"
+        ]
+      },
+      "2": {
+        "Item1": "Incident A",
+        "Item2": "Freeze wages and prices",
+        "Item3": [
+          "#|Though inflation was originally low, it is now increasing at a concerning rate",
+          "##|Liberalising the economy has led to economic growth at a major cost to domestic producers",
+          "#|This would prohibit wage increases for two years and establish price controls for gas and agricultural products",
+          "##|However, such a severe policy would greatly decrease national output",
+          "##|If this policy fails, then both the labour unions and the companies will be extremely angry"
+        ],
+        "Item4": [
+          "This policy fails",
+          "#|Companies are forced to increase prices to make up for low production",
+          "##|Inflation increases even more quickly, worsening the already-bad trade deficit",
+          "##|This does lead to some modernisation of industry, but this hardly comes as much solace",
+          "#|There are now outright rebellions in many regions"
+        ],
+        "Item5": [
+          "Not much happens",
+          "#|Labour unions and companies alike are grateful that no extreme measures are being taken",
+          "##|Pursuing reduction of inflation at all costs is an extremely dangerous policy that could have resulted in economic collapse, given Argentina\u0027s current vulnerability",
+          "#|Inflation grows and domestic products continue to lose ground to imports",
+          "##|This is nothing new and won\u0027t lead to an economic disaster",
+          "###|However, economic growth and national output are hurting"
+        ]
+      },
+      "3": {
+        "Item1": "Ballot C",
+        "Item2": "Adopt the Great National Accord",
+        "Item3": [
+          "#|This will call for elections, with the possibility of restoring democracy if the anti-military faction wins",
+          "##|In order to facilitate elections, political parties will be legalised and their assets will be returned",
+          "##|Peronists will not be allowed to participate in this election",
+          "#|This should only be done if the Argentine Revolution has failed or is completed",
+          "##|If the Argentine Revolution is still in progress, there is no guarantee that a democratic government will continue to carry out reforms"
+        ],
+        "Item4": [
+          "Response to the Great National Accord is mixed",
+          "#|Nationalist sectors of the army oppose it",
+          "##|They believe that democracy would weaken Argentina",
+          "#|Peronists and liberals oppose it",
+          "##|They argue that this is not true democracy",
+          "#|Radicals support it",
+          "##|This is probably the only chance they will ever have of getting in power"
+        ],
+        "Item5": [
+          "Most people question whether the Argentine Revolution will ever actually be completed",
+          "#|Few beneficial reforms have been undertaken while the military was in power",
+          "#|Whether the military regime can survive or not will ultimately depend on popular support",
+          "##|Most of the military supports continuing the dictatorship, but some believe that giving way to democracy may have saved the military\u0027s reputation and influence"
+        ]
+      },
+      "4": {
+        "Item1": "Incident B",
+        "Item2": "Lift Per\u00F3n\u0027s exile",
+        "Item3": [
+          "#|Now that elections are being held, Per\u00F3n is demanding to return to Argentina",
+          "##|Per\u00F3n and his family are the most prominent figures in Argentine politics",
+          "##|Peronists are split on whether to bring him back or not",
+          "###|Generally, there is wide support for this",
+          "#|If Per\u00F3n returns, then the military\u0027s favoured candidate in the upcoming election will probably be defeated",
+          "##|However, this could help the military rehabilitate its image"
+        ],
+        "Item4": [
+          "Per\u00F3n returns to Argentina",
+          "#|He is met with cheering crowds, despite attempts to prevent gatherings",
+          "#|Per\u00F3n feverishly works to unite Peronist and anti-Peronist parties into an electoral alliance",
+          "##|Whether this will successfully unseat the military is uncertain, but chances are very high"
+        ],
+        "Item5": [
+          "Per\u00F3n decries the military regime",
+          "#|However, no major realignment takes place",
+          "##|There are many Peronists who don\u0027t want Per\u00F3n in power",
+          "###|This worsens the split between the Peronist parties",
+          "##|Those who care about Per\u00F3n\u0027s complaints are already in opposition anyway",
+          "Politics become increasingly multipolar",
+          "#|Without Per\u00F3n, there is little chance of a unified front forming against the military"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Elections are held",
+          "#|Peronists are represented by the Justicialist Liberation Front",
+          "#|Anti-Peronists are represented by the Radical Civic Union",
+          "#|Military is represented by the Popular Federalist Alliance"
+        ]
+      },
+      "2": {
+        "Item1": "One or Fewer Opposition",
+        "Item2": [
+          "Peronists barely win a plurality of votes",
+          "#|Military makes some concessions to the labour unions in order to win the support of the anti-Peronists",
+          "##|As a result, the military barely wins the run-off elections",
+          "Now in power, the military respects the democratic regime",
+          "#|Promised concessions are implemented, but there remains significant Peronist opposition",
+          "##|Most opposition is limited to protests, rather than rebellions",
+          "##|Over time, it is likely a political shift will take place and Peronism will become a weaker political force"
+        ]
+      },
+      "3": {
+        "Item1": "Two or Greater Opposition",
+        "Item2": [
+          "Peronists win a plurality of votes",
+          "#|This technically does not win them the election, as a run-off election is necessary",
+          "##|However, the President waives the run-off for the sake of national stability",
+          "Now in power, the Peronists begin reversing the Argentine Revolution",
+          "#|Though they have much popular support, the military is incredibly dissatisfied",
+          "##|Argentina will remain unstable for years to come, unless a great national crisis can reunite the people"
+        ]
+      },
+      "4": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Regime attempts take back initiative by forcibly disappearing Peronists",
+          "#|This predictably leads to rebellions and guerrilla insurgencies in the countryside",
+          "##|Insurgents have Chilean diplomatic support, which helps some of them evade capture",
+          "#|Regime gains some US support in arms and materiel"
+        ]
+      },
+      "5": {
+        "Item1": "One or Fewer Opposition",
+        "Item2": [
+          "Over time, the insurgents lose support",
+          "#|Government comes to a negotiated settlement with the labour unions",
+          "#|Most students only peacefully protest",
+          "Now that the military is in total control, the Argentine Revolution continues",
+          "#|Some protectionism is put in place, but most liberal reforms are maintained",
+          "##|This allows Argentina to build up its economic base",
+          "###|Eventually, the military may decide to restore democratic governance once it is satisfied with the growth of the economy"
+        ]
+      },
+      "6": {
+        "Item1": "Two or Greater Opposition",
+        "Item2": [
+          "Insurgency gains traction",
+          "#|Cuban support helps perpetuate it",
+          "#|Though the insurgents have no chance of overthrowing the government, the regime is spending unsustainable amounts of resources to suppress them",
+          "##|As a result, no amount of economic reforms can save Argentina\u0027s economy",
+          "Eventually, Argentina collapses into anarchy",
+          "#|Local militias take control of many regions",
+          "##|It rests upon foreign intervention to restore any semblance of order to Argentina"
+        ]
+      }
+    }
+  }
+}

@@ -42,15 +42,14 @@ internal class Canada : ISimulation {
         Faction quebec = new (1);
         Faction westernCanada = new (2);
         List<Faction> provinces = [ontario, quebec, westernCanada];
-        Dictionary<IDType, (string, string[], string)> provincesLocs = [];
+        Dictionary<IDType, (string, string[])> provincesLocs = [];
         provincesLocs[ontario.ID] = (
             "Ontario",
             [
                 StringLineFormatter.Indent ("Predominantly Anglophone", 1),
                 StringLineFormatter.Indent ("Split between liberals and conservatives", 1),
                 StringLineFormatter.Indent ("Largely dominates Anglophone politics", 1),
-            ],
-            "Premier"
+            ]
         );
         provincesLocs[quebec.ID] = (
             "Quebec",
@@ -58,8 +57,7 @@ internal class Canada : ISimulation {
                 StringLineFormatter.Indent ("Predominantly Francophone", 1),
                 StringLineFormatter.Indent ("Liberal and social creditist stronghold", 1),
                 StringLineFormatter.Indent ("Seeks wide-ranging provincial powers", 1),
-            ],
-            "Premier"
+            ]
         );
         provincesLocs[westernCanada.ID] = (
             "Western Canada",
@@ -68,8 +66,7 @@ internal class Canada : ISimulation {
                 StringLineFormatter.Indent ("Generally conservative with some social creditists", 1),
                 StringLineFormatter.Indent ("Rapidly growing population and economy", 1),
                 StringLineFormatter.Indent ("Has significantly less political representation than the eastern provinces", 2),
-            ],
-            "Premier"
+            ]
         );
 
         Faction lpc = new (3);
@@ -77,35 +74,31 @@ internal class Canada : ISimulation {
         Faction rc = new (5);
         Faction ndp = new (6, false);
         List<Faction> parties = [lpc, pc, rc, ndp];
-        Dictionary<IDType, (string, string[], string)> partiesLocs = [];
+        Dictionary<IDType, (string, string[])> partiesLocs = [];
         partiesLocs[lpc.ID] = (
             "Liberal Party of Canada",
             [
                 StringLineFormatter.Indent ("Economically and socially centre-left", 1),
                 StringLineFormatter.Indent ("Supports a strong federal government", 1),
-            ],
-            "Party Leader"
+            ]
         );
         partiesLocs[pc.ID] = (
             "Progressive Conservative Party of Canada",
             [
                 StringLineFormatter.Indent ("Economically and socially centre-right", 1),
                 StringLineFormatter.Indent ("Supports increasing provincial rights", 1),
-            ],
-            "Party Leader"
+            ]
         );
         partiesLocs[rc.ID] = (
             "Social Credit Rally",
             [
                 StringLineFormatter.Indent ("Economically populist, socially right", 1),
                 StringLineFormatter.Indent ("Only federal supporter of Quebec sovereignty", 1),
-            ],
-            "Party Leader"
+            ]
         );
         partiesLocs[ndp.ID] = (
             "New Democratic Party",
-            [],
-            "Party Leader"
+            []
         );
         Dictionary<IDType, string> abbreviations = [];
         abbreviations[lpc.ID] = "LPC";
@@ -397,7 +390,7 @@ internal class Canada : ISimulation {
             [
                 "This is very popular in Quebec and unpopular outside of it",
                 StringLineFormatter.Indent ("Bilingual education is especially ineffective", 1),
-                StringLineFormatter.Indent ("Non-Francophone minorities don’t want to learn two non-native languages", 1),
+                StringLineFormatter.Indent ("Non-Francophone minorities don't want to learn two non-native languages", 1),
                 StringLineFormatter.Indent ("Still, there is little active Anglophone opposition", 1),
                 "In time this may be seen as a unifying measure",
                 StringLineFormatter.Indent ("For now, this is just a hurdle to entering public service", 1),
@@ -410,14 +403,15 @@ internal class Canada : ISimulation {
         );
         ballotsLocs[incidentA.ID] = (
             "Incident A",
-            "Dismantle the Quebec Liberation Front",
+            "Invoke the War Measures Act",
             [
                 StringLineFormatter.Indent ("Quebec Liberation Front (FLQ) is a terrorist, secessionist organisation", 1),
                 StringLineFormatter.Indent ("It is especially popular among students", 2),
                 StringLineFormatter.Indent ("FLQ has kidnapped two high-ranking ministers and threatened to execute them", 1),
                 StringLineFormatter.Indent ("It also claims to be able to mobilise nearly a hundred-thousand armed workers if its demands are not met", 2),
-                StringLineFormatter.Indent ("This will invoke the War Measures Act", 1),
-                StringLineFormatter.Indent ("This means Quebec will be militarily occupied until the FLQ is no longer an insurrection threat", 2),
+                StringLineFormatter.Indent ("They want their captured members to be released into exile in Cuba", 3),
+                StringLineFormatter.Indent ("War Measures Act has never been activated without controversy, much less during peacetime", 1),
+                StringLineFormatter.Indent ("Quebec will be under military rule until the FLQ is no longer an insurrection threat", 2),
                 StringLineFormatter.Indent ("Police will have the unlimited right to detain anyone, even without charge", 2),
             ],
             [
@@ -436,7 +430,7 @@ internal class Canada : ISimulation {
             "Establish oil price controls",
             [
                 StringLineFormatter.Indent ("Arab oil embargo has severely increased oil prices across Canada", 1),
-                StringLineFormatter.Indent ("This benefits Alberta, which is Canada’s largest oil producer", 2),
+                StringLineFormatter.Indent ("This benefits Alberta, which is Canada's largest oil producer", 2),
                 StringLineFormatter.Indent ("Price controls would overwhelmingly benefit the eastern provinces, which import almost all of their energy", 2),
                 StringLineFormatter.Indent ("Additionally, the federal government would have to pay the difference in prices, which would be funded through taxes", 2),
                 StringLineFormatter.Indent ("This could lay the framework for further oil controls", 1),
@@ -460,7 +454,7 @@ internal class Canada : ISimulation {
             [
                 StringLineFormatter.Indent ("Quebec is currently under the control of the Quebec Party (PQ)", 1),
                 StringLineFormatter.Indent ("PQ has made a sovereignty referendum central to its agenda", 2),
-                StringLineFormatter.Indent ("PQ wants “sovereignty-association”", 2),
+                StringLineFormatter.Indent ("PQ wants \"sovereignty-association\"", 2),
                 StringLineFormatter.Indent ("This is political independence for Quebec, but economic union with Canada", 3),
                 StringLineFormatter.Indent ("This referendum could go either way", 2),
                 StringLineFormatter.Indent ("Francophone voters are very divided on independence", 3),
@@ -471,7 +465,7 @@ internal class Canada : ISimulation {
             [
                 "Referendum goes ahead anyway",
                 StringLineFormatter.Indent ("Police allow the referendum to happen", 1),
-                StringLineFormatter.Indent ("Anger with federal intervention could result in a “Yes” victory", 1),
+                StringLineFormatter.Indent ("Anger with federal intervention could result in a \"Yes\" victory", 1),
                 "Federal government refuses to negotiate with the Quebecer government",
                 StringLineFormatter.Indent ("Supreme Court declares the referendum non-binding", 1),
                 StringLineFormatter.Indent ("Anglophone Quebecers begin to fear for their language rights", 1),
@@ -479,12 +473,12 @@ internal class Canada : ISimulation {
             ],
             [
                 "Referendum goes ahead as planned",
-                StringLineFormatter.Indent ("Federal government may intervene on behalf of the “No” case", 1),
+                StringLineFormatter.Indent ("Federal government may intervene on behalf of the \"No\" case", 1),
                 StringLineFormatter.Indent ("In addition, it may choose to refuse negotiations if the referendum passes", 2),
                 StringLineFormatter.Indent ("Quebec Liberals are poorly organised and haughty", 1),
-                StringLineFormatter.Indent ("They are very unlikely to make a good “No” case", 2),
+                StringLineFormatter.Indent ("They are very unlikely to make a good \"No\" case", 2),
                 StringLineFormatter.Indent ("No other federal-level party has enough of a presence in Quebec to affect the outcome", 2),
-                StringLineFormatter.Indent ("PQ is putting every effort into the “Yes” case", 1),
+                StringLineFormatter.Indent ("PQ is putting every effort into the \"Yes\" case", 1),
                 StringLineFormatter.Indent ("However, there are some tensions between male and female Francophone voters", 2),
             ]
         );
@@ -506,13 +500,13 @@ internal class Canada : ISimulation {
                 StringLineFormatter.Indent ("Provincial government threatens to massively decrease oil production to force prices up", 1),
                 StringLineFormatter.Indent ("Economic growth slows down further", 1),
                 StringLineFormatter.Indent ("There is even some talk of Albertan separatism", 1),
-                "This reduces Canada’s reliance on foreign oil",
+                "This reduces Canada's reliance on foreign oil",
             ],
             [
                 "Alberta is satisfied with the rejection of further controls",
                 StringLineFormatter.Indent ("This does come at a cost in the eastern provinces, which see Alberta as greedy and insular", 1),
                 StringLineFormatter.Indent ("This irony is not lost on Quebec", 2),
-                "This increases Canada’s reliance on foreign oil",
+                "This increases Canada's reliance on foreign oil",
                 StringLineFormatter.Indent ("However, falling oil prices may remedy this somewhat", 1),
             ]
         );
@@ -522,7 +516,7 @@ internal class Canada : ISimulation {
             [
                 StringLineFormatter.Indent ("Canada already has a bill of rights", 1),
                 StringLineFormatter.Indent ("However, this is just a federal law, rather than a constitutional document", 2),
-                StringLineFormatter.Indent ("It doesn’t apply to the provinces", 3),
+                StringLineFormatter.Indent ("It doesn't apply to the provinces", 3),
                 StringLineFormatter.Indent ("This will significantly strengthen the federal government", 1),
                 StringLineFormatter.Indent ("Supreme Court will be given the authority to overturn all laws, both federal and provincial, that run contrary to the charter", 2),
                 StringLineFormatter.Indent ("Notably, this only protects the language rights of Anglophone and Francophone communities", 2),
@@ -540,7 +534,7 @@ internal class Canada : ISimulation {
                 StringLineFormatter.Indent ("This could hamper efforts to gain constitutional independence", 2),
                 "There is some outrage, but also understanding",
                 StringLineFormatter.Indent ("Westminster systems generally have parliamentary supremacy", 1),
-                StringLineFormatter.Indent ("Courts normally don’t have strong override powers", 2),
+                StringLineFormatter.Indent ("Courts normally don't have strong override powers", 2),
                 StringLineFormatter.Indent ("It may have been difficult to get British approval for this change", 1),
             ]
         );
@@ -652,7 +646,7 @@ internal class Canada : ISimulation {
             [
                 "Quebec votes against sovereignty",
                 StringLineFormatter.Indent ("This gives impetus to the constitutional independence movement", 1),
-                StringLineFormatter.Indent ("This does not preclude another referendum if Quebec’s demands are not satisfied", 1),
+                StringLineFormatter.Indent ("This does not preclude another referendum if Quebec's demands are not satisfied", 1),
                 StringLineFormatter.Indent ("However, tensions have cooled down somewhat and violent revolt is extremely unlikely", 2),
             ]
         );
@@ -681,7 +675,7 @@ internal class Canada : ISimulation {
             "Greater than One and Fewer than Five Tension",
             [
                 "British are very reluctant to patriate the constitution",
-                StringLineFormatter.Indent ("They don’t believe that there is enough consensus in Canadian society to grant constitutional independence", 1),
+                StringLineFormatter.Indent ("They don't believe that there is enough consensus in Canadian society to grant constitutional independence", 1),
             ]
         );
         resultsLocs[incidentAPassed.ID] = (
@@ -705,8 +699,8 @@ internal class Canada : ISimulation {
             [
                 "Without support from the west, the British refuse to patriate the constitution",
                 StringLineFormatter.Indent ("Negotiations on oil revenues sharing will have to be resolved for anything to change", 1),
-                StringLineFormatter.Indent ("Alberta’s successful opposition to the federal government also empowers British Columbia", 1),
-                StringLineFormatter.Indent ("This especially impacts Chinese and First Nations who don’t have federal protections", 2),
+                StringLineFormatter.Indent ("Alberta's successful opposition to the federal government also empowers British Columbia", 1),
+                StringLineFormatter.Indent ("This especially impacts Chinese and First Nations who don't have federal protections", 2),
                 "Canada is badly divided and at an impasse",
                 StringLineFormatter.Indent ("Constitutional projects will have to be put on hold", 1),
             ]
@@ -740,7 +734,7 @@ internal class Canada : ISimulation {
                 "Quebec votes for sovereignty",
                 StringLineFormatter.Indent ("Federal government refuses to recognise this result", 1),
                 StringLineFormatter.Indent ("FLQ makes good on its threat to raise a rebellion, although it is nowhere near as massive as threatened", 1),
-                StringLineFormatter.Indent ("Separatists are eventually suppressed, but this is extremely bad for Canada’s global image", 2),
+                StringLineFormatter.Indent ("Separatists are eventually suppressed, but this is extremely bad for Canada's global image", 2),
             ]
         );
         resultsLocs[fiveGreaterTension.ID] = (
@@ -757,7 +751,7 @@ internal class Canada : ISimulation {
             [
                 "Albertan separatists begin agitating for independence",
                 StringLineFormatter.Indent ("This agitation spills over into Saskatchewan", 1),
-                "If the federal government doesn’t find a solution to these tensions, Canada could collapse",
+                "If the federal government doesn't find a solution to these tensions, Canada could collapse",
                 StringLineFormatter.Indent ("International outrage at the status of Quebec is especially severe", 1),
                 StringLineFormatter.Indent ("Maritime provinces draw closer, believing the federal government is unreliable", 1),
                 StringLineFormatter.Indent ("Some even float the idea of joining the US", 2),
@@ -770,7 +764,7 @@ internal class Canada : ISimulation {
                 "Western support keeps Anglophone Canada largely united",
                 StringLineFormatter.Indent ("This bodes extremely poorly for the future of Canada as a bilingual nation", 1),
                 StringLineFormatter.Indent ("Acadians in New Brunswick question their future and status", 2),
-                "If the federal government doesn’t find a solution to these tensions, Quebec will probably become independent",
+                "If the federal government doesn't find a solution to these tensions, Quebec will probably become independent",
                 StringLineFormatter.Indent ("International outrage at the status of Quebec is especially severe", 1),
             ]
         );
@@ -801,7 +795,7 @@ internal class Canada : ISimulation {
                     StringLineFormatter.Indent ("This has led to an outpouring of Quebecer nationalism", 2),
                     "Canada now has an opportunity to unite its disparate peoples into one nation",
                     StringLineFormatter.Indent ("There is a strong desire for constitutional independence", 1),
-                    StringLineFormatter.Indent ("However, Quebec’s wariness is not easy to overcome", 2),
+                    StringLineFormatter.Indent ("However, Quebec's wariness is not easy to overcome", 2),
                 ],
                 "20 April 1968",
                 "Ascension of Pierre Trudeau",

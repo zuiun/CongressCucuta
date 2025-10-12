@@ -74,15 +74,14 @@ internal class Simulation {
      * (1) There must be a MEMBER Role
      * (2) Role IDs must correspond one-to-one with Faction IDs (signifies Faction leadership), excepting reserved Role IDs
      * (3) Currency IDs must correspond one-to-one with Faction IDs (signifies Faction ownership), excepting reserved Currency IDs (only STATE)
-     * (4) Either MEMBER or HEAD_GOVERNMENT must be able to vote
-     * (5) Region IDs and Party IDs cannot overlap
-     * (6) Every Ballot Link must have a valid Ballot ID
-     * (7) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
-     * (8) If any Region has a Currency, then every Region must have a Currency; same restriction applies to Party
-     * (9) Every IID must have a Localisation entry
-     * (10) Every IID of a certain type must have a unique ID that matches its container's index
-     * (11) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise and no other ProcedureImmediate may have it
-     * (12) Every Ballot Result must target valid Faction IDs, Procedure IDs, and Currency IDs
+     * (4) Region IDs and Party IDs cannot overlap
+     * (5) Every Ballot Link must have a valid Ballot ID
+     * (6) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
+     * (7) If any Region has a Currency, then every Region must have a Currency; same restriction applies to Party
+     * (8) Every IID must have a Localisation entry
+     * (9) Every IID of a certain type must have a unique ID that matches its container's index
+     * (10) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise and no other ProcedureImmediate may have it
+     * (11) Every Ballot Result must target valid Faction IDs, Procedure IDs, and Currency IDs
      */
     private void Validate () {
 #region (1)
@@ -93,13 +92,7 @@ internal class Simulation {
 
 #region (2)
         foreach (IDType ro in RolesPermissions.Keys) {
-            if (
-                ro.ID != Role.MEMBER
-                && ro.ID != Role.HEAD_GOVERNMENT
-                && ro.ID != Role.HEAD_STATE
-                && ro.ID != Role.LEADER_PARTY
-                && ro.ID != Role.LEADER_REGION
-            ) {
+            if (ro.ID < Role.RESERVED_1) {
                 bool isRegion = false;
                 bool isParty = false;
 
@@ -158,15 +151,6 @@ internal class Simulation {
 #endregion
 
 #region (4)
-        if (
-            RolesPermissions.Where (k => k.Key.ID == Role.MEMBER).All (v => ! v.Value.CanVote)
-            && RolesPermissions.Where (k => k.Key.ID == Role.HEAD_GOVERNMENT).All (v => ! v.Value.CanVote)
-        ) {
-            throw new ArgumentException ("Either MEMBER or HEAD_GOVERNMENT must be able to vote");
-        }
-#endregion
-
-#region (5)
         foreach (Faction r in Regions) {
             foreach (Faction p in Parties) {
                 if (r.ID == p.ID) {
@@ -192,23 +176,23 @@ internal class Simulation {
         }
 #endregion
 
-#region (6)
+#region (5)
         foreach (Ballot b in Ballots) {
             foreach (var l in b.PassResult.Links) {
-                if (l.TargetID >= Ballots.Count) {
+                if (l.TargetID != Ballot.END && l.TargetID >= Ballots.Count) {
                     throw new ArgumentException ($"Ballot ID {b.ID} passage Link targeting {l.TargetID} does not correspond with any Ballot ID");
                 }
             }
 
             foreach (var l in b.FailResult.Links) {
-                if (l.TargetID >= Ballots.Count) {
+                if (l.TargetID != Ballot.END && l.TargetID >= Ballots.Count) {
                     throw new ArgumentException ($"Ballot ID {b.ID} failure Link targeting {l.TargetID} does not correspond with any Ballot ID");
                 }
             }
         }
 #endregion
 
-#region (7)
+#region (6)
         foreach (ProcedureImmediate pi in ProceduresGovernmental) {
             foreach (Procedure.Effect e in pi.Effects) {
                 if (e.TargetIDs.Any (t => RolesPermissions.Keys.All (r => t != r.ID))) {
@@ -263,7 +247,7 @@ internal class Simulation {
         }
 #endregion
 
-#region (8)
+#region (7)
         if (Regions.Count > 0 && CurrenciesValues.Keys.Any (c => c.ID == Regions[0].ID)) {
             foreach (Faction r in Regions) {
                 if (CurrenciesValues.Keys.All (c => r.ID != c.ID)) {
@@ -281,7 +265,7 @@ internal class Simulation {
         }
 #endregion
 
-#region (9)
+#region (8)
         foreach (IDType r in RolesPermissions.Keys) {
             if (! Localisation.Roles.ContainsKey (r)) {
                 throw new ArgumentException ($"Role ID {r} does not have a Localisation entry");
@@ -337,7 +321,7 @@ internal class Simulation {
         }
 #endregion
 
-#region (10)
+#region (9)
         for (byte i = 0; i < Regions.Count; ++ i) {
             byte regionIdxOffset = Regions[0].ID;
 
@@ -389,7 +373,7 @@ internal class Simulation {
         }
 #endregion
 
-#region (11)
+#region (10)
         if (CurrenciesValues.Count > 0) {
             if (ProceduresSpecial.Count == 0) {
                 throw new ArgumentException ("If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise");
@@ -419,7 +403,7 @@ internal class Simulation {
         }
 #endregion
 
-#region (12)
+#region (11)
         foreach (Ballot b in Ballots) {
             foreach (Ballot.Effect e in b.PassResult.Effects) {
                 switch (e.Action) {

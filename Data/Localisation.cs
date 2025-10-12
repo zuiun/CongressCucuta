@@ -12,11 +12,11 @@ internal readonly record struct Localisation (
     string Speaker,
     // (singular, plural)
     (string, string) Region,
-    // (name, description, leader)
-    Dictionary<IDType, (string, string[], string)> Regions,
+    // (name, description)
+    Dictionary<IDType, (string, string[])> Regions,
     (string, string) Party,
-    // (name, description, leader)
-    Dictionary<IDType, (string, string[], string)> Parties,
+    // (name, description)
+    Dictionary<IDType, (string, string[])> Parties,
     Dictionary<IDType, string> Abbreviations,
     Dictionary<IDType, string> Currencies,
     // (name, description)
@@ -31,9 +31,9 @@ internal readonly record struct Localisation (
     public string GetFactionAndAbbreviation (IDType factionId) {
         string name;
 
-        if (Parties.TryGetValue (factionId, out (string, string[], string) party)) {
+        if (Parties.TryGetValue (factionId, out (string, string[]) party)) {
             name = party.Item1;
-        } else if (Regions.TryGetValue (factionId, out (string, string[], string) region)) {
+        } else if (Regions.TryGetValue (factionId, out (string, string[]) region)) {
             name = region.Item1;
         } else {
             throw new ArgumentException ($"No Faction ID matches ID {factionId}", nameof (factionId));
@@ -45,9 +45,9 @@ internal readonly record struct Localisation (
     public string GetFactionOrAbbreviation (IDType factionId) {
         if (Abbreviations.TryGetValue (factionId, out string? abbreviation)) {
             return abbreviation;
-        } else if (Parties.TryGetValue (factionId, out (string, string[], string) party)) {
+        } else if (Parties.TryGetValue (factionId, out (string, string[]) party)) {
             return party.Item1;
-        } else if (Regions.TryGetValue (factionId, out (string, string[], string) region)) {
+        } else if (Regions.TryGetValue (factionId, out (string, string[]) region)) {
             return region.Item1;
         } else {
             throw new ArgumentException ($"No Faction ID matches ID {factionId}", nameof (factionId));

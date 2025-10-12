@@ -5,15 +5,18 @@ using congress_cucuta.Converters;
 namespace congress_cucuta.Data;
 
 internal readonly record struct Ballot (IDType ID, Ballot.Result PassResult, Ballot.Result FailResult, bool IsIncident = false) : IID {
+    public static readonly IDType END = byte.MaxValue;
+
     internal readonly record struct Effect {
         internal enum ActionType {
             // Regions are not intended to change
             FoundParty, // Targets Factions, elects PARTY_LEADER (if present)
             DissolveParty, // Targets Factions, elects PARTY_LEADER (if present)
+            //AddProcedure, // Targets Procedures (single)
             //ReplaceParty, // Targets Factions (original, new), retains PARTY_LEADER (if present)
             RemoveProcedure, // Targets Procedures
             ReplaceProcedure, // Targets Procedures (original, new)
-            ModifyCurrency, // Targets Currencies (Faction ID [only same-category], REGION [one], PARTY [one], STATE [one])
+            ModifyCurrency, // Targets Currencies (Faction ID, REGION [one], PARTY [one], STATE [one])
         }
 
         public ActionType Action { get; }
