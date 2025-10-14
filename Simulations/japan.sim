@@ -1,0 +1,782 @@
+{
+  "History": {
+    "BallotsPassed": [
+      0,
+      1,
+      3,
+      4
+    ],
+    "BallotsProceduresDeclared": {
+      "1": [
+        6
+      ],
+      "3": [
+        6
+      ],
+      "4": [
+        6
+      ]
+    }
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "0": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "1": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "2": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "252": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [],
+  "Parties": [
+    {
+      "ID": 0,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "IsActiveStart": false
+    }
+  ],
+  "CurrenciesValues": {
+    "0": 4,
+    "1": 2,
+    "2": 2
+  },
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 8,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [],
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 5,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        2,
+        3,
+        4
+      ],
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 6,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [
+            1
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 3,
+          "TargetIDs": [
+            1
+          ],
+          "Value": 2
+        }
+      ],
+      "IsActiveStart": false
+    }
+  ],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 5,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        252
+      ],
+      "ID": 6,
+      "Effects": [
+        {
+          "Action": 11,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "Ballots": [
+    {
+      "ID": 0,
+      "PassResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 0,
+            "TargetIDs": [
+              2
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 1,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              3,
+              5
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 2,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              1
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 3,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              0
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              0,
+              1
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 4,
+      "PassResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "IsIncident": false
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": true
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": false
+          },
+          "TargetID": 8
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 0,
+            "ShouldBePassed": true
+          },
+          "TargetID": 2
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 0,
+            "ShouldBePassed": false
+          },
+          "TargetID": 5
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 3
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 4
+        }
+      ]
+    },
+    {
+      "ID": 3,
+      "Links": []
+    },
+    {
+      "ID": 4,
+      "Links": []
+    },
+    {
+      "ID": 5,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 7
+        }
+      ]
+    },
+    {
+      "ID": 6,
+      "Links": []
+    },
+    {
+      "ID": 7,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 3
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 4
+        }
+      ]
+    },
+    {
+      "ID": 8,
+      "Links": []
+    }
+  ],
+  "Localisation": {
+    "State": "Japan",
+    "Government": "Feudal Monarchy",
+    "Context": [
+      "Kamakura Shogunate was dominated by the Hojo clan",
+      "#|Daigo II and many governors were tired of Hojo rule",
+      "##|Daigo II enlisted the aid of Takauji Ashikaga to overthrow the Kamakura Shogunate, leading to the Kenmu Restoration",
+      "#|Daigo II failed to properly reward his allies",
+      "##|Takauji overthrew Daigo II and established the Ashikaga Shogunate in Kyoto",
+      "###|Daigo II fled to Yoshino, where he established the Southern Court to continue opposing Takauji",
+      "###|Takauji appointed a puppet emperor to lead the Northern Court"
+    ],
+    "Date": "19 September 1339",
+    "Situation": "Death of Daigo II",
+    "Period": "The Northern and Southern Courts",
+    "Roles": {
+      "255": {
+        "Item1": "Governor",
+        "Item2": "Governors"
+      },
+      "0": {
+        "Item1": "Shogun",
+        "Item2": "Shoguns"
+      },
+      "1": {
+        "Item1": "Emperor",
+        "Item2": "Emperors"
+      },
+      "2": {
+        "Item1": "Regent",
+        "Item2": "Regents"
+      },
+      "252": {
+        "Item1": "Sovereign",
+        "Item2": "Sovereigns"
+      }
+    },
+    "Speaker": "Deputy",
+    "Region": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Regions": {},
+    "Party": {
+      "Item1": "Court",
+      "Item2": "Courts"
+    },
+    "Parties": {
+      "0": {
+        "Item1": "Northern Court",
+        "Item2": [
+          "#|Military faction",
+          "#|Rejects civilian control, but respects tradition and culture",
+          "##|Warriors are more numerous and powerful than the nobility",
+          "##|Promotes martial values"
+        ]
+      },
+      "1": {
+        "Item1": "Southern Court",
+        "Item2": [
+          "#|Imperial faction",
+          "#|Wants to re-establish imperial and civilian rule",
+          "##|This would increase the power of the nobility and the clergy",
+          "##|Promotes cultural development"
+        ]
+      },
+      "2": {
+        "Item1": "Eastern Court",
+        "Item2": []
+      }
+    },
+    "Abbreviations": {
+      "0": "Kyoto",
+      "1": "Yoshino",
+      "2": "Kamakura"
+    },
+    "Currencies": {
+      "0": "Province",
+      "1": "Province",
+      "2": "Province",
+      "254": "Province"
+    },
+    "Procedures": {
+      "0": {
+        "Item1": "Hereditary Succession",
+        "Item2": "This country\u0027s head of state is chosen based on familial lineage."
+      },
+      "1": {
+        "Item1": "Feudal Society",
+        "Item2": "This country\u0027s government rules through vassals, who have military and administrative authority over large swathes of land."
+      },
+      "2": {
+        "Item1": "Imperial Pretenders",
+        "Item2": "Japan is currently split into two factions led by opposing emperors, both of which claim legitimate rulership over Japan. This conflict has divided Japan so badly that it will take at least a few generations to conclude."
+      },
+      "3": {
+        "Item1": "Three Sacred Treasures",
+        "Item2": "The Three Sacred Treasures represent the divinity of the emperor and are currently in the Southern Court\u0027s posession, which makes the Southern emperor the legitimate emperor of Japan."
+      },
+      "4": {
+        "Item1": "Seiwa Minamoto Clan",
+        "Item2": "The current shogun is a descendent of emperor Seiwa, whose scions form a branch of the legendary Minamoto warrior clan. This grants his line a unique martial authority separate from that of the emperor."
+      },
+      "5": {
+        "Item1": "Three Sacred Treasures",
+        "Item2": ""
+      },
+      "6": {
+        "Item1": "Civil War",
+        "Item2": "The conflict between the Northern and Southern Courts has spilled into open warfare and will likely continue to do so in the future until one faction submits."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Expand the half-tax",
+        "Item3": [
+          "#|Half-tax forced some land owners to give half of their revenue to the shogun to fund his rebellion",
+          "#|Expanding the half-tax would force all estate-owners to give half of their land to the shogun",
+          "##|Most estate-owners are nobles",
+          "###|However, many governors and warriors illegally seized estates to support the shogun\u2019s rebellion",
+          "##|Shogun will reward his warriors with land for their loyalty",
+          "###|Warriors revolted against the emperor because they weren\u2019t rewarded",
+          "###|This could allow the warriors to create independent power bases"
+        ],
+        "Item4": [
+          "Experienced bureaucrats believe that expanding the warriors\u2019 power could destroy the regime",
+          "#|Some nobles are planning to defect to the emperor",
+          "#|For now, personal loyalty to the shogun prevents too much independent action"
+        ],
+        "Item5": [
+          "Shogun has lost the support of the warriors",
+          "#|At the same time, the warriors don\u2019t trust the emperor, who also betrayed their expectations",
+          "#|Powerful lords and warriors in Kanto join together to establish a rival military regime"
+        ]
+      },
+      "1": {
+        "Item1": "Incident A",
+        "Item2": "Create military governorships",
+        "Item3": [
+          "#|This would increase the involvement of the warriors in the bureaucracy",
+          "##|This would also be considered a reward for loyalty and further legitimise the land grants from the expanded half-tax",
+          "#|This is heavily opposed by the nobles and the clergy",
+          "##|They don\u2019t believe that illiterate warmongers could be considered their superiors or even equals",
+          "###|Even the peasants prefer noble overlords to warrior overlords",
+          "##|This would also reduce the shogun\u2019s reliance on civilian powerholders",
+          "###|Shogun wouldn\u2019t need imperial legitimacy to justify his reign"
+        ],
+        "Item4": [
+          "Regime loses most civilian support",
+          "#|Defectors flock to the Southern Court and agitate for an immediate offensive on Kyoto",
+          "##|Even members of the shogun\u2019s family believe that they would be better off supporting the emperor",
+          "Most warriors and governors remain loyal due to personal or familial ties to the shogun",
+          "#|However, their loyalty can\u2019t be guaranteed in the long-term"
+        ],
+        "Item5": [
+          "Most warriors have no reason to rebel",
+          "#|They already gained land through the half-tax",
+          "##|Some governors gradually take over the land of incapable warriors",
+          "Preventing further incursions upon civilian power somewhat appeases the governors",
+          "#|However, there is always the threat of the warriors gaining strength in the future"
+        ]
+      },
+      "2": {
+        "Item1": "Incident B",
+        "Item2": "Militarise the nobles",
+        "Item3": [
+          "#|This would force the nobles to provide military service",
+          "##|Nobles would have to learn to fight and lead armies",
+          "###|This would prevent the nobles from needing to rely on warriors to protect their holdings",
+          "####|Therefore, a civilian regime could be possible",
+          "###|This would restore some power to the weak nobles",
+          "##|This will infuriate the warriors",
+          "###|They currently enjoy privileged status thanks to their martial importance",
+          "####|However, they\u2019re also uneducated and obstructive in times of peace"
+        ],
+        "Item4": [
+          "Though this is a long-term programme, some results are already apparent",
+          "#|Nobles are nowhere near as powerful, useful, or numerous as the warriors",
+          "##|However, developing a separate power base does strengthen the regime",
+          "#|Many warriors feel threatened, leading to sporadic revolts throughout the country"
+        ],
+        "Item5": [
+          "Nobles question the regime\u2019s commitment to civilian rule",
+          "#|Without empowering the nobles, there is no plausible way to break the power of the warriors",
+          "Warriors retain their dominant position in society",
+          "#|However, many would like more power, which has so far been denied to them",
+          "##|Therefore, the regime is seen as stagnant",
+          "##|Some warriors prepare for another rebellion in order to expand their powers"
+        ]
+      },
+      "3": {
+        "Item1": "Incident C",
+        "Item2": "Establish the Deputy\u2019s Council",
+        "Item3": [
+          "#|Deputy\u2019s Council would manage relations between the shogun and the governors",
+          "#|Many governorships have been usurped by warriors",
+          "##|Therefore, this would combine the military and civilian aspects of the bureaucracy",
+          "###|This will improve the standing of the regime in the eyes of the peasants",
+          "#|This will weaken the governors",
+          "##|Settling any conflict outside of the council would be considered treason",
+          "###|By making war a last resort, the shogun can expand his influence through his deputy without actually needing a strong army"
+        ],
+        "Item4": [
+          "Governors become more loyal to the regime",
+          "#|They prefer to gain power through participation in government than through conquest",
+          "Some clans have become alarmingly powerful",
+          "#|They hold powerful positions on the Deputy\u2019s Council or aren\u2019t subject to its jurisdiction",
+          "##|They use their authority to build large power bases"
+        ],
+        "Item5": [
+          "Governors engage in regional conflicts",
+          "#|Some governors have become very powerful, but there is no legal mechanism to punish them",
+          "##|As a result, the shogun and his allies are forced to constantly attack exceptionally powerful governors",
+          "###|This stops any single governor from becoming too powerful",
+          "#|Over time, this leads to poverty in Japan",
+          "##|Constant warfare is extremely bad for civilians",
+          "###|Southern Court gains popularity among the peasants"
+        ]
+      },
+      "4": {
+        "Item1": "Ballot B",
+        "Item2": "Adopt a compulsory residence policy",
+        "Item3": [
+          "#|This would force every governor to live in Kyoto",
+          "##|If a governor must leave to put down a rebellion, then he must provide a hostage in exchange",
+          "##|This would dramatically weaken the governors",
+          "###|Governors would no longer be able to personally govern",
+          "####|They would need to appoint someone to govern in their names",
+          "###|Governors would be forced to maintain an extra residence",
+          "####|This would decrease their wealth significantly",
+          "####|However, mansion-building in Kyoto is fashionable anyway",
+          "###|Provincial strongmen could take over governance",
+          "####|This includes the warriors who were not given governorships"
+        ],
+        "Item4": [
+          "Intentionally left blank"
+        ],
+        "Item5": [
+          "Intentionally left blank"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot B Passed",
+        "Item2": [
+          "Government has guaranteed some degree of long-term stability",
+          "#|However, whether another class replaces the governors or the governors resurge in power is unknown"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot A Passed",
+        "Item2": [
+          "Warrior class has been elevated at the expense of the nobles",
+          "#|In the long-term, this will probably lead to severe instability",
+          "##|However, with proper vassal management, the half-tax could also be a tool to stabilise the regime"
+        ]
+      },
+      "3": {
+        "Item1": "Incident C Passed",
+        "Item2": [
+          "Regime has a strong support base",
+          "#|Strengthening the warriors at the expense of the nobles was a net benefit",
+          "#|However, by weakening the governors as well, the regime has made several enemies",
+          "Japan remains stable with a number of localised conflicts mostly caused by upstart governors",
+          "#|However, as time passes, loyalty ties will be forgotten and Japan could be destroyed in a civil war",
+          "##|Regime is too reliant on the support of the warriors"
+        ]
+      },
+      "4": {
+        "Item1": "Incident C Failed",
+        "Item2": [
+          "In the short-term, the regime is much more unstable",
+          "#|Without any legal structure to contain their power, many governors revolt or are pre-emptively suppressed",
+          "##|However, every failed revolt strengthens the regime and its supporters further",
+          "#|Eventually, the power of the governors is broken and assumed by the government",
+          "##|Though still unstable, Japan would need a severe crisis to collapse entirely"
+        ]
+      },
+      "5": {
+        "Item1": "Ballot A Failed",
+        "Item2": [
+          "Backlash against the shogun leads to a more civilian-led regime",
+          "#|Whether the government is truly committed to civilian rule, especially in the long-term, is unknown"
+        ]
+      },
+      "6": {
+        "Item1": "Incident B Passed",
+        "Item2": [
+          "Government consolidates its rule",
+          "#|Many consider this to be a revival of the Heian Period",
+          "##|However, there\u2019s too much conflict to make cultural accomplishments of similar magnitude",
+          "Despite the weakening of the warriors, the governors continue to resist central rule",
+          "#|Governors are actually more powerful",
+          "##|Warriors are no longer a credible threat to their rule",
+          "#|Japan no longer faces an ideological split",
+          "##|If the governors can be reigned in, then the government may be able to centralise governance entirely"
+        ]
+      },
+      "7": {
+        "Item1": "Incident B Failed",
+        "Item2": [
+          "Eventually, the warriors are able to restore their influence in government",
+          "#|This essentially returns Japan to its state immediately after the end of the Kenmu Restoration"
+        ]
+      },
+      "8": {
+        "Item1": "Ballot B Failed",
+        "Item2": [
+          "Government is destined to collapse",
+          "#|There is no way to guarantee stability in the face of ambitious and capable governors",
+          "#|Eventually, Japan enters a prolonged period of civil war, known as the Warring States Period"
+        ]
+      }
+    }
+  }
+}

@@ -66,9 +66,13 @@ internal class CompilerViewModel : ViewModel {
         _simulations.Add (new (new Argentina ()));
         _simulations.Add (new (new Australia ()));
         _simulations.Add (new (new Canada ()));
+        _simulations.Add (new (new China ()));
         _simulations.Add (new (new Colombia ()));
+        _simulations.Add (new (new Hungary ()));
         _simulations.Add (new (new Indonesia ()));
+        _simulations.Add (new (new Japan ()));
         _simulations.Add (new (new Malaysia ()));
+        _simulations.Add (new (new Poland ()));
         _simulations = [.. _simulations.OrderBy (s => s.Name)];
     }
 
@@ -79,6 +83,12 @@ internal class CompilerViewModel : ViewModel {
                 Filter = "Simulation files (*.sim)| *.sim",
                 FileName = _simulations[_selectedIdx].Name.ToLower (),
             };
+
+            WasCompilationSuccess = false;
+            WasCompilationFailure = false;
+            Name = _simulations[_selectedIdx].Name;
+            Filename = "a .sim file";
+
             bool? result = file.ShowDialog ();
 
             if (result is null or false) {

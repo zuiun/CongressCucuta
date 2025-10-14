@@ -720,7 +720,7 @@
           "##|It wants to establish an Islamic state in Indonesia",
           "##|However, the rebellion is almost defeated",
           "###|Aceh and Borneo are on the verge of reclamation",
-          "###|Pasundan and Celebes will take longer to pacify",
+          "###|Sunda and Celebes will take longer to pacify",
           "###|Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the ABRI",
           "##|This would lessen tensions, especially in Aceh",
           "House of Islam will be militarily suppressed if this ballot fails"
@@ -728,13 +728,14 @@
         "Item4": [
           "House of Islam is destroyed",
           "#|Aceh becomes an autonomous province",
-          "#|Borneo, Celebes, and Pasundan surrender after a few years, receiving no concessions",
+          "#|Borneo, Celebes, and Sunda surrender after a few years, receiving no concessions",
           "Masyumi loses influence in the government",
           "#|However, political circumstances could change this"
         ],
         "Item5": [
           "House of Islam is brutally crushed",
-          "#|Masyumi is purged and NU is closely monitored",
+          "#|Masyumi is purged and supplanted by a parallel organisation, Revival of the Ulama (NU)",
+          "##|NU is closely monitored",
           "#|ABRI is hailed as a bringer of stability"
         ]
       },

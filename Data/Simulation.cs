@@ -330,7 +330,7 @@ internal class Simulation {
             }
         }
 
-        for (byte i = 0; i < Parties.Count; ++i) {
+        for (byte i = 0; i < Parties.Count; ++ i) {
             byte partyIdxOffset = Parties[0].ID;
 
             if (Parties[i].ID - partyIdxOffset != i) {
@@ -338,35 +338,35 @@ internal class Simulation {
             }
         }
 
-        for (byte i = 0; i < ProceduresGovernmental.Count; ++i) {
+        for (byte i = 0; i < ProceduresGovernmental.Count; ++ i) {
             if (ProceduresGovernmental[i].ID != i) {
-                throw new ArgumentException ($"ProcedureImmediate ID {ProceduresGovernmental[i].ID} does not match its index in ProceduresGovernmental");
+                throw new ArgumentException ($"ProcedureImmediate ID {ProceduresGovernmental[i].ID} does not match its index {i} in ProceduresGovernmental");
             }
         }
 
-        for (byte i = 0; i < ProceduresSpecial.Count; ++i) {
-            byte procedureIdxOffset = ProceduresSpecial[0].ID;
+        for (byte i = 0; i < ProceduresSpecial.Count; ++ i) {
+            byte procedureIdxOffset = (byte) ProceduresGovernmental.Count;
 
             if (ProceduresSpecial[i].ID - procedureIdxOffset != i) {
-                throw new ArgumentException ($"ProcedureTargeted ID {ProceduresSpecial[i].ID} does not match its offset index in ProceduresSpecial");
+                throw new ArgumentException ($"ProcedureTargeted ID {ProceduresSpecial[i].ID} does not match its offset index {i + procedureIdxOffset} in ProceduresSpecial");
             }
         }
 
-        for (byte i = 0; i < ProceduresDeclared.Count; ++i) {
-            byte procedureIdxOffset = ProceduresDeclared[0].ID;
+        for (byte i = 0; i < ProceduresDeclared.Count; ++ i) {
+            byte procedureIdxOffset = (byte) (ProceduresGovernmental.Count + ProceduresSpecial.Count);
 
             if (ProceduresDeclared[i].ID - procedureIdxOffset != i) {
-                throw new ArgumentException ($"ProcedureDeclared ID {ProceduresDeclared[i].ID} does not match its offset index in ProceduresDeclared");
+                throw new ArgumentException ($"ProcedureDeclared ID {ProceduresDeclared[i].ID} does not match its offset index {i + procedureIdxOffset} in ProceduresDeclared");
             }
         }
 
-        for (byte i = 0; i < Ballots.Count; ++i) {
+        for (byte i = 0; i < Ballots.Count; ++ i) {
             if (Ballots[i].ID != i) {
                 throw new ArgumentException ($"Ballot ID {Ballots[i].ID} does not match its index in Ballots");
             }
         }
 
-        for (byte i = 0; i < Results.Count; ++i) {
+        for (byte i = 0; i < Results.Count; ++ i) {
             if (Results[i].ID != i) {
                 throw new ArgumentException ($"Result ID {Results[i].ID} does not match its index in Results");
             }
@@ -427,7 +427,7 @@ internal class Simulation {
                         break;
                     case Ballot.Effect.ActionType.ModifyCurrency:
                         if (e.TargetIDs[0] == Currency.STATE) {
-                            if (!CurrenciesValues.ContainsKey (Currency.STATE)) {
+                            if (! CurrenciesValues.ContainsKey (Currency.STATE)) {
                                 throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
                             }
                         } else if (e.TargetIDs[0] == Currency.PARTY) {

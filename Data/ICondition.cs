@@ -145,7 +145,7 @@ internal readonly record struct BallotsPassedCountCondition (ICondition.Comparis
     public bool? YieldBallotVote () => null;
 }
 
-internal readonly record struct CurrencyValueCondition (IDType CurrencyID, ICondition.ComparisonType Comparison, byte Value) : ICondition {
+internal readonly record struct CurrencyValueCondition (IDType CurrencyID, ICondition.ComparisonType Comparison, sbyte Value) : ICondition {
     public bool Evaluate (ref readonly SimulationContext context) {
         return Comparison switch {
             ICondition.ComparisonType.Equal => context.GetCurrencyValue (CurrencyID) == Value,

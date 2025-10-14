@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 
 namespace congress_cucuta.Data;
 
@@ -312,7 +313,7 @@ internal class SimulationContext (Simulation simulation) {
                     throw new UnreachableException ();
                 }
             }
-            case Procedure.Confirmation.CostType.SingleDiceValue: {
+            case Procedure.Confirmation.CostType.DiceValue: {
                 int dice = _random.Next (1, 7);
 
                 if (dice >= confirmation.Value) {
@@ -321,7 +322,7 @@ internal class SimulationContext (Simulation simulation) {
                     return (false, $"Failure: Rolled {dice}, but needed at least {confirmation.Value}");
                 }
             }
-            case Procedure.Confirmation.CostType.SingleDiceCurrency: {
+            case Procedure.Confirmation.CostType.DiceCurrency: {
                 IDType currencyId = ChooseCurrencyOwner (personId);
                 int dice = _random.Next (1, 7);
 
@@ -330,11 +331,33 @@ internal class SimulationContext (Simulation simulation) {
                     OnModifiedCurrencies ();
                     return (true, $"Success: Rolled and spent {dice}");
                 } else {
-                    return (false, $"Failure: Rolled {dice}, but needed at most {CurrenciesValues[currencyId]}");
+                    return (false, $"Failure: Rolled {dice}, but only had {CurrenciesValues[currencyId]} to spend");
+                }
+            }
+            case Procedure.Confirmation.CostType.DiceAdversarial: {
+                int diceDeclarer = _random.Next (1, 7);
+                int diceDefender = _random.Next (1, 7);
+
+                if (CurrenciesValues.Count > 0) {
+                    IDType currencyId = ChooseCurrencyOwner (personId);
+
+                    if (CurrenciesValues[currencyId] >= diceDeclarer) {
+                        CurrenciesValues[currencyId] -= (sbyte) diceDeclarer;
+                        OnModifiedCurrencies ();
+
+                    } else {
+                        return (false, $"Failure: Rolled {diceDeclarer}, but only had {CurrenciesValues[currencyId]} to spend");
+                    }
+                }
+
+                if (diceDeclarer >= diceDefender) {
+                    return (true, $"Success: Rolled and spent {diceDeclarer}, defeating {diceDefender}");
+                } else {
+                    return (false, $"Failure: Rolled and spent {diceDeclarer}, losing to {diceDefender}");
                 }
             }
             default:
-                throw new NotSupportedException ();
+                throw new UnreachableException ();
         }
     }
 
@@ -372,28 +395,28 @@ internal class SimulationContext (Simulation simulation) {
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionRegion: {
-                    Election election = new (procedureId, e, false);
+                    Election election = new (procedureId, e);
 
                     OnPrepareElection ([election]);
                     Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionParty: {
-                    Election election = new (procedureId, e, false);
+                    Election election = new (procedureId, e);
 
                     OnPrepareElection ([election]);
                     Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionNominated: {
-                    Election election = new (procedureId, e, false);
+                    Election election = new (procedureId, e);
 
                     OnPrepareElection ([election]);
                     Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.ActionType.ElectionAppointed: {
-                    Election election = new (procedureId, e, false);
+                    Election election = new (procedureId, e);
 
                     OnPrepareElection ([election]);
                     Context.ResetVotes ();
@@ -477,7 +500,7 @@ internal class SimulationContext (Simulation simulation) {
                     case Procedure.Effect.ActionType.ElectionParty:
                     case Procedure.Effect.ActionType.ElectionNominated:
                     case Procedure.Effect.ActionType.ElectionAppointed:
-                        elections.Add (new Election (p, e, true));
+                        elections.Add (new Election (p, e));
                         break;
                     case Procedure.Effect.ActionType.PermissionsCanVote: {
                         bool canVote = e.Value > 0;
@@ -613,7 +636,7 @@ internal class SimulationContext (Simulation simulation) {
         }
 
         if (effectsElections.Count > 0) {
-            List<Election> elections = effectsElections.ConvertAll (e => new Election (e.Item1, e.Item2, false));
+            List<Election> elections = effectsElections.ConvertAll (e => new Election (e.Item1, e.Item2));
 
             OnPrepareElection (elections);
         }

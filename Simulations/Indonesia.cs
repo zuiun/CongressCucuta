@@ -126,7 +126,7 @@ internal class Indonesia : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionAppointed, [president]),
                 new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri], 1),
             ],
-            new (Procedure.Confirmation.CostType.SingleDiceCurrency),
+            new (Procedure.Confirmation.CostType.DiceCurrency),
             0,
             [pki.ID, masyumi.ID]
         );
@@ -313,7 +313,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("It wants to establish an Islamic state in Indonesia", 2),
                 StringLineFormatter.Indent ("However, the rebellion is almost defeated", 2),
                 StringLineFormatter.Indent ("Aceh and Borneo are on the verge of reclamation", 3),
-                StringLineFormatter.Indent ("Pasundan and Celebes will take longer to pacify", 3),
+                StringLineFormatter.Indent ("Sunda and Celebes will take longer to pacify", 3),
                 StringLineFormatter.Indent ("Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the ABRI", 3),
                 StringLineFormatter.Indent ("This would lessen tensions, especially in Aceh", 2),
                 "House of Islam will be militarily suppressed if this ballot fails",
@@ -321,13 +321,14 @@ internal class Indonesia : ISimulation {
             [
                 "House of Islam is destroyed",
                 StringLineFormatter.Indent ("Aceh becomes an autonomous province", 1),
-                StringLineFormatter.Indent ("Borneo, Celebes, and Pasundan surrender after a few years, receiving no concessions", 1),
+                StringLineFormatter.Indent ("Borneo, Celebes, and Sunda surrender after a few years, receiving no concessions", 1),
                 "Masyumi loses influence in the government",
                 StringLineFormatter.Indent ("However, political circumstances could change this", 1),
             ],
             [
                 "House of Islam is brutally crushed",
-                StringLineFormatter.Indent ("Masyumi is purged and NU is closely monitored", 1),
+                StringLineFormatter.Indent ("Masyumi is purged and supplanted by a parallel organisation, Revival of the Ulama (NU)", 1),
+                StringLineFormatter.Indent ("NU is closely monitored", 2),
                 StringLineFormatter.Indent ("ABRI is hailed as a bringer of stability", 1),
             ]
         );

@@ -251,6 +251,8 @@ internal class ElectionShuffleAddViewModel : ElectionTypeViewModel {
 }
 
 internal class ElectionRegionViewModel : ElectionTypeViewModel {
+    private readonly bool _isRandom;
+
     public ElectionRegionViewModel (
         ElectionModel election,
         Dictionary<IDType, SortedSet<IDType>> peopleRoles,
@@ -274,6 +276,8 @@ internal class ElectionRegionViewModel : ElectionTypeViewModel {
             }
         }
 
+        _isRandom = election.IsRandom;
+
         foreach (var kv in peopleFactions) {
             if (peopleRoles[kv.Key].All (r => ! election.FilterIDs.Contains (r))) {
                 int regionIdx;
@@ -289,7 +293,16 @@ internal class ElectionRegionViewModel : ElectionTypeViewModel {
                 }
 
                 PeopleFactionsNew[kv.Key] = (kv.Value.Item1, regionId);
-                AddPerson (regionId, kv.Key, people[kv.Key], IsLeaderNeeded);
+                AddPerson (regionId, kv.Key, people[kv.Key], IsLeaderNeeded && !_isRandom);
+            }
+        }
+
+        if (_isRandom) {
+            foreach (GroupViewModel group in _groupsPeople) {
+                int personIdx = _random.Next (group.People.Count);
+                IDType personId = group.People[personIdx].ID;
+
+                group.People[personIdx].IsCandidate = true;
             }
         }
 
@@ -301,6 +314,8 @@ internal class ElectionRegionViewModel : ElectionTypeViewModel {
 }
 
 internal class ElectionPartyViewModel : ElectionTypeViewModel {
+    private readonly bool _isRandom;
+
     public ElectionPartyViewModel (
         ElectionModel election,
         Dictionary<IDType, SortedSet<IDType>> peopleRoles,
@@ -324,6 +339,8 @@ internal class ElectionPartyViewModel : ElectionTypeViewModel {
             }
         }
 
+        _isRandom = election.IsRandom;
+
         foreach (var kv in peopleFactions) {
             if (peopleRoles[kv.Key].All (r => ! election.FilterIDs.Contains (r))) {
                 int partyIdx;
@@ -339,7 +356,16 @@ internal class ElectionPartyViewModel : ElectionTypeViewModel {
                 }
 
                 PeopleFactionsNew[kv.Key] = (partyId, kv.Value.Item2);
-                AddPerson (partyId, kv.Key, people[kv.Key], IsLeaderNeeded);
+                AddPerson (partyId, kv.Key, people[kv.Key], IsLeaderNeeded && ! _isRandom);
+            }
+        }
+
+        if (_isRandom) {
+            foreach (GroupViewModel group in _groupsPeople) {
+                int personIdx = _random.Next (group.People.Count);
+                IDType personId = group.People[personIdx].ID;
+
+                group.People[personIdx].IsCandidate = true;
             }
         }
 

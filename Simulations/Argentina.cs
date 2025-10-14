@@ -117,7 +117,7 @@ internal class Argentina : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionAppointed, [admiral, president, lieutenantGeneral]),
                 new (Procedure.Effect.ActionType.ElectionAppointed, [brigadierGeneral, president, lieutenantGeneral, admiral]),
             ],
-            new (Procedure.Confirmation.CostType.SingleDiceValue, 4),
+            new (Procedure.Confirmation.CostType.DiceValue, 4),
             0,
             [admiral, brigadierGeneral]
         );

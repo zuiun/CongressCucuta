@@ -7,13 +7,13 @@
     ],
     "BallotsProceduresDeclared": {
       "1": [
-        9
+        8
       ],
       "2": [
-        9
+        8
       ],
       "3": [
-        9
+        8
       ]
     }
   },
@@ -223,7 +223,7 @@
       "DeclarerIDs": [
         253
       ],
-      "ID": 8,
+      "ID": 7,
       "Effects": [
         {
           "Action": 13,
@@ -242,7 +242,7 @@
       "DeclarerIDs": [
         253
       ],
-      "ID": 9,
+      "ID": 8,
       "Effects": [
         {
           "Action": 10,
@@ -695,11 +695,11 @@
         "Item1": "13 May Incident",
         "Item2": ""
       },
-      "8": {
+      "7": {
         "Item1": "Royal Veto",
         "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
       },
-      "9": {
+      "8": {
         "Item1": "State of Emergency",
         "Item2": "The king can dissolve parliament and form an unelected government in times of major instability."
       }

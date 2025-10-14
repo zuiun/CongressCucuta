@@ -85,7 +85,14 @@ internal readonly record struct Ballot (IDType ID, Ballot.Result PassResult, Bal
                     List<string> result = [];
                     string procedureOriginal = localisation.Procedures[TargetIDs[0]].Item1;
                     string procedureNew = localisation.Procedures[TargetIDs[1]].Item1;
-                    string action = $"Replace {procedureOriginal} with {procedureNew}:";
+                    string action;
+
+                    if (procedureOriginal == procedureNew) {
+                        action = $"Modify {procedureOriginal}:";
+                    } else {
+                        action = $"Replace {procedureOriginal} with {procedureNew}:";
+                    }
+
                     Procedure procedure = simulation.ProceduresSpecial[TargetIDs[1] - simulation.ProceduresGovernmental.Count];
                     string procedureFull = procedure.ToString (in simulation, in localisation);
                     string[] procedureSplit = procedureFull.Split ('\n');

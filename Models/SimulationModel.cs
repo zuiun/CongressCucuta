@@ -199,6 +199,18 @@ internal class SimulationModel {
             titles.Add (headState.Item1);
         }
 
+        if (localisation.Roles.TryGetValue (Role.RESERVED_1, out (string, string) reserved1)) {
+            titles.Add (reserved1.Item1);
+        }
+
+        if (localisation.Roles.TryGetValue (Role.RESERVED_2, out (string, string) reserved2)) {
+            titles.Add (reserved2.Item1);
+        }
+
+        if (localisation.Roles.TryGetValue (Role.RESERVED_3, out (string, string) reserved3)) {
+            titles.Add (reserved3.Item1);
+        }
+
         if (simulation.Parties.Count > 0) {
             if (localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) leaderParty)) {
                 List<string> leadersParties = [];
@@ -229,18 +241,6 @@ internal class SimulationModel {
                 
                 titles.Add (StringLineFormatter.Indent (string.Join (", ", leadersRegions), 1));
             }
-        }
-
-        if (localisation.Roles.TryGetValue (Role.RESERVED_1, out (string, string) reserved1)) {
-            titles.Add (reserved1.Item1);
-        }
-
-        if (localisation.Roles.TryGetValue (Role.RESERVED_2, out (string, string) reserved2)) {
-            titles.Add (reserved2.Item1);
-        }
-
-        if (localisation.Roles.TryGetValue (Role.RESERVED_3, out (string, string) reserved3)) {
-            titles.Add (reserved3.Item1);
         }
 
         SlideBidirectionalModel slideTitles = new (

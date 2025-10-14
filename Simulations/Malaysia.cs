@@ -136,7 +136,7 @@ internal class Malaysia : ISimulation {
         );
         List<ProcedureTargeted> proceduresSpecial = [chongEuLim, conferenceRulers, thirteenMayIncident];
         ProcedureDeclared royalVeto = new (
-            8,
+            7,
             [
                 new (Procedure.Effect.ActionType.BallotFail, [])
             ],
@@ -145,7 +145,7 @@ internal class Malaysia : ISimulation {
             [king]
         );
         ProcedureDeclared stateEmergency = new (
-            9,
+            8,
             [
                 new (Procedure.Effect.ActionType.ElectionAppointed, [primeMinister, king]),
                 new (Procedure.Effect.ActionType.BallotLimit, [primeMinister, king]),

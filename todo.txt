@@ -1,17 +1,9 @@
-powerpoint has this horribly ugly ' and "" that need to be replaced
-
 Testing:
 write test suite
 
 Convert:
 Brazil
 Finland
-China?
-Poland?
-Spain?
-Argentina
-Japan?
-Hungary?
 
-adversarial die (japan)
-do not go back on end slide?
+should end slide be constant or backward?
+shift confirmation messages out of simulationcontext

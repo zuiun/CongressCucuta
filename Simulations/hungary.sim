@@ -1,0 +1,1115 @@
+{
+  "History": {
+    "BallotsPassed": [
+      0,
+      1,
+      2,
+      3,
+      5
+    ],
+    "BallotsProceduresDeclared": {}
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "254": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "253": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "0": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "1": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "2": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "3": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "252": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [],
+  "Parties": [
+    {
+      "ID": 0,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "IsActiveStart": false
+    },
+    {
+      "ID": 3,
+      "IsActiveStart": false
+    }
+  ],
+  "CurrenciesValues": {
+    "255": 1
+  },
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 8,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [],
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 5,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        3,
+        5
+      ],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 0,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 6,
+          "TargetIDs": [
+            1
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            1
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 15,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    }
+  ],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 6,
+      "Effects": [
+        {
+          "Action": 12,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 7,
+      "Effects": [
+        {
+          "Action": 13,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 8,
+      "Effects": [
+        {
+          "Action": 8,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "Ballots": [
+    {
+      "ID": 0,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 1,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 0,
+            "TargetIDs": [
+              2
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              255
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 2,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 0,
+            "TargetIDs": [
+              3
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 3,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              5
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 5
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 5
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 4,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              4,
+              5
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 5
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 5
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 5,
+      "PassResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "IsIncident": false
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 9
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 2
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 8
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": true
+          },
+          "TargetID": 3
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": false
+          },
+          "TargetID": 7
+        }
+      ]
+    },
+    {
+      "ID": 3,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 0,
+            "Value": 1
+          },
+          "TargetID": 4
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 0,
+            "Value": 2
+          },
+          "TargetID": 5
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 0,
+            "Value": 3
+          },
+          "TargetID": 6
+        }
+      ]
+    },
+    {
+      "ID": 4,
+      "Links": []
+    },
+    {
+      "ID": 5,
+      "Links": []
+    },
+    {
+      "ID": 6,
+      "Links": []
+    },
+    {
+      "ID": 7,
+      "Links": []
+    },
+    {
+      "ID": 8,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": true
+          },
+          "TargetID": 4
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": false
+          },
+          "TargetID": 7
+        }
+      ]
+    },
+    {
+      "ID": 9,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": true
+          },
+          "TargetID": 10
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": false
+          },
+          "TargetID": 15
+        }
+      ]
+    },
+    {
+      "ID": 10,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": true
+          },
+          "TargetID": 11
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 5,
+            "ShouldBePassed": false
+          },
+          "TargetID": 14
+        }
+      ]
+    },
+    {
+      "ID": 11,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 0,
+            "Value": 1
+          },
+          "TargetID": 12
+        },
+        {
+          "Condition": {
+            "$type": "CurrencyValueCondition",
+            "CurrencyID": 255,
+            "Comparison": 3,
+            "Value": 2
+          },
+          "TargetID": 13
+        }
+      ]
+    },
+    {
+      "ID": 12,
+      "Links": []
+    },
+    {
+      "ID": 13,
+      "Links": []
+    },
+    {
+      "ID": 14,
+      "Links": []
+    },
+    {
+      "ID": 15,
+      "Links": []
+    }
+  ],
+  "Localisation": {
+    "State": "Hungary",
+    "Government": "Elective Dictatorship",
+    "Context": [
+      "Hungary gained true independence after the Great War",
+      "#|However, Hungary was punished through the Treaty of Trianon for its participation in the war",
+      "##|Hungary was forced to accept severe army restrictions and cede more than two-thirds of her land",
+      "###|Over three million Hungarians now live in foreign states",
+      "#|Post-independence period has been extremely unstable",
+      "##|There has been a communist revolution, two attempts to restore the Habsburgs (one of which was a coup), and a major economic crisis"
+    ],
+    "Date": "22 December 1921",
+    "Situation": "Signing of the Bethlen-Peyer Pact",
+    "Period": "The Horthy Regency",
+    "Roles": {
+      "255": {
+        "Item1": "Member",
+        "Item2": "Members"
+      },
+      "254": {
+        "Item1": "Prime Minister",
+        "Item2": "Prime Ministers"
+      },
+      "253": {
+        "Item1": "Regent",
+        "Item2": "Regents"
+      },
+      "0": {
+        "Item1": "Party Leader of EP",
+        "Item2": "Party Leaders of EP"
+      },
+      "1": {
+        "Item1": "Party Leader of MSZDP",
+        "Item2": "Party Leaders of MSZDP"
+      },
+      "2": {
+        "Item1": "Party Leader of FKgP",
+        "Item2": "Party Leaders of FKgP"
+      },
+      "3": {
+        "Item1": "Party Leader of NAP",
+        "Item2": "Party Leaders of NAP"
+      },
+      "252": {
+        "Item1": "Party Leader",
+        "Item2": "Party Leaders"
+      }
+    },
+    "Speaker": "Speaker",
+    "Region": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Regions": {},
+    "Party": {
+      "Item1": "Party",
+      "Item2": "Parties"
+    },
+    "Parties": {
+      "0": {
+        "Item1": "Unity Party",
+        "Item2": [
+          "#|Relatively diverse umbrella party that holds nationalism at its core",
+          "##|Foreign policy completely concerned with the revision of the Treaty of Trianon"
+        ]
+      },
+      "1": {
+        "Item1": "Social Democratic Party of Hungary",
+        "Item2": [
+          "#|Liberal and socialist",
+          "##|Only powerful party that agitates for democracy and equality",
+          "#|Pacifist",
+          "##|Doesn\u2019t want to anger the great powers over the Treaty of Trianon"
+        ]
+      },
+      "2": {
+        "Item1": "Independent Smallholders\u0027 Party",
+        "Item2": []
+      },
+      "3": {
+        "Item1": "Party of National Will",
+        "Item2": []
+      }
+    },
+    "Abbreviations": {
+      "0": "EP",
+      "1": "MSZDP",
+      "2": "FKgP",
+      "3": "NAP"
+    },
+    "Currencies": {
+      "255": "Anti-Semitism"
+    },
+    "Procedures": {
+      "0": {
+        "Item1": "Kingdom Without a King",
+        "Item2": "This country\u0027s head of state is chosen based on familial lineage, but the absence of a legitimate ruler means that a regent governs in his stead."
+      },
+      "1": {
+        "Item1": "Legislative Election",
+        "Item2": "This country has a legislature with regular elections, along with an empowered head of government."
+      },
+      "2": {
+        "Item1": "Bulwark Against Bolshevism",
+        "Item2": "After the collapse of B\u00E9la Kun\u0027s regime in 1920, Hungarian society has swung to the right and is deeply suspicious of leftist ideals. Furthermore, the involvement of Jews in the revolution has greatly heightened anti-Semitism in Hungarian society."
+      },
+      "3": {
+        "Item1": "Trianon Trauma",
+        "Item2": "Politics in Hungary are dominated by revisionism regarding the Treaty of Trianon, which reduced Hungary\u0027s territory by two-thirds and left over three million Hungarians in foreign states. Popular slogans include \u0022No, no, never!\u0022 and \u0022Return everything!\u0022"
+      },
+      "4": {
+        "Item1": "Bethlen-Peyer Pact",
+        "Item2": "The Bethlen-Peyer Pact legalised the Social Democratic Party, but greatly limited the influence of labour unions, which is seen by many on the left as a great betrayal."
+      },
+      "5": {
+        "Item1": "Consolidation",
+        "Item2": "Hungary is currently receiving foreign loans and investment to rebuild and stabilise its economy, and the regent has backed and empowered the Unity Party in order to pursue these ends."
+      },
+      "6": {
+        "Item1": "Royal Prerogative",
+        "Item2": "This country\u0027s head of state is empowered to promulgate legislation without legislative oversight."
+      },
+      "7": {
+        "Item1": "Royal Veto",
+        "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
+      },
+      "8": {
+        "Item1": "Dissolution of the Diet",
+        "Item2": "This country\u0027s legislature is responsible to the head of state, which means that it can be replaced if it is seen to be inept."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Introduce racial quotas in universities",
+        "Item3": [
+          "#|This would admit students to universities based on their overall percentage of the population",
+          "##|Only Jews are over-represented in university studies",
+          "###|There is much anger over the apparent supremacy of Jews in society",
+          "####|Jews are also strongly associated with the failed communist revolution in Hungary",
+          "##|Reserving seats for Hungarian students would appease right-wing parties",
+          "###|However, this is sure to anger the League of Nations",
+          "####|Hungary is only being kept afloat by generous loans from the great powers"
+        ],
+        "Item4": [
+          "This is a very popular measure",
+          "#|Not very many people outright hate Jews, but everybody likes better opportunities for education",
+          "#|However, the League of Nations is displeased",
+          "##|This could derail the massive deficit spending that is currently taking place to stimulate the economy"
+        ],
+        "Item5": [
+          "Nothing really changes",
+          "#|There is some backlash by right-wing parties",
+          "##|However, they don\u2019t have enough power to be meaningful",
+          "#|League of Nations is pleased",
+          "##|However, this only results in diplomatic support, not necessarily investment or loan opportunities",
+          "###|Diplomatic support could still be useful in the future"
+        ]
+      },
+      "1": {
+        "Item1": "Incident A",
+        "Item2": "Repeal anti-Semitic laws",
+        "Item3": [
+          "#|There has been significant international backlash to the racial quota and other anti-Semitic laws",
+          "##|At the moment, this is the first obvious and most severe anti-Semitic law in existence",
+          "###|Though few people actually care about Jews, many are concerned about rising Hungarian populism and nationalism",
+          "##|This has resulted in less economic support from the League of Nations and the liberal West",
+          "###|Though the economy is currently stable, various investment schemes depend on the generosity of the UK to provide capital for industrial projects",
+          "###|Hungary will be forced closer to Italy if this situation isn\u0027t rectified"
+        ],
+        "Item4": [
+          "Diplomatic support is restored",
+          "#|This could be used to gain more economic support from the West in the future",
+          "#|However, there are many people who are displeased with Western meddling in Hungarian politics",
+          "This does not preclude further anti-Semitic laws in the future"
+        ],
+        "Item5": [
+          "Hungary continues to be shunned by the liberal world",
+          "#|However, Italy happily accepts a revisionist ally into its sphere",
+          "##|Hungarian dependence on Italian ports and imports ties it even closer to the growing fascist movement",
+          "#|Fascism is growing in both Hungary and Germany",
+          "##|Fascism is still fringe in Hungary, but many rightists have fascist sympathies",
+          "###|This could lead to eventual rapprochement with Germany"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot B",
+        "Item2": "Sign a trade deal with Germany",
+        "Item3": [
+          "#|Great Depression has completely destroyed Hungary\u2019s export-based economy",
+          "##|This has driven industrial workers and peasants into poverty, unemployment, and desperation",
+          "#|This trade deal would exchange Hungarian wheat for German industrial equipment",
+          "##|Hungary is one of Europe\u2019s largest wheat producers",
+          "###|Hungary relies totally on its wheat exports to survive",
+          "##|Germany is one of Europe\u2019s largest industrial powers",
+          "###|Germany has other ways to get the wheat it needs, so it will practically dictate the terms of the agreement"
+        ],
+        "Item4": [
+          "Hungary\u2019s economy is finally stable",
+          "#|Increased support from Germany greatly increases support for fascism",
+          "##|Many hope that Germany could push for revision to the Treaty of Trianon",
+          "###|However, Germany sees Hungary as a disposable pawn",
+          "#|There is no more support for the liberal West",
+          "##|There will no longer be any way to revise the Treaty of Trianon without war with the West"
+        ],
+        "Item5": [
+          "Hungary resists German pressure",
+          "#|This greatly bolsters liberal parties",
+          "##|Surge of liberal political thought in Hungary is very attractive to the West",
+          "#|This has severe economic consequences",
+          "##|Trade hasn\u2019t recovered at all and there is still no way for Hungary to expand its own industrial capabilities",
+          "##|However, it should now be relatively easy to seek economic aid from the West"
+        ]
+      },
+      "3": {
+        "Item1": "Incident B",
+        "Item2": "Establish corporatism",
+        "Item3": [
+          "#|Though the economy is now recovering, unemployment is still rampant",
+          "##|Factory workers have difficulty finding work",
+          "###|Even with German equipment, a strong industrial base takes a long time to develop, so labour opportunities are still rare",
+          "##|Corporatism could be used to create job opportunities and better conditions for workers",
+          "###|However, most industrial enterprises are state-owned, so this will likely have little effect on factory workers",
+          "#|This will push Hungary firmly into the Italian sphere",
+          "##|Germany will also see this favourably as fascist sentiment"
+        ],
+        "Item4": [
+          "Hungary is well on its path to fascism",
+          "#|This simultaneously hurts the regent\u2019s control over parliamentary politics",
+          "#|All that remains is to destroy all remnants of the parliamentary system",
+          "#|This brings Hungary irreversibly into the German and the Italian spheres",
+          "##|Without any other reliable allies, Hungary ultimately can\u2019t pursue much of an independent foreign policy"
+        ],
+        "Item5": [
+          "Development of fascism is hindered",
+          "#|Hungary avoids being too heavily influenced by Germany and Italy",
+          "##|However, this could result in less support in the future",
+          "#|This is relatively popular",
+          "##|Most Hungarians are proud of their heritage and would rather not be too influenced by foreign ideologies"
+        ]
+      },
+      "4": {
+        "Item1": "Incident C",
+        "Item2": "Petition the UK for aid",
+        "Item3": [
+          "#|This would guarantee British access to the Manfr\u00E9d Weiss Csepel Works and wheat production in exchange for loans, protection, and industrial aid",
+          "##|UK desperately needs steel and wheat imports",
+          "###|Csepel Works is Hungary\u2019s only major steel mill",
+          "####|Losing control of it could have severe effects on self-sufficiency",
+          "##|This requires that Hungary drops its claims on Backa and Mura",
+          "###|These lands hold significant Hungarian minorities but amount to a small amount of territory",
+          "###|This is necessary as Yugoslavia is the only easily-accessible UK-aligned state that can allow transit of goods"
+        ],
+        "Item4": [
+          "British aid comes along with a major expansion of democratic ideals",
+          "#|Liberals begin to demonstrate for a dismantling of the old political system, citing the Twelve Points of 1848",
+          "##|This eventually leads to the rehabilitation of the MSZDP",
+          "Many people are somewhat angry",
+          "#|Losing control of steel production is a massive hit to national prestige"
+        ],
+        "Item5": [
+          "Hungary attempts to carve out a non-aligned path for itself",
+          "#|However, this comes at a severe cost to the people",
+          "##|Refusing aid prevents the economy from recovering",
+          "###|Many people care about independence, but they care more about escaping poverty",
+          "#|Without any major allies, it will be impossible to demand a revision of the Treaty of Trianon",
+          "##|All of the relevant countries, except Austria, could easily defeat Hungary in a war"
+        ]
+      },
+      "5": {
+        "Item1": "Ballot C",
+        "Item2": "Demand revisions to the Treaty of Trianon",
+        "Item3": [
+          "#|This will be the culmination of all policy efforts",
+          "#|Demanding revisions without enough support from a major ally could be extremely problematic",
+          "##|Demands could be refused",
+          "##|Hungary could be considered too dangerous to continue supporting",
+          "#|War seems forthcoming over German revisionism",
+          "##|Choosing not to pursue revision could keep Hungary neutral, or at least not result in punitive border changes"
+        ],
+        "Item4": [
+          "Intentionally left blank"
+        ],
+        "Item5": [
+          "Intentionally left blank"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot B Passed",
+        "Item2": [
+          "Germany becomes Hungary\u2019s only ally",
+          "#|Shift towards fascism has forced Hungary away from its traditional allies in the West",
+          "##|This means that Western aid and trade slowly ends",
+          "Domestic politics becomes very polarised",
+          "#|Traditional power structures have been greatly disrupted"
+        ]
+      },
+      "2": {
+        "Item1": "Incident B Passed",
+        "Item2": [
+          "As Europe falls further and further into chaos, Hungary is forced closer and closer to Germany",
+          "#|Hungary\u2019s economy is almost totally under German control",
+          "#|Eventually, this results in Hungary submitting control of its foreign policy to Germany"
+        ]
+      },
+      "3": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Hungary calls for revision of the Treaty of Trianon with German mediation",
+          "#|Whether Germany will support Hungary depends on how much Hungary subscribes to fascist ideals"
+        ]
+      },
+      "4": {
+        "Item1": "One Anti-Semitism or Ballot C Passed",
+        "Item2": [
+          "Germany refuses to support Hungary\u2019s claims",
+          "#|This is met with great anger",
+          "#|When the rest of the Axis invades Yugoslavia, Hungary invades as well",
+          "##|Hungary manages to occupy Backa",
+          "Hungary has made an enemy of Germany",
+          "#|Germany immediately annexes Hungary once at war with the USSR",
+          "##|Hungary becomes a Soviet puppet after the war",
+          "###|Hungary loses all of its gains"
+        ]
+      },
+      "5": {
+        "Item1": "Two Anti-Semitism",
+        "Item2": [
+          "Germany reluctantly supports Hungary\u2019s claims",
+          "#|Hungary gains Backa and southern Slovakia",
+          "Hungary has maintained some of its independent identity",
+          "#|Germany turns Hungary into a puppet state near the end of its war with the USSR",
+          "##|Hungary becomes a Soviet puppet after the war",
+          "###|Hungary loses all of its gains as well as some Czechoslovak border villages"
+        ]
+      },
+      "6": {
+        "Item1": "Three Anti-Semitism",
+        "Item2": [
+          "Germany eagerly supports Hungary\u2019s claims",
+          "#|Hungary gains Backa, southern Slovakia, Carpathian Ruthenia, and Szeklerland",
+          "Hungary has totally submitted to Germany",
+          "#|Germany turns Hungary into a puppet state once at with the USSR",
+          "##|Hungary becomes a Soviet puppet after the war",
+          "###|Hungary loses all of its gains as well as Transtisza and some Czechoslovak border villages"
+        ]
+      },
+      "7": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Hungary refuses to call for revision of the Treaty of Trianon",
+          "#|This completely contradicts Hungary\u2019s general shift to the right and is met with extreme anger",
+          "##|This also makes Germany question Hungary\u2019s reliability as an ally",
+          "##|However, once war breaks out, the people begin to calm down and worry instead about an invasion of Hungary",
+          "###|Germany eventually invades Hungary once at war with the USSR",
+          "Hungary becomes a Soviet puppet after the war",
+          "#|There are no punitive border changes"
+        ]
+      },
+      "8": {
+        "Item1": "Incident B Failed",
+        "Item2": [
+          "Hungary attempts not to fall into Germany\u2019s sphere",
+          "#|Germany is mostly satisfied with dominating Hungary\u2019s economy",
+          "##|This prevents Hungary from being too independent anyway",
+          "##|However, Germany is still angry that Hungary is attempting to subvert German domination"
+        ]
+      },
+      "9": {
+        "Item1": "Ballot B Failed",
+        "Item2": [
+          "Hungary refuses to enter the German sphere",
+          "#|This is problematic as Germany is a natural ally due to its geographical location",
+          "##|This makes economic development a greater challenge",
+          "#|This sparks some interest by the Western powers, which want to strengthen their hold over the Balkans",
+          "##|However, many are wary of Hungary\u2019s traditional enemies"
+        ]
+      },
+      "10": {
+        "Item1": "Incident C Passed",
+        "Item2": [
+          "Hungary joins the British sphere",
+          "#|Many powerful people are Anglophiles, but this still comes as a surprise to the common people",
+          "#|Concessions necessary to maintain British support infuriate many",
+          "##|Nationalists are especially angry at the revocation of claims to Backa and Mura and British rights to the Csepel Works",
+          "###|This severely weakens Hungary\u2019s position in the Balkans"
+        ]
+      },
+      "11": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Hungary calls for revision of the Treaty of Trianon with British mediation",
+          "#|Whether the UK will support Hungary depends on how much Hungary subscribes to democratic ideals"
+        ]
+      },
+      "12": {
+        "Item1": "One Anti-Semitism",
+        "Item2": [
+          "UK reluctantly supports Hungary\u2019s claims",
+          "#|Hungary gains Maramures",
+          "##|This is only possible because of Romania\u2019s submission to Germany",
+          "Hungary has made an enemy of Germany",
+          "#|Germany immediately invades Hungary once at war with the USSR",
+          "##|Hungary remains independent after the war",
+          "###|Hungary retains its gains",
+          "###|This is dependent on total neutrality, as with Austria"
+        ]
+      },
+      "13": {
+        "Item1": "Two or Greater Anti-Semitism",
+        "Item2": [
+          "UK refuses to support Hungary\u2019s claims",
+          "#|This is met with great anger",
+          "#|Hungary attempts to realign behind Germany",
+          "##|However, Germany doesn\u2019t trust Hungary",
+          "Hungary has made an enemy of both Germany and the UK",
+          "#|Germany immediately annexes Hungary once at war with the USSR",
+          "##|Hungary becomes a Soviet puppet after the war",
+          "###|Hungary loses Transtisza and some Czechoslovak border villages"
+        ]
+      },
+      "14": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Hungary refuses to call for revision of the Treaty of Trianon",
+          "#|This is somewhat consistent with Hungary\u2019s shift to the left, but is still very disappointing",
+          "Hungary has made an enemy of Germany",
+          "#|Germany immediately invades Hungary once at war with the USSR",
+          "##|Hungary remains independent after the war",
+          "###|Hungary is rewarded with parts of Crisana and Maramures for the efforts of her partisans"
+        ]
+      },
+      "15": {
+        "Item1": "Incident C Failed",
+        "Item2": [
+          "Hungary attempts to maintain a totally non-aligned path",
+          "#|Hungary can\u2019t find any support for its ailing economy or irredentist claims",
+          "##|This causes massive unrest",
+          "###|However, once war breaks out, the people begin to calm down and worry instead about an invasion of Hungary",
+          "####|Germany eventually invades Hungary once at war with the USSR",
+          "Hungary remains independent after the war",
+          "#|There are no punitive border changes",
+          "#|This is dependent on total neutrality, as with Austria"
+        ]
+      }
+    }
+  }
+}

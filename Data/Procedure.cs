@@ -14,17 +14,19 @@ internal abstract class Procedure (
          * Always: always succeeds
          * DivisionChamber: simple majority vote, succeeds if vote passes
          * CurrencyValue: succeeds if Currency is higher than Value, Value is subtracted from Currency
-         * SingleDiceValue: rolls one dice, succeeds if dice >= Value
-         * SingleDiceCurrency: rolls one dice, succeeds if dice <= Currency, dice is subtracted from Currency
-         * AdversarialDice: rolls two die representing declarer and others, whichever dice is higher gets positive effects of Procedure
+         * DiceValue: rolls one dice, succeeds if dice >= Value
+         * DiceCurrency: rolls one dice, succeeds if dice <= Currency, dice is subtracted from Currency
+         * DiceAdversarial: rolls two die representing declarer and other,
+         * succeeds if declarer's dice >= other's dice,
+         * declarer's dice is subtracted from declarer's Currency if present
          */
         internal enum CostType {
             Always,
             DivisionChamber,
             CurrencyValue,
-            SingleDiceValue,
-            SingleDiceCurrency,
-            // AdversarialDice,
+            DiceValue,
+            DiceCurrency,
+            DiceAdversarial,
         }
     }
 
@@ -86,6 +88,7 @@ internal abstract class Procedure (
              *
              * Immediate, Declared
              * Targets Roles (populated: excluded)
+             * Value (0: choose LEADER_REGION, anything else: random LEADER_REGION)
              */
             ElectionRegion,
             /*
@@ -94,6 +97,7 @@ internal abstract class Procedure (
              *
              * Immediate, Declared
              * Targets Roles (populated: excluded)
+             * Value (0: choose LEADER_PARTY, anything else: random LEADER_PARTY)
              */
             ElectionParty,
             /*
@@ -104,10 +108,11 @@ internal abstract class Procedure (
              */
             ElectionNominated,
             /*
-             * Appoints (randomly when Immediate) Target Role
+             * Appoints Target Role
              *
              * Immediate, Declared
              * Targets Roles (populated: specified [first], excluded [remainder])
+             * Value (0: choose Target, anything else: random Target)
              */
             ElectionAppointed,
             /*
@@ -381,13 +386,19 @@ internal abstract class Procedure (
                 case ActionType.ElectionRegion: {
                     string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Randomly aligns with a {localisation.Region.Item1}", 2);
+                    bool isRandom = Value > 0;
 
                     result.Add (target);
                     result.Add (action);
 
-                    if (localisation.Roles.TryGetValue (Role.LEADER_REGION, out (string, string) locs)) {
-                        result.Add (StringLineFormatter.Indent ("Election:", 1));
-                        result.Add (StringLineFormatter.Indent (locs.Item2, 2));
+                    if (localisation.Roles.TryGetValue (Role.LEADER_REGION, out (string, string) leader)) {
+                        result.Add (StringLineFormatter.Indent ($"Every {localisation.Region.Item1}:", 1));
+
+                        if (isRandom) {
+                            result.Add (StringLineFormatter.Indent ($"Randomly appoints {leader.Item1}", 2));
+                        } else {
+                            result.Add (StringLineFormatter.Indent ($"Elects {leader.Item1}", 2));
+                        }
                     }
 
                     break;
@@ -395,13 +406,19 @@ internal abstract class Procedure (
                 case ActionType.ElectionParty: {
                     string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 1);
                     string action = StringLineFormatter.Indent ($"Randomly aligns with a {localisation.Party.Item1}", 2);
+                    bool isRandom = Value > 0;
 
                     result.Add (target);
                     result.Add (action);
 
-                    if (localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) locs)) {
-                        result.Add (StringLineFormatter.Indent ("Election:", 1));
-                        result.Add (StringLineFormatter.Indent (locs.Item2, 2));
+                    if (localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) leader)) {
+                        result.Add (StringLineFormatter.Indent ($"Every {localisation.Party.Item1}:", 1));
+
+                        if (isRandom) {
+                            result.Add (StringLineFormatter.Indent ($"Randomly appoints {leader.Item1}", 2));
+                        } else {
+                            result.Add (StringLineFormatter.Indent ($"Elects {leader.Item1}", 2));
+                        }
                     }
 
                     break;
@@ -411,8 +428,7 @@ internal abstract class Procedure (
                     string target = targets[0];
                     string candidates = targets[1];
 
-                    result.Add (StringLineFormatter.Indent ("Election:", 1));
-                    result.Add (StringLineFormatter.Indent ($"{target}", 2));
+                    result.Add (StringLineFormatter.Indent ($"Elect {target}:", 1));
                     result.Add (StringLineFormatter.Indent (candidates, 2));
                     result.Add (StringLineFormatter.Indent ("Can be nominated", 3));
                     break;
@@ -421,8 +437,14 @@ internal abstract class Procedure (
                     string[] targets = TargetToString (this, in localisation).Split ('\n');
                     string target = targets[0];
                     string candidates = targets[1];
+                    bool isRandom = Value > 0;
 
-                    result.Add (StringLineFormatter.Indent ($"Appoints {target}", 1));
+                    if (isRandom) {
+                        result.Add (StringLineFormatter.Indent ($"Randomly appoint {target}:", 1));
+                    } else {
+                        result.Add (StringLineFormatter.Indent ($"Appoint {target}:", 1));
+                    }
+
                     result.Add (StringLineFormatter.Indent (candidates, 2));
                     result.Add (StringLineFormatter.Indent ("Can be nominated", 3));
                     break;
@@ -561,9 +583,7 @@ internal class ProcedureImmediate : Procedure {
         foreach (Effect e in Effects) {
             string effect = e.ToString (in simulation, in localisation);
 
-            if (e.Action is Effect.ActionType.ElectionAppointed) {
-                effect = effect.Replace ("Appoints", "Randomly appoint");
-            } else if (
+            if (
                 e.Action is Effect.ActionType.PermissionsCanVote
                 or Effect.ActionType.PermissionsVotes
                 or Effect.ActionType.PermissionsCanSpeak
@@ -774,9 +794,9 @@ internal class ProcedureDeclared : Procedure {
 
                 return $"Can spend {Confirm.Value} from {string.Join (", ", currencies)}";
             }
-            case Confirmation.CostType.SingleDiceValue:
+            case Confirmation.CostType.DiceValue:
                 return $"Dice roll greater than or equal to {Confirm.Value}";
-            case Confirmation.CostType.SingleDiceCurrency: {
+            case Confirmation.CostType.DiceCurrency: {
                 HashSet<string> currencies = [];
 
                 foreach (IDType d in DeclarerIDs) {
@@ -797,6 +817,32 @@ internal class ProcedureDeclared : Procedure {
 
                 return $"Can spend dice roll from {string.Join (", ", currencies)}";
             }
+            case Confirmation.CostType.DiceAdversarial: {
+                HashSet<string> currencies = [];
+                string dice = "Declarer's dice roll greater than or equal to defender's dice roll";
+
+                foreach (IDType d in DeclarerIDs) {
+                    if (
+                        d == Role.MEMBER
+                        || d == Role.HEAD_GOVERNMENT
+                        || d == Role.HEAD_STATE
+                    ) {
+                        currencies.Add (localisation.Currencies[Currency.STATE]);
+                    } else if (d == Role.LEADER_PARTY) {
+                        currencies.Add (localisation.Currencies[Currency.PARTY]);
+                    } else if (d == Role.LEADER_REGION) {
+                        currencies.Add (localisation.Currencies[Currency.REGION]);
+                    } else {
+                        currencies.Add (localisation.Currencies[d]);
+                    }
+                }
+
+                if (localisation.Currencies.Count > 0) {
+                    return $"Can spend declarer's dice roll from {string.Join (", ", currencies)}\n{dice}";
+                } else {
+                    return dice;
+                }
+            }
             default:
                 throw new UnreachableException ();
         }
@@ -808,11 +854,11 @@ internal class ProcedureDeclared : Procedure {
         List<string> result = [localisation.Procedures[ID].Item1];
         string declarer = StringLineFormatter.Indent (DeclarerToString (in localisation), 1);
         string canDeclare = StringLineFormatter.Indent ("Can declare if:", 2);
-        string confirmation = StringLineFormatter.Indent (ConfirmationToString (in localisation), 3);
+        string[] confirmation = ConfirmationToString (in localisation).Split ('\n');
 
         result.Add (declarer);
         result.Add (canDeclare);
-        result.Add (confirmation);
+        result.AddRange (confirmation.Select (c => StringLineFormatter.Indent (c, 3)));
 
         foreach (Effect e in Effects) {
             string action = e.ToString (in simulation, in localisation);

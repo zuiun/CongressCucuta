@@ -53,7 +53,7 @@ internal class Australia : ISimulation {
         ProcedureImmediate commonwealthRealm = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral]),
+                new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral], 1),
                 new (Procedure.Effect.ActionType.PermissionsCanVote, [governorGeneral], 0),
             ]
         );

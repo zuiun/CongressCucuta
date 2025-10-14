@@ -1,0 +1,1010 @@
+{
+  "History": {
+    "BallotsPassed": [
+      0,
+      1,
+      2,
+      4
+    ],
+    "BallotsProceduresDeclared": {}
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "254": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "0": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "1": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "2": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "252": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [],
+  "Parties": [
+    {
+      "ID": 0,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "IsActiveStart": true
+    }
+  ],
+  "CurrenciesValues": {},
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 8,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            2
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 15,
+          "TargetIDs": [
+            2
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [
+        1,
+        2
+      ],
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 2,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 6,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 16,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 15,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 2
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 6,
+      "Effects": [
+        {
+          "Action": 6,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 15,
+          "TargetIDs": [
+            1
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [],
+      "ID": 7,
+      "Effects": [
+        {
+          "Action": 14,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [],
+      "ID": 8,
+      "Effects": [
+        {
+          "Action": 14,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 16,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": false
+    }
+  ],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 1,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [],
+      "ID": 9,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "Ballots": [
+    {
+      "ID": 0,
+      "PassResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 1,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              3,
+              6
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 2,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              4,
+              7
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              5
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 3,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 1,
+            "TargetIDs": [
+              2
+            ],
+            "Value": 0
+          },
+          {
+            "Action": 3,
+            "TargetIDs": [
+              7,
+              8
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 4,
+      "PassResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "IsIncident": false
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 10
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 0,
+            "ShouldBePassed": true
+          },
+          "TargetID": 2
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 0,
+            "ShouldBePassed": false
+          },
+          "TargetID": 9
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": true
+          },
+          "TargetID": 3
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": false
+          },
+          "TargetID": 8
+        }
+      ]
+    },
+    {
+      "ID": 3,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 4
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 5
+        }
+      ]
+    },
+    {
+      "ID": 4,
+      "Links": []
+    },
+    {
+      "ID": 5,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": true
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": false
+          },
+          "TargetID": 7
+        }
+      ]
+    },
+    {
+      "ID": 6,
+      "Links": []
+    },
+    {
+      "ID": 7,
+      "Links": []
+    },
+    {
+      "ID": 8,
+      "Links": []
+    },
+    {
+      "ID": 9,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 4
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 5
+        }
+      ]
+    },
+    {
+      "ID": 10,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": true
+          },
+          "TargetID": 11
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": false
+          },
+          "TargetID": 14
+        }
+      ]
+    },
+    {
+      "ID": 11,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": true
+          },
+          "TargetID": 12
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": false
+          },
+          "TargetID": 13
+        }
+      ]
+    },
+    {
+      "ID": 12,
+      "Links": []
+    },
+    {
+      "ID": 13,
+      "Links": []
+    },
+    {
+      "ID": 14,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": true
+          },
+          "TargetID": 15
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": false
+          },
+          "TargetID": 16
+        }
+      ]
+    },
+    {
+      "ID": 15,
+      "Links": []
+    },
+    {
+      "ID": 16,
+      "Links": []
+    }
+  ],
+  "Localisation": {
+    "State": "Poland",
+    "Government": "Parliamentary Republic",
+    "Context": [
+      "Poland gained its independence from Russia and Germany in the aftermath of the Great War",
+      "#|After defeating the USSR in the Polish-Soviet War, Polish society became badly divided",
+      "##|Ethnic and religious minorities were all extremely concerned for their future in an increasingly right-wing Poland",
+      "##|Polish independence was spearheaded by leftists, who held significant power through the army",
+      "###|This includes J\u00F3zef Pi\u0142sudski, who led the war against the USSR and has since retired",
+      "#|After the elections of 1922, the new centrist president was assassinated by rightists",
+      "##|This upset the delicate balance of power holding Poland together"
+    ],
+    "Date": "19 December 1923",
+    "Situation": "Ascension of W\u0142adys\u0142aw Grabski",
+    "Period": "Parliamentocracy",
+    "Roles": {
+      "255": {
+        "Item1": "Deputy",
+        "Item2": "Deputies"
+      },
+      "254": {
+        "Item1": "Prime Minister",
+        "Item2": "Prime Ministers"
+      },
+      "0": {
+        "Item1": "Party Leader of Chjeno-Piast",
+        "Item2": "Party Leaders of Chjeno-Piast"
+      },
+      "1": {
+        "Item1": "Party Leader of PPS",
+        "Item2": "Party Leaders of PPS"
+      },
+      "2": {
+        "Item1": "Party Leader of BMN",
+        "Item2": "Party Leaders of BMN"
+      },
+      "252": {
+        "Item1": "Party Leader",
+        "Item2": "Party Leaders"
+      }
+    },
+    "Speaker": "Marshal",
+    "Region": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Regions": {},
+    "Party": {
+      "Item1": "Party",
+      "Item2": "Parties"
+    },
+    "Parties": {
+      "0": {
+        "Item1": "Chjeno-Piast",
+        "Item2": [
+          "#|Coalition of Catholic hardliners and nationalists",
+          "#|Right, vilified by labourers and non-Poles"
+        ]
+      },
+      "1": {
+        "Item1": "Polish Socialist Party",
+        "Item2": [
+          "#|Historically prominent democratic socialist party",
+          "#|Left, but increasingly fractured"
+        ]
+      },
+      "2": {
+        "Item1": "Bloc of National Minorities",
+        "Item2": [
+          "#|Minorities opposed to a united Polish state",
+          "#|Generally left, but only out of necessity"
+        ]
+      }
+    },
+    "Abbreviations": {
+      "1": "PPS",
+      "2": "BMN"
+    },
+    "Currencies": {},
+    "Procedures": {
+      "0": {
+        "Item1": "General Election",
+        "Item2": "This country has a legislature with regular elections, along with an empowered head of government."
+      },
+      "1": {
+        "Item1": "Article 95",
+        "Item2": "The March Constitution explicitly grants equal rights to minority ethnonational and religious groups, who make up a third of the Polish population, but in practice this protection is rarely enforced and often actively opposed."
+      },
+      "2": {
+        "Item1": "Assassination of Gabriel Narutowicz",
+        "Item2": "Narutowicz was never a popular politician, being a centrist and sympathetic to Jews, but his assassination ruined the reputation of rightists in the eyes of many, especially J\u00F3zef Pi\u0142sudski, the most powerful person in Poland."
+      },
+      "3": {
+        "Item1": "Partitioned Poland",
+        "Item2": "Even after independence, the scars of the Partitions of Poland remain - there are obvious regional disparities in wealth, German trade and businesses dominate the economy, and there is no unified rail network, much less unified politics."
+      },
+      "4": {
+        "Item1": "Ukrainian Military Organisation",
+        "Item2": "Ukrainians are generally opposed to living in a Polish state, and some took up arms against Poland in an attempt to become free. The Ukrainian Military Organisation is by far the most powerful of such insurgent groups."
+      },
+      "5": {
+        "Item1": "Moral Nations",
+        "Item2": "Everyone agrees that something is wrong with Polish society, but nobody knows what exactly - it reveals itself through religion, women\u0027s dress, sexual expression, and language, and there will be dire consequences if this problem is not solved."
+      },
+      "6": {
+        "Item1": "Railwaymen\u0027s Union",
+        "Item2": ""
+      },
+      "7": {
+        "Item1": "Ukrainian Military Organisation",
+        "Item2": ""
+      },
+      "8": {
+        "Item1": "Ethnic Insurgents",
+        "Item2": ""
+      },
+      "9": {
+        "Item1": "Vote of No Confidence",
+        "Item2": "This country\u0027s head of government is responsible to the legislature, which means that he can be removed if he is seen to be inept."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Establish the Bank of Poland",
+        "Item3": [
+          "#|Poland has been suffering from hyperinflation",
+          "##|Great War and Polish-Soviet War were extremely expensive",
+          "##|There is little foreign investment, especially since Germany is Poland\u2019s largest trade partner",
+          "#|Creating a national bank would involve issuing a new gold-backed currency and issuing shares to citizens",
+          "##|This would limit inflation, but could also lead to severe price discrepancies",
+          "##|This would lessen government control over monetary policy"
+        ],
+        "Item4": [
+          "Bank of Poland is surprisingly successful",
+          "#|New currency reduces inflation dramatically",
+          "#|More stocks are issued to match demand",
+          "#|Foreign investors have much more confidence in the security of the Polish economy",
+          "Government now has an effective ally that can conduct monetary policy"
+        ],
+        "Item5": [
+          "Hyperinflation continues to run rampant",
+          "#|This badly hurts industrial growth",
+          "##|Surprisingly, this unites workers and capitalists in opposition to the government",
+          "#|Farmers benefit from high agricultural prices"
+        ]
+      },
+      "1": {
+        "Item1": "Incident A",
+        "Item2": "Unite the rail networks",
+        "Item3": [
+          "#|Polish rail networks are made of separate rail networks inherited from the partitioning powers",
+          "##|Western Poland has the best rail network, but it is broken by the new German border",
+          "#|This would improve economic growth at a major cost to the treasury",
+          "##|Farmers would benefit most from being able to easily ship their products west",
+          "##|Additionally, the railway workers are unionised, which means that this would greatly strengthen the PPS",
+          "##|This would also help decrease reliance on German trade"
+        ],
+        "Item4": [
+          "Railroad building greatly improves the economy",
+          "#|Additionally, a new seaport in Gdynia is being expanded to bypass German trade routes",
+          "#|However, this places railroad operation at the mercy of the PPS"
+        ],
+        "Item5": [
+          "Divisions between western and eastern Poland become more and more pronounced",
+          "#|This also greatly weakens minority groups",
+          "##|Their participation in the economy is dependent on railroads from southern and eastern Poland"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot B",
+        "Item2": "Close minority schools",
+        "Item3": [
+          "#|One-third of the population is minorities",
+          "##|Most are Jews or Ukrainians",
+          "##|Significant portion is Germans, Lithuanians, and White Ruthenians",
+          "##|Many of these minorities, especially Ukrainians, Germans, and Lithuanians, have national aspirations that cannot feasibly be crushed",
+          "#|This would begin the process of Polonisation, assimilating the minorities",
+          "##|This will be extremely unpopular among the minorities and could worsen insurgent activities"
+        ],
+        "Item4": [
+          "Ukrainian insurgents increase their activities",
+          "#|Assassinations and bombings become commonplace in Galicia",
+          "Lithuania protests strongly",
+          "#|Fate of Lithuanian minorities could be used as a bargaining chip in future diplomatic relations"
+        ],
+        "Item5": [
+          "Minority rights remain legally protected",
+          "#|This policy remains tenuous, but it is settled for now",
+          "#|Ukrainian insurgents still want independence and remain in violent opposition",
+          "#|Schools in Volhynia promote loyalty to Poland while also teaching Ukrainian",
+          "##|Only time will tell if this policy will succeed"
+        ]
+      },
+      "3": {
+        "Item1": "Incident A",
+        "Item2": "Dissolve minority organisations",
+        "Item3": [
+          "#|This would end minority participation in government",
+          "##|Any loyalist Ukrainians are likely to join insurgent groups",
+          "##|Lithuanians and White Ruthenians, who have so far been relatively quiet, are likely to create insurgent groups",
+          "##|Germans are likely to bide their time until Germany invades",
+          "#|If minorities aren\u2019t quickly assimilated, then Poland\u2019s existence will be at threat",
+          "##|USSR, Lithuania, and Germany all want Polish land and may make use of minority plight to make demands"
+        ],
+        "Item4": [
+          "Poland devolves into a low-intensity civil war",
+          "#|Allies consider abandoning Poland entirely",
+          "##|British public opinion is overwhelmingly opposed to heavy-handed repression",
+          "##|France worries that Poland has made too many enemies"
+        ],
+        "Item5": [
+          "Polonisation cannot continue much further",
+          "#|Allowing minority organisations to persist guarantees that many minorities will maintain some aspects of their culture",
+          "#|Polish allies are thankful that they will not need to come to Poland\u2019s aid in the near future",
+          "##|However, diplomatic conditions are already set for war"
+        ]
+      },
+      "4": {
+        "Item1": "Ballot C",
+        "Item2": "Raise tariffs on German imports",
+        "Item3": [
+          "#|German businesses overwhelmingly dominate the Polish economy",
+          "##|Raising tariffs would help limit their competitiveness while also bringing in additional revenue",
+          "##|This state of affairs is extremely favourable for Germany, which doesn\u2019t need Polish trade",
+          "#|This policy will likely be economically disastrous in the short-term, but could lead to better self-sufficiency in the long-term",
+          "##|In any case, there are many potential trade partners nearby"
+        ],
+        "Item4": [
+          "Trade war begins disastrously",
+          "#|Economy crashes due to German opposition",
+          "#|Germany stops importing coal and steel, which were Poland\u2019s main industrial exports",
+          "Gradually, trade routes are established with other states",
+          "#|Italy and Czechoslovakia make up for some of the lost exports",
+          "#|Economy survives for now, but a global recession could ruin this tenuous situation"
+        ],
+        "Item5": [
+          "German economic dominance over Poland increases",
+          "#|Many prominent German newspapers explicitly propose using economic leverage to demand territorial cessions",
+          "##|If Germany cannot be appeased, then war is very likely"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot B Passed",
+        "Item2": [
+          "Pi\u0142sudski is angered by the lack of consensus in Polish society",
+          "#|Most leftists agree with him",
+          "#|Most of the Warsaw garrison defects and joins Pi\u0142sudski, who demands the resignation of the government"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot A Passed",
+        "Item2": [
+          "Due to generally satisfactory policy by the rightists, some soldiers oppose Pi\u0142sudski",
+          "#|Fighting breaks out and a civil war seems inevitable"
+        ]
+      },
+      "3": {
+        "Item1": "Incident A Passed",
+        "Item2": [
+          "PPS declares a general strike and the railways are paralysed",
+          "#|Since reinforcements won\u2019t arrive anytime soon, the rightists surrender",
+          "Pi\u0142sudski is now a dictator",
+          "#|Due to deep societal conflict, Pi\u0142sudski will have to tread carefully to avoid alienating his supporters"
+        ]
+      },
+      "4": {
+        "Item1": "Incident B Passed",
+        "Item2": [
+          "Southern and eastern Poland are under a permanent state of siege",
+          "#|Constant reprisals against minority insurgents only inflame the conflict more",
+          "#|Polonisation efforts can be stopped, but not reversed, while minorities are openly warring against the state",
+          "Poland\u2019s internal conflict makes any external conflict much more deadly",
+          "#|Current conflict with Germany has passed, but the next will guarantee the end of Poland"
+        ]
+      },
+      "5": {
+        "Item1": "Incident B Failed",
+        "Item2": [
+          "Southern and eastern Poland are under a state of siege",
+          "#|Over time, some minorities grow to tolerate Polish rule and some Polonisation policies are reversed",
+          "#|However, Pi\u0142sudski\u2019s dream of a multi-ethnic, tolerant Poland will never come to fruition"
+        ]
+      },
+      "6": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Poland slowly grows in self-sufficiency, until the Great Depression arrives",
+          "#|Luckily, previous economic policy prevents some classes from being hit as hard as other classes",
+          "##|Pi\u0142sudski is slow to implement reforms to address this",
+          "Class conflict eventually ends, but minority opposition remains dangerous",
+          "#|Poland is in a precarious situation, but reliable allies could prevent Polish independence from being threatened again"
+        ]
+      },
+      "7": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Continued reliance on Germany is deeply distressing",
+          "#|Once the Great Depression hits, the economy collapses due to lack of German trade",
+          "##|No previous economic policy could possibly have saved Poland from the Great Depression",
+          "##|Pi\u0142sudski is also unsure of how to solve this problem",
+          "No neighbouring states are willing to help Poland recover",
+          "#|Poland won\u2019t be able to defend itself in the future"
+        ]
+      },
+      "8": {
+        "Item1": "Incident A Failed",
+        "Item2": [
+          "Loyalist reinforcements arrive and the rightists continue to refuse to back down",
+          "#|Pi\u0142sudski also refuses to back down and civil war breaks out",
+          "With two evenly matched opponents, this civil war will not end anytime soon",
+          "#|Poland will most likely never recover from this conflict",
+          "#|Ethnic insurgents revolt for independence",
+          "#|USSR, Lithuania, and Germany consider intervening to secure their land claims"
+        ]
+      },
+      "9": {
+        "Item1": "Ballot A Failed",
+        "Item2": [
+          "Without much military opposition, Pi\u0142sudski seizes control of Warsaw quickly",
+          "Pi\u0142sudski is now a dictator",
+          "#|Due to his quick and easy seizure of power, Pi\u0142sudski can easily direct policy as he sees fit"
+        ]
+      },
+      "10": {
+        "Item1": "Ballot B Failed",
+        "Item2": [
+          "Pi\u0142sudski cautiously accepts the government",
+          "#|His dream of a multi-ethnic, tolerant Poland may be possible in the future, since ethnoreligious rights have been protected"
+        ]
+      },
+      "11": {
+        "Item1": "Incident A Passed",
+        "Item2": [
+          "Railroads help decrease severe wealth differences across Poland",
+          "#|Additionally, economic opportunity helps to soothe minority discontent",
+          "#|This endeavour was very expensive and Poland will remain vulnerable to outside pressures without allies"
+        ]
+      },
+      "12": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "New trade routes and political protections help to protect Poland from Germany",
+          "#|However, whether these allies will truly be reliable in the future remains to be seen",
+          "Overall, Poland is doing very well",
+          "#|Unless a major political realignment takes place, which is very possible, Poland should not have to worry about internal conflict much",
+          "#|External conflict may be devastating, but Poland will at least have a fighting chance"
+        ]
+      },
+      "13": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Despite all of Poland\u2019s advancements, reliance on Germany remains a dangerous weakness",
+          "#|Lack of reliable allies also contributes to this reliance",
+          "Great Depression crashes the Polish economy",
+          "#|Luckily, this does not stoke too much internal conflict, but this is still extremely concerning",
+          "#|In this weakened state, Poland will have to recover quickly if she wants to protect her independence"
+        ]
+      },
+      "14": {
+        "Item1": "Incident A Failed",
+        "Item2": [
+          "Lack of significant economic investment proves dangerous in the face of external opposition",
+          "#|USSR, Lithuania, and Germany spread anti-Polish propaganda, with varying degrees of success",
+          "##|Minorities may not be living well, but they\u2019re not being oppressed",
+          "##|This could change in the future"
+        ]
+      },
+      "15": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Trade war significantly heightens German opposition without a reasonable way out",
+          "#|Some economic reforms are quickly enacted, but the initial impact has already hit and Poland will not recover for some time",
+          "Great Depression crashes the Polish economy",
+          "#|Some regions are hit much worse than others, which fuels significant resentment",
+          "#|Poland will probably not recover quickly enough to protect its independence"
+        ]
+      },
+      "16": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Germans become more and more powerful",
+          "#|Not only is the economy largely controlled by Germans, but their rights are protected as well",
+          "##|This means that Poles now cannot afford to anger Germany too much, unless they want Poland to collapse",
+          "Great Depression crashes the Polish economy",
+          "#|Recovery is largely in German hands, but Germany\u2019s weakness makes this a chance to stop this pseudo-puppet state situation",
+          "#|Whether Poland\u2019s allies are reliable enough to help Poland break away is uncertain"
+        ]
+      }
+    }
+  }
+}

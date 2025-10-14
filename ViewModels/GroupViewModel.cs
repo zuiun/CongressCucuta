@@ -4,11 +4,18 @@ using congress_cucuta.Data;
 namespace congress_cucuta.ViewModels;
 internal class GroupViewModel (IDType id, string name, bool isLeaderNeeded) : ViewModel, IID {
     internal class PersonGroup (IDType id, IDType factionId, string name, bool isCandidate = false) : ViewModel, IID {
+        private bool _isCandidate = isCandidate;
         private bool _isSelected = false;
         public IDType ID => id;
         public IDType FactionID => factionId;
         public string Name => name;
-        public bool IsCandidate => isCandidate;
+        public bool IsCandidate {
+            get => _isCandidate;
+            set {
+                _isCandidate = value;
+                OnPropertyChanged ();
+            }
+        }
         public bool IsSelected {
             get => _isSelected;
             set {
