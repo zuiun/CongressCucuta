@@ -1,0 +1,941 @@
+{
+  "History": {
+    "BallotsPassed": [
+      1,
+      2
+    ],
+    "BallotsProceduresDeclared": {
+      "0": [
+        10
+      ],
+      "1": [
+        11
+      ],
+      "2": [
+        11
+      ],
+      "4": [
+        10
+      ]
+    }
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "254": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "253": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "0": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "1": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "2": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "3": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "252": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [],
+  "Parties": [
+    {
+      "ID": 0,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 3,
+      "IsActiveStart": false
+    }
+  ],
+  "CurrenciesValues": {},
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 8,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [],
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 6,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        1,
+        3,
+        4
+      ],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 6,
+          "TargetIDs": [
+            1
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        0
+      ],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 1,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 15,
+          "TargetIDs": [
+            2
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [
+        3
+      ],
+      "ID": 6,
+      "Effects": [
+        {
+          "Action": 0,
+          "TargetIDs": [],
+          "Value": 2
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [
+        4
+      ],
+      "ID": 7,
+      "Effects": [
+        {
+          "Action": 1,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    }
+  ],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 1,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [],
+      "ID": 8,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 9,
+      "Effects": [
+        {
+          "Action": 13,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 10,
+      "Effects": [
+        {
+          "Action": 8,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 11,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            254,
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "Ballots": [
+    {
+      "ID": 0,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              4,
+              6
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              4,
+              7
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 1,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 0,
+            "TargetIDs": [
+              3
+            ],
+            "Value": 0
+          },
+          {
+            "Action": 2,
+            "TargetIDs": [
+              5
+            ],
+            "Value": 0
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 2,
+      "PassResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "ProcedureActiveCondition",
+              "ProcedureID": 6,
+              "ShouldBeActive": true
+            },
+            "TargetID": 3
+          },
+          {
+            "Condition": {
+              "$type": "ProcedureActiveCondition",
+              "ProcedureID": 6,
+              "ShouldBeActive": false
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "ProcedureActiveCondition",
+              "ProcedureID": 7,
+              "ShouldBeActive": true
+            },
+            "TargetID": 3
+          },
+          {
+            "Condition": {
+              "$type": "ProcedureActiveCondition",
+              "ProcedureID": 7,
+              "ShouldBeActive": false
+            },
+            "TargetID": 4
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 3,
+      "PassResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "IsIncident": true
+    },
+    {
+      "ID": 4,
+      "PassResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "IsIncident": true
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 2
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": []
+    },
+    {
+      "ID": 2,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": true
+          },
+          "TargetID": 3
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 4,
+            "ShouldBePassed": false
+          },
+          "TargetID": 6
+        }
+      ]
+    },
+    {
+      "ID": 3,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 4
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 5
+        }
+      ]
+    },
+    {
+      "ID": 4,
+      "Links": []
+    },
+    {
+      "ID": 5,
+      "Links": []
+    },
+    {
+      "ID": 6,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": true
+          },
+          "TargetID": 7
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": false
+          },
+          "TargetID": 8
+        }
+      ]
+    },
+    {
+      "ID": 7,
+      "Links": []
+    },
+    {
+      "ID": 8,
+      "Links": []
+    }
+  ],
+  "Localisation": {
+    "State": "Finland",
+    "Government": "Mixed Republic",
+    "Context": [
+      "Finland exited WWII with extremely strained relations with the USSR",
+      "#|USSR demanded war reparations, a naval base, military transit, and some foreign policy alignment",
+      "##|This became known as the YYA Treaty",
+      "##|Balancing Finland\u0027s independence with trade and military considerations was paramount",
+      "###|Soviets regularly intervene to replace unsatisfactory government ministers with the threat of sanctions",
+      "Finland was also facing its own past",
+      "#|Nationalism was a major factor contributing to war",
+      "#|History of repression and autocracy"
+    ],
+    "Date": "3 February 1959",
+    "Situation": "End of the Night Frost crisis",
+    "Period": "Finlandisation",
+    "Roles": {
+      "255": {
+        "Item1": "Member",
+        "Item2": "Members"
+      },
+      "254": {
+        "Item1": "Prime Minister",
+        "Item2": "Prime Ministers"
+      },
+      "253": {
+        "Item1": "President",
+        "Item2": "Presidents"
+      },
+      "0": {
+        "Item1": "Chairman of Ml",
+        "Item2": "Chairmen of Ml"
+      },
+      "1": {
+        "Item1": "Chairman of SDP",
+        "Item2": "Chairmen of SDP"
+      },
+      "2": {
+        "Item1": "Chairman of Kok",
+        "Item2": "Chairmen of Kok"
+      },
+      "3": {
+        "Item1": "Chairman of SFP",
+        "Item2": "Chairmen of SFP"
+      },
+      "252": {
+        "Item1": "Chairman",
+        "Item2": "Chairmen"
+      }
+    },
+    "Speaker": "Speaker",
+    "Region": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Regions": {},
+    "Party": {
+      "Item1": "Party",
+      "Item2": "Parties"
+    },
+    "Parties": {
+      "0": {
+        "Item1": "Agrarian League",
+        "Item2": [
+          "#|Centre, populist party",
+          "#|Supports small businesses and decentralisation"
+        ]
+      },
+      "1": {
+        "Item1": "Social Democratic Party of Finland",
+        "Item2": [
+          "#|Left, anti-Soviet party",
+          "#|Nebulous ideology, but mostly supports local powers"
+        ]
+      },
+      "2": {
+        "Item1": "National Coalition Party",
+        "Item2": [
+          "#|Centre-right, anti-Soviet party",
+          "#|Classically liberal and interested in individual rights"
+        ]
+      },
+      "3": {
+        "Item1": "Swedish People\u0027s Party of Finland",
+        "Item2": []
+      }
+    },
+    "Abbreviations": {
+      "0": "Ml",
+      "1": "SDP",
+      "2": "Kok",
+      "3": "SFP"
+    },
+    "Currencies": {},
+    "Procedures": {
+      "0": {
+        "Item1": "Legislative Election",
+        "Item2": "This country has a legislature with regular elections, along with an empowered head of government."
+      },
+      "1": {
+        "Item1": "Presidential Election",
+        "Item2": "This country has a powerful, elected executive who is separate from the legislature."
+      },
+      "2": {
+        "Item1": "Paasikivi Doctrine",
+        "Item2": "Finland\u0027s continued existence depends on the mercy of the USSR - a mercy which may not last long, and which previous governments have committed to preserving at almost any cost."
+      },
+      "3": {
+        "Item1": "K-Line",
+        "Item2": "Supporters of the president manipulate politics through backdoor channels, avoiding official decrees and votes. Their rationale is simple: only Urho Kekkonen can maintain the confidence of the USSR, and he must stay in power."
+      },
+      "4": {
+        "Item1": "Lingering Night Frost",
+        "Item2": "The current government lives in the shadow of a Soviet spectre: a \u0022night frost\u0022 hangs in the air, and threatens to descend at any time."
+      },
+      "5": {
+        "Item1": "Academic Karelia Society",
+        "Item2": "The Academic Karelia Society was an anti-Soviet organisation that demanded the conquest of Karelia. Though it no longer exists, many societal leaders remember the organisation with fondness and continue to sympathise with its precepts."
+      },
+      "6": {
+        "Item1": "Activated YYA Treaty",
+        "Item2": ""
+      },
+      "7": {
+        "Item1": "Note Crisis",
+        "Item2": ""
+      },
+      "8": {
+        "Item1": "Vote of No Confidence",
+        "Item2": "This country\u0027s head of government is responsible to the legislature, which means that he can be removed if he is seen to be inept."
+      },
+      "9": {
+        "Item1": "Veto",
+        "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
+      },
+      "10": {
+        "Item1": "Dissolution of Parliament",
+        "Item2": "This country\u0027s legislature is responsible to the head of state, which means that it can be put up for election if it is seen to be inept."
+      },
+      "11": {
+        "Item1": "Ministerial Appointment",
+        "Item2": "This country\u0027s head of state is empowered to appoint government ministers, which drastically reduces legislative independence."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Join the European Free Trade Association",
+        "Item3": [
+          "#|European Free Trade Association (EFTA) consists of the Nordics, Austria, Switzerland, and the UK",
+          "##|It eliminates industrial tariffs between members, but does not constrain external trade",
+          "##|Essentially, the EFTA exists on the periphery of Europe",
+          "#|While this would normally be a good idea, recent events make it somewhat inadvisable",
+          "##|Berlin Wall is currently being built, with American and Soviet forces on high alert",
+          "##|Cuba just underwent a communist revolution",
+          "##|USSR has just tested the world\u0027s most powerful nuclear weapon",
+          "###|USSR could very well make a show of force to discourage a westward shift",
+          "We will settle for association with the EFTA if this ballot fails"
+        ],
+        "Item4": [
+          "USSR summons Finnish leadership for military consultations",
+          "#|They cite the threat of \u0022German\u0022 imperialism, though this is obviously a cover for the West",
+          "#|They propose to activate the military provisions of the YYA Treaty",
+          "##|This would essentially place Finnish defence and foreign policy under Soviet control",
+          "Even after a tense meeting with the Soviets, they refuse to back down",
+          "#|With no American support forthcoming and not much of a military, Finland becomes a Soviet ally",
+          "##|Mercifully, the Soviets allow significant internal autonomy",
+          "#|US takes the matter to the UN, but little of substance happens"
+        ],
+        "Item5": [
+          "USSR summons Finnish leadership for military consultations",
+          "#|They cite the threat of \u0022German\u0022 imperialism, though this is obviously a cover for the West",
+          "#|They propose to activate the military provisions of the YYA Treaty",
+          "##|This would essentially place Finnish defence and foreign policy under Soviet control",
+          "After a tense meeting with the Soviets, they back down",
+          "#|USSR agrees to postpone consultations to a later date, as long as their interests aren\u0027t threatened",
+          "#|Finland retains its neutrality for the time being",
+          "##|Finland associates with EFTA as planned"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot B",
+        "Item2": "Mandate Swedish in primary schools",
+        "Item3": [
+          "#|Less than 8% of the population speaks Swedish",
+          "##|However, western and southern coasts have Swedish majorities",
+          "##|Swedish was the state and elite language for most of Finland\u0027s history, so it retains significant prestige",
+          "#|Despite Soviet dominance, Sweden remains one of Finland\u0027s most important allies and trading partners",
+          "##|This makes it relatively important for business",
+          "#|Mandating Swedish will be seen as a step towards the West",
+          "##|Ironically, it will also be seen as a nationalist policy, given the importance of Swedish literature to Finnish culture",
+          "###|Even the national anthem is actually a Swedish tune, translated to Finnish"
+        ],
+        "Item4": [
+          "This policy is extemely unpopular",
+          "#|However, mandatory Swedish becomes the rallying cry of the Swedish minority",
+          "##|This is the first step towards their end goal of full bilingualism",
+          "#|Many question why students can\u0027t opt for a more useful language, like English",
+          "On the other hand, mandatory Swedish becomes a unique facet of Finnish culture",
+          "#|Anything is better than learning Russian"
+        ],
+        "Item5": [
+          "Swedish minority is disgruntled",
+          "#|They complain about \u0022mandatory Finnish,\u0022 although there is no widespread discontent",
+          "Business largely goes on as usual",
+          "#|Some speculate that refusing to mandate Swedish could actually lead to a resurgence in its popularity among bilingual Finnish-Swedish speakers"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot C",
+        "Item2": "Negotiate a comprehensive income policy agreement",
+        "Item3": [
+          "#|Finnish economy is almost entirely unionised",
+          "##|Non-union members benefit from labour agreements being universally valid",
+          "#|This would take collective bargaining to a national level",
+          "##|Trade unions, companies, and the government would negotiate on wages for all industries",
+          "##|Goal is to control inflation, increase real income, and maintain industrial competitiveness",
+          "##|Even if an agreement is reached, it\u0027s only applicable to those who sign"
+        ],
+        "Item4": [
+          "This is a very popular policy",
+          "#|While there is some corporate grumbling, in practice everyone is satisfied",
+          "##|Workers are guaranteed certain livable wages",
+          "##|Employers avoid unforseen strikes or wage hikes",
+          "#|This is seen as a victory for the socialists",
+          "##|This may have effects on attitudes towards the USSR"
+        ],
+        "Item5": [
+          "Many are quite disappointed",
+          "#|Given globalisation, prices could increase faster than wages, which would lead to worse living standards",
+          "##|This is now practically a certainty",
+          "#|However, the current system seems to be working just fine",
+          "##|While large strikes remain a threat in the future, nothing much actually happens now"
+        ]
+      },
+      "3": {
+        "Item1": "Incident A",
+        "Item2": "Join the Warsaw Pact",
+        "Item3": [
+          "#|Finland was exempted from joining the Warsaw Pact due to her neutrality",
+          "##|With Finnish defence under Soviet control, this is no longer true",
+          "#|USSR strongly \u0022suggests\u0022 that Finland pledge to defend the socialist world from capitalist imperialists",
+          "##|Economy continues to be heavily reliant on trade with both the West and the East, so this is impracticable",
+          "#|This will have very severe consequences"
+        ],
+        "Item4": [
+          "Finland is now a Soviet puppet state",
+          "#|Finland\u0027s defence and foreign policy were already under Soviet control",
+          "##|In order to further coordinate policy, the Soviet ambassador is empowered request governmental actions",
+          "###|This is enforced by Soviet forces, who are now stationed across Finland"
+        ],
+        "Item5": [
+          "USSR is incredibly disappointed and stops the flow of industrial trade",
+          "#|Luckily, that\u0027s all that happens",
+          "#|US loudly complains about Soviet actions, but doesn\u0027t do much",
+          "##|After all, the conflict hasn\u0027t gone hot yet"
+        ]
+      },
+      "4": {
+        "Item1": "Incident B",
+        "Item2": "Join the European Economic Community",
+        "Item3": [
+          "#|European Economic Community (EEC) is a EFTA competitor",
+          "##|However, the two blocs cooperate often",
+          "##|EEC is largely led by France and Germany",
+          "##|Notably, the UK has decided to join the EEC",
+          "###|Finnish-British trade has grown over the years",
+          "#|USSR will be extremely displeased if we join the EEC",
+          "##|This would be outright giving in to Western pressure",
+          "We will settle for a trade agreement with the EEC if this ballot fails"
+        ],
+        "Item4": [
+          "USSR completely cuts off all trade with Finland",
+          "#|This plunges Finland into an economic recession",
+          "##|Finland is forced to refuse aid from the West, in order to avoid a Soviet occupation",
+          "##|Western trade can\u0027t make up for the sheer quantity of Soviet trade",
+          "#|If nothing changes, then the Finnish economy could completely collapse"
+        ],
+        "Item5": [
+          "USSR is relieved",
+          "#|Trade with the West increases, but doesn\u0027t threaten Soviet dominance",
+          "#|US accepts Finnish neutrality, pledging to support Finland within its constraints",
+          "#|USSR hopes to maintain the current state of affairs"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "Incident A Passed",
+        "Item2": [
+          "Finland is dominated by the USSR",
+          "#|Soviet ambassador is effectively a policy-making authority",
+          "#|Candidates for elections are screened by Soviet authorities",
+          "##|Luckily, these candidates are not hand-picked, and are merely checked for \u0022fascist\u0022 lackeys",
+          "#|Any concerns about mandatory Swedish are quickly silenced by mandatory Russian",
+          "#|This is probably the worst possible outcome"
+        ]
+      },
+      "2": {
+        "Item1": "Incident A Failed",
+        "Item2": [
+          "USSR warily watches Finland turn to the West",
+          "#|Outcome will depend on preparedness and foreign ties"
+        ]
+      },
+      "3": {
+        "Item1": "Incident B Passed",
+        "Item2": [
+          "Wariness turns to anger, potentially precipitating an invasion",
+          "#|However, USSR doesn\u0027t yet have a good reason to occupy Finland",
+          "##|They hope that a total economic collapse will bring Finland back under Soviet suzerainty"
+        ]
+      },
+      "4": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Income policy agreement mitigates some of the worst economic impacts",
+          "#|After all, it was intended to withstand changes in the global economy",
+          "#|Anti-Soviet socialism and individualism both become popular and patriotic",
+          "##|USSR\u0027s policy has apparently backfired",
+          "Over some years, Finland expands trade with the West",
+          "#|USSR finally backs down and its reputation is badly tarnished",
+          "#|Economy hasn\u0027t quite recovered, but Finland remains independent"
+        ]
+      },
+      "5": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Economy indeed collapses",
+          "#|Wages and output drop precipitously low, which forces the government to appeal for Soviet assistance",
+          "##|USSR ties trade liberalisation to political changes",
+          "###|USSR now exercises direct control over government formation",
+          "Finland is now a Soviet puppet state",
+          "#|Only silver lining is that Soviet forces haven\u0027t yet occupied Finland"
+        ]
+      },
+      "6": {
+        "Item1": "Incident B Failed",
+        "Item2": [
+          "USSR is satisfied with Finnish neutrality",
+          "#|Meanwhile, Finnish society continues to develop"
+        ]
+      },
+      "7": {
+        "Item1": "Ballot B Passed",
+        "Item2": [
+          "Over time, Swedish becomes mandatory in all levels of education and the bureaucracy",
+          "#|This is considered a sign of Westernisation",
+          "##|Of course, it is also patently annoying for almost all students",
+          "#|Despite popular opposition, mandatory Swedish persists",
+          "##|In a strange way, honouring Finland\u0027s Swedish past becomes also a celebration of Finnish culture and independence"
+        ]
+      },
+      "8": {
+        "Item1": "Ballot B Failed",
+        "Item2": [
+          "Swedish never becomes mandatory",
+          "#|This results in a more insular outlook, with Finnish- and Swedish-speaking communities self-segregating",
+          "##|This also contributes to isolationism with regards to the other Nordic states",
+          "###|This effectively blocks Finland off from the West",
+          "Finland has rejected ties with both the East and the West",
+          "#|This is the neutral foreign policy Finnish leaders have always wanted",
+          "##|Perhaps this will protect Finland in the dangerous years to come"
+        ]
+      }
+    }
+  }
+}

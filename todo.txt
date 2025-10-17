@@ -1,9 +1,0 @@
-Testing:
-write test suite
-
-Convert:
-Brazil
-Finland
-
-should end slide be constant or backward?
-shift confirmation messages out of simulationcontext

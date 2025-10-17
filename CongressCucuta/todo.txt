@@ -1,0 +1,2 @@
+should end slide be constant or backward?
+tests?

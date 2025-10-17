@@ -1,0 +1,1125 @@
+{
+  "History": {
+    "BallotsPassed": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "BallotsProceduresDeclared": {
+      "1": [
+        10
+      ],
+      "3": [
+        10
+      ]
+    }
+  },
+  "RolesPermissions": {
+    "255": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "253": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "251": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "0": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "1": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "2": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    },
+    "3": {
+      "CanVote": true,
+      "Votes": 1,
+      "CanSpeak": true
+    }
+  },
+  "Regions": [
+    {
+      "ID": 0,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 2,
+      "IsActiveStart": true
+    },
+    {
+      "ID": 3,
+      "IsActiveStart": true
+    }
+  ],
+  "Parties": [],
+  "CurrenciesValues": {
+    "0": 4,
+    "1": 2,
+    "3": 2,
+    "2": 1
+  },
+  "ProceduresGovernmental": [
+    {
+      "ID": 0,
+      "Effects": [
+        {
+          "Action": 9,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 14,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "ID": 1,
+      "Effects": [
+        {
+          "Action": 7,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "ProceduresSpecial": [
+    {
+      "BallotIDs": [
+        1
+      ],
+      "ID": 2,
+      "Effects": [
+        {
+          "Action": 5,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 3,
+      "Effects": [
+        {
+          "Action": 6,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 0
+        },
+        {
+          "Action": 3,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 4,
+      "Effects": [
+        {
+          "Action": 4,
+          "TargetIDs": [
+            0
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 5,
+      "Effects": [
+        {
+          "Action": 1,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "BallotIDs": [],
+      "ID": 6,
+      "Effects": [
+        {
+          "Action": 1,
+          "TargetIDs": [],
+          "Value": 2
+        }
+      ],
+      "IsActiveStart": false
+    },
+    {
+      "BallotIDs": [],
+      "ID": 7,
+      "Effects": [
+        {
+          "Action": 0,
+          "TargetIDs": [],
+          "Value": 1
+        },
+        {
+          "Action": 1,
+          "TargetIDs": [],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": false
+    }
+  ],
+  "ProceduresDeclared": [
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 8,
+      "Effects": [
+        {
+          "Action": 12,
+          "TargetIDs": [],
+          "Value": 0
+        },
+        {
+          "Action": 3,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 1
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 0,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        253
+      ],
+      "ID": 9,
+      "Effects": [
+        {
+          "Action": 13,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    },
+    {
+      "Confirm": {
+        "Cost": 4,
+        "Value": 0
+      },
+      "Value": 0,
+      "DeclarerIDs": [
+        251
+      ],
+      "ID": 10,
+      "Effects": [
+        {
+          "Action": 11,
+          "TargetIDs": [],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
+    }
+  ],
+  "Ballots": [
+    {
+      "ID": 0,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              2,
+              3
+            ],
+            "Value": 1
+          },
+          {
+            "Action": 4,
+            "TargetIDs": [
+              0
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 4,
+            "TargetIDs": [
+              0
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 1
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 1,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 2,
+            "TargetIDs": [
+              4
+            ],
+            "Value": 0
+          },
+          {
+            "Action": 4,
+            "TargetIDs": [
+              2,
+              3
+            ],
+            "Value": -1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 2
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 2,
+      "PassResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              5,
+              6
+            ],
+            "Value": 0
+          },
+          {
+            "Action": 4,
+            "TargetIDs": [
+              1
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "AlwaysCondition"
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "FailResult": {
+        "Effects": [
+          {
+            "Action": 3,
+            "TargetIDs": [
+              5,
+              7
+            ],
+            "Value": 0
+          },
+          {
+            "Action": 4,
+            "TargetIDs": [
+              1
+            ],
+            "Value": 1
+          }
+        ],
+        "Links": [
+          {
+            "Condition": {
+              "$type": "ProcedureActiveCondition",
+              "ProcedureID": 4,
+              "ShouldBeActive": true
+            },
+            "TargetID": 255
+          },
+          {
+            "Condition": {
+              "$type": "ProcedureActiveCondition",
+              "ProcedureID": 4,
+              "ShouldBeActive": false
+            },
+            "TargetID": 3
+          }
+        ]
+      },
+      "IsIncident": false
+    },
+    {
+      "ID": 3,
+      "PassResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "FailResult": {
+        "Effects": [],
+        "Links": []
+      },
+      "IsIncident": true
+    }
+  ],
+  "Results": [
+    {
+      "ID": 0,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 0,
+            "ShouldBePassed": true
+          },
+          "TargetID": 1
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 0,
+            "ShouldBePassed": false
+          },
+          "TargetID": 9
+        }
+      ]
+    },
+    {
+      "ID": 1,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 2
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 5
+        }
+      ]
+    },
+    {
+      "ID": 2,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 3
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 4
+        }
+      ]
+    },
+    {
+      "ID": 3,
+      "Links": []
+    },
+    {
+      "ID": 4,
+      "Links": []
+    },
+    {
+      "ID": 5,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "AndCondition",
+            "Conditions": [
+              {
+                "$type": "ProcedureActiveCondition",
+                "ProcedureID": 4,
+                "ShouldBeActive": false
+              },
+              {
+                "$type": "BallotPassedCondition",
+                "BallotID": 3,
+                "ShouldBePassed": true
+              }
+            ]
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "AndCondition",
+            "Conditions": [
+              {
+                "$type": "ProcedureActiveCondition",
+                "ProcedureID": 4,
+                "ShouldBeActive": false
+              },
+              {
+                "$type": "BallotPassedCondition",
+                "BallotID": 3,
+                "ShouldBePassed": false
+              }
+            ]
+          },
+          "TargetID": 7
+        },
+        {
+          "Condition": {
+            "$type": "ProcedureActiveCondition",
+            "ProcedureID": 4,
+            "ShouldBeActive": true
+          },
+          "TargetID": 8
+        }
+      ]
+    },
+    {
+      "ID": 6,
+      "Links": []
+    },
+    {
+      "ID": 7,
+      "Links": []
+    },
+    {
+      "ID": 8,
+      "Links": []
+    },
+    {
+      "ID": 9,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": true
+          },
+          "TargetID": 10
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 1,
+            "ShouldBePassed": true
+          },
+          "TargetID": 13
+        }
+      ]
+    },
+    {
+      "ID": 10,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": true
+          },
+          "TargetID": 13
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 2,
+            "ShouldBePassed": false
+          },
+          "TargetID": 14
+        }
+      ]
+    },
+    {
+      "ID": 11,
+      "Links": []
+    },
+    {
+      "ID": 12,
+      "Links": []
+    },
+    {
+      "ID": 13,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 7
+        }
+      ]
+    },
+    {
+      "ID": 14,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 7
+        }
+      ]
+    },
+    {
+      "ID": 15,
+      "Links": [
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": true
+          },
+          "TargetID": 6
+        },
+        {
+          "Condition": {
+            "$type": "BallotPassedCondition",
+            "BallotID": 3,
+            "ShouldBePassed": false
+          },
+          "TargetID": 7
+        }
+      ]
+    }
+  ],
+  "Localisation": {
+    "State": "Brazil",
+    "Government": "Presidential Republic",
+    "Context": [
+      "Brazil gained independence as a monarchy",
+      "#|Under Pedro II, Brazil\u0027s economy and international prestige were at their peak",
+      "#|However, Pedro II had grown weary of ruling and silently allowed a coup to establish a republic",
+      "Public opinion was opposed to the coup",
+      "#|\u0022Republic of the Sword\u0022 violently stamped out dissent but gradually gained popular support",
+      "#|Eventually, the military stepped down and Brazil held its first elections"
+    ],
+    "Date": "15 November 1898",
+    "Situation": "Ascension of Campos Sales",
+    "Period": "The Old Republic",
+    "Roles": {
+      "255": {
+        "Item1": "Deputy",
+        "Item2": "Deputies"
+      },
+      "253": {
+        "Item1": "President",
+        "Item2": "Presidents"
+      },
+      "0": {
+        "Item1": "Governor of Paulistania-Minas",
+        "Item2": "Governors of Paulistania-Minas"
+      },
+      "1": {
+        "Item1": "Governor of South Brazil",
+        "Item2": "Governors of South Brazil"
+      },
+      "2": {
+        "Item1": "Governor of Great Para",
+        "Item2": "Governors of Great Para"
+      },
+      "3": {
+        "Item1": "Governor of Maranhao-Pernambuco",
+        "Item2": "Governors of Maranhao-Pernambuco"
+      },
+      "251": {
+        "Item1": "Governor",
+        "Item2": "Governors"
+      }
+    },
+    "Speaker": "Chamber President (Chairman)",
+    "Region": {
+      "Item1": "State",
+      "Item2": "States"
+    },
+    "Regions": {
+      "0": {
+        "Item1": "Paulistania-Minas",
+        "Item2": [
+          "#|Wealthiest states, reliant on exports"
+        ]
+      },
+      "1": {
+        "Item1": "South Brazil",
+        "Item2": [
+          "#|Most politically radical states, but marginalised"
+        ]
+      },
+      "2": {
+        "Item1": "Great Para",
+        "Item2": [
+          "#|Extremely poor and marginalised"
+        ]
+      },
+      "3": {
+        "Item1": "Maranhao-Pernambuco",
+        "Item2": [
+          "#|Historic centre of republicanism",
+          "#|Produces sugar, which suffered from abolition"
+        ]
+      }
+    },
+    "Party": {
+      "Item1": "",
+      "Item2": ""
+    },
+    "Parties": {},
+    "Abbreviations": {},
+    "Currencies": {
+      "0": "Influence",
+      "1": "Influence",
+      "3": "Influence",
+      "2": "Influence",
+      "253": "Influence"
+    },
+    "Procedures": {
+      "0": {
+        "Item1": "Presidential Election",
+        "Item2": "This country has a powerful, elected executive who is separate from the legislature."
+      },
+      "1": {
+        "Item1": "Federation",
+        "Item2": "This country\u0027s government is organised as a federation, divided into powerful administrative divisions with individual representation in the national government."
+      },
+      "2": {
+        "Item1": "Rule of the Colonels",
+        "Item2": "Brazil is dominated by local oligarchs, colloquially known as colonels, who are responsible for most aspects of civic engagement and governance."
+      },
+      "3": {
+        "Item1": "Coffee with Milk Politics",
+        "Item2": "The two wealthiest states of Brazil, S\u00E3o Paulo and Minas Geraes, have informally agreed to share national power between them, much to the chagrin of the other states. The name is an allusion to the dominant industries of the two states."
+      },
+      "4": {
+        "Item1": "Military Club",
+        "Item2": "The Military Club, an organisation of high-ranking officers, masterminded the creation of the republic. While the organisation lacks ideological unity and popular support, it remains a powerful force that could threaten the civilian government."
+      },
+      "5": {
+        "Item1": "Brazilian Nation to the Immigrant",
+        "Item2": "Brazil has always been multinational, and the abolition of slavery has only reinforced this fact. Thousands of Japanese, Italian, and even Syrian immigrants now call Brazil home, with consequences that are as of yet unknown."
+      },
+      "6": {
+        "Item1": "Brazilian Workers\u0027 Confederation",
+        "Item2": ""
+      },
+      "7": {
+        "Item1": "Communist Party of Brazil",
+        "Item2": ""
+      },
+      "8": {
+        "Item1": "States\u0027 Policy",
+        "Item2": "Opposition by the military can be, at great cost, subverted through patronage networks. In exchange for their votes, these congressmen and state governors expect monetary favours."
+      },
+      "9": {
+        "Item1": "Veto",
+        "Item2": "This country\u0027s head of state is empowered to reject legislation that does not conform to his political beliefs."
+      },
+      "10": {
+        "Item1": "Revolt",
+        "Item2": "The Public Forces are a uniquely republican innovation and a mechanism for state-led policy-making. Each state has its own army, with S\u00E3o Paulo and Rio Grande do Sul having the strongest, with predictable results when state interests aren\u0027t aligned with national interests."
+      }
+    },
+    "Ballots": {
+      "0": {
+        "Item1": "Ballot A",
+        "Item2": "Negotiate the Funding Loan",
+        "Item3": [
+          "#|Brazil is badly indebted to foreign lenders",
+          "#|In order to continue funding the government, the Rothschilds are willing to offer a large loan on several conditions",
+          "##|Customs income from Rio de Janeiro and Santos will be mortgaged",
+          "##|No additional loans may be taken",
+          "##|Inflation must be controlled via destruction of paper money",
+          "#|In exchange, this would place a temporary moratorium on loan repayments, then extend the repayment period over several decades",
+          "#|These repayments will be funded by levying additional consumption taxes and reducing spending"
+        ],
+        "Item4": [
+          "From certain points of view, the Funding Loan is a great success",
+          "#|Brazil finally has a budget surplus",
+          "#|Currency appreciates for the first time",
+          "For most people, this is terrible",
+          "#|Imports become cheaper, which hurts Brazilian businesses",
+          "##|Factories close down or reduce production",
+          "#|Exports become more expensive, which makes Brazilian products less competitive",
+          "#|Overall, living standards drop",
+          "Only time can tell if this will help the economy"
+        ],
+        "Item5": [
+          "Debt and inflation continue to be major problems",
+          "#|Brazil will continue to look for export-based solutions to financial problems",
+          "##|This has the distinct danger of failing if the world economy crashes",
+          "#|For now, businesses can look forward to a more liberal economy",
+          "##|This reinforces the coffee and milk oligarchy"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot B",
+        "Item2": "Eliminate infectious diseases",
+        "Item3": [
+          "#|Public health is a serious concern in many cities",
+          "##|Yellow fever, the plague, and smallpox all run rampant in the cities",
+          "#|This would begin an ambitious campaign to wipe out these diseases",
+          "##|Concretely, this would lead to major city cleaning efforts",
+          "###|Widening streets, improving sewage, reducing animal presence",
+          "##|Additionally, smallpox vaccinations will become mandatory",
+          "#|This is incredibly expensive and unpopular"
+        ],
+        "Item4": [
+          "This is a huge success",
+          "#|Opposition to these efforts dies down after its completion",
+          "##|This becomes a convenient moment to shut down the subversive Military Club",
+          "##|Overarching public health goals are largely achieved",
+          "###|Fewer and fewer cases of dangerous infectious diseases are reported each year",
+          "This has an unexpected side effect of increasing living costs",
+          "#|Cleaning efforts also reduced housing availability, forcing workers to commute larger distances",
+          "#|Combined with the cost of the programme, this may be problematic"
+        ],
+        "Item5": [
+          "Brazil remains disease-ridden and unsanitary",
+          "#|Healthcare is generally not sufficient to manage the current disease outbreaks",
+          "##|This will only get worse as Brazil\u0027s population increases, especially due to immigration",
+          "#|There is no political will to change this situation"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot C",
+        "Item2": "Deport anarchists",
+        "Item3": [
+          "#|Influx of immigration has also led to the spread of anarchism and socialism",
+          "##|Economic activity has increasingly been interrupted by strikes",
+          "###|This is made worse by the Great War, which has led to a general increase in prices",
+          "#|Anarchism can never be defeated solely by deporting its followers",
+          "##|Many industrial workers are unionised",
+          "##|However, it could stop militants from gaining currency in the socialist movement"
+        ],
+        "Item4": [
+          "This largely backfires or has no effect",
+          "#|Anarchists only become more militant as a result of these deportations",
+          "#|Trade unions expand across the state, as well as the strikes",
+          "##|These are eventually suppressed or negotiated down",
+          "Persecution of socialists has largely made them a permanent fixture in politics",
+          "#|Events in Russia only embolden them further",
+          "#|While the unrest is not yet catastrophic, it could explode in the future"
+        ],
+        "Item5": [
+          "Anarchist movement grows bolder and bolder",
+          "#|To some degree, this is beneficial",
+          "##|It\u0027s easier to legitimise the use of deadly force against strikers",
+          "##|Not everyone is comfortable with militant anarchism",
+          "Socialism is likely here to stay",
+          "#|Events in Russia only embolden them further",
+          "#|While the movement has split, it\u0027s not in any danger of destruction",
+          "##|There may be an opportunity to negotiate with some moderates"
+        ]
+      },
+      "3": {
+        "Item1": "Incident A",
+        "Item2": "Declare a state of emergency",
+        "Item3": [
+          "#|There was a revolt in Rio de Janeiro",
+          "##|While the revolt was crushed, widespread army dissatisfaction means another will likely take place soon",
+          "##|These \u0022tenentists\u0022 demanded agrarian reform and the end of the milk and coffee oligarchy",
+          "###|Some rebels appear to have ties with the anarchist and communist movements",
+          "###|Others are merely worried about the steady erosion of military influence",
+          "###|Generally speaking, these rebels are most concerned about middle-class, liberal interests",
+          "#|Tenentism, now known to the public, is becoming very popular",
+          "##|These rebels are now hailed as heroes worth emulating",
+          "###|If this movement is not destroyed, then the entire oligarchic system could collapse",
+          "###|This would institute martial law while the tenentists are militarily crushed",
+          "We will try to negotiate with the tenentists if this ballot fails"
+        ],
+        "Item4": [
+          "Tenentist uprisings grow in number and strength",
+          "#|S\u00E3o Paulo and south Brazil are revolutionary hotspots",
+          "##|These revolts all fail, but the S\u00E3o Paulo revolution is extremely destructive and nearly successful",
+          "###|Survivors are represented by a lone guerrilla force, Lu\u00EDs Prestes\u0027 Column",
+          "While Brazil is now at peace, it is certain not to last",
+          "#|Many tenentists have fled abroad, from where they continue to agitate against the government"
+        ],
+        "Item5": [
+          "Most tenentist demands are unacceptable",
+          "#|However, certain demands are accepted:",
+          "##|Secret ballot",
+          "##|Free public education for all",
+          "##|Amnesty for rebels",
+          "#|This does not satisfy the tenentists, who continue to revolt",
+          "##|However, they find less support than they had hoped for, and the movement eventually dies out",
+          "###|Survivors are represented by a lone guerrilla force, Lu\u00EDs Prestes\u0027 Column"
+        ]
+      }
+    },
+    "Results": {
+      "0": {
+        "Item1": "Results",
+        "Item2": [
+          "Intentionally left blank"
+        ]
+      },
+      "1": {
+        "Item1": "Ballot A Passed",
+        "Item2": [
+          "Government has the funds needed to carry out its policy",
+          "#|However, the threats of debt and foreign control continue to loom over society"
+        ]
+      },
+      "2": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Anarchists eventually lose influence in society",
+          "#|Tenentism becomes the voice of popular discontent",
+          "#|However, the two movements tolerate each other and sometimes cooperate"
+        ]
+      },
+      "3": {
+        "Item1": "Incident A Passed",
+        "Item2": [
+          "Revolution breaks out in Rio Grande do Sul",
+          "#|Tenentist exiles and officers back a liberal coalition that overthrows the government",
+          "#|Anarchists organise some support for the revolution, although they aren\u0027t too excited about liberalism",
+          "New government cracks down on dissent and organises a dictatorship",
+          "#|Goal is to break the oligarchy and prepare Brazil for a liberal republic",
+          "##|Many doubt that they will succeed, but there is some hope for the future"
+        ]
+      },
+      "4": {
+        "Item1": "Incident A Failed",
+        "Item2": [
+          "Revolution breaks out in Rio Grande do Sul",
+          "#|Tenentist exiles and officers back a liberal coalition that fails",
+          "#|Anarchists organise some support for the revolution, although they aren\u0027t too excited about liberalism",
+          "Revolution\u0027s aftershocks are concerning",
+          "#|Economic shift away from exports badly hurts the oligarchy anyway",
+          "##|Traditional coffee with milk system is slowly dismantled under the influence of other states",
+          "#|In reality, little actually changes for the common person",
+          "##|Brazil will probably remain unstable in the years to come"
+        ]
+      },
+      "5": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Socialist split leads to communism gaining power",
+          "#|Support from the USSR leads to rapid growth",
+          "#|Communists eventually infiltrate the tenentist movement"
+        ]
+      },
+      "6": {
+        "Item1": "Military Club Inactive and Incident A Passed",
+        "Item2": [
+          "Revolution breaks out in Rio Grande do Norte",
+          "#|Tenentist exiles and officers back a socialist coalition that overthrows the government",
+          "#|Anarchists organise some support for the revolution, although they aren\u0027t too excited about communism",
+          "New government cracks down on dissent and organises a dictatorship",
+          "#|Goal is to break the oligarchy and convert Brazil into a socialist dictatorship",
+          "##|This is such a bizarre and drastic change of course that it\u0027s destined to fail",
+          "###|International opposition and rural rebellions destroy the socialist experiment"
+        ]
+      },
+      "7": {
+        "Item1": "Military Club Inactive and Incident A Failed",
+        "Item2": [
+          "Revolution breaks out in Rio Grande do Norte",
+          "#|Tenentist exiles and officers back a socialist coalition that fails",
+          "#|Anarchists stay silent",
+          "Revolution\u0027s aftershocks are concerning",
+          "#|Economic shift away from exports badly hurts the oligarchy anyway",
+          "##|Traditional coffee with milk system is slowly dismantled under the influence of other states",
+          "#|In reality, little actually changes for the common person",
+          "##|However, the growth of communism has not gone unnoticed and it could prove to be much more dangerous in the future",
+          "##|Brazil will probably remain unstable in the years to come"
+        ]
+      },
+      "8": {
+        "Item1": "Military Club Active",
+        "Item2": [
+          "Revolution breaks out in Rio Grande do Norte",
+          "#|Tenentist exiles and officers back a liberal coalition that fails",
+          "#|Anarchists organise some support for the revolution, although they aren\u0027t too excited about liberalism",
+          "Government survives mostly intact",
+          "#|Economic shift away from exports badly hurts the oligarchy anyway",
+          "##|Traditional coffee with milk system is slowly dismantled under the influence of other states",
+          "#|In reality, little actually changes for the common person",
+          "##|Communism will slowly fade away",
+          "##|Brazil will probably remain unstable in the years to come"
+        ]
+      },
+      "9": {
+        "Item1": "Ballot A Failed",
+        "Item2": [
+          "Government lacks the funds needed to carry out its policy",
+          "#|This is likely to exacerbate tensions in the short term"
+        ]
+      },
+      "10": {
+        "Item1": "Ballot B Passed",
+        "Item2": [
+          "Leftover discontent from mandatory vaccination gives the opposition a wide-ranging character",
+          "#|Essentially, many regard the government as wasting money on vanity projects instead of helping Brazilians",
+          "#|With the rise of tenentism, this could be disastrous"
+        ]
+      },
+      "11": {
+        "Item1": "Ballot C Passed",
+        "Item2": [
+          "Revolution breaks out in Rio de Janeiro",
+          "#|Tenentist exiles and officers back an anarchist coalition that overthrows the government",
+          "#|Rural poor organise some support for the revolution, although they aren\u0027t too involved",
+          "New government cracks down on dissent and organises a dictatorship",
+          "#|Goal is to break the oligarchy and convert Brazil into a council republic",
+          "##|This is such a bizarre and drastic change of course that it\u0027s destined to fail",
+          "###|International opposition and northeastern counter-revolutionaries destroy the anarchist experiment"
+        ]
+      },
+      "12": {
+        "Item1": "Ballot C Failed",
+        "Item2": [
+          "Revolution breaks out in Rio de Janeiro",
+          "#|Tenentist exiles and officers back an anarchist coalition that fails",
+          "#|Rural poor organise some support for the revolution, although they aren\u0027t too involved",
+          "Revolution\u0027s aftershocks are concerning",
+          "#|Fear of anarchism leads to a flurry of reform",
+          "##|Economic shift away from exports badly hurts the oligarchy anyway",
+          "#|Some change is noted for the common person",
+          "##|Living standards remain poor, but there are more political freedoms",
+          "###|Transition to a liberal government seems plausible"
+        ]
+      },
+      "13": {
+        "Item1": "Ballot B Failed",
+        "Item2": [
+          "Government doesn\u0027t particularly spend beyond its means anyway",
+          "#|This tempers some discontent, but entrenches the oligarchy"
+        ]
+      },
+      "14": {
+        "Item1": "Incident A Passed",
+        "Item2": [
+          "Revolution breaks out in Rio Grande do Sul",
+          "#|Tenentist exiles and officers back a populist coalition that overthrows the government",
+          "#|Anarchists organise some support for the revolution, although they aren\u0027t too excited about populism",
+          "New government cracks down on dissent and organises a dictatorship",
+          "#|Goal is to break the oligarchy and improve the lot of Brazilians",
+          "##|This particular revolution has an incredibly unclear focus and is not exactly political",
+          "##|Many doubt that they will succeed, and there is already opposition brewing in S\u00E3o Paulo",
+          "###|Most likely outcome is a different kind of oligarchy"
+        ]
+      },
+      "15": {
+        "Item1": "Incident A Failed",
+        "Item2": [
+          "Revolution breaks out in Rio Grande do Sul",
+          "#|Tenentist exiles and officers back a populist coalition that fails",
+          "#|Anarchists stay silent",
+          "Government survives mostly intact",
+          "#|Economic shift away from exports badly hurts the oligarchy anyway",
+          "##|Traditional coffee with milk system is slowly dismantled under the influence of other states",
+          "#|Lack of a credible opposition means very little will ever change for the common person",
+          "##|Most likely outcome is a different kind of oligarchy"
+        ]
+      }
+    }
+  }
+}

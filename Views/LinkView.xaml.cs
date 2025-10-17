@@ -1,9 +1,0 @@
-﻿using System.Windows.Controls;
-
-namespace congress_cucuta.Views;
-
-public partial class LinkView : UserControl {
-    public LinkView () {
-        InitializeComponent ();
-    }
-}

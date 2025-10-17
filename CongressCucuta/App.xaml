@@ -1,0 +1,11 @@
+﻿<!--
+    Entry points:
+    Views/SetupWindow.xaml (application)
+    Views/CompilerWindow.xaml (compile .sim file)
+-->
+<Application x:Class = "CongressCucuta.App"
+             xmlns = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x = "http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local = "clr-namespace:CongressCucuta"
+             StartupUri = "Views/SetupWindow.xaml">
+</Application>

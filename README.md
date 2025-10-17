@@ -68,7 +68,7 @@ Perhaps the guiding hand of Indonesia's founding father will be enough to ensure
 
 ### Hungary, Elective Dictatorship: The Horthy Regency
 
-The end of the Great War and the so-called Trianon Trauma has brought Hungary to the edge of despair.
+The end of the Great War and the so-called Trianon Trauma have brought Hungary to the edge of despair.
 Miklós Horthy, an admiral without a fleet, now rules over a kingdom without a king, and the Anglophile regent has since been spurned by the British.
 All across Hungary, cries of "No, no, never!" and "Return everything!" echo in the halls of power, but Horthy remains cautious.
 
@@ -106,6 +106,14 @@ The Quiet Revolution in Quebec has led to an outpouring of Quebecer nationalism,
 
 Canada marches onwards towards independence, but she may not come out in one piece.
 
+### Finland, Mixed Republic: Finlandisation
+
+The Second World War has not left Finland unscathed.
+Bound by a treaty with the USSR, Finnish leaders have very little in the way of foreign policy independence and dare not accept American support.
+For some, this is alright; anything to avoid another war.
+
+But if Finland should ever become independent, then her leaders have no choice but to poke the bear.
+
 ### Brazil, Presidential Republic: The Old Republic
 
 For the first time, Brazil is without a monarch.
@@ -113,16 +121,7 @@ For the leaders of the new republic, this is a dream come true.
 For nearly everyone else, this is a disaster.
 Without the old emperor at the helm, Brazil's politicians now face the challenge of garnering public support and uniting the many states of Brazil.
 
-In time, they will understand why Pedro II was so willing to part with his poisoned inheritance.
-
-### Finland, Mixed Republic: Finlandisation
-
-The Second World War has not left Finland unscathed.
-Bound by a treaty with the USSR, Finnish leaders have very little in the way of foreign policy independence and dare not accept American support.
-For some, this is alright.
-Anything to avoid another war.
-
-But if Finland should ever become independent, then her leaders have no choice but to poke the bear.
+In time, they will understand why Pedro II was so eager to part with his poisoned inheritance.
 
 ## Creation
 
