@@ -6,9 +6,5 @@
  */
 internal readonly record struct Link<T> (ICondition Condition, IDType TargetID)
 where T : IID {
-    public bool Evaluate (ref readonly SimulationContext context) => Condition.Evaluate (in context);
-
-    public string ToString (ref readonly Localisation localisation) => Condition.ToString (in localisation);
-
-    public bool? YieldBallotVote () => Condition.YieldBallotVote ();
+    public IDType? Resolve (SimulationContext context) => Condition.Evaluate (context) ? TargetID : null;
 }

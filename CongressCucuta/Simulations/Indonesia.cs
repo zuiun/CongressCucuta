@@ -110,14 +110,12 @@ internal class Indonesia : ISimulation {
             5,
             [new (Procedure.Effect.ActionType.BallotPass, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared veto = new (
             6,
             [new (Procedure.Effect.ActionType.BallotFail, [])],
             new (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared coup = new (
@@ -127,14 +125,12 @@ internal class Indonesia : ISimulation {
                 new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri], 1),
             ],
             new (Procedure.Confirmation.CostType.DiceCurrency),
-            0,
             [pki.ID, masyumi.ID]
         );
         ProcedureDeclared purge = new (
             8,
             [new (Procedure.Effect.ActionType.ElectionAppointed, [president])],
             new (Procedure.Confirmation.CostType.CurrencyValue, 4),
-            0,
             [abri.ID]
         );
         List<ProcedureDeclared> proceduresDeclared = [/*industryTakeover, */rubberStamp, veto, coup, purge];

@@ -14,11 +14,11 @@ internal class PreparingElectionEventArgs {
 
     public PreparingElectionEventArgs (
         List<Election> elections,
-        ref readonly Dictionary<IDType, SortedSet<IDType>> peopleRoles,
-        ref readonly Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
-        ref readonly HashSet<IDType> partiesActive,
-        ref readonly HashSet<IDType> regionsActive,
-        ref readonly Dictionary<IDType, Person> people
+        Dictionary<IDType, SortedSet<IDType>> peopleRoles,
+        Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
+        HashSet<IDType> partiesActive,
+        HashSet<IDType> regionsActive,
+        Dictionary<IDType, Person> people
     ) {
         elections.Sort ();
         Elections = elections;
@@ -30,7 +30,7 @@ internal class PreparingElectionEventArgs {
     }
 }
 
-internal class VotedBallotEventArgs (IDType id, bool isPassed, SimulationContext.BallotContext context) {
+internal class VotedBallotEventArgs (IDType id, bool isPassed, BallotContext context) {
     public IDType ID = id;
     public byte VotesPass = context.CalculateVotesPass ();
     public byte VotesFail = context.CalculateVotesFail ();
@@ -51,112 +51,8 @@ internal class CompletedElectionEventArgs (
     public bool IsBallot = isBallot;
 }
 
-internal class UpdatedVotesEventArgs (SimulationContext.BallotContext context) {
-    public byte VotesPass = context.CalculateVotesPass ();
-    public byte VotesFail = context.CalculateVotesFail ();
-    public byte VotesAbstain = context.CalculateVotesAbstain ();
-    public byte VotesPassThreshold = context.CalculateVotesPassThreshold ();
-    public byte VotesFailThreshold = context.CalculateVotesFailThreshold ();
-}
-
 // Must call InitialisePeople () after construction to complete initialisation
 internal class SimulationContext (Simulation simulation) {
-    internal class BallotContext {
-        // Replaced as necessary (every ballot, upon VotersLimit declared, upon role change)
-        public Dictionary<IDType, Permissions> PeoplePermissions { get; set; } = [];
-        public List<IDType> VotesPass { get; } = [];
-        public List<IDType> VotesFail { get; } = [];
-        public byte VotesPassBonus { get; set; } = 0;
-        public byte VotesFailBonus { get; set; } = 0;
-        public bool IsSimpleMajority { get; set; } = true;
-        public List<IDType> ProceduresDeclared = [];
-        public event Action<UpdatedVotesEventArgs>? UpdatedVotes;
-
-        public void Reset () {
-            VotesPass.Clear ();
-            VotesFail.Clear ();
-            ProceduresDeclared.Clear ();
-            VotesPassBonus = 0;
-            VotesFailBonus = 0;
-        }
-
-        // For ProcedureDeclared
-        public void ResetVotes () {
-            VotesPass.Clear ();
-            VotesFail.Clear ();
-
-            UpdatedVotesEventArgs args = new (this);
-
-            UpdatedVotes?.Invoke (args);
-        }
-
-        public byte CalculateVotesTotal () {
-            byte votes = (byte) (VotesPassBonus + VotesFailBonus);
-
-            foreach (Permissions p in PeoplePermissions.Values) {
-                if (p.CanVote) {
-                    votes += p.Votes;
-                }
-            }
-
-            return votes;
-        }
-
-        public byte CalculateVotesPass () {
-            byte passCount = VotesPassBonus;
-
-            foreach (IDType p in VotesPass) {
-                passCount += PeoplePermissions[p].Votes;
-            }
-
-            return passCount;
-        }
-
-        public byte CalculateVotesFail () {
-            byte failCount = VotesFailBonus;
-
-            foreach (IDType p in VotesFail) {
-                failCount += PeoplePermissions[p].Votes;
-            }
-
-            return failCount;
-        }
-
-        public byte CalculateVotesAbstain () => (byte) (CalculateVotesTotal () - CalculateVotesPass () - CalculateVotesFail ());
-
-        public byte CalculateVotesPassThreshold () {
-            byte votesTotal = CalculateVotesTotal ();
-
-            return IsSimpleMajority
-                ? (byte) (Math.Floor (votesTotal / 2m) + 1)
-                : (byte) Math.Ceiling ((votesTotal * 2) / 3m);
-        }
-
-        public byte CalculateVotesFailThreshold () {
-            byte votesTotal = CalculateVotesTotal ();
-            byte votesPassThreshold = CalculateVotesPassThreshold ();
-
-            return IsSimpleMajority
-                ? votesPassThreshold
-                : (byte) (votesTotal - votesPassThreshold + 1);
-        }
-
-        public bool? IsBallotVoted () {
-            byte votesPassThreshold = CalculateVotesPassThreshold ();
-            byte votesFailThreshold = CalculateVotesFailThreshold ();
-            byte votesPass = CalculateVotesPass ();
-            byte votesFail = CalculateVotesFail ();
-
-            if (votesPass >= votesPassThreshold) {
-                return true;
-            } else if (votesFail >= votesFailThreshold) {
-                return false;
-            } else {
-                return null;
-            }
-        }
-    }
-
     internal readonly record struct ConfirmationResult (
         Procedure.Confirmation.CostType Cost,
         bool? IsConfirmed,
@@ -507,7 +403,7 @@ internal class SimulationContext (Simulation simulation) {
     }
 
     private void OnPrepareElection (List<Election> elections) {
-        PreparingElectionEventArgs args = new (elections, in PeopleRoles, in PeopleFactions, in _partiesActive, in _regionsActive, in _people);
+        PreparingElectionEventArgs args = new (elections, PeopleRoles, PeopleFactions, _partiesActive, _regionsActive, _people);
 
         PreparingElection?.Invoke (args);
         PeopleRoles = args.PeopleRolesNew;
@@ -535,6 +431,8 @@ internal class SimulationContext (Simulation simulation) {
                 .Select (pi => (pi.ID, (Procedure.EffectBundle) pi.YieldEffects (0)!))
         ];
         List<Election> elections = [];
+
+        ComposePermissions ();
 
         foreach ((IDType p, Procedure.EffectBundle eb) in effects) {
             foreach (Procedure.Effect e in eb.Effects) {
@@ -696,10 +594,10 @@ internal class SimulationContext (Simulation simulation) {
         bool isModifiedProcedures = false;
 
         if (isPass) {
-            effects = Ballots[BallotCurrentID].PassResult.Effects;
+            effects = Ballots[BallotCurrentID].Pass.Effects;
             _ballotsPassed.Add (BallotCurrentID);
         } else {
-            effects = Ballots[BallotCurrentID].FailResult.Effects;
+            effects = Ballots[BallotCurrentID].Fail.Effects;
         }
 
         foreach (Ballot.Effect e in effects) {

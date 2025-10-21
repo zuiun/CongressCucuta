@@ -40,11 +40,12 @@ internal class ContextViewModel : ViewModel {
         public ProcedureGroup (IDType id, string name, string effects) {
             string[] lines = effects.Split ('\n');
             string[] clean = lines[1 ..];
-            string result = string.Join ('\n', clean);
+            string join = string.Join ('\n', clean);
+            string trim = StringLineFormatter.Outdent (join);
 
             ID = id;
             Name = name;
-            Effects = StringLineFormatter.Convert (result);
+            Effects = StringLineFormatter.Convert (trim);
         }
     }
 
@@ -184,7 +185,7 @@ internal class ContextViewModel : ViewModel {
     public event Action<VotingEventArgs>? Voting;
     public event Action<IDType>? DeclaringProcedure;
 
-    public ContextViewModel (ref readonly SimulationModel simulation) {
+    public ContextViewModel (SimulationModel simulation) {
         _localisation = simulation.Localisation;
         simulation.StartingBallot += Simulation_StartingBallotEventHandler;
         simulation.EndingBallot += Simulation_EndingBallotEventHandler;
@@ -345,7 +346,7 @@ internal class ContextViewModel : ViewModel {
             }
         } else {
             foreach (FactionViewModel f in _factionsPeople) {
-                f.SetInteractability (true);
+                f.SetInteractable (true);
             }
         }
 
@@ -364,7 +365,7 @@ internal class ContextViewModel : ViewModel {
             }
         } else {
             foreach (FactionViewModel f in _factionsPeople) {
-                f.SetInteractability (false);
+                f.SetInteractable (false);
             }
         }
 

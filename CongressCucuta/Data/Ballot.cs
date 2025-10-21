@@ -4,7 +4,7 @@ using CongressCucuta.Converters;
 
 namespace CongressCucuta.Data;
 
-internal readonly record struct Ballot (IDType ID, Ballot.Result PassResult, Ballot.Result FailResult, bool IsIncident = false) : IID {
+internal readonly record struct Ballot (IDType ID, Ballot.Result Pass, Ballot.Result Fail, bool IsIncident = false) : IID {
     public static readonly IDType END = byte.MaxValue;
 
     internal readonly record struct Effect {
@@ -46,7 +46,7 @@ internal readonly record struct Ballot (IDType ID, Ballot.Result PassResult, Bal
             Value = value;
         }
 
-        public string ToString (ref readonly Simulation simulation, ref readonly Localisation localisation) {
+        public string ToString (Simulation simulation, ref readonly Localisation localisation) {
             switch (Action) {
                 case ActionType.FoundParty: {
                     List<string> parties = [];
@@ -94,7 +94,7 @@ internal readonly record struct Ballot (IDType ID, Ballot.Result PassResult, Bal
                     }
 
                     Procedure procedure = simulation.ProceduresSpecial[TargetIDs[1] - simulation.ProceduresGovernmental.Count];
-                    string procedureFull = procedure.ToString (in simulation, in localisation);
+                    string procedureFull = procedure.ToString (simulation, in localisation);
                     string[] procedureSplit = procedureFull.Split ('\n');
 
                     result.Add (action);

@@ -129,7 +129,6 @@ internal class Poland : ISimulation {
             9,
             [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
-            0,
             []
         );
         List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence];

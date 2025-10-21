@@ -29,17 +29,16 @@ internal readonly record struct Election : IComparable<Election> {
 
     public Election (IDType procedureId, Procedure.Effect effect) {
         ProcedureID = procedureId;
+        IsRandom = effect.Value > 0;
 
         switch (effect.Action) {
             case Procedure.Effect.ActionType.ElectionRegion:
                 Type = ElectionType.Region;
                 FilterIDs = effect.TargetIDs;
-                IsRandom = effect.Value > 0;
                 break;
             case Procedure.Effect.ActionType.ElectionParty:
                 Type = ElectionType.Party;
                 FilterIDs = effect.TargetIDs;
-                IsRandom = effect.Value > 0;
                 break;
             case Procedure.Effect.ActionType.ElectionNominated:
                 Type = ElectionType.Nominated;
@@ -53,7 +52,6 @@ internal readonly record struct Election : IComparable<Election> {
             case Procedure.Effect.ActionType.ElectionAppointed:
                 Type = ElectionType.Appointed;
                 TargetID = effect.TargetIDs[0];
-                IsRandom = effect.Value > 0;
 
                 if (effect.TargetIDs.Length > 1) {
                     FilterIDs = effect.TargetIDs[1 ..];

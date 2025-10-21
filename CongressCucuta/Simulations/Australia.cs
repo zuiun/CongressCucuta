@@ -117,35 +117,30 @@ internal class Australia : ISimulation {
             9,
             [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, governorGeneral])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
-            0,
             []
         );
         ProcedureDeclared dismissal = new (
             10,
             [new (Procedure.Effect.ActionType.ElectionAppointed, [primeMinister, governorGeneral])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             []
         );
         ProcedureDeclared viceregalAppointment = new (
             11,
             [new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral, primeMinister, Role.LEADER_PARTY])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [primeMinister]
         );
         ProcedureDeclared doubleDissolution = new (
             12,
             [new (Procedure.Effect.ActionType.BallotPass, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [primeMinister]
         );
         ProcedureDeclared refusalSupply = new (
             13,
             [new (Procedure.Effect.ActionType.ElectionParty, [governorGeneral])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
-            0,
             [Role.LEADER_PARTY]
         );
         List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence, dismissal, viceregalAppointment, doubleDissolution, refusalSupply];

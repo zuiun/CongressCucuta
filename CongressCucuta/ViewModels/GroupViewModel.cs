@@ -2,6 +2,7 @@
 using CongressCucuta.Data;
 
 namespace CongressCucuta.ViewModels;
+
 internal class GroupViewModel (IDType id, string name, bool isLeaderNeeded) : ViewModel, IID {
     internal class PersonGroup (IDType id, IDType factionId, string name, bool isCandidate = false) : ViewModel, IID {
         private bool _isCandidate = isCandidate;

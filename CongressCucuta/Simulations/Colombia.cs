@@ -90,7 +90,6 @@ internal class Colombia : ISimulation {
             5,
             [new (Procedure.Effect.ActionType.BallotFail, [])],
             new (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         List<ProcedureDeclared> proceduresDeclared = [veto];

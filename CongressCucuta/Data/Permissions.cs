@@ -33,14 +33,14 @@ internal readonly record struct Permissions (
         List<string> result = [];
 
         if (CanVote) {
-            result.Add ("Can Vote");
-            result.Add (StringLineFormatter.Indent ($"Has {Votes} Vote(s)", 1));
+            result.Add ("Can vote");
+            result.Add (StringLineFormatter.Indent ($"Has {Votes} vote(s)", 1));
         } else {
-            result.Add ("Cannot Vote");
+            result.Add ("Cannot vote");
         }
 
         if (! CanSpeak) {
-            result.Add ("Cannot Speak");
+            result.Add ("Cannot speak");
         }
 
         return string.Join ('\n', result);

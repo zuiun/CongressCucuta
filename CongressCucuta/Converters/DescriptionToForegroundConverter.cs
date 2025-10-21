@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Windows;
 using System.Windows.Data;
 
 namespace CongressCucuta.Converters;
@@ -10,11 +11,9 @@ internal class DescriptionToForegroundConverter : IValueConverter {
         return value switch {
             string => "Blue",
             null => "Black",
-            _ => throw new NotSupportedException (),
+            _ => DependencyProperty.UnsetValue,
         };
     }
 
-    public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) {
-        throw new NotSupportedException ();
-    }
+    public object ConvertBack (object value, Type targetType, object parameter, CultureInfo culture) => DependencyProperty.UnsetValue;
 }

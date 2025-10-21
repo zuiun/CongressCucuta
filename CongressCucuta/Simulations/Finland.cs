@@ -1,6 +1,5 @@
 ﻿using CongressCucuta.Converters;
 using CongressCucuta.Data;
-using System.Text.RegularExpressions;
 
 namespace CongressCucuta.Simulations;
 
@@ -127,14 +126,12 @@ internal class Finland : ISimulation {
             8,
             [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, president])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
-            0,
             []
         );
         ProcedureDeclared veto = new (
             9,
             [new (Procedure.Effect.ActionType.BallotFail, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared dissolutionParliament = new (
@@ -144,7 +141,6 @@ internal class Finland : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, president]),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared ministerialAppointment = new (
@@ -153,7 +149,6 @@ internal class Finland : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, president]),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence, veto, dissolutionParliament, ministerialAppointment];

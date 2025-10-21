@@ -63,7 +63,7 @@ internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
         }
     }
 
-    public void SetInteractability (bool isInteractable) {
+    public void SetInteractable (bool isInteractable) {
         foreach (PersonViewModel p in _people) {
             p.IsInteractable = isInteractable;
         }

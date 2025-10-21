@@ -301,7 +301,6 @@
         "Cost": 0,
         "Value": 0
       },
-      "Value": 0,
       "DeclarerIDs": [
         253
       ],
@@ -320,7 +319,6 @@
         "Cost": 1,
         "Value": 0
       },
-      "Value": 0,
       "DeclarerIDs": [],
       "ID": 12,
       "Effects": [
@@ -341,7 +339,6 @@
         "Cost": 0,
         "Value": 0
       },
-      "Value": 0,
       "DeclarerIDs": [
         254
       ],
@@ -364,7 +361,7 @@
   "Ballots": [
     {
       "ID": 0,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 0,
@@ -383,7 +380,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [
           {
             "Action": 4,
@@ -413,7 +410,7 @@
     },
     {
       "ID": 1,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 3,
@@ -433,7 +430,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [
           {
             "Action": 1,
@@ -464,7 +461,7 @@
     },
     {
       "ID": 2,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 1,
@@ -491,7 +488,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [
           {
             "Action": 3,
@@ -515,7 +512,7 @@
     },
     {
       "ID": 3,
-      "PassResult": {
+      "Pass": {
         "Effects": [],
         "Links": [
           {
@@ -536,7 +533,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [
           {
             "Action": 4,
@@ -569,7 +566,7 @@
     },
     {
       "ID": 4,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 4,
@@ -588,7 +585,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [],
         "Links": [
           {
@@ -603,7 +600,7 @@
     },
     {
       "ID": 5,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 4,
@@ -615,7 +612,7 @@
         ],
         "Links": []
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [],
         "Links": []
       },

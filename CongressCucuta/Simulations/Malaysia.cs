@@ -140,7 +140,6 @@ internal class Malaysia : ISimulation {
                 new (Procedure.Effect.ActionType.BallotFail, [])
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [king]
         );
         ProcedureDeclared stateEmergency = new (
@@ -150,7 +149,6 @@ internal class Malaysia : ISimulation {
                 new (Procedure.Effect.ActionType.BallotLimit, [primeMinister, king]),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [king]
         );
         List<ProcedureDeclared> proceduresDeclared = [royalVeto, stateEmergency];

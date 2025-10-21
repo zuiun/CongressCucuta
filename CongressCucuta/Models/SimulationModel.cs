@@ -39,7 +39,7 @@ internal class SimulationModel {
     private bool _isBallot = false;
     public SimulationContext Context => _context;
     public Localisation Localisation => _localisation;
-    public List<SlideModel> Slides { get; }
+    public List<SlideModel> Slides { get; } = [];
     public IDType SlideCurrentIdx {
         get => _slideCurrentIdx;
         set {
@@ -76,58 +76,37 @@ internal class SimulationModel {
         _context = new (simulation);
         _context.PreparingElection += Context_PreparingElectionEventHandler;
         _localisation = simulation.Localisation;
-        (Slides, _slideTitleIdx, _ballotIdxsIds) = GenerateSlides (in simulation);
+
+        IDType slideCurrentIdx = GenerateSlidesIntroduction ();
+
+        slideCurrentIdx = GenerateSlidesProcedures (simulation, slideCurrentIdx);
+        slideCurrentIdx = GenerateSlideRoles (simulation, slideCurrentIdx);
+        slideCurrentIdx = GenerateSlidesFactions (simulation, slideCurrentIdx);
+        (slideCurrentIdx, _slideTitleIdx) = GenerateSlidesTitles (simulation, slideCurrentIdx);
+        (slideCurrentIdx, _ballotIdxsIds) = GenerateSlidesBallots (simulation, slideCurrentIdx);
+        slideCurrentIdx = GenerateSlidesResults (simulation, slideCurrentIdx);
+        GenerateSlidesEnd (simulation, slideCurrentIdx);
     }
 
-    private void Context_PreparingElectionEventHandler (PreparingElectionEventArgs e) {
-        CompletingElectionEventArgs args = new (e, in _localisation);
-
-        CompletingElection?.Invoke (args);
-        e.PeopleRolesNew = args.PeopleRolesNew;
-        e.PeopleFactionsNew = args.PeopleFactionsNew;
-    }
-
-    public void Context_VotingEventHandler (VotingEventArgs e) {
-        if (e.IsPass is bool isPass) {
-            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VotePass (e.PersonID, isPass);
-        } else if (e.IsFail is bool isFail) {
-            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VoteFail (e.PersonID, isFail);
-        } else if (e.IsAbstain is bool isAbstain) {
-            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VoteAbstain (e.PersonID, isAbstain);
-        } else {
-            throw new NotSupportedException ();
-        }
-    }
-
-    public bool? DeclareProcedure (IDType personId, IDType procedureId) => _context.DeclareProcedure (personId, procedureId);
-
-    private static IDType GenerateSlidesIntroduction (ref readonly Localisation localisation, ref List<SlideModel> slides) {
+    private IDType GenerateSlidesIntroduction () {
         IDType slideCurrentIdx = 0;
-        SlideForwardModel slideIntro = new (slideCurrentIdx, localisation.State, [localisation.Government], false);
+        SlideForwardModel slideIntro = new (slideCurrentIdx, _localisation.State, [_localisation.Government], false);
 
         ++ slideCurrentIdx;
-        slides.Add (slideIntro);
+        Slides.Add (slideIntro);
 
-        SlideBidirectionalModel slideContext = new (slideCurrentIdx, "Context", [.. localisation.Context]);
+        SlideBidirectionalModel slideContext = new (slideCurrentIdx, "Context", [.. _localisation.Context]);
 
         ++ slideCurrentIdx;
-        slides.Add (slideContext);
+        Slides.Add (slideContext);
         return slideCurrentIdx;
     }
 
-    private static IDType GenerateSlidesProcedures (
-        ref readonly Simulation simulation,
-        ref readonly Localisation localisation,
-        ref List<SlideModel> slides,
-        IDType slideCurrentIdx
-    ) {
-        for (byte i = 0; i < simulation.ProceduresGovernmental.Count; ++ i) {
-            string title = i > 0 ? "Governmental Procedures (cont.)" : "Governmental Procedures";
-            Procedure procedure = simulation.ProceduresGovernmental[i];
-            string procedureFull = procedure.ToString (in simulation, in localisation);
+    private IDType GenerateSlidesProcedures (Simulation simulation, IDType slideCurrentIdx ) {
+        void GenerateProcedureSlide (string title, Procedure procedure) {
+            string procedureFull = procedure.ToString (simulation, in _localisation);
             string[] procedureSplit = procedureFull.Split ('\n');
-            LineModel line = new (procedureSplit[0], description: localisation.Procedures[procedure.ID].Item2);
-
+            LineModel line = new (procedureSplit[0], description: _localisation.Procedures[procedure.ID].Item2);
             SlideBidirectionalModel slideProcedure = new (
                 slideCurrentIdx,
                 title,
@@ -135,7 +114,14 @@ internal class SimulationModel {
             );
 
             ++ slideCurrentIdx;
-            slides.Add (slideProcedure);
+            Slides.Add (slideProcedure);
+        }
+
+        for (byte i = 0; i < simulation.ProceduresGovernmental.Count; ++ i) {
+            string title = i > 0 ? "Governmental Procedures (cont.)" : "Governmental Procedures";
+            Procedure procedure = simulation.ProceduresGovernmental[i];
+
+            GenerateProcedureSlide (title, procedure);
         }
 
         for (byte i = 0; i < simulation.ProceduresSpecial.Count; ++i) {
@@ -143,128 +129,97 @@ internal class SimulationModel {
             Procedure procedure = simulation.ProceduresSpecial[i];
 
             if (procedure.IsActiveStart) {
-                string procedureFull = procedure.ToString (in simulation, in localisation);
-                string[] procedureSplit = procedureFull.Split ('\n');
-                LineModel line = new (procedureSplit[0], description: localisation.Procedures[procedure.ID].Item2);
-
-                SlideBidirectionalModel slideProcedure = new (
-                    slideCurrentIdx,
-                    title,
-                    [line, .. procedureSplit[1 ..]]
-                );
-
-                ++ slideCurrentIdx;
-                slides.Add (slideProcedure);
+                GenerateProcedureSlide (title, procedure);
             }
         }
 
         for (byte i = 0; i < simulation.ProceduresDeclared.Count; ++i) {
             string title = i > 0 ? "Declared Procedures (cont.)" : "Declared Procedures";
             Procedure procedure = simulation.ProceduresDeclared[i];
-            string procedureFull = procedure.ToString (in simulation, in localisation);
-            string[] procedureSplit = procedureFull.Split ('\n');
-            LineModel line = new (procedureSplit[0], description: localisation.Procedures[procedure.ID].Item2);
 
-            SlideBidirectionalModel slideProcedure = new (
-                slideCurrentIdx,
-                title,
-                [line, .. procedureSplit[1..]]
-            );
-
-            ++ slideCurrentIdx;
-            slides.Add (slideProcedure);
+            GenerateProcedureSlide (title, procedure);
         }
 
         return slideCurrentIdx;
     }
 
-    private static IDType GenerateSlideTitles (
-        ref readonly Simulation simulation,
-        ref readonly Localisation localisation,
-        ref List<SlideModel> slides,
-        IDType slideCurrentIdx
-    ) {
-        List<string> titles = [];
-        string speaker = localisation.Speaker;
-        string member = localisation.Roles[Role.MEMBER].Item1;
+    private IDType GenerateSlideRoles (Simulation simulation, IDType slideCurrentIdx) {
+        List<string> roles = [];
+        string speaker = _localisation.Speaker;
+        string member = _localisation.Roles[Role.MEMBER].Item1;
 
-        titles.Add (speaker);
-        titles.Add (member);
+        roles.Add (speaker);
+        roles.Add (member);
 
-        if (localisation.Roles.TryGetValue (Role.HEAD_GOVERNMENT, out (string, string) headGovernment)) {
-            titles.Add (headGovernment.Item1);
+        if (_localisation.Roles.TryGetValue (Role.HEAD_GOVERNMENT, out (string, string) headGovernment)) {
+            roles.Add (headGovernment.Item1);
         }
 
-        if (localisation.Roles.TryGetValue (Role.HEAD_STATE, out (string, string) headState)) {
-            titles.Add (headState.Item1);
+        if (_localisation.Roles.TryGetValue (Role.HEAD_STATE, out (string, string) headState)) {
+            roles.Add (headState.Item1);
         }
 
-        if (localisation.Roles.TryGetValue (Role.RESERVED_1, out (string, string) reserved1)) {
-            titles.Add (reserved1.Item1);
+        if (_localisation.Roles.TryGetValue (Role.RESERVED_1, out (string, string) reserved1)) {
+            roles.Add (reserved1.Item1);
         }
 
-        if (localisation.Roles.TryGetValue (Role.RESERVED_2, out (string, string) reserved2)) {
-            titles.Add (reserved2.Item1);
+        if (_localisation.Roles.TryGetValue (Role.RESERVED_2, out (string, string) reserved2)) {
+            roles.Add (reserved2.Item1);
         }
 
-        if (localisation.Roles.TryGetValue (Role.RESERVED_3, out (string, string) reserved3)) {
-            titles.Add (reserved3.Item1);
+        if (_localisation.Roles.TryGetValue (Role.RESERVED_3, out (string, string) reserved3)) {
+            roles.Add (reserved3.Item1);
         }
 
         if (simulation.Parties.Count > 0) {
-            if (localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) leaderParty)) {
+            if (_localisation.Roles.TryGetValue (Role.LEADER_PARTY, out (string, string) leaderParty)) {
                 List<string> leadersParties = [];
 
-                titles.Add ($"{leaderParty.Item2}:");
+                roles.Add ($"{leaderParty.Item2}:");
 
                 foreach (Faction party in simulation.Parties) {
-                    string leaderPartyIndividual = localisation.Roles[party.ID].Item1;
+                    string leaderPartyIndividual = _localisation.Roles[party.ID].Item1;
 
                     leadersParties.Add (leaderPartyIndividual);
                 }
 
-                titles.Add (StringLineFormatter.Indent (string.Join (", ", leadersParties), 1));
+                roles.Add (StringLineFormatter.Indent (string.Join (", ", leadersParties), 1));
             }
         }
 
         if (simulation.Regions.Count > 0) {
-            if (localisation.Roles.TryGetValue (Role.LEADER_REGION, out (string, string) leaderRegion)) {
+            if (_localisation.Roles.TryGetValue (Role.LEADER_REGION, out (string, string) leaderRegion)) {
                 List<string> leadersRegions = [];
 
-                titles.Add ($"{leaderRegion.Item2}:");
+                roles.Add ($"{leaderRegion.Item2}:");
 
                 foreach (Faction region in simulation.Regions) {
-                    string leaderRegionIndividual = localisation.Roles[region.ID].Item1;
+                    string leaderRegionIndividual = _localisation.Roles[region.ID].Item1;
 
                     leadersRegions.Add (leaderRegionIndividual);
                 }
                 
-                titles.Add (StringLineFormatter.Indent (string.Join (", ", leadersRegions), 1));
+                roles.Add (StringLineFormatter.Indent (string.Join (", ", leadersRegions), 1));
             }
         }
 
-        SlideBidirectionalModel slideTitles = new (
+        SlideBidirectionalModel slideRoles = new (
             slideCurrentIdx,
-            "Titles",
-            [.. titles]
+            "Roles",
+            [.. roles]
         );
 
         ++ slideCurrentIdx;
-        slides.Add (slideTitles);
+        Slides.Add (slideRoles);
         return slideCurrentIdx;
     }
 
-    private static IDType GenerateSlidesFactions (
-        ref readonly Simulation simulation,
-        ref readonly Localisation localisation,
-        ref List<SlideModel> slides,
-        IDType slideCurrentIdx
-    ) {
+    private IDType GenerateSlidesFactions (Simulation simulation, IDType slideCurrentIdx) {
         List<string> regions = [];
 
         foreach (Faction region in simulation.Regions) {
             if (region.IsActiveStart) {
-                (string name, string[] description) = localisation.Regions[region.ID];
+                (string name, string[] description) = _localisation.Regions[region.ID];
 
                 regions.Add (name);
                 regions.AddRange (description);
@@ -272,41 +227,36 @@ internal class SimulationModel {
         }
 
         if (regions.Count > 0) {
-            SlideBidirectionalModel slideRegions = new (slideCurrentIdx, localisation.Region.Item2, [.. regions]);
+            SlideBidirectionalModel slideRegions = new (slideCurrentIdx, _localisation.Region.Item2, [.. regions]);
 
             ++ slideCurrentIdx;
-            slides.Add (slideRegions);
+            Slides.Add (slideRegions);
         }
 
         List<string> parties = [];
 
         foreach (Faction party in simulation.Parties) {
             if (party.IsActiveStart) {
-                parties.Add (localisation.GetFactionAndAbbreviation (party.ID));
-                parties.AddRange (localisation.Parties[party.ID].Item2);
+                parties.Add (_localisation.GetFactionAndAbbreviation (party.ID));
+                parties.AddRange (_localisation.Parties[party.ID].Item2);
             }
         }
 
         if (parties.Count > 0) {
-            SlideBidirectionalModel slideParties = new (slideCurrentIdx, localisation.Party.Item2, [.. parties]);
+            SlideBidirectionalModel slideParties = new (slideCurrentIdx, _localisation.Party.Item2, [.. parties]);
 
             ++ slideCurrentIdx;
-            slides.Add (slideParties);
+            Slides.Add (slideParties);
         }
 
         return slideCurrentIdx;
     }
 
-    private static (IDType, IDType, Dictionary<IDType, IDType>) GenerateSlidesBallots (
-        ref readonly Simulation simulation,
-        ref readonly Localisation localisation,
-        ref List<SlideModel> slides,
-        IDType slideCurrentIdx
-    ) {
+    private (IDType, IDType) GenerateSlidesTitles (Simulation simulation, IDType slideCurrentIdx) {
         List<LineModel> linesBallots = [];
 
         foreach (Ballot ballot in simulation.Ballots.Where (b => !b.IsIncident)) {
-            (string title, string name, string[] _, string[] _, string[] _) = localisation.Ballots[ballot.ID];
+            (string title, string name, string[] _, string[] _, string[] _) = _localisation.Ballots[ballot.ID];
 
             linesBallots.Add (new (title));
             linesBallots.Add (new (StringLineFormatter.Indent (name, 1)));
@@ -315,19 +265,22 @@ internal class SimulationModel {
         SlideBidirectionalModel slideBallots = new (slideCurrentIdx, "Ballots", linesBallots);
 
         ++ slideCurrentIdx;
-        slides.Add (slideBallots);
+        Slides.Add (slideBallots);
 
         IDType slideTitleIdx = slideCurrentIdx;
         SlideForwardModel slideTitle = new (
             slideCurrentIdx,
-            localisation.Period,
-            [localisation.Date, localisation.Situation],
+            _localisation.Period,
+            [_localisation.Date, _localisation.Situation],
             false
         );
 
         ++ slideCurrentIdx;
-        slides.Add (slideTitle);
+        Slides.Add (slideTitle);
+        return (slideCurrentIdx, slideTitleIdx);
+    }
 
+    private (IDType, Dictionary<IDType, IDType>) GenerateSlidesBallots (Simulation simulation, IDType slideCurrentIdx) {
         IDType ballotIdx = slideCurrentIdx;
         IDType resultBallotIdx = slideCurrentIdx + simulation.Ballots.Count;
         List<SlideModel> slidesBallots = [];
@@ -337,7 +290,7 @@ internal class SimulationModel {
 
         // Every Ballot ID is mapped to its index
         foreach (Ballot ballot in simulation.Ballots) {
-            (string title, string name, string[] description, string[] _, string[] _) = localisation.Ballots[ballot.ID];
+            (string title, string name, string[] description, string[] _, string[] _) = _localisation.Ballots[ballot.ID];
             SlideBranchingModel slideBallot = new (
                 slideCurrentIdx,
                 title,
@@ -360,11 +313,11 @@ internal class SimulationModel {
         // Result Links are mapped from IDs to indexes
         foreach (Ballot ballot in simulation.Ballots) {
             // Pass, fail
-            (string title, string _, string[] _, string[] pass, string[] fail) = localisation.Ballots[ballot.ID];
+            (string title, string _, string[] _, string[] pass, string[] fail) = _localisation.Ballots[ballot.ID];
             List<Link<SlideModel>> linksPass = [];
             List<LineModel> effectsPass = [];
 
-            foreach (Link<Ballot> l in ballot.PassResult.Links) {
+            foreach (Link<Ballot> l in ballot.Pass.Links) {
                 if (l.TargetID == Ballot.END) {
                     linksPass.Add (new (l.Condition, resultEndIdx));
                 } else {
@@ -376,8 +329,8 @@ internal class SimulationModel {
                 linksPass = [new (new AlwaysCondition (), resultEndIdx)];
             }
 
-            foreach (Ballot.Effect e in ballot.PassResult.Effects) {
-                List<string> effect = [.. e.ToString (in simulation, in localisation).Split ('\n')];
+            foreach (Ballot.Effect e in ballot.Pass.Effects) {
+                List<string> effect = [.. e.ToString (simulation, in _localisation).Split ('\n')];
 
                 effectsPass.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
             }
@@ -395,7 +348,7 @@ internal class SimulationModel {
             List<Link<SlideModel>> linksFail = [];
             List<LineModel> effectsFail = [];
 
-            foreach (Link<Ballot> l in ballot.FailResult.Links) {
+            foreach (Link<Ballot> l in ballot.Fail.Links) {
                 if (l.TargetID == Ballot.END) {
                     linksFail.Add (new (l.Condition, resultEndIdx));
                 } else {
@@ -407,8 +360,8 @@ internal class SimulationModel {
                 linksFail = [new (new AlwaysCondition (), resultEndIdx)];
             }
 
-            foreach (Ballot.Effect e in ballot.FailResult.Effects) {
-                List<string> effect = [.. e.ToString (in simulation, in localisation).Split ('\n')];
+            foreach (Ballot.Effect e in ballot.Fail.Effects) {
+                List<string> effect = [.. e.ToString (simulation, in _localisation).Split ('\n')];
 
                 effectsFail.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
             }
@@ -424,27 +377,21 @@ internal class SimulationModel {
             slidesResultBallots.Add (slideBallotFail);
         }
 
-        slides.AddRange (slidesBallots);
-        slides.AddRange (slidesResultBallots);
-
         Dictionary<IDType, IDType> ballotIdxsIds = ballotIDsFinalIdxs.ToDictionary (k => k.Value, k => k.Key);
 
-        return (slideCurrentIdx, slideTitleIdx, ballotIdxsIds);
+        Slides.AddRange (slidesBallots);
+        Slides.AddRange (slidesResultBallots);
+        return (slideCurrentIdx, ballotIdxsIds);
     }
 
-    private static IDType GenerateSlidesResults (
-        ref readonly Simulation simulation,
-        ref readonly Localisation localisation,
-        ref List<SlideModel> slides,
-        IDType slideCurrentIdx
-    ) {
+    private IDType GenerateSlidesResults (Simulation simulation, IDType slideCurrentIdx) {
         IDType resultIdxOffset = slideCurrentIdx;
         IDType resultHistoricalIdx = slideCurrentIdx + simulation.Results.Count;
         List<SlideModel> slidesResults = [];
         Dictionary<IDType, IDType> resultIDsFinalIdxs = [];
 
         foreach (Result result in simulation.Results) {
-            (string title, string[] description) = localisation.Results[result.ID];
+            (string title, string[] description) = _localisation.Results[result.ID];
             List<Link<SlideModel>> links = result.Links.ConvertAll (l =>
                 new Link<SlideModel> (l.Condition, l.TargetID + resultIdxOffset)
             );
@@ -461,26 +408,21 @@ internal class SimulationModel {
             );
 
             ++ slideCurrentIdx;
-            slides.Add (slideResult);
+            Slides.Add (slideResult);
         }
 
         return slideCurrentIdx;
     }
 
-    private static void GenerateSlidesEnd (
-        ref readonly Simulation simulation,
-        ref readonly Localisation localisation,
-        ref List<SlideModel> slides,
-        IDType slideCurrentIdx
-    ) {
+    private void GenerateSlidesEnd (Simulation simulation, IDType slideCurrentIdx) {
         List<string> ballotsPassed = [];
         List<string> ballotsFailed = [];
 
         foreach (Ballot ballot in simulation.Ballots) {
-            string line = StringLineFormatter.Indent (localisation.Ballots[ballot.ID].Item1, 1);
+            string line = StringLineFormatter.Indent (_localisation.Ballots[ballot.ID].Item1, 1);
 
             if (simulation.History.BallotsProceduresDeclared.TryGetValue (ballot.ID, out SortedSet<IDType>? proceduresDeclared)) {
-                var proceduresDeclaredNamesIter = localisation.Procedures.Where (k => proceduresDeclared.Contains (k.Key))
+                var proceduresDeclaredNamesIter = _localisation.Procedures.Where (k => proceduresDeclared.Contains (k.Key))
                     .Select (k => k.Value.Item1);
 
                 string proceduresDeclaredNames = string.Join (", ", proceduresDeclaredNamesIter);
@@ -506,34 +448,30 @@ internal class SimulationModel {
         SlideForwardModel slideHistorical = new (slideCurrentIdx, "Historical Results", ["Passed", .. ballotsPassed, "Failed", .. ballotsFailed]);
 
         ++ slideCurrentIdx;
-        slides.Add (slideHistorical);
+        Slides.Add (slideHistorical);
 
         SlideBackwardModel slideEnd = new (slideCurrentIdx, "End", []);
 
-        slides.Add (slideEnd);
+        Slides.Add (slideEnd);
     }
 
-    private static (List<SlideModel>, IDType, Dictionary<IDType, IDType>) GenerateSlides (ref readonly Simulation simulation) {
-        Localisation localisation = simulation.Localisation;
-        List<SlideModel> slides = [];
-        IDType slideCurrentIdx = GenerateSlidesIntroduction (in localisation, ref slides);
+    private void Context_PreparingElectionEventHandler (PreparingElectionEventArgs e) {
+        CompletingElectionEventArgs args = new (e, in _localisation);
 
-        slideCurrentIdx = GenerateSlidesProcedures (in simulation, in localisation, ref slides, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlideTitles (in simulation, in localisation, ref slides, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlidesFactions (in simulation, in localisation, ref slides, slideCurrentIdx);
-        (slideCurrentIdx, IDType slideTitleIdx, var ballotsIdxsIds) = GenerateSlidesBallots (in simulation, in localisation, ref slides, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlidesResults (in simulation, in localisation, ref slides, slideCurrentIdx);
-        GenerateSlidesEnd (in simulation, in localisation, ref slides, slideCurrentIdx);
-        return (slides, slideTitleIdx, ballotsIdxsIds);
+        CompletingElection?.Invoke (args);
+        e.PeopleRolesNew = args.PeopleRolesNew;
+        e.PeopleFactionsNew = args.PeopleFactionsNew;
     }
 
-    public void InitialisePeople (List<Person> people) => _context.InitialisePeople (people);
-
-    public IDType? ResolveLink (Link<SlideModel> link) => link.Evaluate (in _context) ? link.TargetID : null;
-
-    public bool EvaluateLink (Link<SlideModel> link) => link.Evaluate (in _context);
-
-    public void VoteBallot (bool isPass) => _context.VoteBallot (isPass);
-
-    public bool IsBallotSlide () => _ballotIdxsIds.ContainsKey (_slideCurrentIdx);
+    public void Context_VotingEventHandler (VotingEventArgs e) {
+        if (e.IsPass is bool isPass) {
+            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VotePass (e.PersonID, isPass);
+        } else if (e.IsFail is bool isFail) {
+            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VoteFail (e.PersonID, isFail);
+        } else if (e.IsAbstain is bool isAbstain) {
+            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _context.VoteAbstain (e.PersonID, isAbstain);
+        } else {
+            throw new NotSupportedException ();
+        }
+    }
 }

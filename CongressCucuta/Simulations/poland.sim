@@ -210,7 +210,6 @@
         "Cost": 1,
         "Value": 0
       },
-      "Value": 0,
       "DeclarerIDs": [],
       "ID": 9,
       "Effects": [
@@ -228,7 +227,7 @@
   "Ballots": [
     {
       "ID": 0,
-      "PassResult": {
+      "Pass": {
         "Effects": [],
         "Links": [
           {
@@ -239,7 +238,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [],
         "Links": [
           {
@@ -254,7 +253,7 @@
     },
     {
       "ID": 1,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 3,
@@ -274,7 +273,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [],
         "Links": [
           {
@@ -289,7 +288,7 @@
     },
     {
       "ID": 2,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 3,
@@ -309,7 +308,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [
           {
             "Action": 2,
@@ -332,7 +331,7 @@
     },
     {
       "ID": 3,
-      "PassResult": {
+      "Pass": {
         "Effects": [
           {
             "Action": 1,
@@ -359,7 +358,7 @@
           }
         ]
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [],
         "Links": [
           {
@@ -374,11 +373,11 @@
     },
     {
       "ID": 4,
-      "PassResult": {
+      "Pass": {
         "Effects": [],
         "Links": []
       },
-      "FailResult": {
+      "Fail": {
         "Effects": [],
         "Links": []
       },

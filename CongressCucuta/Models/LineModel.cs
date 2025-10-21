@@ -17,7 +17,7 @@ internal class LineModel {
             _isContent = value;
 
             // IndentLevel also controls font size
-            if (!_isContent) {
+            if (! _isContent) {
                 _indentLevel = SUBTITLE_SIZE;
             }
         }

@@ -1,7 +1,7 @@
-﻿using CongressCucuta.Data;
+﻿using System.Diagnostics;
+using CongressCucuta.Data;
 using CongressCucuta.Models;
 using CongressCucuta.Views;
-using System.Diagnostics;
 
 namespace CongressCucuta.ViewModels;
 
@@ -20,14 +20,14 @@ internal class SimulationViewModel : ViewModel {
         _simulation.CompletingElection += Simulation_CompletingElectionEventHandler;
         _simulation.Context.ModifiedProcedures += Context_ModifiedProceduresEventHandler;
         _state = _simulation.Localisation.State;
-        _context = new (in _simulation);
+        _context = new (_simulation);
         _context.Voting += _simulation.Context_VotingEventHandler;
         _context.DeclaringProcedure += Context_DeclaringProcedureEventHandler;
 
         Localisation localisation = _simulation.Localisation;
 
         foreach (ProcedureImmediate pi in _simulation.Context.ProceduresGovernmental.Values) {
-            string effect = pi.ToString (in simulation, in localisation);
+            string effect = pi.ToString (simulation, in localisation);
             ContextViewModel.ProcedureGroup procedure = new (
                 pi.ID,
                 _simulation.Localisation.Procedures[pi.ID].Item1,
@@ -39,7 +39,7 @@ internal class SimulationViewModel : ViewModel {
         }
 
         foreach (ProcedureTargeted pt in _simulation.Context.ProceduresSpecial.Values) {
-            string effect = pt.ToString (in simulation, in localisation);
+            string effect = pt.ToString (simulation, in localisation);
 
             if (pt.IsActiveStart) {
                 ContextViewModel.ProcedureGroup procedure = new (
@@ -55,7 +55,7 @@ internal class SimulationViewModel : ViewModel {
         }
 
         foreach (ProcedureDeclared pd in _simulation.Context.ProceduresDeclared.Values) {
-            string effect = pd.ToString (in simulation, in localisation);
+            string effect = pd.ToString (simulation, in localisation);
             ContextViewModel.ProcedureGroup procedure = new (
                 pd.ID,
                 _simulation.Localisation.Procedures[pd.ID].Item1,
@@ -67,10 +67,7 @@ internal class SimulationViewModel : ViewModel {
         }
 
         _context.Sort ();
-
-        SlideModel slide = _simulation.Slides[0];
-
-        _slide.Replace (in slide, _simulation.Localisation);
+        _slide.Replace (_simulation.Slides[0], _simulation.Localisation);
     }
 
     private void Simulation_CompletingElectionEventHandler (CompletingElectionEventArgs e) {
@@ -106,7 +103,7 @@ internal class SimulationViewModel : ViewModel {
             e.IsManual = false;
             e.IsConfirmed = true;
             e.Message = "Success";
-            _simulation.DeclareProcedure (e.PersonID, e.ProcedureID);
+            _simulation.Context.DeclareProcedure (e.PersonID, e.ProcedureID);
         } else {
             SimulationContext.ConfirmationResult result = _simulation.Context.TryConfirmProcedure (e.PersonID, e.ProcedureID);
 
@@ -176,14 +173,13 @@ internal class SimulationViewModel : ViewModel {
                 e.IsConfirmed = isConfirmed;
 
                 if (isConfirmed) {
-                    bool? vote = _simulation.DeclareProcedure (e.PersonID, e.ProcedureID);
+                    bool? vote = _simulation.Context.DeclareProcedure (e.PersonID, e.ProcedureID);
 
                     if (vote is bool isPass) {
                         LinkViewModel link = isPass ? _slide.Links[0] : _slide.Links[1];
                         IDType slideIdx = link.Link.TargetID;
-                        SlideModel slide = _simulation.Slides[slideIdx];
 
-                        _slide.Replace (in slide, _simulation.Localisation);
+                        _slide.Replace (_simulation.Slides[slideIdx], _simulation.Localisation);
                         _simulation.SlideCurrentIdx = slideIdx;
                     }
                 }
@@ -209,24 +205,19 @@ internal class SimulationViewModel : ViewModel {
         _context.Sort ();
     }
 
-    public void InitialisePeople (List<Person> people) => _simulation.InitialisePeople (people);
+    public void InitialisePeople (List<Person> people) => _simulation.Context.InitialisePeople (people);
 
     public RelayCommand<Link<SlideModel>> SwitchSlideCommand => new (
         l => {
-            IDType? result = _simulation.ResolveLink (l);
-            
-            if (result is not null) {
-                IDType slideIdx = (IDType) result!;
-                SlideModel slide = _simulation.Slides[slideIdx];
-
-                if (l.YieldBallotVote () is bool isPass) {
-                    _simulation.VoteBallot (isPass);
+            if (l.Resolve (_simulation.Context) is IDType slideIdx) {
+                if (l.Condition.YieldBallotVote () is bool isPass) {
+                    _simulation.Context.VoteBallot (isPass);
                 }
 
-                _slide.Replace (in slide, _simulation.Localisation);
+                _slide.Replace (_simulation.Slides[slideIdx], _simulation.Localisation);
                 _simulation.SlideCurrentIdx = slideIdx;
             }
         },
-        l => _simulation.EvaluateLink (l)
+        l => l.Condition.Evaluate (_simulation.Context)
     );
 }

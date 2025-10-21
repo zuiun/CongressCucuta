@@ -1,2 +1,7 @@
 should end slide be constant or backward?
-tests?
+
+needs tests:
+SimulationContext ...
+ViewModels are currently excluded
+
+simulations folder should really be a separate project

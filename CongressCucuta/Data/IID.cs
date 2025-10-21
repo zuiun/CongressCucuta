@@ -1,6 +1,6 @@
 ﻿namespace CongressCucuta.Data;
 
-internal readonly record struct IDType (byte ID) : IComparable<IDType> {
+internal readonly record struct IDType (byte ID) : IComparable<IDType>, IEquatable<byte> {
     public static implicit operator IDType (byte id) => new (id);
 
     public static implicit operator byte (IDType id) => id.ID;
@@ -16,20 +16,12 @@ internal readonly record struct IDType (byte ID) : IComparable<IDType> {
             return 0;
         }
     }
+
+    public bool Equals (byte other) => ID == other;
+
+    public override string ToString () => $"{ID}";
 }
 
 internal interface IID {
     public IDType ID { get; }
-}
-
-internal class IIDEqualityComparer : IEqualityComparer<IID> {
-    public bool Equals (IID? left, IID? right) {
-        if (left is null || right is null) {
-            return false;
-        }
-
-        return left.ID == right.ID;
-    }
-
-    public int GetHashCode (IID id) => id.ID;
 }

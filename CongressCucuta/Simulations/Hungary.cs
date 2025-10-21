@@ -121,14 +121,12 @@ internal class Hungary : ISimulation {
             6,
             [new (Procedure.Effect.ActionType.BallotPass, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [regent]
         );
         ProcedureDeclared royalVeto = new (
             7,
             [new (Procedure.Effect.ActionType.BallotFail, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [regent]
         );
         ProcedureDeclared dissolutionDiet = new (
@@ -138,7 +136,6 @@ internal class Hungary : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, regent]),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [regent]
         );
         List<ProcedureDeclared> proceduresDeclared = [royalPrerogative, royalVeto, dissolutionDiet];

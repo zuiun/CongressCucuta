@@ -75,7 +75,7 @@ internal class Simulation {
      * (2) Role IDs must correspond one-to-one with Faction IDs (signifies Faction leadership), excepting reserved Role IDs
      * (3) Currency IDs must correspond one-to-one with Faction IDs (signifies Faction ownership), excepting reserved Currency IDs (only STATE)
      * (4) Region IDs and Party IDs cannot overlap
-     * (5) Every Ballot Link must have a valid Ballot ID
+     * (5) Every Ballot and Result Link must have a valid Ballot ID
      * (6) Procedures must target or filter valid Ballot IDs, Role IDs, and Currency IDs
      * (7) If any Region has a Currency, then every Region must have a Currency; same restriction applies to Party
      * (8) Every IID must have a Localisation entry
@@ -178,15 +178,23 @@ internal class Simulation {
 
 #region (5)
         foreach (Ballot b in Ballots) {
-            foreach (var l in b.PassResult.Links) {
+            foreach (var l in b.Pass.Links) {
                 if (l.TargetID != Ballot.END && l.TargetID >= Ballots.Count) {
-                    throw new ArgumentException ($"Ballot ID {b.ID} passage Link targeting {l.TargetID} does not correspond with any Ballot ID");
+                    throw new ArgumentException ($"Ballot ID {b.ID} Pass Link targeting {l.TargetID} does not correspond with any Ballot ID");
                 }
             }
 
-            foreach (var l in b.FailResult.Links) {
+            foreach (var l in b.Fail.Links) {
                 if (l.TargetID != Ballot.END && l.TargetID >= Ballots.Count) {
-                    throw new ArgumentException ($"Ballot ID {b.ID} failure Link targeting {l.TargetID} does not correspond with any Ballot ID");
+                    throw new ArgumentException ($"Ballot ID {b.ID} Fail Link targeting {l.TargetID} does not correspond with any Ballot ID");
+                }
+            }
+        }
+
+        foreach (Result r in Results) {
+            foreach (var l in r.Links) {
+                if (l.TargetID >= Results.Count) {
+                    throw new ArgumentException ($"Result ID {r.ID} Link targeting {l.TargetID} does not correspond with any Result ID");
                 }
             }
         }
@@ -211,15 +219,8 @@ internal class Simulation {
                     case Procedure.Effect.ActionType.CurrencyAdd:
                     case Procedure.Effect.ActionType.CurrencySubtract:
                         foreach (IDType c in e.TargetIDs) {
-                            if (
-                                ! CurrenciesValues.ContainsKey (c)
-                                || (
-                                    c != Currency.STATE
-                                    && Regions.All (r => r.ID != c)
-                                    && Parties.All (p => p.ID != c)
-                                )
-                            ) {
-                                throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} targets an invalid Faction ID");
+                            if (!CurrenciesValues.ContainsKey (c) && c < Currency.REGION) {
+                                throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} targets an invalid Currency ID");
                             }
                         }
 
@@ -240,8 +241,22 @@ internal class Simulation {
             }
 
             foreach (Procedure.Effect e in pd.Effects) {
-                if (e.TargetIDs.Any (t => RolesPermissions.Keys.All (r => t != r.ID))) {
-                    throw new ArgumentException ($"ProcedureDeclared ID {pd.ID} targets an invalid Role ID");
+                switch (e.Action) {
+                    case Procedure.Effect.ActionType.CurrencyAdd:
+                    case Procedure.Effect.ActionType.CurrencySubtract:
+                        foreach (IDType c in e.TargetIDs) {
+                            if (! CurrenciesValues.ContainsKey (c) && c < Currency.REGION) {
+                                throw new ArgumentException ($"ProcedureDeclared ID {pd.ID} targets an invalid Currency ID");
+                            }
+                        }
+
+                        break;
+                    default:
+                        if (e.TargetIDs.Any (t => RolesPermissions.Keys.All (r => t != r.ID))) {
+                            throw new ArgumentException ($"ProcedureDeclared ID {pd.ID} targets an invalid Role ID");
+                        }
+
+                        break;
                 }
             }
         }
@@ -326,7 +341,7 @@ internal class Simulation {
             byte regionIdxOffset = Regions[0].ID;
 
             if (Regions[i].ID - regionIdxOffset != i) {
-                throw new ArgumentException ($"Region ID {Regions[i].ID} does not match its offset index in Regions");
+                throw new ArgumentException ($"Region ID {Regions[i].ID} does not match its offset index {i + regionIdxOffset} in Regions");
             }
         }
 
@@ -334,8 +349,17 @@ internal class Simulation {
             byte partyIdxOffset = Parties[0].ID;
 
             if (Parties[i].ID - partyIdxOffset != i) {
-                throw new ArgumentException ($"Party ID {Parties[i].ID} does not match its offset index in Parties");
+                throw new ArgumentException ($"Party ID {Parties[i].ID} does not match its offset index {i + partyIdxOffset} in Parties");
             }
+        }
+
+        if (
+            Regions.Count > 0
+            && Parties.Count > 0
+            && Regions[0].ID != Parties.Count
+            && Parties[0].ID != Regions.Count
+        ) {
+            throw new ArgumentException ($"Region and Party IDs are not contiguous");
         }
 
         for (byte i = 0; i < ProceduresGovernmental.Count; ++ i) {
@@ -362,13 +386,13 @@ internal class Simulation {
 
         for (byte i = 0; i < Ballots.Count; ++ i) {
             if (Ballots[i].ID != i) {
-                throw new ArgumentException ($"Ballot ID {Ballots[i].ID} does not match its index in Ballots");
+                throw new ArgumentException ($"Ballot ID {Ballots[i].ID} does not match its index {i} in Ballots");
             }
         }
 
         for (byte i = 0; i < Results.Count; ++ i) {
             if (Results[i].ID != i) {
-                throw new ArgumentException ($"Result ID {Results[i].ID} does not match its index in Results");
+                throw new ArgumentException ($"Result ID {Results[i].ID} does not match its index {i} in Results");
             }
         }
 #endregion
@@ -405,7 +429,7 @@ internal class Simulation {
 
 #region (11)
         foreach (Ballot b in Ballots) {
-            foreach (Ballot.Effect e in b.PassResult.Effects) {
+            foreach (Ballot.Effect e in b.Pass.Effects) {
                 switch (e.Action) {
                     case Ballot.Effect.ActionType.FoundParty:
                     case Ballot.Effect.ActionType.DissolveParty:
@@ -442,20 +466,20 @@ internal class Simulation {
                             ! e.TargetIDs.All (c => Parties.Select (p => p.ID).Contains (c))
                             && ! e.TargetIDs.All (c => Regions.Select (r => r.ID).Contains (c))
                         ) {
-                            throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with the same type of Faction IDs");
+                            throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
                         }
 
                         break;
                 }
             }
 
-            foreach (Ballot.Effect e in b.FailResult.Effects) {
+            foreach (Ballot.Effect e in b.Fail.Effects) {
                 switch (e.Action) {
                     case Ballot.Effect.ActionType.FoundParty:
                     case Ballot.Effect.ActionType.DissolveParty:
                         foreach (IDType f in e.TargetIDs) {
                             if (Parties.All (p => f != p.ID)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Party ID");
+                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Party ID");
                             }
                         }
 
@@ -464,29 +488,29 @@ internal class Simulation {
                     case Ballot.Effect.ActionType.ReplaceProcedure:
                         foreach (IDType p in e.TargetIDs) {
                             if (ProceduresSpecial.All (pt => p != pt.ID)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Procedure ID");
+                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Procedure ID");
                             }
                         }
 
                         break;
                     case Ballot.Effect.ActionType.ModifyCurrency:
                         if (e.TargetIDs[0] == Currency.STATE) {
-                            if (!CurrenciesValues.ContainsKey (Currency.STATE)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                            if (! CurrenciesValues.ContainsKey (Currency.STATE)) {
+                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
                             }
                         } else if (e.TargetIDs[0] == Currency.PARTY) {
                             if (Parties.Any (p => CurrenciesValues.Keys.All (c => p.ID != c.ID))) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
                             }
                         } else if (e.TargetIDs[0] == Currency.REGION) {
                             if (Regions.Any (r => CurrenciesValues.Keys.All (c => r.ID != c.ID))) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
+                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
                             }
                         } else if (
                             ! e.TargetIDs.All (c => Parties.Select (p => p.ID).Contains (c))
                             && ! e.TargetIDs.All (c => Regions.Select (r => r.ID).Contains (c))
                         ) {
-                            throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with the same type of Faction IDs");
+                            throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
                         }
 
                         break;

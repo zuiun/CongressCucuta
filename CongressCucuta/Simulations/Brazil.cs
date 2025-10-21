@@ -140,7 +140,6 @@ internal class Brazil : ISimulation {
                 new (Procedure.Effect.ActionType.CurrencyAdd, [Currency.REGION], 1),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared veto = new (
@@ -149,14 +148,12 @@ internal class Brazil : ISimulation {
                 new (Procedure.Effect.ActionType.BallotFail, [])
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared revolt = new (
             10,
             [new (Procedure.Effect.ActionType.BallotLimit, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DiceCurrency),
-            0,
             [Role.LEADER_REGION]
         );
         List<ProcedureDeclared> proceduresDeclared = [statesPolicy, veto, revolt];

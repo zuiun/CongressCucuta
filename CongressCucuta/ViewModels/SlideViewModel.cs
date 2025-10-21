@@ -47,7 +47,7 @@ internal class SlideViewModel : ViewModel {
         }
     }
 
-    public void Replace (ref readonly SlideModel slide, Localisation localisation) {
+    public void Replace (SlideModel slide, Localisation localisation) {
         Title = slide.Title;
         Description = slide.Description.ConvertAll (l => new LineViewModel (l));
 
@@ -55,7 +55,7 @@ internal class SlideViewModel : ViewModel {
         if (slide.Links.Count > 1) {
             // SlideBranching
             if (slide.IsForward is null) {
-                Links = slide.Links.ConvertAll (l => new LinkViewModel (l.ToString (in localisation), l));
+                Links = slide.Links.ConvertAll (l => new LinkViewModel (l.Condition.ToString (in localisation), l));
             // SlideBidirectional
             } else {
                 Links = [

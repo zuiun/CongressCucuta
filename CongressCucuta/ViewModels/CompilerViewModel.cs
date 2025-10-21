@@ -78,8 +78,8 @@ internal class CompilerViewModel : ViewModel {
         _simulations = [.. _simulations.OrderBy (s => s.Name)];
     }
 
-    public RelayCommand CompileSimulationCommand => new (_ => {
-        if (_selectedIdx > -1) {
+    public RelayCommand CompileSimulationCommand => new (
+        _ => {
             SaveFileDialog file = new () {
                 DefaultExt = ".sim",
                 Filter = "Simulation files (*.sim)| *.sim",
@@ -115,6 +115,7 @@ internal class CompilerViewModel : ViewModel {
 
             WasCompilationSuccess = true;
             WasCompilationFailure = false;
-        }
-    });
+        },
+        _ => _selectedIdx > -1
+    );
 }

@@ -2,6 +2,7 @@
 using CongressCucuta.Data;
 
 namespace CongressCucuta.Simulations;
+
 internal class China : ISimulation {
     public Simulation Simulation { get; }
 
@@ -134,7 +135,6 @@ internal class China : ISimulation {
                 new (Procedure.Effect.ActionType.CurrencySubtract, [], 1),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
-            0,
             [Role.LEADER_PARTY]
         );
         ProcedureDeclared extraordinaryNationalCongress = new (
@@ -144,21 +144,18 @@ internal class China : ISimulation {
                 new (Procedure.Effect.ActionType.CurrencySubtract, [], 2),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [general]
         );
         ProcedureDeclared ultimateAuthority = new (
             11,
             [new (Procedure.Effect.ActionType.BallotPass, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [directorGeneral]
         );
         ProcedureDeclared veto = new (
             12,
             [new (Procedure.Effect.ActionType.BallotFail, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [chairman, directorGeneral]
         );
         List<ProcedureDeclared> proceduresDeclared = [impeachment, extraordinaryNationalCongress, ultimateAuthority, veto];

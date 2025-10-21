@@ -113,7 +113,6 @@ internal class Japan : ISimulation {
                 new (Procedure.Effect.ActionType.BallotLimit, []),
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DiceAdversarial),
-            0,
             [Role.LEADER_PARTY]
         );
         List<ProcedureDeclared> proceduresDeclared = [civilWar];

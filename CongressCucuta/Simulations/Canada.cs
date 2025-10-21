@@ -200,21 +200,18 @@ internal class Canada : ISimulation {
                 new (Procedure.Effect.ActionType.BallotFail, [])
             ],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [governorGeneral]
         );
         ProcedureDeclared voteNoConfidence = new (
             12,
             [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, governorGeneral, Role.LEADER_REGION])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
-            0,
             []
         );
         ProcedureDeclared viceregalAppointment = new (
             13,
             [new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral, primeMinister, Role.LEADER_PARTY, Role.LEADER_REGION])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [primeMinister]
         );
         List<ProcedureDeclared> proceduresDeclared = [royalVeto, voteNoConfidence, viceregalAppointment];

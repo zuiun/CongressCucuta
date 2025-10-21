@@ -89,14 +89,12 @@ internal class Argentina : ISimulation {
             8,
             [new (Procedure.Effect.ActionType.BallotPass, [])],
             new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared veto = new (
             9,
             [new (Procedure.Effect.ActionType.BallotFail, [])],
             new (Procedure.Confirmation.CostType.Always),
-            0,
             [president]
         );
         ProcedureDeclared coup = new (
@@ -106,7 +104,6 @@ internal class Argentina : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionAppointed, [lieutenantGeneral, president]),
             ],
             new (Procedure.Confirmation.CostType.Always),
-            0,
             [lieutenantGeneral]
         );
         ProcedureDeclared rebellion = new (
@@ -118,7 +115,6 @@ internal class Argentina : ISimulation {
                 new (Procedure.Effect.ActionType.ElectionAppointed, [brigadierGeneral, president, lieutenantGeneral, admiral]),
             ],
             new (Procedure.Confirmation.CostType.DiceValue, 4),
-            0,
             [admiral, brigadierGeneral]
         );
         List<ProcedureDeclared> proceduresDeclared = [decree, veto, coup, rebellion];

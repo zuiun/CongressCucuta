@@ -8,7 +8,7 @@ internal readonly record struct Faction : IID {
 
     [JsonConstructor]
     public Faction (IDType id, bool isActiveStart = true) {
-        if (id == Role.MEMBER || id == Role.HEAD_GOVERNMENT || id == Role.HEAD_STATE) {
+        if (id >= Role.RESERVED_1) {
             throw new ArgumentException ($"Faction ID {id} is reserved by Role", nameof (id));
         }
 

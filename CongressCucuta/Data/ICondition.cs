@@ -22,13 +22,13 @@ internal interface ICondition {
         FewerThanOrEqual,
     }
 
-    public bool Evaluate (ref readonly SimulationContext context);
+    public bool Evaluate (SimulationContext context);
     public string ToString (ref readonly Localisation localisation);
     public bool? YieldBallotVote ();
 }
 
 internal readonly record struct AlwaysCondition : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) => true;
+    public bool Evaluate (SimulationContext context) => true;
 
     public string ToString (ref readonly Localisation localisation) => "Next";
 
@@ -36,7 +36,7 @@ internal readonly record struct AlwaysCondition : ICondition {
 }
 
 internal readonly record struct NeverCondition : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) => false;
+    public bool Evaluate (SimulationContext context) => false;
 
     public string ToString (ref readonly Localisation localisation) => "End";
 
@@ -44,9 +44,9 @@ internal readonly record struct NeverCondition : ICondition {
 }
 
 internal readonly record struct AndCondition (params ICondition[] Conditions) : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) {
+    public bool Evaluate (SimulationContext context) {
         foreach (ICondition c in Conditions) {
-            if (! c.Evaluate (in context)) {
+            if (! c.Evaluate (context)) {
                 return false;
             }
         }
@@ -68,9 +68,9 @@ internal readonly record struct AndCondition (params ICondition[] Conditions) : 
 }
 
 internal readonly record struct OrCondition (params ICondition[] Conditions) : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) {
+    public bool Evaluate (SimulationContext context) {
         foreach (ICondition c in Conditions) {
-            if (c.Evaluate (in context)) {
+            if (c.Evaluate (context)) {
                 return true;
             }
         }
@@ -96,7 +96,7 @@ internal readonly record struct OrCondition (params ICondition[] Conditions) : I
  * Do not use this in the creation of Links
  */
 internal readonly record struct BallotVoteCondition (bool ShouldBePassed) : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) {
+    public bool Evaluate (SimulationContext context) {
         bool? result = context.IsBallotVoted ();
 
         return result == ShouldBePassed;
@@ -108,7 +108,7 @@ internal readonly record struct BallotVoteCondition (bool ShouldBePassed) : ICon
 }
 
 internal readonly record struct BallotPassedCondition (IDType BallotID, bool ShouldBePassed = true) : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) => context.IsBallotPassed (BallotID) == ShouldBePassed;
+    public bool Evaluate (SimulationContext context) => context.IsBallotPassed (BallotID) == ShouldBePassed;
 
     public string ToString (ref readonly Localisation localisation) {
         string title = localisation.Ballots[BallotID].Item1;
@@ -120,7 +120,7 @@ internal readonly record struct BallotPassedCondition (IDType BallotID, bool Sho
 }
 
 internal readonly record struct BallotsPassedCountCondition (ICondition.ComparisonType Comparison, byte Count) : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) {
+    public bool Evaluate (SimulationContext context) {
         return Comparison switch {
             ICondition.ComparisonType.Equal => context.GetBallotsPassedCount () == Count,
             ICondition.ComparisonType.GreaterThan => context.GetBallotsPassedCount () > Count,
@@ -133,11 +133,11 @@ internal readonly record struct BallotsPassedCountCondition (ICondition.Comparis
 
     public string ToString (ref readonly Localisation localisation) {
         return Comparison switch {
-            ICondition.ComparisonType.Equal => $"{Count} Ballots Passed",
-            ICondition.ComparisonType.GreaterThan => $"Greater than {Count} Ballots Passed",
-            ICondition.ComparisonType.FewerThan => $"Fewer than {Count} Ballots Passed",
-            ICondition.ComparisonType.GreaterThanOrEqual => $"{Count} or Greater Ballots Passed",
-            ICondition.ComparisonType.FewerThanOrEqual => $"{Count} or Fewer Ballots Passed",
+            ICondition.ComparisonType.Equal => $"{Count} Ballot(s) Passed",
+            ICondition.ComparisonType.GreaterThan => $"Greater than {Count} Ballot(s) Passed",
+            ICondition.ComparisonType.FewerThan => $"Fewer than {Count} Ballot(s) Passed",
+            ICondition.ComparisonType.GreaterThanOrEqual => $"{Count} or Greater Ballot(s) Passed",
+            ICondition.ComparisonType.FewerThanOrEqual => $"{Count} or Fewer Ballot(s) Passed",
             _ => throw new UnreachableException (),
         };
     }
@@ -146,7 +146,7 @@ internal readonly record struct BallotsPassedCountCondition (ICondition.Comparis
 }
 
 internal readonly record struct CurrencyValueCondition (IDType CurrencyID, ICondition.ComparisonType Comparison, sbyte Value) : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) {
+    public bool Evaluate (SimulationContext context) {
         return Comparison switch {
             ICondition.ComparisonType.Equal => context.GetCurrencyValue (CurrencyID) == Value,
             ICondition.ComparisonType.GreaterThan => context.GetCurrencyValue (CurrencyID) > Value,
@@ -174,7 +174,7 @@ internal readonly record struct CurrencyValueCondition (IDType CurrencyID, ICond
 }
 
 internal readonly record struct ProcedureActiveCondition (IDType ProcedureID, bool ShouldBeActive) : ICondition {
-    public bool Evaluate (ref readonly SimulationContext context) => context.IsProcedureActive (ProcedureID) == ShouldBeActive;
+    public bool Evaluate (SimulationContext context) => context.IsProcedureActive (ProcedureID) == ShouldBeActive;
     
     public string ToString (ref readonly Localisation localisation) {
         string name = localisation.Procedures[ProcedureID].Item1;
