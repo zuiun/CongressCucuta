@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Poland : ISimulation {
     public Simulation Simulation { get; }
 
@@ -58,43 +61,43 @@ internal class Poland : ISimulation {
         ProcedureImmediate generalElection = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, []),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, bmn.ID]),
+                new (Procedure.Effect.EffectType.ElectionParty, []),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, bmn.ID]),
             ]
         );
         ProcedureImmediate article95 = new (
             1,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [bmn.ID], 1)]
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [bmn.ID], 1)]
         );
         List<ProcedureImmediate> proceduresGovernmental = [generalElection, article95];
         ProcedureTargeted assassinationGabrielNarutowicz = new (
             2,
             [
-                new (Procedure.Effect.ActionType.VotePassTwoThirds, []),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [chjenoPiast.ID], 0),
+                new (Procedure.Effect.EffectType.VotePassTwoThirds, []),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [chjenoPiast.ID], 0),
             ],
             [1, 2]
         );
         ProcedureTargeted partitionedPoland = new (
             3,
-            [new (Procedure.Effect.ActionType.ProcedureActivate, [generalElection.ID])],
+            [new (Procedure.Effect.EffectType.ProcedureActivate, [generalElection.ID])],
             []
         );
         ProcedureTargeted ukrainianMilitaryOrganisation = new (
             4,
-            [new (Procedure.Effect.ActionType.PermissionsCanSpeak, [], 0)],
+            [new (Procedure.Effect.EffectType.PermissionsCanSpeak, [], 0)],
             []
         );
         ProcedureTargeted moralNations = new (
             5,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [chjenoPiast.ID], 2)],
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [chjenoPiast.ID], 2)],
             []
         );
         ProcedureTargeted railwaymensUnion = new (
             6,
             [
-                new (Procedure.Effect.ActionType.ProcedureActivate, [generalElection.ID]),
-                new (Procedure.Effect.ActionType.PermissionsVotes, [pps.ID], 1),
+                new (Procedure.Effect.EffectType.ProcedureActivate, [generalElection.ID]),
+                new (Procedure.Effect.EffectType.PermissionsVotes, [pps.ID], 1),
             ],
             [],
             false
@@ -102,7 +105,7 @@ internal class Poland : ISimulation {
         ProcedureTargeted ukrainianMilitaryOrganisation2 = new (
             7,
             [
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [], 0),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [], 0),
             ],
             [],
             false
@@ -110,8 +113,8 @@ internal class Poland : ISimulation {
         ProcedureTargeted ethnicInsurgents = new (
             8,
             [
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [], 0),
-                new (Procedure.Effect.ActionType.PermissionsCanSpeak, [], 0),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [], 0),
+                new (Procedure.Effect.EffectType.PermissionsCanSpeak, [], 0),
             ],
             [],
             false
@@ -127,8 +130,8 @@ internal class Poland : ISimulation {
         ];
         ProcedureDeclared voteNoConfidence = new (
             9,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
+            [new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister])],
+            new Confirmation (Confirmation.ConfirmationType.DivisionChamber),
             []
         );
         List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence];
@@ -188,7 +191,7 @@ internal class Poland : ISimulation {
         Ballot incidentA = new (
             1,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [partitionedPoland.ID, railwaymensUnion.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [partitionedPoland.ID, railwaymensUnion.ID])],
                 [new (new AlwaysCondition (), 2)]
             ),
             new Ballot.Result (
@@ -200,12 +203,12 @@ internal class Poland : ISimulation {
         Ballot ballotB = new (
             2,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [ukrainianMilitaryOrganisation.ID, ukrainianMilitaryOrganisation2.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [ukrainianMilitaryOrganisation.ID, ukrainianMilitaryOrganisation2.ID])],
 
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.RemoveProcedure, [moralNations.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [moralNations.ID])],
                 [new (new AlwaysCondition (), 4)]
             )
         );
@@ -213,8 +216,8 @@ internal class Poland : ISimulation {
             3,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.DissolveParty, [bmn.ID]),
-                    new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [ukrainianMilitaryOrganisation2.ID, ethnicInsurgents.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.DissolveParty, [bmn.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [ukrainianMilitaryOrganisation2.ID, ethnicInsurgents.ID]),
                 ],
                 [new (new AlwaysCondition (), 4)]
             ),

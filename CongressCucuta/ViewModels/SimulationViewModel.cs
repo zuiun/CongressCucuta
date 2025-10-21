@@ -1,5 +1,7 @@
 ﻿using System.Diagnostics;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Contexts;
+using CongressCucuta.Core.Procedures;
 using CongressCucuta.Models;
 using CongressCucuta.Views;
 
@@ -108,11 +110,11 @@ internal class SimulationViewModel : ViewModel {
             SimulationContext.ConfirmationResult result = _simulation.Context.TryConfirmProcedure (e.PersonID, e.ProcedureID);
 
             switch (result.Cost) {
-                case Procedure.Confirmation.CostType.Always:
+                case Confirmation.ConfirmationType.Always:
                     e.Message = "Success";
                     break;
-                // case Procedure.Confirmation.CostType.DivisionChamber:
-                case Procedure.Confirmation.CostType.CurrencyValue: {
+                // case Confirmation.CostType.DivisionChamber:
+                case Confirmation.ConfirmationType.CurrencyValue: {
                     if (result.IsConfirmed == true) {
                         (IDType currencyId, sbyte _) = result.Currency ?? default;
 
@@ -123,7 +125,7 @@ internal class SimulationViewModel : ViewModel {
 
                     break;
                 }
-                case Procedure.Confirmation.CostType.DiceValue:
+                case Confirmation.ConfirmationType.DiceValue:
                     if (result.IsConfirmed == true) {
                         e.Message = $"Success: Rolled {result.DiceDeclarer!}";
                     } else {
@@ -131,7 +133,7 @@ internal class SimulationViewModel : ViewModel {
                     }
 
                     break;
-                case Procedure.Confirmation.CostType.DiceCurrency: {
+                case Confirmation.ConfirmationType.DiceCurrency: {
                     (IDType currencyId, sbyte currency) = result.Currency ?? default;
 
                     if (result.IsConfirmed == true) {
@@ -142,7 +144,7 @@ internal class SimulationViewModel : ViewModel {
 
                     break;
                 }
-                case Procedure.Confirmation.CostType.DiceAdversarial: {
+                case Confirmation.ConfirmationType.DiceAdversarial: {
                     if (result.IsConfirmed == true) {
                         if (result.Currency is (IDType currencyId, sbyte _)) {
                             e.Message = $"Success: Rolled and spent {result.DiceDeclarer!} {_simulation.Localisation.Currencies[currencyId]}, while defender rolled {result.DiceDefender!}";

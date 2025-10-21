@@ -1,4 +1,4 @@
-﻿using CongressCucuta.Data;
+﻿using CongressCucuta.Core;
 using CongressCucuta.Views;
 
 namespace CongressCucuta.ViewModels;

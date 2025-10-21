@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Australia : ISimulation {
     public Simulation Simulation { get; }
 
@@ -53,55 +56,55 @@ internal class Australia : ISimulation {
         ProcedureImmediate commonwealthRealm = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral], 1),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [governorGeneral], 0),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [governorGeneral], 1),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [governorGeneral], 0),
             ]
         );
         ProcedureImmediate generalElection = new (
             1,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, [governorGeneral]),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, governorGeneral]),
+                new (Procedure.Effect.EffectType.ElectionParty, [governorGeneral]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, governorGeneral]),
             ]
         );
         ProcedureImmediate duumvirate = new (
             2,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [primeMinister], 1)]
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [primeMinister], 1)]
         );
         List<ProcedureImmediate> proceduresGovernmental = [commonwealthRealm, generalElection, duumvirate];
         ProcedureTargeted itsTime = new (
             3,
-            [new (Procedure.Effect.ActionType.VotePassAdd, [], 2)],
+            [new (Procedure.Effect.EffectType.VotePassAdd, [], 2)],
             []
         );
         ProcedureTargeted whiteAustralia = new (
             4,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             [0, 1]
         );
         ProcedureTargeted luckyCountry = new (
             5,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             []
         );
         ProcedureTargeted beJustFearNot = new (
             6,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             [],
             false
         );
         ProcedureTargeted darkYears = new (
             7,
             [
-                new (Procedure.Effect.ActionType.VotePassTwoThirds, []),
-                new (Procedure.Effect.ActionType.PermissionsVotes, [lpcp.ID], 1),
+                new (Procedure.Effect.EffectType.VotePassTwoThirds, []),
+                new (Procedure.Effect.EffectType.PermissionsVotes, [lpcp.ID], 1),
             ],
             [],
             false
         );
         ProcedureTargeted stagflation = new (
             8,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             [],
             false
         );
@@ -115,32 +118,32 @@ internal class Australia : ISimulation {
         ];
         ProcedureDeclared voteNoConfidence = new (
             9,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, governorGeneral])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
+            [new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, governorGeneral])],
+            new Confirmation (Confirmation.ConfirmationType.DivisionChamber),
             []
         );
         ProcedureDeclared dismissal = new (
             10,
-            [new (Procedure.Effect.ActionType.ElectionAppointed, [primeMinister, governorGeneral])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.ElectionAppointed, [primeMinister, governorGeneral])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             []
         );
         ProcedureDeclared viceregalAppointment = new (
             11,
-            [new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral, primeMinister, Role.LEADER_PARTY])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.ElectionAppointed, [governorGeneral, primeMinister, Role.LEADER_PARTY])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [primeMinister]
         );
         ProcedureDeclared doubleDissolution = new (
             12,
-            [new (Procedure.Effect.ActionType.BallotPass, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotPass, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [primeMinister]
         );
         ProcedureDeclared refusalSupply = new (
             13,
-            [new (Procedure.Effect.ActionType.ElectionParty, [governorGeneral])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
+            [new (Procedure.Effect.EffectType.ElectionParty, [governorGeneral])],
+            new Confirmation (Confirmation.ConfirmationType.DivisionChamber),
             [Role.LEADER_PARTY]
         );
         List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence, dismissal, viceregalAppointment, doubleDissolution, refusalSupply];
@@ -205,7 +208,7 @@ internal class Australia : ISimulation {
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [whiteAustralia.ID, beJustFearNot.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [whiteAustralia.ID, beJustFearNot.ID])],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
@@ -216,7 +219,7 @@ internal class Australia : ISimulation {
         Ballot ballotB = new (
             1,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [whiteAustralia.ID, darkYears.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [whiteAustralia.ID, darkYears.ID])],
                 [new (new AlwaysCondition (), 2)]
             ),
             new Ballot.Result (
@@ -227,17 +230,17 @@ internal class Australia : ISimulation {
         Ballot ballotC = new (
             2,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [luckyCountry.ID, stagflation.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [luckyCountry.ID, stagflation.ID])],
                 [
-                    new (new BallotsPassedCountCondition (ICondition.ComparisonType.GreaterThan, 0), 3),
-                    new (new BallotsPassedCountCondition (ICondition.ComparisonType.Equal, 0), Ballot.END),
+                    new (new BallotsPassedCountCondition (ComparisonType.GreaterThan, 0), 3),
+                    new (new BallotsPassedCountCondition (ComparisonType.Equal, 0), Ballot.END),
                 ]
             ),
             new Ballot.Result (
                 [],
                 [
-                    new (new BallotsPassedCountCondition (ICondition.ComparisonType.GreaterThan, 0), 3),
-                    new (new BallotsPassedCountCondition (ICondition.ComparisonType.Equal, 0), Ballot.END),
+                    new (new BallotsPassedCountCondition (ComparisonType.GreaterThan, 0), 3),
+                    new (new BallotsPassedCountCondition (ComparisonType.Equal, 0), Ballot.END),
                 ]
             )
         );
@@ -380,9 +383,9 @@ internal class Australia : ISimulation {
         Result incidentAPassed = new (
             1,
             [
-                new (new BallotsPassedCountCondition (ICondition.ComparisonType.Equal, 2), 2),
-                new (new BallotsPassedCountCondition (ICondition.ComparisonType.Equal, 3), 3),
-                new (new BallotsPassedCountCondition (ICondition.ComparisonType.Equal, 4), 4),
+                new (new BallotsPassedCountCondition (ComparisonType.Equal, 2), 2),
+                new (new BallotsPassedCountCondition (ComparisonType.Equal, 3), 3),
+                new (new BallotsPassedCountCondition (ComparisonType.Equal, 4), 4),
             ]
         );
         Result twoPassed = new (
@@ -400,8 +403,8 @@ internal class Australia : ISimulation {
         Result incidentAFailed = new (
             5,
             [
-                new (new BallotsPassedCountCondition (ICondition.ComparisonType.FewerThanOrEqual, 1), 6),
-                new (new BallotsPassedCountCondition (ICondition.ComparisonType.GreaterThanOrEqual, 2), 7),
+                new (new BallotsPassedCountCondition (ComparisonType.FewerThanOrEqual, 1), 6),
+                new (new BallotsPassedCountCondition (ComparisonType.GreaterThanOrEqual, 2), 7),
             ]
         );
         Result oneFewerEqualPassed = new (

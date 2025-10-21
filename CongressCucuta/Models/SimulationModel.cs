@@ -1,5 +1,7 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Contexts;
+using CongressCucuta.Core.Procedures;
 using CongressCucuta.ViewModels;
 
 namespace CongressCucuta.Models;

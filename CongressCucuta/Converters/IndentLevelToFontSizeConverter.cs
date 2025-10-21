@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace CongressCucuta.Converters;
 
 [ValueConversion (typeof (byte), typeof (string))]
-internal class IndentLevelToFontSizeConverter : IValueConverter {
+public class IndentLevelToFontSizeConverter : IValueConverter {
     private const byte MARGIN_MAX = 28;
     private const byte MARGIN_MIN = 16;
     private const byte MARGIN_PER_INDENT_LEVEL = 4;

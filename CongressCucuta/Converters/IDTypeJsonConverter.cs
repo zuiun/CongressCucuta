@@ -1,11 +1,11 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using System.Text.Json;
 using System.Text.Json.Serialization;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
 
 namespace CongressCucuta.Converters;
 
-internal class IDTypeJsonConverter : JsonConverter<IDType> {
+public class IDTypeJsonConverter : JsonConverter<IDType> {
     public override IDType Read (ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options) {
         byte id = reader.GetByte ();
 

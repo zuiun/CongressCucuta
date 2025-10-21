@@ -1,7 +1,4 @@
 should end slide be constant or backward?
 
-needs tests:
-SimulationContext ...
-ViewModels are currently excluded
-
-simulations folder should really be a separate project
+try not to use event logic too much
+get rid of the Models, they need to be stored elsewhere somehow

@@ -1,4 +1,4 @@
-﻿using CongressCucuta.Data;
+﻿using CongressCucuta.Core;
 
 namespace CongressCucuta.Simulations;
 

@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Indonesia : ISimulation {
     public Simulation Simulation { get; }
 
@@ -74,63 +77,63 @@ internal class Indonesia : ISimulation {
         ProcedureImmediate constitution1945 = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [president]),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [president], 0),
+                new (Procedure.Effect.EffectType.ElectionNominated, [president]),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [president], 0),
             ]
         );
         ProcedureImmediate nasakom = new (
             1,
-            [new (Procedure.Effect.ActionType.ElectionParty, [president])]
+            [new (Procedure.Effect.EffectType.ElectionParty, [president])]
         );
         List<ProcedureImmediate> proceduresGovernmental = [constitution1945, nasakom];
         ProcedureTargeted pancasila = new (
             2,
-            [new (Procedure.Effect.ActionType.CurrencyInitialise, [])],
+            [new (Procedure.Effect.EffectType.CurrencyInitialise, [])],
             []
         );
         ProcedureTargeted houseIslam = new (
             3,
-            [new (Procedure.Effect.ActionType.CurrencySubtract, [influenceMasyumi], 1)],
+            [new (Procedure.Effect.EffectType.CurrencySubtract, [influenceMasyumi], 1)],
             []
         );
         ProcedureTargeted eastSuez = new (
             4,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri, influencePki], 1)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [influenceAbri, influencePki], 1)],
             []
         );
         List<ProcedureTargeted> proceduresSpecial = [pancasila, houseIslam, eastSuez];
         //ProcedureDeclared industryTakeover = new (
         //    4,
         //    [],
-        //    new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+        //    new Confirmation (Confirmation.ConfirmationType.Always),
         //    0,
         //    []
         //);
         ProcedureDeclared rubberStamp = new (
             5,
-            [new (Procedure.Effect.ActionType.BallotPass, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotPass, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared veto = new (
             6,
-            [new (Procedure.Effect.ActionType.BallotFail, [])],
-            new (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotFail, [])],
+            new (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared coup = new (
             7,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [president]),
-                new (Procedure.Effect.ActionType.CurrencyAdd, [influenceAbri], 1),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [president]),
+                new (Procedure.Effect.EffectType.CurrencyAdd, [influenceAbri], 1),
             ],
-            new (Procedure.Confirmation.CostType.DiceCurrency),
+            new (Confirmation.ConfirmationType.DiceCurrency),
             [pki.ID, masyumi.ID]
         );
         ProcedureDeclared purge = new (
             8,
-            [new (Procedure.Effect.ActionType.ElectionAppointed, [president])],
-            new (Procedure.Confirmation.CostType.CurrencyValue, 4),
+            [new (Procedure.Effect.EffectType.ElectionAppointed, [president])],
+            new (Confirmation.ConfirmationType.CurrencyValue, 4),
             [abri.ID]
         );
         List<ProcedureDeclared> proceduresDeclared = [/*industryTakeover, */rubberStamp, veto, coup, purge];
@@ -181,7 +184,7 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.RemoveProcedure,
+                        Ballot.Effect.EffectType.RemoveProcedure,
                         [houseIslam.ID]
                     ),
                 ],
@@ -190,12 +193,12 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influenceMasyumi],
                         -1
                     ),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influenceAbri],
                         1
                     ),
@@ -208,7 +211,7 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influenceAbri],
                         1
                     ),
@@ -218,7 +221,7 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influenceAbri, influencePki],
                         -1
                     ),
@@ -231,12 +234,12 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influenceAbri, influencePki],
                         1
                     ),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.RemoveProcedure,
+                        Ballot.Effect.EffectType.RemoveProcedure,
                         [eastSuez.ID]
                     ),
                 ],
@@ -245,7 +248,7 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influencePki],
                         -1
                     ),
@@ -259,12 +262,12 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influencePki],
                         1
                     ),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influenceMasyumi],
                         1
                     ),
@@ -274,12 +277,12 @@ internal class Indonesia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influenceAbri],
                         1
                     ),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [influencePki],
                         -1
                     ),

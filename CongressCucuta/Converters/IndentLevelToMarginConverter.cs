@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace CongressCucuta.Converters;
 
 [ValueConversion (typeof (byte), typeof (string))]
-internal class IndentLevelToMarginConverter : IValueConverter {
+public class IndentLevelToMarginConverter : IValueConverter {
     private const byte MARGIN_PER_INDENT_LEVEL = 24;
 
     public object Convert (object value, Type targetType, object parameter, CultureInfo culture) {

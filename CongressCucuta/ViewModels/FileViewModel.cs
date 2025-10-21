@@ -2,7 +2,7 @@
 using System.IO;
 using System.Text.Json;
 using CongressCucuta.Converters;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 

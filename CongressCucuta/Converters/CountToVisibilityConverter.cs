@@ -5,7 +5,7 @@ using System.Windows.Data;
 namespace CongressCucuta.Converters;
 
 [ValueConversion (typeof (int), typeof (string))]
-internal class CountToVisibilityConverter : IValueConverter {
+public class CountToVisibilityConverter : IValueConverter {
     public object Convert (object? value, Type targetType, object parameter, CultureInfo culture) {
         return value switch {
             int count => count > 0 ? "Visible" : "Collapsed",

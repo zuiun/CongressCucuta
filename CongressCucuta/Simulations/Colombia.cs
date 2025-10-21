@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Colombia : ISimulation {
     public Simulation Simulation { get; }
 
@@ -56,40 +59,40 @@ internal class Colombia : ISimulation {
 
         ProcedureImmediate presidentialElection = new (
             0,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [president])]
+            [new (Procedure.Effect.EffectType.ElectionNominated, [president])]
         );
         ProcedureImmediate constitutionCucuta = new (
             1,
             [
-                new (Procedure.Effect.ActionType.ElectionRegion, []),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [president], 0),
+                new (Procedure.Effect.EffectType.ElectionRegion, []),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [president], 0),
             ]
         );
         List<ProcedureImmediate> proceduresGovernmental = [presidentialElection, constitutionCucuta];
         ProcedureTargeted liberalReforms = new (
             2,
             [
-                new (Procedure.Effect.ActionType.CurrencyInitialise, []),
-                new (Procedure.Effect.ActionType.CurrencyAdd, [prosperityCundinamarca, prosperityVenezuela], 1),
-                new (Procedure.Effect.ActionType.CurrencySubtract, [prosperityQuito], 1),
+                new (Procedure.Effect.EffectType.CurrencyInitialise, []),
+                new (Procedure.Effect.EffectType.CurrencyAdd, [prosperityCundinamarca, prosperityVenezuela], 1),
+                new (Procedure.Effect.EffectType.CurrencySubtract, [prosperityQuito], 1),
             ],
             []
         );
         ProcedureTargeted bolivarianism = new (
             3,
-            [new (Procedure.Effect.ActionType.VotePassAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VotePassAdd, [], 1)],
             [1, 2]
         );
         ProcedureTargeted repressedFederalism = new (
             4,
-            [new (Procedure.Effect.ActionType.VotePassAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VotePassAdd, [], 1)],
             [3]
         );
         List<ProcedureTargeted> proceduresSpecial = [liberalReforms, bolivarianism, repressedFederalism];
         ProcedureDeclared veto = new (
             5,
-            [new (Procedure.Effect.ActionType.BallotFail, [])],
-            new (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotFail, [])],
+            new (Confirmation.ConfirmationType.Always),
             [president]
         );
         List<ProcedureDeclared> proceduresDeclared = [veto];
@@ -128,11 +131,11 @@ internal class Colombia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.RemoveProcedure,
+                        Ballot.Effect.EffectType.RemoveProcedure,
                         [repressedFederalism.ID]
                     ),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [prosperityQuito],
                         2
                     ),
@@ -145,7 +148,7 @@ internal class Colombia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [prosperityVenezuela, prosperityQuito],
                         -2
                     ),
@@ -162,7 +165,7 @@ internal class Colombia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ModifyCurrency,
+                        Ballot.Effect.EffectType.ModifyCurrency,
                         [Currency.REGION],
                         -2
                     ),
@@ -180,7 +183,7 @@ internal class Colombia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.RemoveProcedure,
+                        Ballot.Effect.EffectType.RemoveProcedure,
                         [repressedFederalism.ID]
                     ),
                 ],
@@ -269,8 +272,8 @@ internal class Colombia : ISimulation {
         Result repressedFederalismInactive = new (
             1,
             [
-                new (new CurrencyValueCondition (prosperityQuito, ICondition.ComparisonType.FewerThan, 0), 3),
-                new (new CurrencyValueCondition (prosperityQuito, ICondition.ComparisonType.GreaterThanOrEqual, 0), 4),
+                new (new CurrencyValueCondition (prosperityQuito, ComparisonType.FewerThan, 0), 3),
+                new (new CurrencyValueCondition (prosperityQuito, ComparisonType.GreaterThanOrEqual, 0), 4),
             ]
         );
         Result repressedFederalismActive = new (
@@ -280,15 +283,15 @@ internal class Colombia : ISimulation {
         Result quitoLessProsperity = new (
             3,
             [
-                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.FewerThan, 0), 5),
-                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.GreaterThanOrEqual, 0), 6),
+                new (new CurrencyValueCondition (prosperityVenezuela, ComparisonType.FewerThan, 0), 5),
+                new (new CurrencyValueCondition (prosperityVenezuela, ComparisonType.GreaterThanOrEqual, 0), 6),
             ]
         );
         Result quitoGreaterEqualProsperity = new (
             4,
             [
-                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.FewerThan, 0), 5),
-                new (new CurrencyValueCondition (prosperityVenezuela, ICondition.ComparisonType.GreaterThanOrEqual, 0), 6),
+                new (new CurrencyValueCondition (prosperityVenezuela, ComparisonType.FewerThan, 0), 5),
+                new (new CurrencyValueCondition (prosperityVenezuela, ComparisonType.GreaterThanOrEqual, 0), 6),
             ]
         );
         Result venezuelaLessProsperity = new (

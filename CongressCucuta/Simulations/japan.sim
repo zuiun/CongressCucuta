@@ -70,7 +70,7 @@
       "ID": 0,
       "Effects": [
         {
-          "Action": 8,
+          "Type": 8,
           "TargetIDs": [],
           "Value": 1
         }
@@ -84,7 +84,7 @@
       "ID": 1,
       "Effects": [
         {
-          "Action": 5,
+          "Type": 5,
           "TargetIDs": [],
           "Value": 0
         }
@@ -100,7 +100,7 @@
       "ID": 2,
       "Effects": [
         {
-          "Action": 6,
+          "Type": 6,
           "TargetIDs": [
             0
           ],
@@ -114,7 +114,7 @@
       "ID": 3,
       "Effects": [
         {
-          "Action": 3,
+          "Type": 3,
           "TargetIDs": [
             1
           ],
@@ -128,7 +128,7 @@
       "ID": 4,
       "Effects": [
         {
-          "Action": 3,
+          "Type": 3,
           "TargetIDs": [
             0
           ],
@@ -142,7 +142,7 @@
       "ID": 5,
       "Effects": [
         {
-          "Action": 3,
+          "Type": 3,
           "TargetIDs": [
             1
           ],
@@ -155,7 +155,7 @@
   "ProceduresDeclared": [
     {
       "Confirm": {
-        "Cost": 5,
+        "Type": 5,
         "Value": 0
       },
       "DeclarerIDs": [
@@ -164,7 +164,7 @@
       "ID": 6,
       "Effects": [
         {
-          "Action": 11,
+          "Type": 11,
           "TargetIDs": [],
           "Value": 0
         }
@@ -189,7 +189,7 @@
       "Fail": {
         "Effects": [
           {
-            "Action": 0,
+            "Type": 0,
             "TargetIDs": [
               2
             ],
@@ -212,7 +212,7 @@
       "Pass": {
         "Effects": [
           {
-            "Action": 3,
+            "Type": 3,
             "TargetIDs": [
               3,
               5
@@ -247,7 +247,7 @@
       "Pass": {
         "Effects": [
           {
-            "Action": 4,
+            "Type": 4,
             "TargetIDs": [
               1
             ],
@@ -281,7 +281,7 @@
       "Pass": {
         "Effects": [
           {
-            "Action": 4,
+            "Type": 4,
             "TargetIDs": [
               0
             ],
@@ -300,7 +300,7 @@
       "Fail": {
         "Effects": [
           {
-            "Action": 4,
+            "Type": 4,
             "TargetIDs": [
               0,
               1

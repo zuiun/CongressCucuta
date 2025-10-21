@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Hungary : ISimulation {
     public Simulation Simulation { get; }
 
@@ -75,39 +78,39 @@ internal class Hungary : ISimulation {
         ProcedureImmediate kingdomWithoutKing = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [regent], 0),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [regent], 0),
+                new (Procedure.Effect.EffectType.ElectionNominated, [regent], 0),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [regent], 0),
             ]
         );
         ProcedureImmediate legislativeElection = new (
             1,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, [regent]),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, regent]),
+                new (Procedure.Effect.EffectType.ElectionParty, [regent]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, regent]),
             ]
         );
         List<ProcedureImmediate> proceduresGovernmental = [kingdomWithoutKing, legislativeElection];
         ProcedureTargeted bulwarkAgainstBolshevism = new (
             2,
-            [new (Procedure.Effect.ActionType.CurrencyInitialise, [])],
+            [new (Procedure.Effect.EffectType.CurrencyInitialise, [])],
             []
         );
         ProcedureTargeted trianonTrauma = new (
             3,
-            [new (Procedure.Effect.ActionType.VotePassAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VotePassAdd, [], 1)],
             [3, 5]
         );
         ProcedureTargeted bethlenPeyerPact = new (
             4,
             [
-                new (Procedure.Effect.ActionType.ProcedureActivate, [legislativeElection.ID]),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [mszdp.ID], 0),
+                new (Procedure.Effect.EffectType.ProcedureActivate, [legislativeElection.ID]),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [mszdp.ID], 0),
             ],
             []
         );
         ProcedureTargeted consolidation = new (
             5,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [ep.ID], 1)],
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [ep.ID], 1)],
             [],
             false
         );
@@ -119,23 +122,23 @@ internal class Hungary : ISimulation {
         ];
         ProcedureDeclared royalPrerogative = new (
             6,
-            [new (Procedure.Effect.ActionType.BallotPass, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotPass, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [regent]
         );
         ProcedureDeclared royalVeto = new (
             7,
-            [new (Procedure.Effect.ActionType.BallotFail, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotFail, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [regent]
         );
         ProcedureDeclared dissolutionDiet = new (
             8,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, [regent]),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, regent]),
+                new (Procedure.Effect.EffectType.ElectionParty, [regent]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, regent]),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [regent]
         );
         List<ProcedureDeclared> proceduresDeclared = [royalPrerogative, royalVeto, dissolutionDiet];
@@ -180,7 +183,7 @@ internal class Hungary : ISimulation {
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [antisemitism], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [antisemitism], 1)],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
@@ -191,11 +194,11 @@ internal class Hungary : ISimulation {
         Ballot incidentA = new (
             1,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.FoundParty, [fkgp.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [fkgp.ID])],
                 [new (new AlwaysCondition (), 2)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [antisemitism], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [antisemitism], 1)],
                 [new (new AlwaysCondition (), 2)]
             ),
             true
@@ -203,7 +206,7 @@ internal class Hungary : ISimulation {
         Ballot ballotB = new (
             2,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.FoundParty, [nap.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [nap.ID])],
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
@@ -214,7 +217,7 @@ internal class Hungary : ISimulation {
         Ballot incidentB = new (
             3,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.RemoveProcedure, [consolidation.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [consolidation.ID])],
                 [new (new AlwaysCondition (), 5)]
             ),
             new Ballot.Result (
@@ -226,7 +229,7 @@ internal class Hungary : ISimulation {
         Ballot incidentC = new (
             4,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.RemoveProcedure, [bethlenPeyerPact.ID, consolidation.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [bethlenPeyerPact.ID, consolidation.ID])],
                 [new (new AlwaysCondition (), 5)]
             ),
             new Ballot.Result (
@@ -425,9 +428,9 @@ internal class Hungary : ISimulation {
         Result ballotCPassed = new (
             3,
             [
-                new (new CurrencyValueCondition (antisemitism, ICondition.ComparisonType.Equal, 1), 4),
-                new (new CurrencyValueCondition (antisemitism, ICondition.ComparisonType.Equal, 2), 5),
-                new (new CurrencyValueCondition (antisemitism, ICondition.ComparisonType.Equal, 3), 6),
+                new (new CurrencyValueCondition (antisemitism, ComparisonType.Equal, 1), 4),
+                new (new CurrencyValueCondition (antisemitism, ComparisonType.Equal, 2), 5),
+                new (new CurrencyValueCondition (antisemitism, ComparisonType.Equal, 3), 6),
             ]
         );
         Result oneAntisemitismCPassed = new (
@@ -470,8 +473,8 @@ internal class Hungary : ISimulation {
         Result ballotCPassed2 = new (
             11,
             [
-                new (new CurrencyValueCondition (antisemitism, ICondition.ComparisonType.Equal, 1), 12),
-                new (new CurrencyValueCondition (antisemitism, ICondition.ComparisonType.GreaterThanOrEqual, 2), 13),
+                new (new CurrencyValueCondition (antisemitism, ComparisonType.Equal, 1), 12),
+                new (new CurrencyValueCondition (antisemitism, ComparisonType.GreaterThanOrEqual, 2), 13),
             ]
         );
         Result oneAntisemitism2 = new (

@@ -1,7 +1,7 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 

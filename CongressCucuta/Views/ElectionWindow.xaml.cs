@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Windows;
 
 namespace CongressCucuta.Views;
 
+[ExcludeFromCodeCoverage]
 public partial class ElectionWindow : Window {
     private bool _canClose = false;
 

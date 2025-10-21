@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Finland : ISimulation {
     public Simulation Simulation { get; }
 
@@ -70,47 +73,47 @@ internal class Finland : ISimulation {
         ProcedureImmediate legislativeElection = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, []),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, president]),
+                new (Procedure.Effect.EffectType.ElectionParty, []),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, president]),
             ]
         );
         ProcedureImmediate presidentialElection = new (
             1,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [president]),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [president], 0),
+                new (Procedure.Effect.EffectType.ElectionNominated, [president, primeMinister]),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [president], 0),
             ]
         );
         List<ProcedureImmediate> proceduresGovernmental = [legislativeElection, presidentialElection];
         ProcedureTargeted paasikiviDoctrine = new (
             2,
-            [new (Procedure.Effect.ActionType.ProcedureActivate, [legislativeElection.ID])],
+            [new (Procedure.Effect.EffectType.ProcedureActivate, [legislativeElection.ID])],
             []
         );
         ProcedureTargeted kLine = new (
             3,
-            [new (Procedure.Effect.ActionType.ProcedureActivate, [presidentialElection.ID])],
+            [new (Procedure.Effect.EffectType.ProcedureActivate, [presidentialElection.ID])],
             [1, 3, 4]
         );
         ProcedureTargeted lingeringNightFrost = new (
             4,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             [0]
         );
         ProcedureTargeted academicKareliaSociety = new (
             5,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [kok.ID], 1)],
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [kok.ID], 1)],
             []
         );
         ProcedureTargeted activatedYyaTreaty = new (
             6,
-            [new (Procedure.Effect.ActionType.VotePassAdd, [], 2)],
+            [new (Procedure.Effect.EffectType.VotePassAdd, [], 2)],
             [3],
             false
         );
         ProcedureTargeted noteCrisis = new (
             7,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             [4],
             false
         );
@@ -124,31 +127,31 @@ internal class Finland : ISimulation {
         ];
         ProcedureDeclared voteNoConfidence = new (
             8,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, president])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
+            [new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, president])],
+            new Confirmation (Confirmation.ConfirmationType.DivisionChamber),
             []
         );
         ProcedureDeclared veto = new (
             9,
-            [new (Procedure.Effect.ActionType.BallotFail, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotFail, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared dissolutionParliament = new (
             10,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, []),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, president]),
+                new (Procedure.Effect.EffectType.ElectionParty, []),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, president]),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared ministerialAppointment = new (
             11,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, president]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, president]),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
         List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence, veto, dissolutionParliament, ministerialAppointment];
@@ -205,11 +208,11 @@ internal class Finland : ISimulation {
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [lingeringNightFrost.ID, activatedYyaTreaty.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [lingeringNightFrost.ID, activatedYyaTreaty.ID])],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [lingeringNightFrost.ID, noteCrisis.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [lingeringNightFrost.ID, noteCrisis.ID])],
                 [new (new AlwaysCondition (), 1)]
             )
         );
@@ -217,8 +220,8 @@ internal class Finland : ISimulation {
             1,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.FoundParty, [sfp.ID]),
-                    new Ballot.Effect (Ballot.Effect.ActionType.RemoveProcedure, [academicKareliaSociety.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [sfp.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [academicKareliaSociety.ID]),
                 ],
                 [new (new AlwaysCondition (), 2)]
             ),

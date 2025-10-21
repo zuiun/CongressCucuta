@@ -6,7 +6,7 @@ namespace CongressCucuta.Converters;
 
 [ValueConversion (typeof (string), typeof (string))]
 [ValueConversion (typeof (Nullable), typeof (string))]
-internal class DescriptionToForegroundConverter : IValueConverter {
+public class DescriptionToForegroundConverter : IValueConverter {
     public object Convert (object? value, Type targetType, object parameter, CultureInfo culture) {
         return value switch {
             string => "Blue",

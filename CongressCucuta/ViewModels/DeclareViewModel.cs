@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Contexts;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.ViewModels;
 
@@ -109,8 +111,8 @@ internal class DeclareViewModel : ViewModel {
             
             if (
                 p.YieldEffects (0) is Procedure.EffectBundle effects
-                && effects.Confirmation is Procedure.Confirmation confirmation
-                && confirmation.Cost is Procedure.Confirmation.CostType.CurrencyValue
+                && effects.Confirmation is Confirmation confirmation
+                && confirmation.Type is Confirmation.ConfirmationType.CurrencyValue
             ) {
                 IDType currencyId = context.ChooseCurrencyOwner (personId);
 

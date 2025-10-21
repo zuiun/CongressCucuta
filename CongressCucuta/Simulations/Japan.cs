@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Japan : ISimulation {
     public Simulation Simulation { get; }
 
@@ -70,33 +73,33 @@ internal class Japan : ISimulation {
         ProcedureImmediate hereditarySuccession = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, [], 1),
+                new (Procedure.Effect.EffectType.ElectionParty, [], 1),
             ]
         );
         List<ProcedureImmediate> proceduresGovernmental = [hereditarySuccession];
         ProcedureTargeted feudalSociety = new (
             1,
-            [new (Procedure.Effect.ActionType.CurrencyInitialise, [])],
+            [new (Procedure.Effect.EffectType.CurrencyInitialise, [])],
             []
         );
         ProcedureTargeted imperialPretenders = new (
             2,
-            [new (Procedure.Effect.ActionType.ProcedureActivate, [hereditarySuccession.ID])],
+            [new (Procedure.Effect.EffectType.ProcedureActivate, [hereditarySuccession.ID])],
             [2, 3, 4]
         );
         ProcedureTargeted threeSacredTreasures = new (
             3,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [provincesYoshino], 1)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [provincesYoshino], 1)],
             []
         );
         ProcedureTargeted seiwaMinamotoClan = new (
             4,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [provincesKyoto], 1)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [provincesKyoto], 1)],
             []
         );
         ProcedureTargeted threeSacredTreasures2 = new (
             5,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [provincesYoshino], 2)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [provincesYoshino], 2)],
             [],
             false
         );
@@ -110,9 +113,9 @@ internal class Japan : ISimulation {
         ProcedureDeclared civilWar = new (
             6,
             [
-                new (Procedure.Effect.ActionType.BallotLimit, []),
+                new (Procedure.Effect.EffectType.BallotLimit, []),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DiceAdversarial),
+            new Confirmation (Confirmation.ConfirmationType.DiceAdversarial),
             [Role.LEADER_PARTY]
         );
         List<ProcedureDeclared> proceduresDeclared = [civilWar];
@@ -153,14 +156,14 @@ internal class Japan : ISimulation {
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.FoundParty, [kamakura.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [kamakura.ID])],
                 [new (new AlwaysCondition (), 2)]
             )
         );
         Ballot incidentA = new (
             1,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [threeSacredTreasures.ID, threeSacredTreasures2.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [threeSacredTreasures.ID, threeSacredTreasures2.ID])],
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
@@ -172,7 +175,7 @@ internal class Japan : ISimulation {
         Ballot incidentB = new (
             2,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [provincesYoshino], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [provincesYoshino], 1)],
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
@@ -184,11 +187,11 @@ internal class Japan : ISimulation {
         Ballot incidentC = new (
             3,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [provincesKyoto], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [provincesKyoto], 1)],
                 [new (new AlwaysCondition (), 4)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [provincesKyoto, provincesYoshino], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [provincesKyoto, provincesYoshino], -1)],
                 [new (new AlwaysCondition (), 4)]
             ),
             true

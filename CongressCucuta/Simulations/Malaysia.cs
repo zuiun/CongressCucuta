@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Malaysia : ISimulation {
     public Simulation Simulation { get; }
 
@@ -97,39 +100,39 @@ internal class Malaysia : ISimulation {
         ProcedureImmediate royalElection = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [king]),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [king], 0),
+                new (Procedure.Effect.EffectType.ElectionNominated, [king]),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [king], 0),
             ]
         );
         ProcedureImmediate federation = new (
             1,
-            [new (Procedure.Effect.ActionType.ElectionRegion, [])]
+            [new (Procedure.Effect.EffectType.ElectionRegion, [])]
         );
         ProcedureImmediate generalElection = new (
             2,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, [king]),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, king]),
+                new (Procedure.Effect.EffectType.ElectionParty, [king]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, king]),
             ]
         );
         ProcedureImmediate malaySupremacy = new (
             3,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [alliance.ID], 2)]
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [alliance.ID], 2)]
         );
         List<ProcedureImmediate> proceduresGovernmental = [royalElection, federation, generalElection, malaySupremacy];
         ProcedureTargeted chongEuLim = new (
             4,
-            [new (Procedure.Effect.ActionType.ProcedureActivate, [generalElection.ID])],
+            [new (Procedure.Effect.EffectType.ProcedureActivate, [generalElection.ID])],
             [1]
         );
         ProcedureTargeted conferenceRulers = new (
             5,
-            [new (Procedure.Effect.ActionType.ProcedureActivate, [royalElection.ID])],
+            [new (Procedure.Effect.EffectType.ProcedureActivate, [royalElection.ID])],
             [1]
         );
         ProcedureTargeted thirteenMayIncident = new (
             6,
-            [new (Procedure.Effect.ActionType.PermissionsCanVote, [alliance.ID], 0)],
+            [new (Procedure.Effect.EffectType.PermissionsCanVote, [alliance.ID], 0)],
             [],
             false
         );
@@ -137,18 +140,18 @@ internal class Malaysia : ISimulation {
         ProcedureDeclared royalVeto = new (
             7,
             [
-                new (Procedure.Effect.ActionType.BallotFail, [])
+                new (Procedure.Effect.EffectType.BallotFail, [])
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [king]
         );
         ProcedureDeclared stateEmergency = new (
             8,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [primeMinister, king]),
-                new (Procedure.Effect.ActionType.BallotLimit, [primeMinister, king]),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [primeMinister, king]),
+                new (Procedure.Effect.EffectType.BallotLimit, [primeMinister, king]),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [king]
         );
         List<ProcedureDeclared> proceduresDeclared = [royalVeto, stateEmergency];
@@ -206,7 +209,7 @@ internal class Malaysia : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ReplaceProcedure,
+                        Ballot.Effect.EffectType.ReplaceProcedure,
                         [chongEuLim.ID, thirteenMayIncident.ID]
                     ),
                 ],

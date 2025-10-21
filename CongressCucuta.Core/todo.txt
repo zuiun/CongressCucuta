@@ -1,0 +1,3 @@
+try to decouple event logic and split some methods up further, especially SimulationContext
+move ElectionTypeViewModel logic into Election
+centralise localisation elsewhere. if we do this, it might actually be possible to (shock) replace factions

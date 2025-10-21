@@ -1,6 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Contexts;
+using CongressCucuta.Core.Generators;
 using CongressCucuta.Models;
 
 namespace CongressCucuta.ViewModels;
@@ -9,9 +11,10 @@ internal abstract class ElectionTypeViewModel (
     Dictionary<IDType, SortedSet<IDType>> peopleRoles,
     Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
     Localisation localisation,
-    bool isLeaderNeeded
+    bool isLeaderNeeded,
+    IGenerator? generator = null
 ) : ViewModel {
-    protected static readonly Random _random = new ();
+    protected readonly IGenerator _generator = generator ?? new RandomGenerator ();
     protected string _title = string.Empty;
     protected ObservableCollection<GroupViewModel> _groupsPeople = [];
     protected IDType[] _targetIds = [];
@@ -46,7 +49,7 @@ internal abstract class ElectionTypeViewModel (
         List<string> people
     ) =>
         election.Type switch {
-            Election.ElectionType.ShuffleRemove =>
+            ElectionContext.ElectionType.ShuffleRemove =>
                 new ElectionShuffleRemoveViewModel (
                     election,
                     peopleRoles,
@@ -55,7 +58,7 @@ internal abstract class ElectionTypeViewModel (
                     localisation,
                     people
                 ),
-            Election.ElectionType.ShuffleAdd =>
+            ElectionContext.ElectionType.ShuffleAdd =>
                 new ElectionShuffleAddViewModel (
                     election,
                     peopleRoles,
@@ -64,7 +67,7 @@ internal abstract class ElectionTypeViewModel (
                     localisation,
                     people
                 ),
-            Election.ElectionType.Region =>
+            ElectionContext.ElectionType.Region =>
                 new ElectionRegionViewModel (
                     election,
                     peopleRoles,
@@ -73,7 +76,7 @@ internal abstract class ElectionTypeViewModel (
                     localisation,
                     people
                 ),
-            Election.ElectionType.Party =>
+            ElectionContext.ElectionType.Party =>
                 new ElectionPartyViewModel (
                     election,
                     peopleRoles,
@@ -82,7 +85,7 @@ internal abstract class ElectionTypeViewModel (
                     localisation,
                     people
                 ),
-            Election.ElectionType.Nominated =>
+            ElectionContext.ElectionType.Nominated =>
                 new ElectionNominatedViewModel (
                     election,
                     peopleRoles,
@@ -90,7 +93,7 @@ internal abstract class ElectionTypeViewModel (
                     localisation,
                     people
                 ),
-            Election.ElectionType.Appointed =>
+            ElectionContext.ElectionType.Appointed =>
                 new ElectionAppointedViewModel (
                     election,
                     peopleRoles,
@@ -117,7 +120,6 @@ internal abstract class ElectionTypeViewModel (
             }
         }
     }
-
 
     protected void TryAddFaction (IDType id, string name) {
         if (_groupsPeople.All (f => f.ID != id)) {
@@ -184,7 +186,7 @@ internal class ElectionShuffleRemoveViewModel : ElectionTypeViewModel {
 
         foreach (var kv in peopleFactions) {
             if (election.FilterIDs.Any (p => kv.Value.Item1 == p)) {
-                int partyIdx = _random.Next (partiesActive.Count);
+                int partyIdx = _generator.Choose (partiesActive.Count);
                 IDType partyId = partiesIds[partyIdx];
                 string name = people[kv.Key];
 
@@ -217,7 +219,7 @@ internal class ElectionShuffleAddViewModel : ElectionTypeViewModel {
                 kv.Value.Item1 is not null
                 && peopleRoles[kv.Key].All (r => ! partiesActive.Contains (r))
             ) {
-                int partyIdx = _random.Next (partiesActive.Count);
+                int partyIdx = _generator.Choose (partiesActive.Count);
 
                 if (partyIdx < election.FilterIDs.Length) {
                     IDType partyId = election.FilterIDs[partyIdx];
@@ -234,7 +236,7 @@ internal class ElectionShuffleAddViewModel : ElectionTypeViewModel {
         if (unassignedIds.Count > 0) {
             foreach (IDType f in election.FilterIDs) {
                 if (! factionsAssigned.Contains (f)) {
-                    int unassignedIdx = _random.Next (unassignedIds.Count);
+                    int unassignedIdx = _generator.Choose (unassignedIds.Count);
                     IDType unassignedId = unassignedIds[unassignedIdx];
 
                     PeopleFactionsNew[unassignedId] = (f, PeopleFactionsNew[unassignedId].Item2);
@@ -284,11 +286,11 @@ internal class ElectionRegionViewModel : ElectionTypeViewModel {
                 IDType regionId;
                 
                 if (regionsUnassigned.Count > 0) {
-                    regionIdx = _random.Next (regionsUnassigned.Count);
+                    regionIdx = _generator.Choose (regionsUnassigned.Count);
                     regionId = regionsUnassigned[regionIdx];
                     regionsUnassigned.RemoveAt (regionIdx);
                 } else {
-                    regionIdx = _random.Next (regionsActive.Count);
+                    regionIdx = _generator.Choose (regionsActive.Count);
                     regionId = regionIds[regionIdx];
                 }
 
@@ -299,7 +301,7 @@ internal class ElectionRegionViewModel : ElectionTypeViewModel {
 
         if (_isRandom) {
             foreach (GroupViewModel group in _groupsPeople) {
-                int personIdx = _random.Next (group.People.Count);
+                int personIdx = _generator.Choose (group.People.Count);
                 IDType personId = group.People[personIdx].ID;
 
                 group.People[personIdx].IsCandidate = true;
@@ -347,11 +349,11 @@ internal class ElectionPartyViewModel : ElectionTypeViewModel {
                 IDType partyId;
 
                 if (partiesUnassigned.Count > 0) {
-                    partyIdx = _random.Next (partiesUnassigned.Count);
+                    partyIdx = _generator.Choose (partiesUnassigned.Count);
                     partyId = partiesUnassigned[partyIdx];
                     partiesUnassigned.RemoveAt (partyIdx);
                 } else {
-                    partyIdx = _random.Next (partiesActive.Count);
+                    partyIdx = _generator.Choose (partiesActive.Count);
                     partyId = partyIds[partyIdx];
                 }
 
@@ -362,7 +364,7 @@ internal class ElectionPartyViewModel : ElectionTypeViewModel {
 
         if (_isRandom) {
             foreach (GroupViewModel group in _groupsPeople) {
-                int personIdx = _random.Next (group.People.Count);
+                int personIdx = _generator.Choose (group.People.Count);
                 IDType personId = group.People[personIdx].ID;
 
                 group.People[personIdx].IsCandidate = true;
@@ -430,7 +432,7 @@ internal class ElectionAppointedViewModel : ElectionTypeViewModel {
                 }
             }
 
-            int personIdx = _random.Next (peopleIds.Count);
+            int personIdx = _generator.Choose (peopleIds.Count);
             IDType personId = peopleIds[personIdx];
 
             PeopleRolesNew[personId].Add (election.TargetID);

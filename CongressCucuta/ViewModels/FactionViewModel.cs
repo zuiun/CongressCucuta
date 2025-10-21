@@ -1,5 +1,5 @@
 ﻿using System.Collections.ObjectModel;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 

@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Canada : ISimulation {
     public Simulation Simulation { get; }
 
@@ -114,73 +117,73 @@ internal class Canada : ISimulation {
         ProcedureImmediate commonwealthRealm = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral], 1),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [governorGeneral], 0),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [governorGeneral], 1),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [governorGeneral], 0),
             ]
         );
         ProcedureImmediate federalProvincialConferences = new (
             1,
             [
-                new (Procedure.Effect.ActionType.ElectionRegion, [governorGeneral]),
-                new (Procedure.Effect.ActionType.PermissionsVotes, [Role.LEADER_REGION], 1),
+                new (Procedure.Effect.EffectType.ElectionRegion, [governorGeneral]),
+                new (Procedure.Effect.EffectType.PermissionsVotes, [Role.LEADER_REGION], 1),
             ]
         );
         ProcedureImmediate generalElection = new (
             2,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, [governorGeneral]),
-                new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, governorGeneral, Role.LEADER_REGION]),
+                new (Procedure.Effect.EffectType.ElectionParty, [governorGeneral]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, governorGeneral, Role.LEADER_REGION]),
             ]
         );
         List<ProcedureImmediate> proceduresGovernmental = [commonwealthRealm, federalProvincialConferences, generalElection];
         ProcedureTargeted greatFlagDebate = new (
             3,
             [
-                new (Procedure.Effect.ActionType.CurrencyInitialise, []),
-                new (Procedure.Effect.ActionType.ProcedureActivate, [generalElection.ID]),
+                new (Procedure.Effect.EffectType.CurrencyInitialise, []),
+                new (Procedure.Effect.EffectType.ProcedureActivate, [generalElection.ID]),
             ],
             []
         );
         ProcedureTargeted trudeaumania = new (
             4,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [primeMinister], 1)],
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [primeMinister], 1)],
             [0, 1]
         );
         ProcedureTargeted coffeeTableRevolutionaries = new (
             5,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [], 1)],
             []
         );
         ProcedureTargeted newFederalism = new (
             6,
-            [new (Procedure.Effect.ActionType.CurrencySubtract, [], 1)],
+            [new (Procedure.Effect.EffectType.CurrencySubtract, [], 1)],
             []
         );
         ProcedureTargeted justWatchMe = new (
             7,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [quebec.ID, primeMinister], 1)],
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [quebec.ID, primeMinister], 1)],
             [],
             false
         );
         ProcedureTargeted weWillVanquish = new (
             8,
             [
-                new (Procedure.Effect.ActionType.CurrencyAdd, [], 1),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [], 0),
-                new (Procedure.Effect.ActionType.PermissionsCanSpeak, [], 0),
+                new (Procedure.Effect.EffectType.CurrencyAdd, [], 1),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [], 0),
+                new (Procedure.Effect.EffectType.PermissionsCanSpeak, [], 0),
             ],
             [],
             false
         );
         ProcedureTargeted westernAlienation = new (
             9,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [], 1)],
             [],
             false
         );
         ProcedureTargeted abandonedPetroCanada = new (
             10,
-            [new (Procedure.Effect.ActionType.PermissionsVotes, [westernCanada.ID], 1)],
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [westernCanada.ID], 1)],
             [],
             false
         );
@@ -197,21 +200,21 @@ internal class Canada : ISimulation {
         ProcedureDeclared royalVeto = new (
             11,
             [
-                new (Procedure.Effect.ActionType.BallotFail, [])
+                new (Procedure.Effect.EffectType.BallotFail, [])
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [governorGeneral]
         );
         ProcedureDeclared voteNoConfidence = new (
             12,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [primeMinister, governorGeneral, Role.LEADER_REGION])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
+            [new (Procedure.Effect.EffectType.ElectionNominated, [primeMinister, governorGeneral, Role.LEADER_REGION])],
+            new Confirmation (Confirmation.ConfirmationType.DivisionChamber),
             []
         );
         ProcedureDeclared viceregalAppointment = new (
             13,
-            [new (Procedure.Effect.ActionType.ElectionAppointed, [governorGeneral, primeMinister, Role.LEADER_PARTY, Role.LEADER_REGION])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.ElectionAppointed, [governorGeneral, primeMinister, Role.LEADER_PARTY, Role.LEADER_REGION])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [primeMinister]
         );
         List<ProcedureDeclared> proceduresDeclared = [royalVeto, voteNoConfidence, viceregalAppointment];
@@ -276,13 +279,13 @@ internal class Canada : ISimulation {
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.FoundParty, [ndp.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [ndp.ID])],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [Currency.STATE], 1),
-                    new Ballot.Effect (Ballot.Effect.ActionType.FoundParty, [ndp.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [Currency.STATE], 1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [ndp.ID]),
                 ],
                 [new (new AlwaysCondition (), 1)]
             )
@@ -292,7 +295,7 @@ internal class Canada : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ReplaceProcedure,
+                        Ballot.Effect.EffectType.ReplaceProcedure,
                         [coffeeTableRevolutionaries.ID, justWatchMe.ID]
                     ),
                 ],
@@ -300,9 +303,9 @@ internal class Canada : ISimulation {
             ),
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.DissolveParty, [rc.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.DissolveParty, [rc.ID]),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ReplaceProcedure,
+                        Ballot.Effect.EffectType.ReplaceProcedure,
                         [coffeeTableRevolutionaries.ID, weWillVanquish.ID]
                     ),
                 ],
@@ -314,9 +317,9 @@ internal class Canada : ISimulation {
             2,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.DissolveParty, [rc.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.DissolveParty, [rc.ID]),
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ReplaceProcedure,
+                        Ballot.Effect.EffectType.ReplaceProcedure,
                         [trudeaumania.ID, westernAlienation.ID]
                     ),
                 ],
@@ -325,7 +328,7 @@ internal class Canada : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (
-                        Ballot.Effect.ActionType.ReplaceProcedure,
+                        Ballot.Effect.EffectType.ReplaceProcedure,
                         [trudeaumania.ID, abandonedPetroCanada.ID]
                     ),
                 ],
@@ -342,7 +345,7 @@ internal class Canada : ISimulation {
                 ]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [Currency.STATE], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [Currency.STATE], -1)],
                 [
                     new (new BallotPassedCondition (ballotB.ID, true), 4),
                     new (new BallotPassedCondition (ballotB.ID, false), 5),
@@ -352,7 +355,7 @@ internal class Canada : ISimulation {
         Ballot incidentB = new (
             4,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [Currency.STATE], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [Currency.STATE], 1)],
                 [new (new AlwaysCondition (), 5)]
             ),
             new Ballot.Result (
@@ -364,7 +367,7 @@ internal class Canada : ISimulation {
         Ballot ballotD = new (
             5,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [Currency.STATE], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [Currency.STATE], -1)],
                 []
             ),
             new Ballot.Result (
@@ -539,12 +542,12 @@ internal class Canada : ISimulation {
         Result resultStart = new (
             0,
             [
-                new (new CurrencyValueCondition (Currency.STATE, ICondition.ComparisonType.FewerThanOrEqual, 1), 1),
+                new (new CurrencyValueCondition (Currency.STATE, ComparisonType.FewerThanOrEqual, 1), 1),
                 new (new AndCondition (
-                    new CurrencyValueCondition (Currency.STATE, ICondition.ComparisonType.GreaterThan, 1),
-                    new CurrencyValueCondition (Currency.STATE, ICondition.ComparisonType.FewerThan, 5)
+                    new CurrencyValueCondition (Currency.STATE, ComparisonType.GreaterThan, 1),
+                    new CurrencyValueCondition (Currency.STATE, ComparisonType.FewerThan, 5)
                 ), 4),
-                new (new CurrencyValueCondition (Currency.STATE, ICondition.ComparisonType.GreaterThanOrEqual, 5), 11),
+                new (new CurrencyValueCondition (Currency.STATE, ComparisonType.GreaterThanOrEqual, 5), 11),
             ]
         );
         Result oneFewerTension = new (

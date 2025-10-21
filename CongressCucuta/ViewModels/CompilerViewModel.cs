@@ -1,9 +1,9 @@
 ﻿using Microsoft.Win32;
 using System.IO;
 using System.Text.Json;
-using CongressCucuta.Data;
 using CongressCucuta.Simulations;
 using CongressCucuta.Converters;
+using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 

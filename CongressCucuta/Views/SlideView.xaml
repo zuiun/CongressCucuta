@@ -86,7 +86,17 @@
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <local:LinkView HorizontalAlignment = "Center" VerticalAlignment = "Center"/>
+                    <Button Command = "{Binding DataContext.SwitchSlideCommand, RelativeSource = {RelativeSource AncestorType = Window}}"
+                            CommandParameter = "{Binding Link}"
+                            HorizontalAlignment = "Center"
+                            VerticalAlignment = "Center"
+                            Padding = "12, 6, 12, 6"
+                            Margin = "0, 0, 0, 12">
+                        <TextBlock FontFamily = "Candara"
+                                   FontSize = "16"
+                                   Text = "{Binding Name}"
+                                   TextWrapping = "Wrap"/>
+                    </Button>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

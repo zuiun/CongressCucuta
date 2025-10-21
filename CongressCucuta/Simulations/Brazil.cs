@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Brazil : ISimulation {
     public Simulation Simulation { get; }
 
@@ -78,49 +81,49 @@ internal class Brazil : ISimulation {
         ProcedureImmediate presidentialElection = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [president]),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [president], 0),
+                new (Procedure.Effect.EffectType.ElectionNominated, [president]),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [president], 0),
             ]
         );
         ProcedureImmediate federation = new (
             1,
-            [new (Procedure.Effect.ActionType.ElectionRegion, [])]
+            [new (Procedure.Effect.EffectType.ElectionRegion, [])]
         );
         List<ProcedureImmediate> proceduresGovernmental = [presidentialElection, federation];
         ProcedureTargeted ruleColonels = new (
             2,
-            [new (Procedure.Effect.ActionType.CurrencyInitialise, [])],
+            [new (Procedure.Effect.EffectType.CurrencyInitialise, [])],
             [1]
         );
         ProcedureTargeted coffeeMilkPolitics = new (
             3,
             [
-                new (Procedure.Effect.ActionType.ProcedureActivate, [presidentialElection.ID]),
-                new (Procedure.Effect.ActionType.CurrencyAdd, [influencePaulistaniaMinas], 1),
+                new (Procedure.Effect.EffectType.ProcedureActivate, [presidentialElection.ID]),
+                new (Procedure.Effect.EffectType.CurrencyAdd, [influencePaulistaniaMinas], 1),
             ],
             []
         );
         ProcedureTargeted militaryClub = new (
             4,
-            [new (Procedure.Effect.ActionType.CurrencySubtract, [influencePaulistaniaMinas], 1)],
+            [new (Procedure.Effect.EffectType.CurrencySubtract, [influencePaulistaniaMinas], 1)],
             []
         );
         ProcedureTargeted brazilianNationImmigrant = new (
             5,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             []
         );
         ProcedureTargeted brazilianWorkersConfederation = new (
             6,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 2)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 2)],
             [],
             false
         );
         ProcedureTargeted communistPartyBrazil = new (
             7,
             [
-                new (Procedure.Effect.ActionType.VotePassAdd, [], 1),
-                new (Procedure.Effect.ActionType.VoteFailAdd, [], 1),
+                new (Procedure.Effect.EffectType.VotePassAdd, [], 1),
+                new (Procedure.Effect.EffectType.VoteFailAdd, [], 1),
             ],
             [],
             false
@@ -136,24 +139,24 @@ internal class Brazil : ISimulation {
         ProcedureDeclared statesPolicy = new (
             8,
             [
-                new (Procedure.Effect.ActionType.BallotPass, []),
-                new (Procedure.Effect.ActionType.CurrencyAdd, [Currency.REGION], 1),
+                new (Procedure.Effect.EffectType.BallotPass, []),
+                new (Procedure.Effect.EffectType.CurrencyAdd, [Currency.REGION], 1),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared veto = new (
             9,
             [
-                new (Procedure.Effect.ActionType.BallotFail, [])
+                new (Procedure.Effect.EffectType.BallotFail, [])
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared revolt = new (
             10,
-            [new (Procedure.Effect.ActionType.BallotLimit, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DiceCurrency),
+            [new (Procedure.Effect.EffectType.BallotLimit, [])],
+            new Confirmation (Confirmation.ConfirmationType.DiceCurrency),
             [Role.LEADER_REGION]
         );
         List<ProcedureDeclared> proceduresDeclared = [statesPolicy, veto, revolt];
@@ -207,13 +210,13 @@ internal class Brazil : ISimulation {
             0,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [influenceGreatPara, influenceMaranhaoPernambuco], 1),
-                    new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [influencePaulistaniaMinas], -1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceGreatPara, influenceMaranhaoPernambuco], 1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influencePaulistaniaMinas], -1),
                 ],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [influencePaulistaniaMinas], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influencePaulistaniaMinas], 1)],
                 [new (new AlwaysCondition (), 1)]
             )
         );
@@ -221,8 +224,8 @@ internal class Brazil : ISimulation {
             1,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.RemoveProcedure, [militaryClub.ID]),
-                    new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [influenceGreatPara, influenceMaranhaoPernambuco], -1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [militaryClub.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceGreatPara, influenceMaranhaoPernambuco], -1),
                 ],
                 [new (new AlwaysCondition (), 2)]
             ),
@@ -235,15 +238,15 @@ internal class Brazil : ISimulation {
             2,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [brazilianNationImmigrant.ID, brazilianWorkersConfederation.ID]),
-                    new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [influenceSouthBrazil], 1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [brazilianNationImmigrant.ID, brazilianWorkersConfederation.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceSouthBrazil], 1),
                 ],
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
                 [
-                    new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [brazilianNationImmigrant.ID, communistPartyBrazil.ID]),
-                    new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [influenceSouthBrazil], 1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [brazilianNationImmigrant.ID, communistPartyBrazil.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceSouthBrazil], 1),
                 ],
                 [
                     new (new ProcedureActiveCondition (militaryClub.ID, true), Ballot.END),

@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class Argentina : ISimulation {
     public Simulation Simulation { get; }
 
@@ -35,86 +38,86 @@ internal class Argentina : ISimulation {
         ProcedureImmediate authoritarianBureaucraticState = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [lieutenantGeneral]),
-                new (Procedure.Effect.ActionType.ElectionNominated, [admiral, lieutenantGeneral]),
-                new (Procedure.Effect.ActionType.ElectionNominated, [brigadierGeneral, lieutenantGeneral, admiral]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [lieutenantGeneral]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [admiral, lieutenantGeneral]),
+                new (Procedure.Effect.EffectType.ElectionNominated, [brigadierGeneral, lieutenantGeneral, admiral]),
             ]
         );
         ProcedureImmediate statuteArgentineRevolution = new (
             1,
-            [new (Procedure.Effect.ActionType.ElectionNominated, [president, lieutenantGeneral, admiral, brigadierGeneral])]
+            [new (Procedure.Effect.EffectType.ElectionNominated, [president, lieutenantGeneral, admiral, brigadierGeneral])]
         );
         List<ProcedureImmediate> proceduresGovernmental = [authoritarianBureaucraticState, statuteArgentineRevolution];
         ProcedureTargeted violetDominance = new (
             2,
             [
-                new (Procedure.Effect.ActionType.CurrencyInitialise, []),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [minister], 0),
-                new (Procedure.Effect.ActionType.PermissionsCanVote, [president, lieutenantGeneral, admiral, brigadierGeneral], 1),
+                new (Procedure.Effect.EffectType.CurrencyInitialise, []),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [minister], 0),
+                new (Procedure.Effect.EffectType.PermissionsCanVote, [president, lieutenantGeneral, admiral, brigadierGeneral], 1),
             ],
             []
         );
         ProcedureTargeted peronists = new (
             3,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             [0, 1, 2]
         );
         ProcedureTargeted vandorists = new (
             4,
-            [new (Procedure.Effect.ActionType.CurrencySubtract, [], 1)],
+            [new (Procedure.Effect.EffectType.CurrencySubtract, [], 1)],
             []
         );
         ProcedureTargeted politicalViolence = new (
             5,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [], 1)],
             []
         );
         ProcedureTargeted nightLongBatons = new (
             6,
             [
-                new (Procedure.Effect.ActionType.VoteFailAdd, [], 1),
-                new (Procedure.Effect.ActionType.CurrencyAdd, [], 1)
+                new (Procedure.Effect.EffectType.VoteFailAdd, [], 1),
+                new (Procedure.Effect.EffectType.CurrencyAdd, [], 1)
             ],
             [1, 2],
             false
         );
         ProcedureTargeted cycleAzos = new (
             7,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [], 2)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [], 2)],
             [],
             false
         );
         List<ProcedureTargeted> proceduresSpecial = [violetDominance, peronists, vandorists, politicalViolence, nightLongBatons, cycleAzos];
         ProcedureDeclared decree = new (
             8,
-            [new (Procedure.Effect.ActionType.BallotPass, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotPass, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared veto = new (
             9,
-            [new (Procedure.Effect.ActionType.BallotFail, [])],
-            new (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotFail, [])],
+            new (Confirmation.ConfirmationType.Always),
             [president]
         );
         ProcedureDeclared coup = new (
             10,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [president]),
-                new (Procedure.Effect.ActionType.ElectionAppointed, [lieutenantGeneral, president]),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [president]),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [lieutenantGeneral, president]),
             ],
-            new (Procedure.Confirmation.CostType.Always),
+            new (Confirmation.ConfirmationType.Always),
             [lieutenantGeneral]
         );
         ProcedureDeclared rebellion = new (
             11,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [president]),
-                new (Procedure.Effect.ActionType.ElectionAppointed, [lieutenantGeneral, president]),
-                new (Procedure.Effect.ActionType.ElectionAppointed, [admiral, president, lieutenantGeneral]),
-                new (Procedure.Effect.ActionType.ElectionAppointed, [brigadierGeneral, president, lieutenantGeneral, admiral]),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [president]),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [lieutenantGeneral, president]),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [admiral, president, lieutenantGeneral]),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [brigadierGeneral, president, lieutenantGeneral, admiral]),
             ],
-            new (Procedure.Confirmation.CostType.DiceValue, 4),
+            new (Confirmation.ConfirmationType.DiceValue, 4),
             [admiral, brigadierGeneral]
         );
         List<ProcedureDeclared> proceduresDeclared = [decree, veto, coup, rebellion];
@@ -171,33 +174,33 @@ internal class Argentina : ISimulation {
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [peronists.ID, nightLongBatons.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [peronists.ID, nightLongBatons.ID])],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [opposition], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [opposition], 1)],
                 [new (new AlwaysCondition (), 1)]
             )
         );
         Ballot ballotB = new (
             1,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.RemoveProcedure, [vandorists.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [vandorists.ID])],
                 [new (new AlwaysCondition (), 2)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [opposition], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [opposition], -1)],
                 [new (new AlwaysCondition (), 3)]
             )
         );
         Ballot incidentA = new (
             2,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [politicalViolence.ID, cycleAzos.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [politicalViolence.ID, cycleAzos.ID])],
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [opposition], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [opposition], -1)],
                 [new (new AlwaysCondition (), 3)]
             ),
             true
@@ -205,7 +208,7 @@ internal class Argentina : ISimulation {
         Ballot ballotC = new (
             3,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.RemoveProcedure, [politicalViolence.ID, cycleAzos.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [politicalViolence.ID, cycleAzos.ID])],
                 [new (new AlwaysCondition (), 4)]
             ),
             new Ballot.Result (
@@ -216,11 +219,11 @@ internal class Argentina : ISimulation {
         Ballot incidentB = new (
             4,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [opposition], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [opposition], 1)],
                 []
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [opposition], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [opposition], -1)],
                 []
             ),
             true
@@ -372,8 +375,8 @@ internal class Argentina : ISimulation {
         Result ballotCPassed = new (
             1,
             [
-                new (new CurrencyValueCondition (opposition, ICondition.ComparisonType.FewerThanOrEqual, 1), 2),
-                new (new CurrencyValueCondition (opposition, ICondition.ComparisonType.GreaterThanOrEqual, 2), 3),
+                new (new CurrencyValueCondition (opposition, ComparisonType.FewerThanOrEqual, 1), 2),
+                new (new CurrencyValueCondition (opposition, ComparisonType.GreaterThanOrEqual, 2), 3),
             ]
         );
         Result oneFewerOpposition = new (
@@ -387,8 +390,8 @@ internal class Argentina : ISimulation {
         Result ballotCFailed = new (
             4,
             [
-                new (new CurrencyValueCondition (opposition, ICondition.ComparisonType.FewerThanOrEqual, 1), 5),
-                new (new CurrencyValueCondition (opposition, ICondition.ComparisonType.GreaterThanOrEqual, 2), 6),
+                new (new CurrencyValueCondition (opposition, ComparisonType.FewerThanOrEqual, 1), 5),
+                new (new CurrencyValueCondition (opposition, ComparisonType.GreaterThanOrEqual, 2), 6),
             ]
         );
         Result oneFewerOpposition2 = new (

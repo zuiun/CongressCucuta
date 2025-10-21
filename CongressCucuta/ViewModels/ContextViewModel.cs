@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using CongressCucuta.Converters;
-using CongressCucuta.Data;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Contexts;
+using CongressCucuta.Core.Procedures;
 using CongressCucuta.Models;
 
 namespace CongressCucuta.ViewModels;

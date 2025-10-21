@@ -9,7 +9,6 @@
              d:DesignHeight="720" d:DesignWidth="320">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <c:CountToVisibilityConverter x:Key = "CountToVisibilityConverter"/>
         <Style TargetType = "ItemsControl">
             <Setter Property = "Background" Value = "#00000000"/>
             <Setter Property = "Padding" Value = "0, 4, 0, 0"/>
@@ -33,55 +32,6 @@
             <Setter Property = "Padding" Value = "0"/>
             <Setter Property = "Margin" Value = "0, 0, 1, 0"/>
         </Style>
-        <Style x:Key = "Ballot" TargetType = "TextBlock">
-            <Setter Property = "Foreground" Value = "White"/>
-            <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
-            <Setter Property = "FontSize" Value = "14"/>
-        </Style>
-        <Style x:Key = "Pass" TargetType = "TextBlock" BasedOn = "{StaticResource Ballot}">
-            <Style.Triggers>
-                <DataTrigger Binding = "{Binding IsPass}" Value = "true">
-                    <Setter Property = "Foreground" Value = "LightGreen"/>
-                    <Setter Property = "FontFamily" Value = "Nirmala UI"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key = "Fail" TargetType = "TextBlock" BasedOn = "{StaticResource Ballot}">
-            <Style.Triggers>
-                <DataTrigger Binding = "{Binding IsPass}" Value = "false">
-                    <Setter Property = "Foreground" Value = "Red"/>
-                    <Setter Property = "FontFamily" Value = "Nirmala UI"/>
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-        <Style x:Key = "Open" TargetType = "TextBlock" BasedOn = "{StaticResource {x:Type TextBlock}}">
-            <Style.Triggers>
-                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "true">
-                    <Setter Property = "Visibility" Value = "Collapsed"/>
-                </DataTrigger>
-                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "false">
-                    <Setter Property = "Visibility" Value = "Visible"/>
-                </DataTrigger>
-            </Style.Triggers>
-
-            <Setter Property = "Foreground" Value = "Black"/>
-            <Setter Property = "FontFamily" Value = "Candara"/>
-            <Setter Property = "FontSize" Value = "12"/>
-        </Style>
-        <Style x:Key = "Close" TargetType = "TextBlock" BasedOn = "{StaticResource {x:Type TextBlock}}">
-            <Style.Triggers>
-                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "true">
-                    <Setter Property = "Visibility" Value = "Visible"/>
-                </DataTrigger>
-                <DataTrigger Binding = "{Binding IsChecked, ElementName = Procedures}" Value = "false">
-                    <Setter Property = "Visibility" Value = "Collapsed"/>
-                </DataTrigger>
-            </Style.Triggers>
-
-            <Setter Property = "Foreground" Value = "Black"/>
-            <Setter Property = "FontFamily" Value = "Candara"/>
-            <Setter Property = "FontSize" Value = "12"/>
-        </Style>
     </UserControl.Resources>
 
     <Grid Background = "Black">
@@ -97,7 +47,7 @@
                 <RowDefinition Height = "Auto"/>
                 <RowDefinition Height = "*"/>
             </Grid.RowDefinitions>
-            
+
             <TextBlock Grid.Row = "0"
                        Visibility = "{Binding IsCurrency, Converter = {StaticResource BooleanToVisibilityConverter}}"
                        HorizontalAlignment = "Center">
@@ -132,7 +82,6 @@
             </Grid>
             <Grid Grid.Row = "2" Visibility = "{Binding IsPeople, Converter = {StaticResource BooleanToVisibilityConverter}}">
                 <ListBox ItemsSource = "{Binding People}" HorizontalContentAlignment = "Stretch">
-
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <local:PersonView/>
@@ -176,180 +125,7 @@
                 </ListBox>
             </Grid>
         </Grid>
-        <Grid Grid.Row = "1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height = "Auto"/>
-                <RowDefinition Height = "Auto"/>
-                <RowDefinition Height = "*"/>
-            </Grid.RowDefinitions>
-
-            <TextBlock Grid.Row = "0" Text = "Ballots" HorizontalAlignment = "Center" Margin = "0, 0, 0, 2"/>
-            <Grid Grid.Row = "1" Visibility = "{Binding IsBallotCount, Converter = {StaticResource BooleanToVisibilityConverter}}">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width = "1*"/>
-                    <ColumnDefinition Width = "1*"/>
-                    <ColumnDefinition Width = "1*"/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column = "0"
-                           Foreground = "White"
-                           FontFamily = "Nirmala UI"
-                           FontSize = "16"
-                           HorizontalAlignment = "Center"
-                           Margin = "0, 0, 0, 4">
-                    <Run Text = "{Binding VotesPass}"/>
-                    <Run Text = "/"/>
-                    <Run Text = "{Binding VotesPassThreshold}"/>
-                </TextBlock>
-                <TextBlock Grid.Column = "1"
-                           Foreground = "White"
-                           FontFamily = "Nirmala UI"
-                           FontSize = "16"
-                           HorizontalAlignment = "Center"
-                           Margin = "0, 0, 0, 4">
-                    <Run Text = "{Binding VotesFail}"/>
-                    <Run Text = "/"/>
-                    <Run Text = "{Binding VotesFailThreshold}"/>
-                </TextBlock>
-                <TextBlock Grid.Column = "2"
-                           Foreground = "White"
-                           FontFamily = "Nirmala UI"
-                           FontSize = "16"
-                           Text = "{Binding VotesAbstain}"
-                           HorizontalAlignment = "Center"
-                           Margin = "0, 0, 0, 4"/>
-            </Grid>
-            <ListBox Grid.Row = "2" ItemsSource = "{Binding Ballots}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height = "Auto"/>
-                                <RowDefinition Height = "Auto"/>
-                            </Grid.RowDefinitions>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width = "5*"/>
-                                <ColumnDefinition Width = "2*"/>
-                                <ColumnDefinition Width = "2*"/>
-                                <ColumnDefinition Width = "2*"/>
-                                <ColumnDefinition Width = "1*"/>
-                            </Grid.ColumnDefinitions>
-
-                            <TextBlock Grid.Row = "0"
-                                       Grid.Column = "0"
-                                       Foreground = "White"
-                                       FontFamily = "Nirmala UI Semilight"
-                                       FontSize = "14"
-                                       Text = "{Binding Title}"
-                                       HorizontalAlignment = "Left"
-                                       Margin = "6, 0, 0, 4"/>
-                            <TextBlock Grid.Row = "0"
-                                       Grid.Column = "1"
-                                       Style = "{StaticResource Pass}"
-                                       Text = "{Binding VotesPass}"
-                                       HorizontalAlignment = "Center"
-                                       Margin = "0, 0, 0, 4"/>
-                            <TextBlock Grid.Row = "0"
-                                       Grid.Column = "2"
-                                       Style = "{StaticResource Fail}"
-                                       Text = "{Binding VotesFail}"
-                                       HorizontalAlignment = "Center"
-                                       Margin = "0, 0, 0, 4">
-                            </TextBlock>
-                            <TextBlock Grid.Row = "0"
-                                       Grid.Column = "3"
-                                       Style = "{StaticResource Ballot}"
-                                       Text = "{Binding VotesAbstain}"
-                                       HorizontalAlignment = "Center"
-                                       Margin = "0, 0, 0, 4"/>
-                            <ComboBox Grid.Row = "1"
-                                      Grid.Column = "0"
-                                      Grid.ColumnSpan = "5"
-                                      Visibility = "{Binding Procedures.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                                      ItemsSource = "{Binding Procedures}">
-                                <ComboBox.ItemContainerStyle>
-                                    <Style TargetType = "ComboBoxItem">
-                                        <Setter Property = "IsEnabled" Value = "False"/>
-                                        <Setter Property = "FontFamily" Value = "Nirmala UI Semilight"/>
-                                        <Setter Property = "FontSize" Value = "12"/>
-                                    </Style>
-                                </ComboBox.ItemContainerStyle>
-                            </ComboBox>
-                            <TextBlock Grid.Row = "1"
-                                       Grid.Column = "0"
-                                       Grid.ColumnSpan = "5"
-                                       Visibility = "{Binding Procedures.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                                       Foreground = "Black"
-                                       FontFamily = "Nirmala UI"
-                                       FontSize = "12"
-                                       Text = "Declared"
-                                       HorizontalAlignment = "Center"
-                                       VerticalAlignment = "Center"
-                                       IsHitTestVisible = "False"/>
-                        </Grid>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
-        </Grid>
-        <StackPanel Grid.Row = "2">
-            <TextBlock Text = "Procedures" HorizontalAlignment = "Center"/>
-            <StackPanel Visibility = "{Binding IsChecked, ElementName = Procedures, Converter = {StaticResource BooleanToVisibilityConverter}}">
-                <TextBlock Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                           Text = "Governmental Procedures"
-                           HorizontalAlignment = "Center"/>
-                <ListBox Visibility = "{Binding ProceduresGovernmental.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                         ItemsSource = "{Binding ProceduresGovernmental}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Foreground = "White"
-                                       FontFamily = "Nirmala UI Semilight"
-                                       FontSize = "14"
-                                       Text = "{Binding Name}"
-                                       ToolTip = "{Binding Effects}"
-                                       Margin = "4, 0, 0, 2"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <TextBlock Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                           Text = "Special Procedures" HorizontalAlignment = "Center"/>
-                <ListBox Visibility = "{Binding ProceduresSpecial.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                         ItemsSource = "{Binding ProceduresSpecial}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Foreground = "White"
-                                       FontFamily = "Nirmala UI Semilight"
-                                       FontSize = "14"
-                                       Text = "{Binding Name}"
-                                       ToolTip = "{Binding Effects}"
-                                       Margin = "4, 0, 0, 2"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-                <TextBlock Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                           Text = "Declared Procedures" HorizontalAlignment = "Center"/>
-                <ListBox Visibility = "{Binding ProceduresDeclared.Count, Converter = {StaticResource CountToVisibilityConverter}}"
-                         ItemsSource = "{Binding ProceduresDeclared}">
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Foreground = "White"
-                                       FontFamily = "Nirmala UI Semilight"
-                                       FontSize = "14"
-                                       Text = "{Binding Name}"
-                                       ToolTip = "{Binding Effects}"
-                                       Margin = "4, 0, 0, 2"/>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
-            <ToggleButton x:Name = "Procedures"
-                          Focusable = "False"
-                          HorizontalAlignment = "Stretch"
-                          Padding = "0, 2, 0, 2">
-                <Grid>
-                    <TextBlock Style = "{StaticResource Open}" Text = "Open" Margin = "0, 0, 0, 2"/>
-                    <TextBlock Style = "{StaticResource Close}" Text = "Close" Margin = "0, 0, 0, 2"/>
-                </Grid>
-            </ToggleButton>
-        </StackPanel>
+        <local:BallotsView Grid.Row = "1"/>
+        <local:ProceduresView Grid.Row = "2"/>
     </Grid>
 </UserControl>

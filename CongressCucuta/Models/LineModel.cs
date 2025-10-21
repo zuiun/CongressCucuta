@@ -1,4 +1,4 @@
-﻿using CongressCucuta.Converters;
+﻿using CongressCucuta.Core;
 
 namespace CongressCucuta.Models;
 

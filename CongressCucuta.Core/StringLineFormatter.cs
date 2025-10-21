@@ -1,0 +1,66 @@
+﻿using System.Text;
+
+namespace CongressCucuta.Core;
+
+public class StringLineFormatter {
+    private const char INDENT = '#';
+    private const char DELIMITER = '|';
+    private const string SPACE = "    ";
+
+    public static string Indent (string line, byte indentLevel) {
+        StringBuilder result = new ();
+
+        for (byte i = 0; i < indentLevel; ++ i) {
+            result.Append (INDENT);
+        }
+
+        result.Append (DELIMITER);
+        result.Append (line);
+        return result.ToString ();
+    }
+
+    public static (string, byte) Split (string text) {
+        string[] parameters = text.Split (DELIMITER);
+        string line;
+        byte indentLevel;
+
+        if (parameters.Length == 1) {
+            // IndentLevel also controls font size
+            indentLevel = 0;
+            line = parameters[0];
+        } else if (parameters.Length == 2) {
+            indentLevel = (byte) parameters[0].Count (c => c == INDENT);
+            line = parameters[1];
+        } else {
+            throw new ArgumentException ($"Expected '{INDENT}{DELIMITER}Text' format", nameof (text));
+        }
+
+        return (line, indentLevel);
+    }
+
+    public static string Convert (string text) {
+        string clean = text.Replace ($"{DELIMITER}", string.Empty);
+        string[] lines = clean.Split ('\n');
+        string joined = string.Join ('\n', lines);
+        string tabs = joined.Replace ($"{INDENT}", SPACE);
+
+        return tabs;
+    }
+
+    public static string Outdent (string text) {
+        string[] lines = text.Split ('\n');
+        List<string> trimmed = [];
+
+        foreach (string line in lines) {
+            if (line.Contains ($"{INDENT}{DELIMITER}")) {
+                trimmed.Add (line[1 ..]);
+            } else {
+                trimmed.Add (line);
+            }
+        }
+
+        string result = string.Join ('\n', trimmed);
+
+        return result;
+    }
+}

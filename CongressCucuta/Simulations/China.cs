@@ -1,8 +1,11 @@
-﻿using CongressCucuta.Converters;
-using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
+using CongressCucuta.Core.Procedures;
 
 namespace CongressCucuta.Simulations;
 
+[ExcludeFromCodeCoverage]
 internal class China : ISimulation {
     public Simulation Simulation { get; }
 
@@ -71,52 +74,52 @@ internal class China : ISimulation {
         ProcedureImmediate eternalPremier = new (
             0,
             [
-                new (Procedure.Effect.ActionType.ElectionParty, []),
+                new (Procedure.Effect.EffectType.ElectionParty, []),
             ]
         );
         ProcedureImmediate partyState = new (
             1,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [chairman]),
-                new (Procedure.Effect.ActionType.PermissionsVotes, [chairman], 2),
+                new (Procedure.Effect.EffectType.ElectionNominated, [chairman]),
+                new (Procedure.Effect.EffectType.PermissionsVotes, [chairman], 2),
             ]
         );
         ProcedureImmediate warlordCliques = new (
             2,
             [
-                new (Procedure.Effect.ActionType.ElectionAppointed, [general], 1),
+                new (Procedure.Effect.EffectType.ElectionAppointed, [general], 1),
             ]
         );
         List<ProcedureImmediate> proceduresGovernmental = [eternalPremier, partyState, warlordCliques];
         ProcedureTargeted threePrinciplesPeople = new (
             3,
-            [new (Procedure.Effect.ActionType.CurrencyInitialise, [])],
+            [new (Procedure.Effect.EffectType.CurrencyInitialise, [])],
             []
         );
         ProcedureTargeted dreamsUnitedFront = new (
             4,
-            [new (Procedure.Effect.ActionType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
             [3]
         );
         ProcedureTargeted ruralReconstructionMovement = new (
             5,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [], 1)],
             []
         );
         ProcedureTargeted constitutionalProtectionMovement = new (
             6,
-            [new (Procedure.Effect.ActionType.CurrencySubtract, [], 1)],
+            [new (Procedure.Effect.EffectType.CurrencySubtract, [], 1)],
             []
         );
         ProcedureTargeted landTiller = new (
             7,
-            [new (Procedure.Effect.ActionType.CurrencyAdd, [], 2)],
+            [new (Procedure.Effect.EffectType.CurrencyAdd, [], 2)],
             [],
             false
         );
         ProcedureTargeted encirclementCampaigns = new (
             8,
-            [new (Procedure.Effect.ActionType.CurrencySubtract, [], 2)],
+            [new (Procedure.Effect.EffectType.CurrencySubtract, [], 2)],
             [],
             false
         );
@@ -131,31 +134,31 @@ internal class China : ISimulation {
         ProcedureDeclared impeachment = new (
             9,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [chairman]),
-                new (Procedure.Effect.ActionType.CurrencySubtract, [], 1),
+                new (Procedure.Effect.EffectType.ElectionNominated, [chairman]),
+                new (Procedure.Effect.EffectType.CurrencySubtract, [], 1),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.DivisionChamber),
+            new Confirmation (Confirmation.ConfirmationType.DivisionChamber),
             [Role.LEADER_PARTY]
         );
         ProcedureDeclared extraordinaryNationalCongress = new (
             10,
             [
-                new (Procedure.Effect.ActionType.ElectionNominated, [directorGeneral]),
-                new (Procedure.Effect.ActionType.CurrencySubtract, [], 2),
+                new (Procedure.Effect.EffectType.ElectionNominated, [directorGeneral]),
+                new (Procedure.Effect.EffectType.CurrencySubtract, [], 2),
             ],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [general]
         );
         ProcedureDeclared ultimateAuthority = new (
             11,
-            [new (Procedure.Effect.ActionType.BallotPass, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotPass, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [directorGeneral]
         );
         ProcedureDeclared veto = new (
             12,
-            [new (Procedure.Effect.ActionType.BallotFail, [])],
-            new Procedure.Confirmation (Procedure.Confirmation.CostType.Always),
+            [new (Procedure.Effect.EffectType.BallotFail, [])],
+            new Confirmation (Confirmation.ConfirmationType.Always),
             [chairman, directorGeneral]
         );
         List<ProcedureDeclared> proceduresDeclared = [impeachment, extraordinaryNationalCongress, ultimateAuthority, veto];
@@ -216,7 +219,7 @@ internal class China : ISimulation {
         Ballot ballotA = new (
             0,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [unity], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], 1)],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
@@ -227,11 +230,11 @@ internal class China : ISimulation {
         Ballot incidentA = new (
             1,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [ruralReconstructionMovement.ID, landTiller.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [ruralReconstructionMovement.ID, landTiller.ID])],
                 [new (new AlwaysCondition (), 2)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [unity], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], -1)],
                 [new (new AlwaysCondition (), 2)]
             ),
             true
@@ -239,22 +242,22 @@ internal class China : ISimulation {
         Ballot ballotB = new (
             2,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ReplaceProcedure, [constitutionalProtectionMovement.ID, encirclementCampaigns.ID])],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceProcedure, [constitutionalProtectionMovement.ID, encirclementCampaigns.ID])],
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [unity], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], -1)],
                 [new (new AlwaysCondition (), 3)]
             )
         );
         Ballot incidentB = new (
             3,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [unity], -1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], -1)],
                 [new (new AlwaysCondition (), 4)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.ActionType.ModifyCurrency, [unity], 1)],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], 1)],
                 [new (new AlwaysCondition (), 4)]
             ),
             true
@@ -405,12 +408,12 @@ internal class China : ISimulation {
         Result ballotCPassed = new (
             1,
             [
-                new (new CurrencyValueCondition (unity, ICondition.ComparisonType.FewerThanOrEqual, -2), 2),
+                new (new CurrencyValueCondition (unity, ComparisonType.FewerThanOrEqual, -2), 2),
                 new (new AndCondition (
-                    new CurrencyValueCondition (unity, ICondition.ComparisonType.GreaterThan, -2),
-                    new CurrencyValueCondition (unity, ICondition.ComparisonType.FewerThan, 2)
+                    new CurrencyValueCondition (unity, ComparisonType.GreaterThan, -2),
+                    new CurrencyValueCondition (unity, ComparisonType.FewerThan, 2)
                 ), 3),
-                new (new CurrencyValueCondition (unity, ICondition.ComparisonType.GreaterThanOrEqual, 2), 4),
+                new (new CurrencyValueCondition (unity, ComparisonType.GreaterThanOrEqual, 2), 4),
             ]
         );
         Result negTwoFewerUnity = new (
@@ -428,8 +431,8 @@ internal class China : ISimulation {
         Result ballotCFailed = new (
             5,
             [
-                new (new BallotsPassedCountCondition (ICondition.ComparisonType.FewerThanOrEqual, 1), 6),
-                new (new BallotsPassedCountCondition (ICondition.ComparisonType.GreaterThanOrEqual, 2), 7),
+                new (new BallotsPassedCountCondition (ComparisonType.FewerThanOrEqual, 1), 6),
+                new (new BallotsPassedCountCondition (ComparisonType.GreaterThanOrEqual, 2), 7),
             ]
         );
         Result oneFewerUnity = new (

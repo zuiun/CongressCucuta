@@ -86,12 +86,12 @@
       "ID": 0,
       "Effects": [
         {
-          "Action": 8,
+          "Type": 8,
           "TargetIDs": [],
           "Value": 0
         },
         {
-          "Action": 9,
+          "Type": 9,
           "TargetIDs": [
             254,
             253
@@ -105,14 +105,15 @@
       "ID": 1,
       "Effects": [
         {
-          "Action": 9,
+          "Type": 9,
           "TargetIDs": [
-            253
+            253,
+            254
           ],
           "Value": 0
         },
         {
-          "Action": 14,
+          "Type": 14,
           "TargetIDs": [
             253
           ],
@@ -128,7 +129,7 @@
       "ID": 2,
       "Effects": [
         {
-          "Action": 6,
+          "Type": 6,
           "TargetIDs": [
             0
           ],
@@ -146,7 +147,7 @@
       "ID": 3,
       "Effects": [
         {
-          "Action": 6,
+          "Type": 6,
           "TargetIDs": [
             1
           ],
@@ -162,7 +163,7 @@
       "ID": 4,
       "Effects": [
         {
-          "Action": 1,
+          "Type": 1,
           "TargetIDs": [],
           "Value": 1
         }
@@ -174,7 +175,7 @@
       "ID": 5,
       "Effects": [
         {
-          "Action": 15,
+          "Type": 15,
           "TargetIDs": [
             2
           ],
@@ -190,7 +191,7 @@
       "ID": 6,
       "Effects": [
         {
-          "Action": 0,
+          "Type": 0,
           "TargetIDs": [],
           "Value": 2
         }
@@ -204,7 +205,7 @@
       "ID": 7,
       "Effects": [
         {
-          "Action": 1,
+          "Type": 1,
           "TargetIDs": [],
           "Value": 1
         }
@@ -215,14 +216,14 @@
   "ProceduresDeclared": [
     {
       "Confirm": {
-        "Cost": 1,
+        "Type": 1,
         "Value": 0
       },
       "DeclarerIDs": [],
       "ID": 8,
       "Effects": [
         {
-          "Action": 9,
+          "Type": 9,
           "TargetIDs": [
             254,
             253
@@ -234,7 +235,7 @@
     },
     {
       "Confirm": {
-        "Cost": 0,
+        "Type": 0,
         "Value": 0
       },
       "DeclarerIDs": [
@@ -243,7 +244,7 @@
       "ID": 9,
       "Effects": [
         {
-          "Action": 13,
+          "Type": 13,
           "TargetIDs": [],
           "Value": 0
         }
@@ -252,7 +253,7 @@
     },
     {
       "Confirm": {
-        "Cost": 0,
+        "Type": 0,
         "Value": 0
       },
       "DeclarerIDs": [
@@ -261,12 +262,12 @@
       "ID": 10,
       "Effects": [
         {
-          "Action": 8,
+          "Type": 8,
           "TargetIDs": [],
           "Value": 0
         },
         {
-          "Action": 9,
+          "Type": 9,
           "TargetIDs": [
             254,
             253
@@ -278,7 +279,7 @@
     },
     {
       "Confirm": {
-        "Cost": 0,
+        "Type": 0,
         "Value": 0
       },
       "DeclarerIDs": [
@@ -287,7 +288,7 @@
       "ID": 11,
       "Effects": [
         {
-          "Action": 9,
+          "Type": 9,
           "TargetIDs": [
             254,
             253
@@ -304,7 +305,7 @@
       "Pass": {
         "Effects": [
           {
-            "Action": 3,
+            "Type": 3,
             "TargetIDs": [
               4,
               6
@@ -324,7 +325,7 @@
       "Fail": {
         "Effects": [
           {
-            "Action": 3,
+            "Type": 3,
             "TargetIDs": [
               4,
               7
@@ -348,14 +349,14 @@
       "Pass": {
         "Effects": [
           {
-            "Action": 0,
+            "Type": 0,
             "TargetIDs": [
               3
             ],
             "Value": 0
           },
           {
-            "Action": 2,
+            "Type": 2,
             "TargetIDs": [
               5
             ],

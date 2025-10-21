@@ -1,4 +1,6 @@
-﻿using CongressCucuta.Data;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Conditions;
 
 namespace CongressCucuta.Models;
 
@@ -52,6 +54,8 @@ internal class SlideBranchingModel (
     List<Link<SlideModel>> links
 ) : SlideModel (id, title, description, links, true, null) { }
 
+// Not used
+[ExcludeFromCodeCoverage]
 internal class SlideConstantModel (
     IDType id,
     string title,
