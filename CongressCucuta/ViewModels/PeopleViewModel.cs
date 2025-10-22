@@ -6,10 +6,14 @@ using CongressCucuta.Core;
 namespace CongressCucuta.ViewModels;
 
 internal class PeopleViewModel : ViewModel {
+    internal class NameGroup (string name) : ViewModel {
+        public string Name => name;
+    }
+
     private const byte PEOPLE_MIN = 5;
     private string _name = string.Empty;
     private int _selectedIdx = -1;
-    private ObservableCollection<NameViewModel> _names = [];
+    private ObservableCollection<NameGroup> _names = [];
     private bool _wasCreationFailure = false;
     private bool _wasImportFailure = false;
     private bool _wasImportSuccess = false;
@@ -27,7 +31,7 @@ internal class PeopleViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public ObservableCollection<NameViewModel> Names {
+    public ObservableCollection<NameGroup> Names {
         get => _names;
         set {
             _names = value;
@@ -98,7 +102,7 @@ internal class PeopleViewModel : ViewModel {
         try {
             string[] names = File.ReadAllLines (file.FileName);
 
-            Names = [.. names.Select (n => new NameViewModel (n))];
+            Names = [.. names.Select (n => new NameGroup (n))];
         } catch (Exception) {
             WasImportFailure = true;
             return;

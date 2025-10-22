@@ -2,7 +2,6 @@
 using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
 using CongressCucuta.Core.Procedures;
-using CongressCucuta.Models;
 
 namespace CongressCucuta.ViewModels;
 
@@ -188,7 +187,6 @@ internal class ContextViewModel : ViewModel {
 
     public ContextViewModel (SimulationContext context, ref readonly Localisation localisation) {
         _localisation = localisation;
-        context.InitialisedPeople += Context_InitialisedPeopleEventHandler;
         context.CompletedElection += Context_CompletedElectionEventHandler;
         context.UpdatedPermissions += Context_UpdatedPermissionsEventHandler;
         context.VotedBallot += Context_VotedBallotEventHandler;
@@ -203,6 +201,14 @@ internal class ContextViewModel : ViewModel {
             } else {
                 _declarerRoles.Add (Role.MEMBER);
             }
+        }
+    }
+
+    public void InitialisePeople (List<Person> people) {
+        foreach (Person p in people) {
+            PersonViewModel person = CreatePerson (p.ID, p.Name, [], false);
+
+            _people.Add (person);
         }
     }
 
@@ -376,14 +382,6 @@ internal class ContextViewModel : ViewModel {
         IsBallotCount = false;
     }
 
-    private void Context_InitialisedPeopleEventHandler (Dictionary<IDType, Person> e) {
-        foreach (Person p in e.Values) {
-            PersonViewModel person = CreatePerson (p.ID, p.Name, [], false);
-
-            _people.Add (person);
-        }
-    }
-
     private void Person_VotingPassEventHandler (object? sender, bool e) {
         IDType id = ((PersonViewModel) sender!).ID;
         VotingEventArgs args = new (
@@ -469,7 +467,7 @@ internal class ContextViewModel : ViewModel {
             e.VotesPass,
             e.VotesFail,
             e.VotesAbstain,
-            e.IsPass,
+            e.IsPassed,
             e.ProceduresDeclared.ConvertAll (p => _localisation.Procedures[p.ID].Item1)
         ));
 

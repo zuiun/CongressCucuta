@@ -10,7 +10,7 @@ namespace CongressCucuta.ViewModels;
 internal class CompilerViewModel : ViewModel {
     internal class SimulationGroup (ISimulation simulation) : ViewModel {
         public Simulation Simulation => simulation.Simulation;
-        public string Name => Simulation.Localisation.State;
+        public string Name => simulation.Simulation.Localisation.State;
     }
 
     private bool _wasCompilationSuccess = false;

@@ -2,6 +2,7 @@
 
 namespace CongressCucuta.ViewModels;
 
+// Used for commands that take no parameters
 internal class RelayCommand (Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand {
     private readonly Func<object?, bool>? _canExecute = canExecute;
     private readonly Action<object?> _execute = execute;
@@ -16,6 +17,7 @@ internal class RelayCommand (Action<object?> execute, Func<object?, bool>? canEx
     public void Execute (object? parameter) => _execute (parameter);
 }
 
+// Used for commands that take a parameter
 internal class RelayCommand<T> (Action<T> execute, Func<T, bool>? canExecute = null) : ICommand {
     private readonly Func<T, bool>? _canExecute = canExecute;
     private readonly Action<T> _execute = execute;
@@ -28,26 +30,22 @@ internal class RelayCommand<T> (Action<T> execute, Func<T, bool>? canExecute = n
     public bool CanExecute (object? parameter) {
         if (_canExecute is null) {
             return true;
+        } else if (parameter is T p) {
+            return _canExecute (p);
         } else if (parameter is null) {
             return false;
         } else {
-            /*
-             * If the cast fails, then it throws an InvalidCastException
-             * This is desirable, as it allows errors to be found more easily
-             */
-            return _canExecute ((T) parameter);
+            throw new NotSupportedException ($"CanExecute can only take a {nameof (T)} parameter");
         }
     }
 
     public void Execute (object? parameter) {
-        if (parameter is null) {
-            throw new ArgumentNullException (nameof (parameter), "RelayCommand<T>.Execute () must take a parameter");
+        if (parameter is T p) {
+            _execute (p);
+        } else if (parameter is null) {
+            throw new ArgumentNullException (nameof (parameter), "Execute must take a parameter");
+        } else {
+            throw new NotSupportedException ($"Execute can only take a {nameof (T)} parameter");
         }
-
-        /*
-         * If the cast fails, then it throws an InvalidCastException
-         * This is desirable, as it allows errors to be found more easily
-         */
-        _execute ((T) parameter);
     }
 }

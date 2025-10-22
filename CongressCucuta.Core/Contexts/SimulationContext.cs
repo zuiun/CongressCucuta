@@ -1,6 +1,6 @@
-﻿using CongressCucuta.Core.Generators;
+﻿using System.Diagnostics;
+using CongressCucuta.Core.Generators;
 using CongressCucuta.Core.Procedures;
-using System.Diagnostics;
 
 namespace CongressCucuta.Core.Contexts;
 
@@ -27,7 +27,7 @@ public class VotedBallotEventArgs (IDType id, bool isPassed, BallotContext conte
     public byte VotesPass = context.CalculateVotesPass ();
     public byte VotesFail = context.CalculateVotesFail ();
     public byte VotesAbstain = context.CalculateVotesAbstain ();
-    public bool IsPass = isPassed;
+    public bool IsPassed = isPassed;
     public List<IDType> ProceduresDeclared = context.ProceduresDeclared;
 }
 
@@ -46,7 +46,7 @@ public class CompletedElectionEventArgs (
 // Must call InitialisePeople () after construction to complete initialisation
 public class SimulationContext (Simulation simulation, IGenerator? generator = null) {
     public readonly record struct ConfirmationResult (
-        Confirmation.ConfirmationType Cost,
+        Confirmation.ConfirmationType Type,
         bool? IsConfirmed,
         byte? Value = null,
         (IDType, sbyte)? Currency = null,
@@ -61,18 +61,11 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
     private readonly HashSet<IDType> _regionsActive = [.. simulation.Regions.Where (r => r.IsActiveStart).Select (r => r.ID)];
     private readonly HashSet<IDType> _proceduresActive = [.. simulation.ProceduresSpecial.Where (pt => pt.IsActiveStart).Select (pt => pt.ID)];
     private readonly HashSet<IDType> _ballotsPassed = [];
-    private IDType _ballotCurrentId = 0;
     // (person, composition)
     private readonly List<(IDType, Permissions.Composition)> _compositions = [];
     private readonly List<Procedure.Effect> _effectsPermissions = [];
     public readonly BallotContext Context = new ();
-    public IDType BallotCurrentID {
-        get => _ballotCurrentId;
-        set {
-            _ballotCurrentId = value;
-            StartBallot ();
-        }
-    }
+    public IDType BallotCurrentID { get; set; } = 0;
     public Dictionary<IDType, Person> People => _people;
     public Dictionary<IDType, SortedSet<IDType>> PeopleRoles = [];
     // (party, region)
@@ -87,13 +80,50 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
     public Dictionary<IDType, ProcedureDeclared> ProceduresDeclared { get; } = simulation.ProceduresDeclared.ToDictionary (pd => pd.ID, pd => pd);
     public Dictionary<IDType, Ballot> Ballots { get; } = simulation.Ballots.ToDictionary (b => b.ID, b => b);
     public bool IsBallot { get; set; }
-    public event Action<Dictionary<IDType, Person>>? InitialisedPeople;
     public event Action<PreparingElectionEventArgs>? PreparingElection;
     public event Action<CompletedElectionEventArgs>? CompletedElection;
     public event Action<Dictionary<IDType, Permissions>>? UpdatedPermissions;
     public event Action<VotedBallotEventArgs>? VotedBallot;
     public event Action<Dictionary<IDType, sbyte>>? ModifiedCurrencies;
     public event Action<HashSet<ProcedureTargeted>>? ModifiedProcedures;
+
+    public void InitialisePeople (List<Person> people) {
+        foreach (Person p in people) {
+            _people[p.ID] = p;
+            PeopleRoles[p.ID] = [Role.MEMBER];
+            PeopleFactions[p.ID] = (null, null);
+        }
+    }
+
+    private void OnPrepareElection (List<ElectionContext> elections) {
+        PreparingElectionEventArgs args = new (elections, PeopleRoles, PeopleFactions, _partiesActive, _regionsActive, _people);
+
+        PreparingElection?.Invoke (args);
+        PeopleRoles = args.PeopleRolesNew;
+        PeopleFactions = args.PeopleFactionsNew;
+        OnCompleteElection ();
+    }
+
+    private void OnCompleteElection () {
+        CompletedElectionEventArgs args = new (_people, PeopleRoles, PeopleFactions, IsBallot);
+
+        CompletedElection?.Invoke (args);
+        ComposePermissions ();
+    }
+
+    private void OnModifiedCurrencies () => ModifiedCurrencies?.Invoke (CurrenciesValues);
+
+    private void OnModifiedProcedures () {
+        HashSet<ProcedureTargeted> procedures = [];
+
+        foreach (ProcedureTargeted p in ProceduresSpecial.Values) {
+            if (_proceduresActive.Contains (p.ID)) {
+                procedures.Add (p);
+            }
+        }
+
+        ModifiedProcedures?.Invoke (procedures);
+    }
 
     private void ComposePermissions () {
         Dictionary<IDType, Permissions> peoplePermissions = [];
@@ -115,15 +145,13 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     Permissions.Composition composition = new (CanVote: canVote);
 
                     if (e.TargetIDs.Length > 0) {
-                        foreach (IDType r in e.TargetIDs) {
-                            foreach (var kv in PeopleRoles) {
-                                if (kv.Value.Contains (r)) {
-                                    peoplePermissions[kv.Key] += composition;
-                                }
+                        foreach (var kv in PeopleRoles) {
+                            if (kv.Value.Intersect (e.TargetIDs).Any ()) {
+                                peoplePermissions[kv.Key] += composition;
                             }
                         }
                     } else {
-                        IDType personId = _generator.Choose (People.Count);
+                        IDType personId = _generator.Choose (_people.Count);
 
                         peoplePermissions[personId] += composition;
                     }
@@ -134,15 +162,13 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     Permissions.Composition composition = new (Votes: e.Value);
 
                     if (e.TargetIDs.Length > 0) {
-                        foreach (IDType r in e.TargetIDs) {
-                            foreach (var kv in PeopleRoles) {
-                                if (kv.Value.Contains (r)) {
-                                    peoplePermissions[kv.Key] += composition;
-                                }
+                        foreach (var kv in PeopleRoles) {
+                            if (kv.Value.Intersect (e.TargetIDs).Any ()) {
+                                peoplePermissions[kv.Key] += composition;
                             }
                         }
                     } else {
-                        IDType personId = _generator.Choose (People.Count);
+                        IDType personId = _generator.Choose (_people.Count);
 
                         peoplePermissions[personId] += composition;
                     }
@@ -154,15 +180,13 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     Permissions.Composition composition = new (CanSpeak: canSpeak);
 
                     if (e.TargetIDs.Length > 0) {
-                        foreach (IDType r in e.TargetIDs) {
-                            foreach (var kv in PeopleRoles) {
-                                if (kv.Value.Contains (r)) {
-                                    peoplePermissions[kv.Key] += composition;
-                                }
+                        foreach (var kv in PeopleRoles) {
+                            if (kv.Value.Intersect (e.TargetIDs).Any ()) {
+                                peoplePermissions[kv.Key] += composition;
                             }
                         }
                     } else {
-                        IDType personId = _generator.Choose (People.Count);
+                        IDType personId = _generator.Choose (_people.Count);
 
                         peoplePermissions[personId] += composition;
                     }
@@ -178,6 +202,16 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
         Context.PeoplePermissions = peoplePermissions;
         UpdatedPermissions?.Invoke (peoplePermissions);
+    }
+
+    public IDType ChooseCurrencyOwner (IDType personId) {
+        if (PeopleFactions[personId].Item1 is IDType p && Currencies.Contains (p)) {
+            return p;
+        } else if (PeopleFactions[personId].Item2 is IDType r && Currencies.Contains (r)) {
+            return r;
+        }
+
+        return Currency.STATE;
     }
 
     public ConfirmationResult TryConfirmProcedure (IDType personId, IDType procedureId) {
@@ -254,6 +288,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
                     if (CurrenciesValues[currencyId] >= diceDeclarer) {
                         CurrenciesValues[currencyId] -= (sbyte) diceDeclarer;
+                        currency = (currencyId, CurrenciesValues[currencyId]);
                         OnModifiedCurrencies ();
                     } else {
                         return new (
@@ -265,23 +300,13 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     }
                 }
 
-                if (diceDeclarer >= diceDefender) {
-                    return new (
-                        Confirmation.ConfirmationType.DiceAdversarial,
-                        true,
-                        Currency: currency,
-                        DiceDeclarer: diceDeclarer,
-                        DiceDefender: diceDefender
-                    );
-                } else {
-                    return new (
-                        Confirmation.ConfirmationType.DiceAdversarial,
-                        false,
-                        Currency: currency,
-                        DiceDeclarer: diceDeclarer,
-                        DiceDefender: diceDefender
-                    );
-                }
+                return new (
+                    Confirmation.ConfirmationType.DiceAdversarial,
+                    diceDeclarer >= diceDefender,
+                    Currency: currency,
+                    DiceDeclarer: diceDeclarer,
+                    DiceDefender: diceDefender
+                );
             }
             default:
                 throw new UnreachableException ();
@@ -346,10 +371,10 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     break;
                 }
                 case Procedure.Effect.EffectType.BallotLimit: {
-                    foreach (IDType p in People.Keys) {
+                    foreach (IDType p in _people.Keys) {
                         if (
                             p == personId
-                            || PeopleRoles[p].Any (r => e.TargetIDs.Contains (r))
+                            || PeopleRoles[p].Intersect (e.TargetIDs).Any ()
                             || e.TargetIDs.Any (r => r == PeopleFactions[p].Item1)
                             || e.TargetIDs.Any (r => r == PeopleFactions[p].Item2)
                         ) {
@@ -364,12 +389,12 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     break;
                 }
                 case Procedure.Effect.EffectType.BallotPass: {
-                    VoteBallot (true);
+                    EndBallot (true);
                     isPass = true;
                     break;
                 }
                 case Procedure.Effect.EffectType.BallotFail: {
-                    VoteBallot (false);
+                    EndBallot (false);
                     isPass = false;
                     break;
                 }
@@ -388,44 +413,12 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
         return isPass;
     }
 
-    private void OnPrepareElection (List<ElectionContext> elections) {
-        PreparingElectionEventArgs args = new (elections, PeopleRoles, PeopleFactions, _partiesActive, _regionsActive, People);
-
-        PreparingElection?.Invoke (args);
-        PeopleRoles = args.PeopleRolesNew;
-        PeopleFactions = args.PeopleFactionsNew;
-        OnCompleteElection ();
-    }
-
-    private void OnCompleteElection () {
-        CompletedElectionEventArgs args = new (People, PeopleRoles, PeopleFactions, IsBallot);
-
-        CompletedElection?.Invoke (args);
-        ComposePermissions ();
-    }
-
-    private void OnModifiedCurrencies () => ModifiedCurrencies?.Invoke (CurrenciesValues);
-
-    private void OnModifiedProcedures () {
-        HashSet<ProcedureTargeted> procedures = [];
-
-        foreach (ProcedureTargeted p in ProceduresSpecial.Values) {
-            if (_proceduresActive.Contains (p.ID)) {
-                procedures.Add (p);
-            }
-        }
-
-        ModifiedProcedures?.Invoke (procedures);
-    }
-
     public void StartSetup () {
         List<(IDType, Procedure.EffectBundle)> effects = [
             .. ProceduresGovernmental.Values.Where (pi => pi.IsActiveStart)
                 .Select (pi => (pi.ID, (Procedure.EffectBundle) pi.YieldEffects (0)!))
         ];
         List<ElectionContext> elections = [];
-
-        ComposePermissions ();
 
         foreach ((IDType p, Procedure.EffectBundle eb) in effects) {
             foreach (Procedure.Effect e in eb.Effects) {
@@ -486,9 +479,11 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
         if (CurrenciesValues.Count > 0) {
             OnModifiedCurrencies ();
         }
+
+        ComposePermissions ();
     }
 
-    private void StartBallot () {
+    public void StartBallot () {
         // These are guaranteed to be ProcedureTargeted
         var effects = _proceduresActive.Select (pt => ProceduresSpecial[pt])
             .Select (pt => pt.YieldEffects (BallotCurrentID))
@@ -594,7 +589,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
         }
     }
 
-    private void EndBallot (bool isPass) {
+    public void EndBallot (bool isPass) {
         List<Ballot.Effect> effects;
         List<ElectionContext> elections = [];
         bool isModifiedCurrencies = false;
@@ -679,6 +674,8 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             }
         }
 
+        VotedBallot?.Invoke (new (BallotCurrentID, isPass, Context));
+
         if (isModifiedCurrencies) {
             OnModifiedCurrencies ();
         }
@@ -690,66 +687,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
         if (elections.Count > 0) {
             OnPrepareElection (elections);
         }
-    }
-
-    public IDType ChooseCurrencyOwner (IDType personId) {
-        if (PeopleFactions[personId].Item1 is IDType p && Currencies.Contains (p)) {
-            return p;
-        } else if (PeopleFactions[personId].Item2 is IDType r && Currencies.Contains (r)) {
-            return r;
-        }
-
-        return Currency.STATE;
-    }
-
-    public (byte, byte, byte) VotePass (IDType personId, bool isPass) {
-        if (isPass) {
-            Context.VotesPass.Add (personId);
-        } else {
-            Context.VotesPass.Remove (personId);
-        }
-
-        return (Context.CalculateVotesPass (), Context.CalculateVotesFail (), Context.CalculateVotesAbstain ());
-    }
-
-    public (byte, byte, byte) VoteFail (IDType personId, bool isFail) {
-        if (isFail) {
-            Context.VotesFail.Add (personId);
-        } else {
-            Context.VotesFail.Remove (personId);
-        }
-
-        return (Context.CalculateVotesPass (), Context.CalculateVotesFail (), Context.CalculateVotesAbstain ());
-    }
-
-    public (byte, byte, byte) VoteAbstain (IDType personId, bool isAbstain) {
-        if (isAbstain) {
-            Context.VotesPass.Remove (personId);
-            Context.VotesFail.Remove (personId);
-        }
-
-        return (Context.CalculateVotesPass (), Context.CalculateVotesFail (), Context.CalculateVotesAbstain ());
-    }
-
-    public void InitialisePeople (List<Person> people) {
-        foreach (Person p in people) {
-            _people[p.ID] = p;
-            PeopleRoles[p.ID] = [Role.MEMBER];
-            PeopleFactions[p.ID] = (null, null);
-        }
-
-        InitialisedPeople?.Invoke (_people);
-    }
-
-    public void VoteBallot (bool isPass) {
-        if (isPass) {
-            _ballotsPassed.Add (_ballotCurrentId);
-        }
-
-        VotedBallotEventArgs args = new (_ballotCurrentId, isPass, Context);
-
-        VotedBallot?.Invoke (args);
-        EndBallot (isPass);
     }
 
     public virtual bool? IsBallotVoted () => Context.IsBallotVoted ();

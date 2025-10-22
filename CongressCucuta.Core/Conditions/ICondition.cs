@@ -14,8 +14,6 @@ namespace CongressCucuta.Core.Conditions;
 [JsonDerivedType (typeof (CurrencyValueCondition), nameof (CurrencyValueCondition))]
 [JsonDerivedType (typeof (ProcedureActiveCondition), nameof (ProcedureActiveCondition))]
 public interface ICondition {
-    
-
     public bool Evaluate (SimulationContext context);
     public string ToString (ref readonly Localisation localisation);
     public bool? YieldBallotVote ();

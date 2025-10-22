@@ -212,7 +212,7 @@ public abstract class Procedure : IID {
                 }
                 case EffectType.BallotLimit: {
                     if (effect.TargetIDs.Length > 0) {
-                        List<string> excluded = [];
+                        List<string> excluded = ["Declarer"];
 
                         foreach (IDType t in effect.TargetIDs) {
                             excluded.Add (localisation.Roles[t].Item2);

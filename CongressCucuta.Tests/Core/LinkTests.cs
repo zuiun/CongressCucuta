@@ -11,12 +11,13 @@ public sealed class LinkTests {
     [TestMethod]
     public void Resolve_True_ReturnsID () {
         FakeSimulationContext context = new ();
-        IDType id = 255;
-        Link<Target> link = new (new AlwaysCondition (), id);
+        Target target = new (255);
+        Link<Target> link = new (new AlwaysCondition (), target.ID);
 
+        IDType expected = target.ID;
         IDType? actual = link.Resolve (context);
 
-        Assert.AreEqual (id, actual);
+        Assert.AreEqual (expected, actual);
     }
 
     [TestMethod]

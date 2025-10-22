@@ -1152,11 +1152,198 @@ public sealed class SimulationTests {
     }
 
     [TestMethod]
-    public void Validate_11FailModifyCurrency_Throws () {
+    public void Validate_11FailModifyCurrencyState_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ModifyCurrency, [255], 1));
+        simulation.CurrenciesValues.Remove (255);
+
+        string expected = "Ballot ID 0 Fail Effect Target IDs do not correspond with any Currency ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11FailModifyCurrencyParty_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ModifyCurrency, [254], 1));
+        simulation.CurrenciesValues.Remove (2);
+
+        string expected = "Ballot ID 0 Fail Effect Target IDs do not correspond with any Currency ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11FailModifyCurrencyRegion_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ModifyCurrency, [253], 1));
+        simulation.CurrenciesValues.Remove (0);
+
+        string expected = "Ballot ID 0 Fail Effect Target IDs do not correspond with any Currency ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11FailModifyCurrencyOther_Throws () {
         Simulation simulation = new FakeSimulation ();
         simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ModifyCurrency, [100], 1));
 
         string expected = "Ballot ID 0 Fail Effect Target IDs do not correspond with any Currency ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_12FailRegion_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.RolesPermissions.Remove (Role.LEADER_REGION);
+
+        string expected = "LEADER_REGION Role must exist when any Region Role exists";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_12FailParty_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.RolesPermissions.Remove (Role.LEADER_PARTY);
+
+        string expected = "LEADER_PARTY Role must exist when any Party Role exists";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_13FailBallotPassed_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.History.BallotsPassed.Add (100);
+
+        string expected = "History Ballot ID 100 does not correspond with any Ballot ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_13FailNoBallotProcedureDeclared_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.History.BallotsProceduresDeclared[100] = [];
+
+        string expected = "History Ballot ID 100 does not correspond with any Ballot ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_13FailBallotNoProcedureDeclared_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.History.BallotsProceduresDeclared[1] = [100];
+
+        string expected = "History ProcedureDeclared ID 100 does not correspond with any ProcedureDeclared ID";
 
         var e = Assert.Throws<ArgumentException> (() => new Simulation (
             simulation.History,

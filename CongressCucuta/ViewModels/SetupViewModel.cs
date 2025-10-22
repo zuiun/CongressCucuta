@@ -5,14 +5,14 @@ namespace CongressCucuta.ViewModels;
 
 internal class SetupViewModel : ViewModel {
     private Task<SimulationViewModel>? _simulation = null;
-    private bool _isFileSetup = true;
+    private bool _isImportSetup = true;
     private bool _isPeopleSetup = false;
-    private readonly FileViewModel _file = new ();
+    private readonly ImportViewModel _import = new ();
     private readonly PeopleViewModel _people = new ();
-    public bool IsFileSetup {
-        get => _isFileSetup;
+    public bool IsImportSetup {
+        get => _isImportSetup;
         set {
-            _isFileSetup = value;
+            _isImportSetup = value;
             OnPropertyChanged ();
         }
     }
@@ -23,16 +23,16 @@ internal class SetupViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public FileViewModel File => _file;
+    public ImportViewModel Import => _import;
     public PeopleViewModel People => _people;
 
     public SetupViewModel () {
-        _file.CreatingSimulation += File_CreatingSimulationEventHandler;
+        _import.CreatingSimulation += Import_CreatingSimulationEventHandler;
         _people.InitialisingPeople += People_InitialisingPeopleEventHandler;
     }
 
-    private void File_CreatingSimulationEventHandler (Simulation simulation) {
-        IsFileSetup = false;
+    private void Import_CreatingSimulationEventHandler (Simulation simulation) {
+        IsImportSetup = false;
         IsPeopleSetup = true;
         _simulation = Task.Run (() => new SimulationViewModel (simulation));
     }
@@ -53,10 +53,10 @@ internal class SetupViewModel : ViewModel {
             DataContext = simulation,
         };
 
-        _file.Reset ();
+        _import.Reset ();
         _people.Reset ();
         IsPeopleSetup = false;
-        IsFileSetup = true;
+        IsImportSetup = true;
         window.ShowDialog ();
     }
 }

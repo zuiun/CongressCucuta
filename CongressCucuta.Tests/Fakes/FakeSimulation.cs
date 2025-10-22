@@ -6,7 +6,7 @@ namespace CongressCucuta.Tests.Unit.Fakes;
 
 public class FakeSimulation () : Simulation (
     new ([0], new Dictionary<IDType, SortedSet<IDType>> { [1] = [3] }),
-    [0, 1, 2, 3, Role.HEAD_STATE, Role.HEAD_GOVERNMENT, Role.MEMBER],
+    [0, 1, 2, 3, Role.LEADER_REGION, Role.LEADER_PARTY, Role.HEAD_STATE, Role.HEAD_GOVERNMENT, Role.MEMBER],
     [new (0), new (1)],
     [new (2), new (3)],
     new () {

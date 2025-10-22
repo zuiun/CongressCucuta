@@ -173,8 +173,8 @@ public sealed class ElectionContextTests {
         (var pr, var pf, var _) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
 
         Assert.DoesNotContain (2, pr[2]);
-        Assert.AreNotEqual<IDType> (2, (IDType) pf[0].Item1!);
-        Assert.AreNotEqual<IDType> (2, (IDType) pf[2].Item1!);
+        Assert.AreNotEqual (2, pf[0].Item1);
+        Assert.AreNotEqual (2, pf[2].Item1);
     }
 
     [TestMethod]
@@ -188,10 +188,10 @@ public sealed class ElectionContextTests {
 
         Assert.DoesNotContain (4, pr[0]);
         Assert.Contains (4, pr[1]);
-        Assert.AreNotEqual<IDType> (4, (IDType) pf[0].Item1!);
-        Assert.AreEqual<IDType> (4, (IDType) pf[1].Item1!);
-        Assert.AreNotEqual<IDType> (4, (IDType) pf[2].Item1!);
-        Assert.AreNotEqual<IDType> (4, (IDType) pf[3].Item1!);
+        Assert.AreNotEqual (4, pf[0].Item1);
+        Assert.AreEqual (4, pf[1].Item1);
+        Assert.AreNotEqual (4, pf[2].Item1);
+        Assert.AreNotEqual (4, pf[3].Item1);
         Assert.Contains (4, g[4].TargetIDs);
         Assert.Contains (252, g[4].TargetIDs);
         Assert.DoesNotContain (0, g[4].PeopleAreCandidates);
@@ -209,8 +209,8 @@ public sealed class ElectionContextTests {
 
         Assert.DoesNotContain (4, pr[0]);
         Assert.DoesNotContain (4, pr[1]);
-        Assert.AreNotEqual<IDType> (4, (IDType) pf[0].Item1!);
-        Assert.AreEqual<IDType> (4, (IDType) pf[1].Item1!);
+        Assert.AreNotEqual (4, pf[0].Item1);
+        Assert.AreEqual (4, pf[1].Item1);
         Assert.Contains (4, g[4].TargetIDs);
         Assert.Contains (252, g[4].TargetIDs);
         Assert.DoesNotContain (0, g[4].PeopleAreCandidates);
@@ -228,8 +228,8 @@ public sealed class ElectionContextTests {
 
         Assert.DoesNotContain (4, pr[0]);
         Assert.DoesNotContain (4, pr[1]);
-        Assert.AreNotEqual<IDType> (4, (IDType) pf[0].Item1!);
-        Assert.AreEqual<IDType> (4, (IDType) pf[1].Item1!);
+        Assert.AreNotEqual (4, pf[0].Item1);
+        Assert.AreEqual (4, pf[1].Item1);
         Assert.Contains (4, g[4].TargetIDs);
         Assert.Contains (252, g[4].TargetIDs);
         Assert.DoesNotContain (0, g[4].PeopleAreCandidates);
@@ -265,10 +265,10 @@ public sealed class ElectionContextTests {
         Assert.Contains (1, pr[1]);
         Assert.DoesNotContain (0, pr[2]);
         Assert.DoesNotContain (0, pr[3]);
-        Assert.AreEqual<IDType> (0, (IDType) pf[0].Item2!);
-        Assert.AreEqual<IDType> (1, (IDType) pf[1].Item2!);
-        Assert.AreEqual<IDType> (0, (IDType) pf[2].Item2!);
-        Assert.AreEqual<IDType> (0, (IDType) pf[3].Item2!);
+        Assert.AreEqual (0, pf[0].Item2);
+        Assert.AreEqual (1, pf[1].Item2);
+        Assert.AreEqual (0, pf[2].Item2);
+        Assert.AreEqual (0, pf[3].Item2);
         Assert.Contains (0, g[0].TargetIDs);
         Assert.Contains (251, g[0].TargetIDs);
         Assert.Contains (1, g[1].TargetIDs);
@@ -291,10 +291,10 @@ public sealed class ElectionContextTests {
         Assert.DoesNotContain (1, pr[1]);
         Assert.DoesNotContain (0, pr[2]);
         Assert.DoesNotContain (0, pr[3]);
-        Assert.AreEqual<IDType> (0, (IDType) pf[0].Item2!);
-        Assert.AreEqual<IDType> (1, (IDType) pf[1].Item2!);
-        Assert.AreEqual<IDType> (0, (IDType) pf[2].Item2!);
-        Assert.AreEqual<IDType> (0, (IDType) pf[3].Item2!);
+        Assert.AreEqual (0, pf[0].Item2);
+        Assert.AreEqual (1, pf[1].Item2);
+        Assert.AreEqual (0, pf[2].Item2);
+        Assert.AreEqual (0, pf[3].Item2);
         Assert.Contains (0, g[0].TargetIDs);
         Assert.Contains (251, g[0].TargetIDs);
         Assert.Contains (1, g[1].TargetIDs);
@@ -317,10 +317,10 @@ public sealed class ElectionContextTests {
         Assert.DoesNotContain (1, pr[1]);
         Assert.DoesNotContain (0, pr[2]);
         Assert.DoesNotContain (0, pr[3]);
-        Assert.AreEqual<IDType> (0, (IDType) pf[0].Item2!);
-        Assert.AreEqual<IDType> (1, (IDType) pf[1].Item2!);
-        Assert.AreEqual<IDType> (0, (IDType) pf[2].Item2!);
-        Assert.AreEqual<IDType> (0, (IDType) pf[3].Item2!);
+        Assert.AreEqual (0, pf[0].Item2);
+        Assert.AreEqual (1, pf[1].Item2);
+        Assert.AreEqual (0, pf[2].Item2);
+        Assert.AreEqual (0, pf[3].Item2);
         Assert.Contains (0, g[0].TargetIDs);
         Assert.Contains (251, g[0].TargetIDs);
         Assert.Contains (1, g[1].TargetIDs);
@@ -343,10 +343,10 @@ public sealed class ElectionContextTests {
         Assert.Contains (3, pr[1]);
         Assert.DoesNotContain (2, pr[2]);
         Assert.DoesNotContain (2, pr[3]);
-        Assert.AreEqual<IDType> (2, (IDType) pf[0].Item1!);
-        Assert.AreEqual<IDType> (3, (IDType) pf[1].Item1!);
-        Assert.AreEqual<IDType> (2, (IDType) pf[2].Item1!);
-        Assert.AreEqual<IDType> (2, (IDType) pf[3].Item1!);
+        Assert.AreEqual (2, pf[0].Item1);
+        Assert.AreEqual (3, pf[1].Item1);
+        Assert.AreEqual (2, pf[2].Item1);
+        Assert.AreEqual (2, pf[3].Item1);
         Assert.Contains (2, g[2].TargetIDs);
         Assert.Contains (252, g[2].TargetIDs);
         Assert.Contains (3, g[3].TargetIDs);
@@ -369,10 +369,10 @@ public sealed class ElectionContextTests {
         Assert.DoesNotContain (3, pr[1]);
         Assert.DoesNotContain (2, pr[2]);
         Assert.DoesNotContain (2, pr[3]);
-        Assert.AreEqual<IDType> (2, (IDType) pf[0].Item1!);
-        Assert.AreEqual<IDType> (3, (IDType) pf[1].Item1!);
-        Assert.AreEqual<IDType> (2, (IDType) pf[2].Item1!);
-        Assert.AreEqual<IDType> (2, (IDType) pf[3].Item1!);
+        Assert.AreEqual (2, pf[0].Item1);
+        Assert.AreEqual (3, pf[1].Item1);
+        Assert.AreEqual (2, pf[2].Item1);
+        Assert.AreEqual (2, pf[3].Item1);
         Assert.Contains (2, g[2].TargetIDs);
         Assert.Contains (252, g[2].TargetIDs);
         Assert.Contains (3, g[3].TargetIDs);
@@ -393,10 +393,10 @@ public sealed class ElectionContextTests {
 
         Assert.DoesNotContain (2, pr[0]);
         Assert.DoesNotContain (3, pr[1]);
-        Assert.AreEqual<IDType> (2, (IDType) pf[0].Item1!);
-        Assert.AreEqual<IDType> (3, (IDType) pf[1].Item1!);
-        Assert.AreEqual<IDType> (2, (IDType) pf[2].Item1!);
-        Assert.AreEqual<IDType> (2, (IDType) pf[3].Item1!);
+        Assert.AreEqual (2, pf[0].Item1);
+        Assert.AreEqual (3, pf[1].Item1);
+        Assert.AreEqual (2, pf[2].Item1);
+        Assert.AreEqual (2, pf[3].Item1);
         Assert.Contains (2, g[2].TargetIDs);
         Assert.Contains (252, g[2].TargetIDs);
         Assert.Contains (3, g[3].TargetIDs);

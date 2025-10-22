@@ -1,16 +1,17 @@
 ﻿using CongressCucuta.Core;
-using CongressCucuta.Models;
+using CongressCucuta.Core.Conditions;
 
 namespace CongressCucuta.ViewModels;
 
-internal class SlideViewModel : ViewModel {
-    private string _title = "Title";
+internal class SlideViewModel (IDType id, string title, List<LineViewModel> description, bool isContent = true) : ViewModel, IID {
+    private string _title = title;
     // Intentionally a List, as only setting is intended (no in-place modifications)
-    private List<LineViewModel> _description = [];
+    private List<LineViewModel> _description = description;
     // Intentionally a List, as only setting is intended (no in-place modifications)
     private List<LinkViewModel> _links = [];
-    private bool _isContent = true;
-    private bool _isSubtitle = false;
+    private bool _isContent = isContent;
+    private bool _isSubtitle = ! isContent;
+    public IDType ID => id;
     public string Title {
         get => _title;
         set {
@@ -47,37 +48,77 @@ internal class SlideViewModel : ViewModel {
         }
     }
 
-    public void Replace (SlideModel slide, Localisation localisation) {
-        Title = slide.Title;
-        Description = slide.Description.ConvertAll (l => new LineViewModel (l));
+    public static SlideViewModel Forward (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
+        SlideViewModel slide = new (id, title, description, isContent) {
+            Links = [new ("Next", new (new AlwaysCondition (), id + 1))],
+        };
 
-        // SlideBranching or SlideBidirectional
-        if (slide.Links.Count > 1) {
-            // SlideBranching
-            if (slide.IsForward is null) {
-                Links = slide.Links.ConvertAll (l => new LinkViewModel (l.Condition.ToString (in localisation), l));
-            // SlideBidirectional
-            } else {
-                Links = [
-                    new ("Previous", slide.Links[0]),
-                    new ("Next", slide.Links[1]),
-                ];
-            }
-        // SlideConstant
-        } else if (slide.Links.Count < 1) {
-            Links = [];
-        // SlideForward, end SlideBranching, or SlideBackward
-        } else {
-            // SlideBackward
-            if (slide.IsForward is false) {
-                Links = [new ("Previous", slide.Links[0])];
-            // SlideForward or end SlideBranching
-            } else {
-                Links = [new ("Next", slide.Links[0])];
-            }
+        foreach (LineViewModel line in slide.Description) {
+            line.IsContent = isContent;
+            line.IsSubtitle = ! isContent;
         }
 
-        IsContent = slide.IsContent;
-        IsSubtitle = ! IsContent;
+        return slide;
+    }
+
+    public static SlideViewModel Backward (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
+        SlideViewModel slide = new (id, title, description, isContent) {
+            Links = [new ("Previous", new (new AlwaysCondition (), id - 1))],
+        };
+
+        foreach (LineViewModel line in slide.Description) {
+            line.IsContent = isContent;
+            line.IsSubtitle = ! isContent;
+        }
+
+        return slide;
+    }
+
+    public static SlideViewModel Bidirectional (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
+        SlideViewModel slide = new (id, title, description, isContent) {
+            Links = [new ("Previous", new (new AlwaysCondition (), id - 1)), new ("Next", new (new AlwaysCondition (), id + 1))],
+        };
+
+        foreach (LineViewModel line in slide.Description) {
+            line.IsContent = isContent;
+            line.IsSubtitle = ! isContent;
+        }
+
+        return slide;
+    }
+
+    public static SlideViewModel Branching (
+        IDType id,
+        string title,
+        List<LineViewModel> description,
+        List<Link<SlideViewModel>> links,
+        ref readonly Localisation localisation,
+        bool isContent = true
+    ) {
+        SlideViewModel slide = new (id, title, description, isContent);
+
+        foreach (Link<SlideViewModel> l in links) {
+            slide.Links.Add (new LinkViewModel (l.Condition.ToString (in localisation), l));
+        }
+
+        foreach (LineViewModel line in slide.Description) {
+            line.IsContent = isContent;
+            line.IsSubtitle = ! isContent;
+        }
+
+        return slide;
+    }
+
+    public static SlideViewModel Constant (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
+        SlideViewModel slide = new (id, title, description, isContent) {
+            Links = [],
+        };
+
+        foreach (LineViewModel line in slide.Description) {
+            line.IsContent = isContent;
+            line.IsSubtitle = ! isContent;
+        }
+
+        return slide;
     }
 }

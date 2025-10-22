@@ -6,7 +6,7 @@ public static class FakeLocalisation {
     public static Localisation Create () {
         string state = "State";
         string government = "Government";
-        string[] context = [];
+        string[] context = ["Context"];
         string date = "Date";
         string situation = "Situation";
         string period = "Period";

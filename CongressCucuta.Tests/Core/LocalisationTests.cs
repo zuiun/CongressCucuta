@@ -6,6 +6,206 @@ namespace CongressCucuta.Tests.Unit.Core;
 [TestClass]
 public sealed class LocalisationTests {
     [TestMethod]
+    public void Constructor_StateEmpty_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            "",
+            localisation.Government,
+            localisation.Context,
+            localisation.Date,
+            localisation.Situation,
+            localisation.Period,
+            localisation.Roles,
+            localisation.Speaker,
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
+    public void Constructor_GovernmentEmpty_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            localisation.State,
+            "",
+            localisation.Context,
+            localisation.Date,
+            localisation.Situation,
+            localisation.Period,
+            localisation.Roles,
+            localisation.Speaker,
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
+    public void Constructor_ContextEmptyOuter_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            localisation.State,
+            localisation.Government,
+            [],
+            localisation.Date,
+            localisation.Situation,
+            localisation.Period,
+            localisation.Roles,
+            localisation.Speaker,
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
+    public void Constructor_ContextEmptyInner_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            localisation.State,
+            localisation.Government,
+            [""],
+            localisation.Date,
+            localisation.Situation,
+            localisation.Period,
+            localisation.Roles,
+            localisation.Speaker,
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
+    public void Constructor_DateEmpty_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            localisation.State,
+            localisation.Government,
+            localisation.Context,
+            "",
+            localisation.Situation,
+            localisation.Period,
+            localisation.Roles,
+            localisation.Speaker,
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
+    public void Constructor_SituationEmpty_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            localisation.State,
+            localisation.Government,
+            localisation.Context,
+            localisation.Date,
+            "",
+            localisation.Period,
+            localisation.Roles,
+            localisation.Speaker,
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
+    public void Constructor_PeriodEmpty_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            localisation.State,
+            localisation.Government,
+            localisation.Context,
+            localisation.Date,
+            localisation.Situation,
+            "",
+            localisation.Roles,
+            localisation.Speaker,
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
+    public void Constructor_SpeakerEmpty_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => new Localisation (
+            localisation.State,
+            localisation.Government,
+            localisation.Context,
+            localisation.Date,
+            localisation.Situation,
+            localisation.Period,
+            localisation.Roles,
+            "",
+            localisation.Region,
+            localisation.Regions,
+            localisation.Party,
+            localisation.Parties,
+            localisation.Abbreviations,
+            localisation.Currencies,
+            localisation.Procedures,
+            localisation.Ballots,
+            localisation.Results
+        ));
+    }
+
+    [TestMethod]
     [DataRow ((byte) 0, "Region 0")]
     [DataRow ((byte) 1, "Region 1")]
     [DataRow ((byte) 2, "Party 2 (2)")]

@@ -145,7 +145,7 @@
   ],
   "ProceduresDeclared": [
     {
-      "Confirm": {
+      "Confirmation": {
         "Type": 0,
         "Value": 0
       },
@@ -163,7 +163,7 @@
       "IsActiveStart": true
     },
     {
-      "Confirm": {
+      "Confirmation": {
         "Type": 0,
         "Value": 0
       },
@@ -181,7 +181,7 @@
       "IsActiveStart": true
     },
     {
-      "Confirm": {
+      "Confirmation": {
         "Type": 4,
         "Value": 0
       },
@@ -209,7 +209,7 @@
       "IsActiveStart": true
     },
     {
-      "Confirm": {
+      "Confirmation": {
         "Type": 2,
         "Value": 4
       },

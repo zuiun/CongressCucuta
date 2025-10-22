@@ -83,6 +83,8 @@ public class Simulation {
      * (9) Every IID of a certain type must have a unique ID that matches its container's index
      * (10) If there are Currencies, then the first ProcedureImmediate must have Action CurrencyInitialise and no other ProcedureImmediate may have it
      * (11) Every Ballot Result must target valid Faction IDs, Procedure IDs, and Currency IDs
+     * (12) If any Faction leader Role exists, then its corresponding reserved Role ID must exist
+     * (13) History must refer to valid Ballot IDs and Procedure IDs
      */
     private void Validate () {
 #region (1)
@@ -429,92 +431,94 @@ public class Simulation {
 #endregion
 
 #region (11)
+        void ValidateEffect (IDType ballotId, Ballot.Effect effect, bool isPass) {
+            string result = isPass ? "Pass" : "Fail";
+
+            switch (effect.Type) {
+                case Ballot.Effect.EffectType.FoundParty:
+                case Ballot.Effect.EffectType.DissolveParty:
+                    foreach (IDType f in effect.TargetIDs) {
+                        if (Parties.All (p => f != p.ID)) {
+                            throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect Target IDs do not correspond with any Party ID");
+                        }
+                    }
+
+                    break;
+                case Ballot.Effect.EffectType.RemoveProcedure:
+                case Ballot.Effect.EffectType.ReplaceProcedure:
+                    foreach (IDType p in effect.TargetIDs) {
+                        if (ProceduresSpecial.All (pt => p != pt.ID)) {
+                            throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect Target IDs do not correspond with any Procedure ID");
+                        }
+                    }
+
+                    break;
+                case Ballot.Effect.EffectType.ModifyCurrency:
+                    if (effect.TargetIDs[0] == Currency.STATE) {
+                        if (! CurrenciesValues.ContainsKey (Currency.STATE)) {
+                            throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect Target IDs do not correspond with any Currency ID");
+                        }
+                    } else if (effect.TargetIDs[0] == Currency.PARTY) {
+                        if (! Parties.All (p => CurrenciesValues.ContainsKey (p.ID))) {
+                            throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect Target IDs do not correspond with any Currency ID");
+                        }
+                    } else if (effect.TargetIDs[0] == Currency.REGION) {
+                        if (! Regions.All (r => CurrenciesValues.ContainsKey (r.ID))) {
+                            throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect Target IDs do not correspond with any Currency ID");
+                        }
+                    } else if (
+                        ! effect.TargetIDs.All (c => Parties.Select (p => p.ID).Contains (c))
+                        && ! effect.TargetIDs.All (c => Regions.Select (r => r.ID).Contains (c))
+                    ) {
+                        throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect Target IDs do not correspond with any Currency ID");
+                    }
+
+                    break;
+            }
+        }
+        
         foreach (Ballot b in Ballots) {
             foreach (Ballot.Effect e in b.Pass.Effects) {
-                switch (e.Type) {
-                    case Ballot.Effect.EffectType.FoundParty:
-                    case Ballot.Effect.EffectType.DissolveParty:
-                        foreach (IDType f in e.TargetIDs) {
-                            if (Parties.All (p => f != p.ID)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Party ID");
-                            }
-                        }
-
-                        break;
-                    case Ballot.Effect.EffectType.RemoveProcedure:
-                    case Ballot.Effect.EffectType.ReplaceProcedure:
-                        foreach (IDType p in e.TargetIDs) {
-                            if (ProceduresSpecial.All (pt => p != pt.ID)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Procedure ID");
-                            }
-                        }
-
-                        break;
-                    case Ballot.Effect.EffectType.ModifyCurrency:
-                        if (e.TargetIDs[0] == Currency.STATE) {
-                            if (! CurrenciesValues.ContainsKey (Currency.STATE)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
-                            }
-                        } else if (e.TargetIDs[0] == Currency.PARTY) {
-                            if (Parties.Any (p => CurrenciesValues.Keys.All (c => p.ID != c.ID))) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
-                            }
-                        } else if (e.TargetIDs[0] == Currency.REGION) {
-                            if (Regions.Any (r => CurrenciesValues.Keys.All (c => r.ID != c.ID))) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
-                            }
-                        } else if (
-                            ! e.TargetIDs.All (c => Parties.Select (p => p.ID).Contains (c))
-                            && ! e.TargetIDs.All (c => Regions.Select (r => r.ID).Contains (c))
-                        ) {
-                            throw new ArgumentException ($"Ballot ID {b.ID} Pass Effect Target IDs do not correspond with any Currency ID");
-                        }
-
-                        break;
-                }
+                ValidateEffect (b.ID, e, true);
             }
 
             foreach (Ballot.Effect e in b.Fail.Effects) {
-                switch (e.Type) {
-                    case Ballot.Effect.EffectType.FoundParty:
-                    case Ballot.Effect.EffectType.DissolveParty:
-                        foreach (IDType f in e.TargetIDs) {
-                            if (Parties.All (p => f != p.ID)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Party ID");
-                            }
-                        }
+                ValidateEffect (b.ID, e, false);
+            }
+        }
+#endregion
 
-                        break;
-                    case Ballot.Effect.EffectType.RemoveProcedure:
-                    case Ballot.Effect.EffectType.ReplaceProcedure:
-                        foreach (IDType p in e.TargetIDs) {
-                            if (ProceduresSpecial.All (pt => p != pt.ID)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Procedure ID");
-                            }
-                        }
+#region (12)
+        if (
+            Regions.Select (r => r.ID).Intersect (RolesPermissions.Keys).Any ()
+            && ! RolesPermissions.ContainsKey (Role.LEADER_REGION)
+        ) {
+            throw new ArgumentException ("LEADER_REGION Role must exist when any Region Role exists");
+        }
 
-                        break;
-                    case Ballot.Effect.EffectType.ModifyCurrency:
-                        if (e.TargetIDs[0] == Currency.STATE) {
-                            if (! CurrenciesValues.ContainsKey (Currency.STATE)) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
-                            }
-                        } else if (e.TargetIDs[0] == Currency.PARTY) {
-                            if (Parties.Any (p => CurrenciesValues.Keys.All (c => p.ID != c.ID))) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
-                            }
-                        } else if (e.TargetIDs[0] == Currency.REGION) {
-                            if (Regions.Any (r => CurrenciesValues.Keys.All (c => r.ID != c.ID))) {
-                                throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
-                            }
-                        } else if (
-                            ! e.TargetIDs.All (c => Parties.Select (p => p.ID).Contains (c))
-                            && ! e.TargetIDs.All (c => Regions.Select (r => r.ID).Contains (c))
-                        ) {
-                            throw new ArgumentException ($"Ballot ID {b.ID} Fail Effect Target IDs do not correspond with any Currency ID");
-                        }
+        if (
+            Parties.Select (p => p.ID).Intersect (RolesPermissions.Keys).Any ()
+            && ! RolesPermissions.ContainsKey (Role.LEADER_PARTY)
+        ) {
+            throw new ArgumentException ("LEADER_PARTY Role must exist when any Party Role exists");
+        }
+#endregion
 
-                        break;
+#region (13)
+        foreach (IDType bi in History.BallotsPassed) {
+            if (! Ballots.Any (ba => ba.ID == bi)) {
+                throw new ArgumentException ($"History Ballot ID {bi} does not correspond with any Ballot ID");
+            }
+        }
+
+        foreach (var kv in History.BallotsProceduresDeclared) {
+            if (! Ballots.Any (b => b.ID == kv.Key)) {
+                throw new ArgumentException ($"History Ballot ID {kv.Key} does not correspond with any Ballot ID");
+            }
+
+            foreach (IDType pi in kv.Value) {
+                if (! ProceduresDeclared.Any (pd => pd.ID == pi)) {
+                    throw new ArgumentException ($"History ProcedureDeclared ID {pi} does not correspond with any ProcedureDeclared ID");
                 }
             }
         }

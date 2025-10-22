@@ -1,1 +1,1 @@
-try to decouple event logic and split some methods up further, especially SimulationContext
+see if any event logic could be removed

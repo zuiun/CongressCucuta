@@ -287,8 +287,8 @@ public sealed class ProcedureEffectTests {
 
     [TestMethod]
     [DataRow (new byte[] { }, "Everyone except Declarer:")]
-    [DataRow (new byte[] { 255 }, "Everyone except Members:")]
-    [DataRow (new byte[] { 255, 254 }, "Everyone except Members, Government Heads:")]
+    [DataRow (new byte[] { 255 }, "Everyone except Declarer, Members:")]
+    [DataRow (new byte[] { 255, 254 }, "Everyone except Declarer, Members, Government Heads:")]
     public void ToString_BallotLimit_ReturnsExpected (byte[] targetIds, string expected) {
         Simulation simulation = new FakeSimulation ();
         Localisation localisation = FakeLocalisation.Create ();

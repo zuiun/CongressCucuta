@@ -15,8 +15,8 @@
     </Window.Resources>
 
     <Grid>
-        <Grid Visibility = "{Binding IsFileSetup, Converter = {StaticResource BooleanToVisibilityConverter}}">
-            <local:FileView DataContext = "{Binding File}"/>
+        <Grid Visibility = "{Binding IsImportSetup, Converter = {StaticResource BooleanToVisibilityConverter}}">
+            <local:ImportView DataContext = "{Binding Import}"/>
         </Grid>
         <Grid Visibility = "{Binding IsPeopleSetup, Converter = {StaticResource BooleanToVisibilityConverter}}">
             <local:PeopleView DataContext = "{Binding People}"/>

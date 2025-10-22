@@ -1,6 +1,4 @@
-﻿using System.Diagnostics;
-
-namespace CongressCucuta.Core.Procedures;
+﻿namespace CongressCucuta.Core.Procedures;
 
 /*
  * Activates declaratively
@@ -10,14 +8,14 @@ namespace CongressCucuta.Core.Procedures;
  * declarerIds: Role (declarer)
  */
 public class ProcedureDeclared : Procedure {
-    public Confirmation Confirm { get; }
+    public Confirmation Confirmation { get; }
     // Filters Roles (empty: every, populated: specified)
     public IDType[] DeclarerIDs { get; }
 
     public ProcedureDeclared (
         IDType id,
         Effect[] effects,
-        Confirmation confirm,
+        Confirmation confirmation,
         IDType[] declarerIds
     ) : base (id, effects) {
         bool isPass = false;
@@ -54,7 +52,7 @@ public class ProcedureDeclared : Procedure {
             }
         }
 
-        Confirm = confirm;
+        Confirmation = confirmation;
         DeclarerIDs = declarerIds;
     }
 
@@ -68,69 +66,13 @@ public class ProcedureDeclared : Procedure {
             : "Everyone:";
     }
 
-    private string ConfirmationToString (ref readonly Localisation localisation) {
-        HashSet<string> GetCurrencies (ref readonly Localisation localisation) {
-            HashSet<string> currencies = [];
-
-            foreach (IDType d in DeclarerIDs) {
-                if (
-                    d == Role.MEMBER
-                    || d == Role.HEAD_GOVERNMENT
-                    || d == Role.HEAD_STATE
-                ) {
-                    currencies.Add (localisation.Currencies[Currency.STATE]);
-                } else if (d == Role.LEADER_PARTY) {
-                    currencies.Add (localisation.Currencies[Currency.PARTY]);
-                } else if (d == Role.LEADER_REGION) {
-                    currencies.Add (localisation.Currencies[Currency.REGION]);
-                } else {
-                    currencies.Add (localisation.Currencies[d]);
-                }
-            }
-
-            return currencies;
-        }
-
-        switch (Confirm.Type) {
-            case Confirmation.ConfirmationType.Always:
-                return "Always";
-            case Confirmation.ConfirmationType.DivisionChamber:
-                return "Division of chamber";
-            case Confirmation.ConfirmationType.CurrencyValue: {
-                HashSet<string> currencies = GetCurrencies (in localisation);
-
-                return $"Can spend {Confirm.Value} {string.Join (", ", currencies)}";
-            }
-            case Confirmation.ConfirmationType.DiceValue:
-                return $"Dice roll greater than or equal to {Confirm.Value}";
-            case Confirmation.ConfirmationType.DiceCurrency: {
-                HashSet<string> currencies = GetCurrencies (in localisation);
-
-                return $"Can spend dice roll {string.Join (", ", currencies)}";
-            }
-            case Confirmation.ConfirmationType.DiceAdversarial: {
-                string dice = "Declarer's dice roll greater than or equal to defender's dice roll";
-
-                if (localisation.Currencies.Count > 0) {
-                    HashSet<string> currencies = GetCurrencies (in localisation);
-
-                    return $"Can spend declarer's dice roll {string.Join (", ", currencies)}\n{dice}";
-                } else {
-                    return dice;
-                }
-            }
-            default:
-                throw new UnreachableException ();
-        }
-    }
-
-    public override EffectBundle? YieldEffects (IDType ballotId) => new (Effects, Confirmation: Confirm);
+    public override EffectBundle? YieldEffects (IDType ballotId) => new (Effects, Confirmation);
 
     public override string ToString (Simulation simulation, ref readonly Localisation localisation) {
         List<string> result = [localisation.Procedures[ID].Item1];
         string declarer = StringLineFormatter.Indent (DeclarerToString (in localisation), 1);
         string canDeclare = StringLineFormatter.Indent ("Can declare if:", 2);
-        string[] confirmation = ConfirmationToString (in localisation).Split ('\n');
+        string[] confirmation = Confirmation.ToString (DeclarerIDs, in localisation).Split ('\n');
 
         result.Add (declarer);
         result.Add (canDeclare);

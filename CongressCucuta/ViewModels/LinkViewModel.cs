@@ -1,11 +1,12 @@
-﻿using CongressCucuta.Core;
-using CongressCucuta.Models;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
-internal class LinkViewModel (string name, Link<SlideModel> link) : ViewModel {
+[ExcludeFromCodeCoverage]
+internal class LinkViewModel (string name, Link<SlideViewModel> link) : ViewModel {
     private string _name = name;
-    private Link<SlideModel> _link = link;
+    private Link<SlideViewModel> _link = link;
     public string Name {
         get => _name;
         set {
@@ -13,7 +14,7 @@ internal class LinkViewModel (string name, Link<SlideModel> link) : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public Link<SlideModel> Link {
+    public Link<SlideViewModel> Link {
         get => _link;
         set {
             _link = value;

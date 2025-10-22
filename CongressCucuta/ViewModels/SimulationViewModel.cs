@@ -2,7 +2,6 @@
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Core.Contexts;
 using CongressCucuta.Core.Procedures;
-using CongressCucuta.Models;
 using CongressCucuta.Views;
 using System.Diagnostics;
 
@@ -29,12 +28,12 @@ internal class SimulationViewModel : ViewModel {
     private readonly IDType _slideTitleIdx;
     private readonly Dictionary<IDType, IDType> _ballotIdxsIds;
     private bool _isBallot = false;
-    private readonly SlideViewModel _slide = new ();
+    private SlideViewModel _slide;
     private readonly ContextViewModel _context;
     private readonly string _state;
     private readonly Dictionary<IDType, string> _proceduresEffects = [];
     public Localisation Localisation => _localisation;
-    public List<SlideModel> Slides { get; } = [];
+    public List<SlideViewModel> Slides { get; } = [];
     public IDType SlideCurrentIdx {
         get => _slideCurrentIdx;
         set {
@@ -46,6 +45,7 @@ internal class SimulationViewModel : ViewModel {
                 _simulation.BallotCurrentID = ballotId;
                 _isBallot = true;
                 _simulation.IsBallot = true;
+                _simulation.StartBallot ();
 
                 StartingBallotEventArgs args = new (
                     _simulation.Context.CalculateVotesPassThreshold (),
@@ -63,7 +63,13 @@ internal class SimulationViewModel : ViewModel {
             }
         }
     }
-    public SlideViewModel Slide => _slide;
+    public SlideViewModel Slide {
+        get => _slide;
+        set {
+            _slide = value;
+            OnPropertyChanged ();
+        }
+    }
     public ContextViewModel Context => _context;
     // TODO: tell the window to look for Localisation.State instead
     public string State => _state;
@@ -136,17 +142,17 @@ internal class SimulationViewModel : ViewModel {
         (slideCurrentIdx, _ballotIdxsIds) = GenerateSlidesBallots (simulation, slideCurrentIdx);
         slideCurrentIdx = GenerateSlidesResults (simulation, slideCurrentIdx);
         GenerateSlidesEnd (simulation, slideCurrentIdx);
-        _slide.Replace (Slides[0], _localisation);
+        _slide = Slides[0];
     }
 
     private IDType GenerateSlidesIntroduction () {
         IDType slideCurrentIdx = 0;
-        SlideForwardModel slideIntro = new (slideCurrentIdx, _localisation.State, [_localisation.Government], false);
+        SlideViewModel slideIntro = SlideViewModel.Forward (slideCurrentIdx, _localisation.State, [_localisation.Government], false);
 
-        ++slideCurrentIdx;
+        ++ slideCurrentIdx;
         Slides.Add (slideIntro);
 
-        SlideBidirectionalModel slideContext = new (slideCurrentIdx, "Context", [.. _localisation.Context]);
+        SlideViewModel slideContext = SlideViewModel.Bidirectional (slideCurrentIdx, "Context", [.. _localisation.Context]);
 
         ++ slideCurrentIdx;
         Slides.Add (slideContext);
@@ -157,11 +163,11 @@ internal class SimulationViewModel : ViewModel {
         void GenerateProcedureSlide (string title, Procedure procedure) {
             string procedureFull = procedure.ToString (simulation, in _localisation);
             string[] procedureSplit = procedureFull.Split ('\n');
-            LineModel line = new (procedureSplit[0], description: _localisation.Procedures[procedure.ID].Item2);
-            SlideBidirectionalModel slideProcedure = new (
+            LineViewModel line = new (procedureSplit[0], description: _localisation.Procedures[procedure.ID].Item2);
+            SlideViewModel slideProcedure = SlideViewModel.Bidirectional (
                 slideCurrentIdx,
                 title,
-                [line, .. procedureSplit[1..]]
+                [line, .. procedureSplit[1 ..]]
             );
 
             ++ slideCurrentIdx;
@@ -254,11 +260,7 @@ internal class SimulationViewModel : ViewModel {
             }
         }
 
-        SlideBidirectionalModel slideRoles = new (
-            slideCurrentIdx,
-            "Roles",
-            [.. roles]
-        );
+        SlideViewModel slideRoles = SlideViewModel.Bidirectional (slideCurrentIdx, "Roles", [.. roles]);
 
         ++ slideCurrentIdx;
         Slides.Add (slideRoles);
@@ -278,7 +280,7 @@ internal class SimulationViewModel : ViewModel {
         }
 
         if (regions.Count > 0) {
-            SlideBidirectionalModel slideRegions = new (slideCurrentIdx, _localisation.Region.Item2, [.. regions]);
+            SlideViewModel slideRegions = SlideViewModel.Bidirectional (slideCurrentIdx, _localisation.Region.Item2, [.. regions]);
 
             ++ slideCurrentIdx;
             Slides.Add (slideRegions);
@@ -294,7 +296,7 @@ internal class SimulationViewModel : ViewModel {
         }
 
         if (parties.Count > 0) {
-            SlideBidirectionalModel slideParties = new (slideCurrentIdx, _localisation.Party.Item2, [.. parties]);
+            SlideViewModel slideParties = SlideViewModel.Bidirectional (slideCurrentIdx, _localisation.Party.Item2, [.. parties]);
 
             ++ slideCurrentIdx;
             Slides.Add (slideParties);
@@ -304,7 +306,7 @@ internal class SimulationViewModel : ViewModel {
     }
 
     private (IDType, IDType) GenerateSlidesTitles (Simulation simulation, IDType slideCurrentIdx) {
-        List<LineModel> linesBallots = [];
+        List<LineViewModel> linesBallots = [];
 
         foreach (Ballot ballot in simulation.Ballots.Where (b => ! b.IsIncident)) {
             (string title, string name, string[] _, string[] _, string[] _) = _localisation.Ballots[ballot.ID];
@@ -313,13 +315,13 @@ internal class SimulationViewModel : ViewModel {
             linesBallots.Add (new (StringLineFormatter.Indent (name, 1)));
         }
 
-        SlideBidirectionalModel slideBallots = new (slideCurrentIdx, "Ballots", linesBallots);
+        SlideViewModel slideBallots = SlideViewModel.Bidirectional (slideCurrentIdx, "Ballots", linesBallots);
 
         ++ slideCurrentIdx;
         Slides.Add (slideBallots);
 
         IDType slideTitleIdx = slideCurrentIdx;
-        SlideForwardModel slideTitle = new (
+        SlideViewModel slideTitle = SlideViewModel.Forward (
             slideCurrentIdx,
             _localisation.Period,
             [_localisation.Date, _localisation.Situation],
@@ -334,15 +336,15 @@ internal class SimulationViewModel : ViewModel {
     private (IDType, Dictionary<IDType, IDType>) GenerateSlidesBallots (Simulation simulation, IDType slideCurrentIdx) {
         IDType ballotIdx = slideCurrentIdx;
         IDType resultBallotIdx = slideCurrentIdx + simulation.Ballots.Count;
-        List<SlideModel> slidesBallots = [];
-        List<SlideModel> slidesResultBallots = [];
+        List<SlideViewModel> slidesBallots = [];
+        List<SlideViewModel> slidesResultBallots = [];
         Dictionary<IDType, IDType> ballotIDsFinalIdxs = [];
         Dictionary<IDType, IDType> resultBallotIDsFinalIdxs = [];
 
         // Every Ballot ID is mapped to its index
         foreach (Ballot ballot in simulation.Ballots) {
             (string title, string name, string[] description, string[] _, string[] _) = _localisation.Ballots[ballot.ID];
-            SlideBranchingModel slideBallot = new (
+            SlideViewModel slideBallot = SlideViewModel.Branching (
                 slideCurrentIdx,
                 title,
                 [name, .. description],
@@ -350,7 +352,8 @@ internal class SimulationViewModel : ViewModel {
                 [
                     new (new BallotVoteCondition (true), resultBallotIdx),
                     new (new BallotVoteCondition (false), resultBallotIdx + 1),
-                ]
+                ],
+                in _localisation
             );
 
             ballotIDsFinalIdxs[ballot.ID] = slideCurrentIdx;
@@ -365,8 +368,8 @@ internal class SimulationViewModel : ViewModel {
         foreach (Ballot ballot in simulation.Ballots) {
             // Pass, fail
             (string title, string _, string[] _, string[] pass, string[] fail) = _localisation.Ballots[ballot.ID];
-            List<Link<SlideModel>> linksPass = [];
-            List<LineModel> effectsPass = [];
+            List<Link<SlideViewModel>> linksPass = [];
+            List<LineViewModel> effectsPass = [];
 
             foreach (Link<Ballot> l in ballot.Pass.Links) {
                 if (l.TargetID == Ballot.END) {
@@ -383,21 +386,22 @@ internal class SimulationViewModel : ViewModel {
             foreach (Ballot.Effect e in ballot.Pass.Effects) {
                 List<string> effect = [.. e.ToString (simulation, in _localisation).Split ('\n')];
 
-                effectsPass.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
+                effectsPass.AddRange (effect.ConvertAll (l => new LineViewModel (l, true)));
             }
 
-            SlideBranchingModel slideBallotPass = new (
+            SlideViewModel slideBallotPass = SlideViewModel.Branching (
                 slideCurrentIdx,
                 $"{title} Passed",
                 [.. effectsPass, .. pass],
-                linksPass
+                linksPass,
+                in _localisation
             );
 
             ++ slideCurrentIdx;
             slidesResultBallots.Add (slideBallotPass);
 
-            List<Link<SlideModel>> linksFail = [];
-            List<LineModel> effectsFail = [];
+            List<Link<SlideViewModel>> linksFail = [];
+            List<LineViewModel> effectsFail = [];
 
             foreach (Link<Ballot> l in ballot.Fail.Links) {
                 if (l.TargetID == Ballot.END) {
@@ -414,14 +418,15 @@ internal class SimulationViewModel : ViewModel {
             foreach (Ballot.Effect e in ballot.Fail.Effects) {
                 List<string> effect = [.. e.ToString (simulation, in _localisation).Split ('\n')];
 
-                effectsFail.AddRange (effect.ConvertAll (l => new LineModel (l, true)));
+                effectsFail.AddRange (effect.ConvertAll (l => new LineViewModel (l, true)));
             }
 
-            SlideBranchingModel slideBallotFail = new (
+            SlideViewModel slideBallotFail = SlideViewModel.Branching (
                 slideCurrentIdx,
                 $"{title} Failed",
                 [.. effectsFail, .. fail],
-                linksFail
+                linksFail,
+                in _localisation
             );
 
             ++ slideCurrentIdx; // On the final iteration, this should point to the end results
@@ -438,24 +443,25 @@ internal class SimulationViewModel : ViewModel {
     private IDType GenerateSlidesResults (Simulation simulation, IDType slideCurrentIdx) {
         IDType resultIdxOffset = slideCurrentIdx;
         IDType resultHistoricalIdx = slideCurrentIdx + simulation.Results.Count;
-        List<SlideModel> slidesResults = [];
+        List<SlideViewModel> slidesResults = [];
         Dictionary<IDType, IDType> resultIDsFinalIdxs = [];
 
         foreach (Result result in simulation.Results) {
             (string title, string[] description) = _localisation.Results[result.ID];
-            List<Link<SlideModel>> links = result.Links.ConvertAll (l =>
-                new Link<SlideModel> (l.Condition, l.TargetID + resultIdxOffset)
+            List<Link<SlideViewModel>> links = result.Links.ConvertAll (l =>
+                new Link<SlideViewModel> (l.Condition, l.TargetID + resultIdxOffset)
             );
 
             if (links.Count == 0) {
                 links = [new (new AlwaysCondition (), resultHistoricalIdx)];
             }
 
-            SlideBranchingModel slideResult = new (
+            SlideViewModel slideResult = SlideViewModel.Branching (
                 slideCurrentIdx,
                 title,
                 [.. description],
-                links
+                links,
+                in _localisation
             );
 
             ++ slideCurrentIdx;
@@ -496,12 +502,16 @@ internal class SimulationViewModel : ViewModel {
             ballotsFailed.Add (StringLineFormatter.Indent ("None", 1));
         }
 
-        SlideForwardModel slideHistorical = new (slideCurrentIdx, "Historical Results", ["Passed", .. ballotsPassed, "Failed", .. ballotsFailed]);
+        SlideViewModel slideHistorical = SlideViewModel.Forward (
+            slideCurrentIdx,
+            "Historical Results",
+            ["Passed", .. ballotsPassed, "Failed", .. ballotsFailed]
+        );
 
         ++ slideCurrentIdx;
         Slides.Add (slideHistorical);
 
-        SlideBackwardModel slideEnd = new (slideCurrentIdx, "End", []);
+        SlideViewModel slideEnd = SlideViewModel.Backward (slideCurrentIdx, "End", [], false);
 
         Slides.Add (slideEnd);
     }
@@ -538,14 +548,29 @@ internal class SimulationViewModel : ViewModel {
 
     public void Context_VotingEventHandler (VotingEventArgs e) {
         if (e.IsPass is bool isPass) {
-            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _simulation.VotePass (e.PersonID, isPass);
+            if (isPass) {
+                _simulation.Context.VotesPass.Add (e.PersonID);
+            } else {
+                _simulation.Context.VotesPass.Remove (e.PersonID);
+            }
         } else if (e.IsFail is bool isFail) {
-            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _simulation.VoteFail (e.PersonID, isFail);
+            if (isFail) {
+                _simulation.Context.VotesFail.Add (e.PersonID);
+            } else {
+                _simulation.Context.VotesFail.Remove (e.PersonID);
+            }
         } else if (e.IsAbstain is bool isAbstain) {
-            (e.VotesPass, e.VotesFail, e.VotesAbstain) = _simulation.VoteAbstain (e.PersonID, isAbstain);
+            if (isAbstain) {
+                _simulation.Context.VotesPass.Remove (e.PersonID);
+                _simulation.Context.VotesFail.Remove (e.PersonID);
+            }
         } else {
             throw new NotSupportedException ();
         }
+
+        e.VotesPass = _simulation.Context.CalculateVotesPass ();
+        e.VotesFail = _simulation.Context.CalculateVotesFail ();
+        e.VotesAbstain = _simulation.Context.CalculateVotesAbstain ();
     }
 
     private void Context_DeclaringProcedureEventHandler (IDType e) {
@@ -567,7 +592,7 @@ internal class SimulationViewModel : ViewModel {
         } else {
             SimulationContext.ConfirmationResult result = _simulation.TryConfirmProcedure (e.PersonID, e.ProcedureID);
 
-            switch (result.Cost) {
+            switch (result.Type) {
                 case Confirmation.ConfirmationType.Always:
                     e.Message = "Success";
                     break;
@@ -636,11 +661,11 @@ internal class SimulationViewModel : ViewModel {
                     bool? vote = _simulation.DeclareProcedure (e.PersonID, e.ProcedureID);
 
                     if (vote is bool isPass) {
-                        LinkViewModel link = isPass ? _slide.Links[0] : _slide.Links[1];
-                        IDType slideIdx = link.Link.TargetID;
+                        LinkViewModel linkResult = isPass ? _slide.Links[0] : _slide.Links[1];
+                        IDType slideIdx = linkResult.Link.TargetID;
+                        Link<SlideViewModel> link = new (new AlwaysCondition (), slideIdx);
 
-                        _slide.Replace (Slides[slideIdx], _localisation);
-                        SlideCurrentIdx = slideIdx;
+                        SwitchSlideCommand.Execute (link);
                     }
                 }
             } else {
@@ -649,16 +674,19 @@ internal class SimulationViewModel : ViewModel {
         }
     }
 
-    public void InitialisePeople (List<Person> people) => _simulation.InitialisePeople (people);
+    public void InitialisePeople (List<Person> people) {
+        _simulation.InitialisePeople (people);
+        _context.InitialisePeople (people);
+    }
 
-    public RelayCommand<Link<SlideModel>> SwitchSlideCommand => new (
+    public RelayCommand<Link<SlideViewModel>> SwitchSlideCommand => new (
         l => {
             if (l.Resolve (_simulation) is IDType slideIdx) {
                 if (l.Condition.YieldBallotVote () is bool isPass) {
-                    _simulation.VoteBallot (isPass);
+                    _simulation.EndBallot (isPass);
                 }
 
-                _slide.Replace (Slides[slideIdx], _localisation);
+                Slide = Slides[slideIdx];
                 SlideCurrentIdx = slideIdx;
             }
         },

@@ -16,23 +16,19 @@ public class FakeSimulationContext () : SimulationContext (new FakeSimulation ()
     public sbyte GetCurrencyValueResult { get; set; }
     public bool IsProcedureActiveResult { get; set; }
 
+    //public void InitialisePeople (List<Person> people) { }
+
+    //public IDType ChooseCurrencyOwner (IDType personId) => ChooseCurrencyOwnerResult;
+
     //public ConfirmationResult TryConfirmProcedure (IDType personId, IDType procedureId) => TryConfirmProcedureResult;
 
     //public bool? DeclareProcedure (IDType personId, IDType procedureId) => DeclareProcedureResult;
 
     //public void StartSetup () { }
 
-    //public IDType ChooseCurrencyOwner (IDType personId) => ChooseCurrencyOwnerResult;
+    //public void StartBallot () { }
 
-    //public (byte, byte, byte) VotePass (IDType personId, bool isPass) => VotePassResult;
-
-    //public (byte, byte, byte) VoteFail (IDType personId, bool isFail) => VoteFailResult;
-
-    //public (byte, byte, byte) VoteAbstain (IDType personId, bool isAbstain) => VoteAbstainResult;
-
-    //public void InitialisePeople (List<Person> people) { }
-
-    //public void VoteBallot (bool isPass) { }
+    //public void EndBallot (bool isPass) { }
 
     public override bool? IsBallotVoted () => IsBallotVotedResult;
 

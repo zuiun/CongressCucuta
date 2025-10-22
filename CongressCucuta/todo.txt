@@ -1,4 +1,3 @@
 should end slide be constant or backward?
 
 try not to use event logic too much
-get rid of the Models, they need to be stored elsewhere somehow

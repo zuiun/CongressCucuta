@@ -6,7 +6,7 @@ using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
-internal class FileViewModel : ViewModel {
+internal class ImportViewModel : ViewModel {
     private readonly JsonSerializerOptions _options = new () {
         Converters = { new IDTypeJsonConverter () },
         IncludeFields = true,

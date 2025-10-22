@@ -232,7 +232,6 @@ public sealed class ConditionTests {
         FakeSimulationContext context = new () {
             IsBallotPassedResult = isPassed,
         };
-        context.VoteBallot (isPassed);
         BallotPassedCondition condition = new (0, shouldBePassed);
 
         bool expected = shouldBePassed == isPassed;
