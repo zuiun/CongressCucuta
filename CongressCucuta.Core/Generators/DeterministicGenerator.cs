@@ -5,24 +5,16 @@ public class DeterministicGenerator (List<int> values) : IGenerator {
     private int _idx = 0;
 
     public int Choose (int maximum) {
-        if (_idx < _values.Count) {
-            int value = _values[_idx];
+        int value = _values[_idx];
 
-            ++_idx;
-            return value;
-        } else {
-            return -1;
-        }
+        _idx = (_idx + 1) % _values.Count;
+        return value;
     }
 
     public int Roll () {
-        if (_idx < _values.Count) {
-            int value = _values[_idx];
+        int value = _values[_idx];
 
-            ++_idx;
-            return value;
-        } else {
-            return -1;
-        }
+        _idx = (_idx + 1) % _values.Count;
+        return value;
     }
 }

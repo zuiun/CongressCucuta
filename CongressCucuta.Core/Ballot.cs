@@ -7,7 +7,7 @@ public readonly record struct Ballot (IDType ID, Ballot.Result Pass, Ballot.Resu
     public readonly record struct Effect {
         public enum EffectType {
             // Regions are not intended to change
-            FoundParty, // Targets Factions, elects PARTY_LEADER (if present)
+            FoundParty, // Targets Factions, elects PARTY_LEADER (if present, random if value > 0)
             DissolveParty, // Targets Factions, elects PARTY_LEADER (if present)
             //AddProcedure, // Targets Procedures (single)
             //ReplaceParty, // Targets Factions (original, new), retains PARTY_LEADER (if present)

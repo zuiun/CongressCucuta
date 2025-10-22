@@ -12,7 +12,7 @@ public partial class ElectionWindow : Window {
         InitializeComponent ();
     }
 
-    public void Election_CompletedElectionEventHandler () => _canClose = true;
+    public void Election_CompletingElectionEventHandler () => _canClose = true;
 
     protected override void OnClosing (CancelEventArgs e) {
         if (! _canClose) {

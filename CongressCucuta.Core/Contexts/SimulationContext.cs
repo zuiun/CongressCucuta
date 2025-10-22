@@ -4,32 +4,22 @@ using System.Diagnostics;
 
 namespace CongressCucuta.Core.Contexts;
 
-public class PreparingElectionEventArgs {
-    public List<ElectionContext> Elections;
-    public Dictionary<IDType, SortedSet<IDType>> PeopleRoles;
-    public Dictionary<IDType, (IDType?, IDType?)> PeopleFactions;
-    public HashSet<IDType> PartiesActive;
-    public HashSet<IDType> RegionsActive;
-    public Dictionary<IDType, Person> People;
+public class PreparingElectionEventArgs (
+    List<ElectionContext> elections,
+    Dictionary<IDType, SortedSet<IDType>> peopleRoles,
+    Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
+    HashSet<IDType> partiesActive,
+    HashSet<IDType> regionsActive,
+    Dictionary<IDType, Person> people
+) {
+    public List<ElectionContext> Elections = elections;
+    public Dictionary<IDType, SortedSet<IDType>> PeopleRoles = peopleRoles;
+    public Dictionary<IDType, (IDType?, IDType?)> PeopleFactions = peopleFactions;
+    public HashSet<IDType> PartiesActive = partiesActive;
+    public HashSet<IDType> RegionsActive = regionsActive;
+    public Dictionary<IDType, Person> People = people;
     public Dictionary<IDType, SortedSet<IDType>> PeopleRolesNew = [];
     public Dictionary<IDType, (IDType?, IDType?)> PeopleFactionsNew = [];
-
-    public PreparingElectionEventArgs (
-        List<ElectionContext> elections,
-        Dictionary<IDType, SortedSet<IDType>> peopleRoles,
-        Dictionary<IDType, (IDType?, IDType?)> peopleFactions,
-        HashSet<IDType> partiesActive,
-        HashSet<IDType> regionsActive,
-        Dictionary<IDType, Person> people
-    ) {
-        elections.Sort ();
-        Elections = elections;
-        PeopleRoles = peopleRoles;
-        PeopleFactions = peopleFactions;
-        PartiesActive = partiesActive;
-        RegionsActive = regionsActive;
-        People = people;
-    }
 }
 
 public class VotedBallotEventArgs (IDType id, bool isPassed, BallotContext context) {
@@ -300,6 +290,8 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
     public bool? DeclareProcedure (IDType personId, IDType procedureId) {
         bool? isPass = null;
+        bool isModifiedCurrencies = false;
+        List<ElectionContext> elections = [];
 
         foreach (Procedure.Effect e in ProceduresDeclared[procedureId].Effects) {
             switch (e.Type) {
@@ -314,7 +306,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         CurrenciesValues[currencyId] += (sbyte) e.Value;
                     }
 
-                    OnModifiedCurrencies ();
+                    isModifiedCurrencies = true;
                     break;
                 }
                 case Procedure.Effect.EffectType.CurrencySubtract: {
@@ -328,34 +320,28 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         CurrenciesValues[currencyId] -= (sbyte) e.Value;
                     }
 
-                    OnModifiedCurrencies ();
+                    isModifiedCurrencies = true;
                     break;
                 }
                 case Procedure.Effect.EffectType.ElectionRegion: {
-                    ElectionContext election = new (procedureId, e);
+                    bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_REGION);
 
-                    OnPrepareElection ([election]);
+                    elections.Add (new (procedureId, e, isLeaderNeeded));
                     Context.ResetVotes ();
                     break;
                 }
                 case Procedure.Effect.EffectType.ElectionParty: {
-                    ElectionContext election = new (procedureId, e);
+                    bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
 
-                    OnPrepareElection ([election]);
+                    elections.Add (new (procedureId, e, isLeaderNeeded));
                     Context.ResetVotes ();
                     break;
                 }
-                case Procedure.Effect.EffectType.ElectionNominated: {
-                    ElectionContext election = new (procedureId, e);
-
-                    OnPrepareElection ([election]);
-                    Context.ResetVotes ();
-                    break;
-                }
+                case Procedure.Effect.EffectType.ElectionNominated:
                 case Procedure.Effect.EffectType.ElectionAppointed: {
                     ElectionContext election = new (procedureId, e);
 
-                    OnPrepareElection ([election]);
+                    elections.Add (new (procedureId, e));
                     Context.ResetVotes ();
                     break;
                 }
@@ -390,7 +376,25 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             }
         }
 
+        if (elections.Count > 0) {
+            OnPrepareElection (elections);
+            Context.ResetVotes ();
+        }
+
+        if (isModifiedCurrencies) {
+            OnModifiedCurrencies ();
+        }
+
         return isPass;
+    }
+
+    private void OnPrepareElection (List<ElectionContext> elections) {
+        PreparingElectionEventArgs args = new (elections, PeopleRoles, PeopleFactions, _partiesActive, _regionsActive, People);
+
+        PreparingElection?.Invoke (args);
+        PeopleRoles = args.PeopleRolesNew;
+        PeopleFactions = args.PeopleFactionsNew;
+        OnCompleteElection ();
     }
 
     private void OnCompleteElection () {
@@ -398,15 +402,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
         CompletedElection?.Invoke (args);
         ComposePermissions ();
-    }
-
-    private void OnPrepareElection (List<ElectionContext> elections) {
-        PreparingElectionEventArgs args = new (elections, PeopleRoles, PeopleFactions, _partiesActive, _regionsActive, _people);
-
-        PreparingElection?.Invoke (args);
-        PeopleRoles = args.PeopleRolesNew;
-        PeopleFactions = args.PeopleFactionsNew;
-        OnCompleteElection ();
     }
 
     private void OnModifiedCurrencies () => ModifiedCurrencies?.Invoke (CurrenciesValues);
@@ -435,8 +430,18 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
         foreach ((IDType p, Procedure.EffectBundle eb) in effects) {
             foreach (Procedure.Effect e in eb.Effects) {
                 switch (e.Type) {
-                    case Procedure.Effect.EffectType.ElectionRegion:
-                    case Procedure.Effect.EffectType.ElectionParty:
+                    case Procedure.Effect.EffectType.ElectionRegion: {
+                        bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_REGION);
+
+                        elections.Add (new ElectionContext (p, e, isLeaderNeeded));
+                        break;
+                    }
+                    case Procedure.Effect.EffectType.ElectionParty: {
+                        bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
+
+                        elections.Add (new ElectionContext (p, e, isLeaderNeeded));
+                        break;
+                    }
                     case Procedure.Effect.EffectType.ElectionNominated:
                     case Procedure.Effect.EffectType.ElectionAppointed:
                         elections.Add (new ElectionContext (p, e));
@@ -489,7 +494,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             .Select (pt => pt.YieldEffects (BallotCurrentID))
             .Where (e => e is not null)
             .Select (e => (Procedure.EffectBundle) e!);
-        List<(IDType, Procedure.Effect)> effectsElections = [];
+        List<ElectionContext> elections = [];
         bool isModifiedCurrencies = false;
 
         Context.Reset ();
@@ -543,13 +548,19 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         if (BallotCurrentID > 0) {
                             foreach (IDType p in e.TargetIDs) {
                                 foreach (Procedure.Effect ee in ProceduresGovernmental[p].Effects) {
-                                    if (
-                                        ee.Type is Procedure.Effect.EffectType.ElectionRegion
-                                        or Procedure.Effect.EffectType.ElectionParty
-                                        or Procedure.Effect.EffectType.ElectionNominated
+                                    if (ee.Type is Procedure.Effect.EffectType.ElectionRegion) {
+                                        bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_REGION);
+
+                                        elections.Add (new (p, ee, isLeaderNeeded));
+                                    } else if (ee.Type is Procedure.Effect.EffectType.ElectionParty) {
+                                        bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
+
+                                        elections.Add (new (p, ee, isLeaderNeeded));
+                                    } else if (
+                                        ee.Type is Procedure.Effect.EffectType.ElectionNominated
                                         or Procedure.Effect.EffectType.ElectionAppointed
                                     ) {
-                                        effectsElections.Add ((p, ee));
+                                        elections.Add (new (p, ee));
                                     }
                                 } 
                             }
@@ -574,9 +585,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             OnModifiedCurrencies ();
         }
 
-        if (effectsElections.Count > 0) {
-            List<ElectionContext> elections = effectsElections.ConvertAll (e => new ElectionContext (e.Item1, e.Item2));
-
+        if (elections.Count > 0) {
             OnPrepareElection (elections);
         }
 
@@ -601,11 +610,13 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
         foreach (Ballot.Effect e in effects) {
             switch (e.Type) {
                 case Ballot.Effect.EffectType.FoundParty:
+                    bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
+
                     foreach (IDType p in e.TargetIDs) {
                         _partiesActive.Add (p);
                     }
 
-                    elections.Add (new (ElectionContext.ElectionType.ShuffleAdd, e.TargetIDs));
+                    elections.Add (new (ElectionContext.ElectionType.ShuffleAdd, e.TargetIDs, e.Value, isLeaderNeeded));
                     break;
                 case Ballot.Effect.EffectType.DissolveParty:
                     foreach (IDType p in e.TargetIDs) {

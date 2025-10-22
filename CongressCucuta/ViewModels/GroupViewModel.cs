@@ -1,9 +1,16 @@
 ﻿using System.Collections.ObjectModel;
 using CongressCucuta.Core;
+using CongressCucuta.Core.Contexts;
 
 namespace CongressCucuta.ViewModels;
 
-internal class GroupViewModel (IDType id, string name, bool isLeaderNeeded) : ViewModel, IID {
+internal class SelectedChangedEventArgs (IDType personId, IDType[] targetIds, bool isSelected) {
+    public IDType PersonID = personId;
+    public IDType[] TargetIDs = targetIds;
+    public bool IsSelected = isSelected;
+}
+
+internal class GroupViewModel : ViewModel, IID {
     internal class PersonGroup (IDType id, IDType factionId, string name, bool isCandidate = false) : ViewModel, IID {
         private bool _isCandidate = isCandidate;
         private bool _isSelected = false;
@@ -22,16 +29,17 @@ internal class GroupViewModel (IDType id, string name, bool isLeaderNeeded) : Vi
             set {
                 _isSelected = value;
                 OnPropertyChanged ();
-                SelectedChanged?.Invoke (this, _isSelected);
+                SelectedChanged?.Invoke (ID, _isSelected);
             }
         }
-        public event Action<PersonGroup, bool>? SelectedChanged;
+        public event Action<IDType, bool>? SelectedChanged;
     }
 
     private ObservableCollection<PersonGroup> _people = [];
-    public IDType ID => id;
-    public string Name => name;
-    public bool IsLeaderNeeded => isLeaderNeeded;
+    private readonly IDType[] _targetIds;
+    private readonly bool _isLeaderNeeded;
+    public IDType ID { get; }
+    public string Name { get; }
     public ObservableCollection<PersonGroup> People {
         get => _people;
         set {
@@ -39,12 +47,29 @@ internal class GroupViewModel (IDType id, string name, bool isLeaderNeeded) : Vi
             OnPropertyChanged ();
         }
     }
+    public event Action<SelectedChangedEventArgs>? SelectedChanged;
 
-    public void AddPerson (PersonGroup person) {
-        if (_people.All (p => p.ID != person.ID)) {
-            _people.Add (person);
+    public GroupViewModel (ElectionContext.Group group, string name, Dictionary<IDType, string> peopleNames) {
+        _targetIds = group.TargetIDs;
+        ID = group.FactionID;
+        Name = name;
+
+        foreach (var kv in peopleNames) {
+            PersonGroup person = new (kv.Key, ID, kv.Value, group.PeopleAreCandidates[kv.Key]);
+
+            person.SelectedChanged += Person_SelectedChangedEventHandler;
+            People.Add (person);
         }
+
+        People = [.. People.OrderBy (p => p.ID)];
+        _isLeaderNeeded = _people.Any (p => p.IsCandidate);
     }
 
-    public bool IsSelected () => _people.Any (p => p.IsSelected);
+    private void Person_SelectedChangedEventHandler (IDType e1, bool e2) {
+        SelectedChangedEventArgs args = new (e1, _targetIds, e2);
+
+        SelectedChanged?.Invoke (args);
+    }
+
+    public bool IsSelected () => _people.Any (p => p.IsSelected) || ! _isLeaderNeeded;
 }

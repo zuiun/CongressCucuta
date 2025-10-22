@@ -186,18 +186,16 @@ internal class ContextViewModel : ViewModel {
     public event Action<VotingEventArgs>? Voting;
     public event Action<IDType>? DeclaringProcedure;
 
-    public ContextViewModel (SimulationModel simulation) {
-        _localisation = simulation.Localisation;
-        simulation.StartingBallot += Simulation_StartingBallotEventHandler;
-        simulation.EndingBallot += Simulation_EndingBallotEventHandler;
-        simulation.Context.InitialisedPeople += Context_InitialisedPeopleEventHandler;
-        simulation.Context.CompletedElection += Context_CompletedElectionEventHandler;
-        simulation.Context.UpdatedPermissions += Context_UpdatedPermissionsEventHandler;
-        simulation.Context.VotedBallot += Context_VotedBallotEventHandler;
-        simulation.Context.ModifiedCurrencies += Context_ModifiedCurrenciesEventHandler;
-        simulation.Context.Context.UpdatedVotes += Context_UpdatedVotesEventHandler;
+    public ContextViewModel (SimulationContext context, ref readonly Localisation localisation) {
+        _localisation = localisation;
+        context.InitialisedPeople += Context_InitialisedPeopleEventHandler;
+        context.CompletedElection += Context_CompletedElectionEventHandler;
+        context.UpdatedPermissions += Context_UpdatedPermissionsEventHandler;
+        context.VotedBallot += Context_VotedBallotEventHandler;
+        context.ModifiedCurrencies += Context_ModifiedCurrenciesEventHandler;
+        context.Context.UpdatedVotes += Context_UpdatedVotesEventHandler;
 
-        foreach (ProcedureDeclared pd in simulation.Context.ProceduresDeclared.Values) {
+        foreach (ProcedureDeclared pd in context.ProceduresDeclared.Values) {
             if (pd.DeclarerIDs.Length > 0) {
                 foreach (IDType r in pd.DeclarerIDs) {
                     _declarerRoles.Add (r);
@@ -340,7 +338,7 @@ internal class ContextViewModel : ViewModel {
         People = [.. _people.OrderBy (p => p.ID)];
     }
 
-    private void Simulation_StartingBallotEventHandler (StartingBallotEventArgs e) {
+    public void Simulation_StartingBallotEventHandler (StartingBallotEventArgs e) {
         if (IsPeople) {
             foreach (PersonViewModel p in _people) {
                 p.IsInteractable = true;
@@ -359,7 +357,7 @@ internal class ContextViewModel : ViewModel {
         IsBallotCount = true;
     }
 
-    private void Simulation_EndingBallotEventHandler () {
+    public void Simulation_EndingBallotEventHandler () {
         if (IsPeople) {
             foreach (PersonViewModel p in _people) {
                 p.IsInteractable = false;

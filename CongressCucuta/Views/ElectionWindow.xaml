@@ -45,7 +45,7 @@
 
         <TextBlock Grid.Row = "0"
                    Grid.Column = "1"
-                   Text = "{Binding Election.Title}"
+                   Text = "{Binding Title}"
                    HorizontalAlignment = "Center"
                    VerticalAlignment = "Center"/>
         <Grid Grid.Row = "1" Grid.Column = "1">
@@ -69,15 +69,15 @@
                        FontSize = "14"
                        Grid.Row = "0"
                        Grid.Column = "1"
-                       Text = "Choice"
+                       Text = "{Binding Target}"
                        HorizontalAlignment = "Right"
                        VerticalAlignment = "Center"
-                       Margin = "0, 0, 6, 0"
-                       Visibility = "{Binding Election.IsLeaderNeeded, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
+                       Margin = "0, 0, 6, 0"/>
             <ListBox Grid.Row = "1"
                      Grid.Column = "0"
                      Grid.ColumnSpan = "2"
-                     ItemsSource = "{Binding Election.GroupsPeople}"
+                     ScrollViewer.HorizontalScrollBarVisibility = "Disabled"
+                     ItemsSource = "{Binding GroupsPeople}"
                      HorizontalContentAlignment = "Stretch">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

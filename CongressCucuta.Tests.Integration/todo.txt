@@ -1,2 +1,2 @@
 ViewModels
-currently everything is commented
+any event heavy logic (likely SimulationContext)

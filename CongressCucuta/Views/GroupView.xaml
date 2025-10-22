@@ -20,7 +20,7 @@
     </UserControl.Resources>
 
     <StackPanel>
-        <TextBlock Text = "{Binding Name}" HorizontalAlignment = "Center"/>
+        <TextBlock Text = "{Binding Name}" HorizontalAlignment = "Center" Margin = "0, 0, 0, 4" TextWrapping = "Wrap"/>
         <ItemsControl ItemsSource = "{Binding People}" HorizontalContentAlignment = "Stretch">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
