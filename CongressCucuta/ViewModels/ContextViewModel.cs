@@ -1,7 +1,7 @@
-﻿using System.Collections.ObjectModel;
-using CongressCucuta.Core;
+﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
 using CongressCucuta.Core.Procedures;
+using System.Collections.ObjectModel;
 
 namespace CongressCucuta.ViewModels;
 
@@ -18,6 +18,7 @@ internal class VotingEventArgs (IDType personId, bool? isPass = null, bool? isFa
 internal class ContextViewModel : ViewModel {
     internal class BallotGroup (
         string title,
+        string name,
         byte votesPass,
         byte votesFail,
         byte votesAbstain,
@@ -25,6 +26,7 @@ internal class ContextViewModel : ViewModel {
         List<string> procedures
     ) : ViewModel {
         public string Title => title;
+        public string Name => name;
         public byte VotesPass => votesPass;
         public byte VotesFail => votesFail;
         public byte VotesAbstain => votesAbstain;
@@ -69,6 +71,7 @@ internal class ContextViewModel : ViewModel {
     private ObservableCollection<ProcedureGroup> _proceduresSpecial = [];
     private ObservableCollection<ProcedureGroup> _proceduresDeclared = [];
     private readonly HashSet<IDType> _declarerRoles = [];
+    private readonly Dictionary<IDType, string> _proceduresEffects = [];
     public bool IsPeople {
         get => _isPeople;
         set {
@@ -185,11 +188,12 @@ internal class ContextViewModel : ViewModel {
     public event Action<VotingEventArgs>? Voting;
     public event Action<IDType>? DeclaringProcedure;
 
-    public ContextViewModel (SimulationContext context, ref readonly Localisation localisation) {
+    public ContextViewModel (SimulationContext context, Simulation simulation, ref readonly Localisation localisation) {
         _localisation = localisation;
         context.CompletedElection += Context_CompletedElectionEventHandler;
         context.UpdatedPermissions += Context_UpdatedPermissionsEventHandler;
         context.VotedBallot += Context_VotedBallotEventHandler;
+        context.ModifiedProcedures += Simulation_ModifiedProceduresEventHandler;
         context.ModifiedCurrencies += Context_ModifiedCurrenciesEventHandler;
         context.Context.UpdatedVotes += Context_UpdatedVotesEventHandler;
 
@@ -202,6 +206,48 @@ internal class ContextViewModel : ViewModel {
                 _declarerRoles.Add (Role.MEMBER);
             }
         }
+
+        foreach (ProcedureImmediate pi in context.ProceduresGovernmental.Values) {
+            string effect = pi.ToString (simulation, in _localisation);
+            ProcedureGroup procedure = new (
+                pi.ID,
+                _localisation.Procedures[pi.ID].Item1,
+                effect
+            );
+
+            ProceduresGovernmental.Add (procedure);
+            _proceduresEffects[pi.ID] = effect;
+        }
+
+        foreach (ProcedureTargeted pt in context.ProceduresSpecial.Values) {
+            string effect = pt.ToString (simulation, in _localisation);
+
+            if (pt.IsActiveStart) {
+                ProcedureGroup procedure = new (
+                    pt.ID,
+                    _localisation.Procedures[pt.ID].Item1,
+                    effect
+                );
+
+                ProceduresSpecial.Add (procedure);
+            }
+
+            _proceduresEffects[pt.ID] = effect;
+        }
+
+        foreach (ProcedureDeclared pd in context.ProceduresDeclared.Values) {
+            string effect = pd.ToString (simulation, in _localisation);
+            ProcedureGroup procedure = new (
+                pd.ID,
+                _localisation.Procedures[pd.ID].Item1,
+                effect
+            );
+
+            ProceduresDeclared.Add (procedure);
+            _proceduresEffects[pd.ID] = effect;
+        }
+
+        Sort ();
     }
 
     public void InitialisePeople (List<Person> people) {
@@ -212,7 +258,7 @@ internal class ContextViewModel : ViewModel {
         }
     }
 
-    public void Sort () {
+    private void Sort () {
         ProceduresGovernmental = [.. ProceduresGovernmental.OrderBy (p => p.ID)];
         ProceduresSpecial = [.. ProceduresSpecial.OrderBy (p => p.ID)];
         ProceduresDeclared = [.. ProceduresDeclared.OrderBy (p => p.ID)];
@@ -285,6 +331,10 @@ internal class ContextViewModel : ViewModel {
                 } else {
                     party = new FactionViewModel (pa, _localisation.GetFactionOrAbbreviation (pa));
                     _factionsPeople.Add (party);
+
+                    if (_localisation.Abbreviations.ContainsKey (pa)) {
+                        party.Description = _localisation.Parties[pa].Item1;
+                    }
                 }
 
                 PersonViewModel person = CreatePerson (kv.Key, people[kv.Key].Name, peopleRoles[kv.Key], isBallot);
@@ -300,6 +350,10 @@ internal class ContextViewModel : ViewModel {
                 } else {
                     region = new FactionViewModel (r, _localisation.GetFactionOrAbbreviation (r));
                     _factionsPeople.Add (region);
+
+                    if (_localisation.Abbreviations.ContainsKey (r)) {
+                        region.Description = _localisation.Regions[r].Item1;
+                    }
                 }
 
                 PersonViewModel person = CreatePerson (kv.Key, people[kv.Key].Name, peopleRoles[kv.Key], isBallot);
@@ -313,7 +367,7 @@ internal class ContextViewModel : ViewModel {
                 if (_factionsPeople.Any (f => f.ID == FactionViewModel.INDEPENDENT)) {
                     independent = _factionsPeople.Where (f => f.ID == FactionViewModel.INDEPENDENT).First ();
                 } else {
-                    independent = new FactionViewModel (FactionViewModel.INDEPENDENT, "Independent");
+                    independent = new (FactionViewModel.INDEPENDENT, "Independent");
                     _factionsPeople.Add (independent);
                 }
 
@@ -463,13 +517,30 @@ internal class ContextViewModel : ViewModel {
     }
 
     private void Context_VotedBallotEventHandler (VotedBallotEventArgs e) => Ballots.Add (new (
-            _localisation.Ballots[e.ID].Item1,
-            e.VotesPass,
-            e.VotesFail,
-            e.VotesAbstain,
-            e.IsPassed,
-            e.ProceduresDeclared.ConvertAll (p => _localisation.Procedures[p.ID].Item1)
-        ));
+        _localisation.Ballots[e.ID].Item1,
+        _localisation.Ballots[e.ID].Item2,
+        e.VotesPass,
+        e.VotesFail,
+        e.VotesAbstain,
+        e.IsPassed,
+        e.ProceduresDeclared.ConvertAll (p => _localisation.Procedures[p.ID].Item1)
+    ));
+
+    private void Simulation_ModifiedProceduresEventHandler (HashSet<ProcedureTargeted> e) {
+        ProceduresSpecial.Clear ();
+
+        foreach (ProcedureTargeted pt in e) {
+            ProcedureGroup procedure = new (
+                pt.ID,
+                _localisation.Procedures[pt.ID].Item1,
+                _proceduresEffects[pt.ID]
+            );
+
+            ProceduresSpecial.Add (procedure);
+        }
+
+        Sort ();
+    }
 
     private void Context_ModifiedCurrenciesEventHandler (Dictionary<IDType, sbyte> e) => SetCurrencies (e);
 }

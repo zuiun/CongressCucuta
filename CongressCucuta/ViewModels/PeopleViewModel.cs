@@ -1,10 +1,12 @@
 ﻿using Microsoft.Win32;
 using System.Collections.ObjectModel;
 using System.IO;
+using System.Diagnostics.CodeAnalysis;
 using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
+[ExcludeFromCodeCoverage]
 internal class PeopleViewModel : ViewModel {
     internal class NameGroup (string name) : ViewModel {
         public string Name => name;
@@ -60,7 +62,8 @@ internal class PeopleViewModel : ViewModel {
         }
     }
     public static byte PeopleMin => PEOPLE_MIN;
-    public event Action<List<Person>>? InitialisingPeople = null;
+    public event Action<List<Person>>? InitialisingPeople;
+    public event Action? CreatingSimulation;
 
     public void Reset () {
         Name = string.Empty;
@@ -76,7 +79,7 @@ internal class PeopleViewModel : ViewModel {
             Names.Add (new (Name));
             Name = string.Empty;
         },
-        _ => !string.IsNullOrWhiteSpace (Name) && Names.Count < byte.MaxValue
+        _ => ! string.IsNullOrWhiteSpace (Name) && Names.Count < byte.MaxValue
     );
 
     public RelayCommand RemoveNameCommand => new (
@@ -114,5 +117,9 @@ internal class PeopleViewModel : ViewModel {
     public RelayCommand FinishInputCommand => new (
         _ => InitialisingPeople?.Invoke ([.. Names.Select ((n, i) => new Person (i, n.Name))]),
         _ => Names.Count >= PEOPLE_MIN
+    );
+
+    public RelayCommand ReturnImportCommand => new (
+        _ => CreatingSimulation?.Invoke ()
     );
 }

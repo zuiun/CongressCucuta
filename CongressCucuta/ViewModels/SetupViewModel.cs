@@ -1,14 +1,18 @@
-﻿using CongressCucuta.Core;
+﻿using System.Diagnostics.CodeAnalysis;
+using CongressCucuta.Core;
 using CongressCucuta.Views;
 
 namespace CongressCucuta.ViewModels;
 
+[ExcludeFromCodeCoverage]
 internal class SetupViewModel : ViewModel {
+    private const string CONGRESS_CUCUTA = "Congress of Cúcuta";
     private Task<SimulationViewModel>? _simulation = null;
     private bool _isImportSetup = true;
     private bool _isPeopleSetup = false;
     private readonly ImportViewModel _import = new ();
     private readonly PeopleViewModel _people = new ();
+    private string _title = CONGRESS_CUCUTA;
     public bool IsImportSetup {
         get => _isImportSetup;
         set {
@@ -25,16 +29,36 @@ internal class SetupViewModel : ViewModel {
     }
     public ImportViewModel Import => _import;
     public PeopleViewModel People => _people;
+    public string Title {
+        get => _title;
+        set {
+            _title = value;
+            OnPropertyChanged ();
+        }
+    }
 
     public SetupViewModel () {
         _import.CreatingSimulation += Import_CreatingSimulationEventHandler;
         _people.InitialisingPeople += People_InitialisingPeopleEventHandler;
+        _people.CreatingSimulation += People_CreatingSimulationEventHandler;
     }
 
     private void Import_CreatingSimulationEventHandler (Simulation simulation) {
+        Title = simulation.Localisation.State;
+        _people.Reset ();
         IsImportSetup = false;
         IsPeopleSetup = true;
+        _import.Reset ();
         _simulation = Task.Run (() => new SimulationViewModel (simulation));
+    }
+
+    private void People_CreatingSimulationEventHandler () {
+        Title = CONGRESS_CUCUTA;
+        _import.Reset ();
+        IsImportSetup = true;
+        IsPeopleSetup = false;
+        _people.Reset ();
+        _simulation = null;
     }
 
     private async void People_InitialisingPeopleEventHandler (List<Person> people) {

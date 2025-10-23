@@ -113,6 +113,7 @@
                                    FontFamily = "Nirmala UI Semilight"
                                    FontSize = "14"
                                    Text = "{Binding Title}"
+                                   ToolTip = "{Binding Name}"
                                    HorizontalAlignment = "Left"
                                    Margin = "6, 0, 0, 4"/>
                         <TextBlock Grid.Row = "0"

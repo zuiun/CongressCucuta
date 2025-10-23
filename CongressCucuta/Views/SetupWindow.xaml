@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:CongressCucuta.Views"
         xmlns:vm="clr-namespace:CongressCucuta.ViewModels"
         mc:Ignorable="d"
-        Title="Congress of Cúcuta" Height="480" Width="640">
+        Title="{Binding Title}" Height="480" Width="640">
     <Window.DataContext>
         <vm:SetupViewModel/>
     </Window.DataContext>

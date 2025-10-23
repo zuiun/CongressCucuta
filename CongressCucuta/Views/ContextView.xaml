@@ -9,6 +9,7 @@
              d:DesignHeight="720" d:DesignWidth="320">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+        <c:DescriptionToTextDecorationsConverter x:Key = "DescriptionToTextDecorationsConverter"/>
         <Style TargetType = "ItemsControl">
             <Setter Property = "Background" Value = "#00000000"/>
             <Setter Property = "Padding" Value = "0, 4, 0, 0"/>
@@ -16,11 +17,6 @@
             <!--From ListBox-->
             <Setter Property = "BorderBrush" Value = "#FFABADB3"/>
             <Setter Property = "BorderThickness" Value = "1"/>
-        </Style>
-        <Style TargetType = "TextBlock">
-            <Setter Property = "Foreground" Value = "White"/>
-            <Setter Property = "FontFamily" Value = "Nirmala UI"/>
-            <Setter Property = "FontSize" Value = "16"/>
         </Style>
         <Style TargetType = "ListBox">
             <Setter Property = "Background" Value = "#00000000"/>
@@ -31,6 +27,23 @@
             <Setter Property = "Focusable" Value = "False"/>
             <Setter Property = "Padding" Value = "0"/>
             <Setter Property = "Margin" Value = "0, 0, 1, 0"/>
+        </Style>
+        <Style TargetType = "ToolTip">
+            <Setter Property = "FontFamily" Value = "Segoe UI"/>
+            <Setter Property = "FontSize" Value = "12"/>
+        </Style>
+        <Style x:Key = "Title" TargetType = "TextBlock">
+            <Setter Property = "Foreground" Value = "White"/>
+            <Setter Property = "FontFamily" Value = "Nirmala UI"/>
+            <Setter Property = "FontSize" Value = "16"/>
+        </Style>
+        <Style x:Key = "Faction" TargetType = "TextBlock" BasedOn = "{StaticResource Title}">
+            <Style.Triggers>
+                <DataTrigger Binding = "{Binding Description, Converter = {StaticResource DescriptionToTextDecorationsConverter}}"
+                             Value = "Underline">
+                    <Setter Property = "ToolTip" Value = "{Binding Description}"/>
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
     </UserControl.Resources>
 
@@ -49,6 +62,7 @@
             </Grid.RowDefinitions>
 
             <TextBlock Grid.Row = "0"
+                       Style = "{StaticResource Title}"
                        Visibility = "{Binding IsCurrency, Converter = {StaticResource BooleanToVisibilityConverter}}"
                        HorizontalAlignment = "Center">
                 <Run Text = "{Binding Value}"/>
@@ -64,18 +78,22 @@
                 </Grid.ColumnDefinitions>
 
                 <TextBlock Grid.Column = "0"
+                           Style = "{StaticResource Title}"
                            Text = "Name"
                            Margin = "6, 0, 0, 2"/>
                 <TextBlock Grid.Column = "1"
+                           Style = "{StaticResource Title}"
                            Text = "Pass"
                            HorizontalAlignment = "Center"
                            Margin = "0, 0, 2, 2"/>
                 <TextBlock Grid.Column = "2"
                            Grid.ColumnSpan = "1"
+                           Style = "{StaticResource Title}"
                            Text = "Fail"
                            HorizontalAlignment = "Center"
                            Margin = "0, 0, 2, 2"/>
                 <TextBlock Grid.Column = "3"
+                           Style = "{StaticResource Title}"
                            Text = "Abstain"
                            HorizontalAlignment = "Center"
                            Margin = "0, 0, 4, 2"/>
@@ -95,16 +113,12 @@
                         <DataTemplate>
                             <StackPanel>
                                 <TextBlock Visibility = "{Binding IsNotCurrency, Converter = {StaticResource BooleanToVisibilityConverter}}"
-                                           Foreground = "White"
-                                           FontFamily = "Nirmala UI"
-                                           FontSize = "16"
+                                           Style = "{StaticResource Faction}"
                                            Text = "{Binding Name}"
                                            HorizontalAlignment = "Center"
                                            Margin = "0, 0, 0, 2"/>
                                 <TextBlock Visibility = "{Binding IsCurrency, Converter = {StaticResource BooleanToVisibilityConverter}}"
-                                           Foreground = "White"
-                                           FontFamily = "Nirmala UI"
-                                           FontSize = "16"
+                                           Style = "{StaticResource Faction}"
                                            HorizontalAlignment = "Center"
                                            Margin = "0, 0, 0, 2">
                                     <Run Text = "{Binding Name}"/>

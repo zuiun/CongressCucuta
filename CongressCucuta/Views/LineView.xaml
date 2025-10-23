@@ -20,6 +20,7 @@
                         <Condition Binding = "{Binding Path = IsContent}" Value = "true"/>
                         <Condition Binding = "{Binding Path = IsImportant}" Value = "true"/>
                     </MultiDataTrigger.Conditions>
+                    
                     <Setter Property = "Foreground" Value = "Red"/>
                 </MultiDataTrigger>
                 <MultiDataTrigger>
@@ -27,6 +28,7 @@
                         <Condition Binding = "{Binding Path = IsContent}" Value = "true"/>
                         <Condition Binding = "{Binding Path = IsImportant}" Value = "false"/>
                     </MultiDataTrigger.Conditions>
+                    
                     <Setter Property = "Foreground" Value = "{Binding Description, Converter = {StaticResource DescriptionToForegroundConverter}}"/>
                 </MultiDataTrigger>
                 <DataTrigger Binding = "{Binding Path = IsContent}" Value = "false">

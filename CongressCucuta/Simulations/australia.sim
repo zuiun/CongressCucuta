@@ -224,7 +224,9 @@
         "Type": 0,
         "Value": 0
       },
-      "DeclarerIDs": [],
+      "DeclarerIDs": [
+        253
+      ],
       "ID": 10,
       "Effects": [
         {

@@ -11,6 +11,7 @@ internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
     private bool _isCurrency = false;
     private bool _isNotCurrency = true;
     private string _currency = string.Empty;
+    private string? _description = null;
     public IDType ID => id;
     public string Name {
         get => _name;
@@ -51,6 +52,13 @@ internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
         get => _currency;
         set {
             _currency = value;
+            OnPropertyChanged ();
+        }
+    }
+    public string? Description {
+        get => _description;
+        set {
+            _description = value;
             OnPropertyChanged ();
         }
     }

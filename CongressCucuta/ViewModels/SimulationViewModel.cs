@@ -30,8 +30,6 @@ internal class SimulationViewModel : ViewModel {
     private bool _isBallot = false;
     private SlideViewModel _slide;
     private readonly ContextViewModel _context;
-    private readonly string _state;
-    private readonly Dictionary<IDType, string> _proceduresEffects = [];
     public Localisation Localisation => _localisation;
     public List<SlideViewModel> Slides { get; } = [];
     public IDType SlideCurrentIdx {
@@ -71,67 +69,20 @@ internal class SimulationViewModel : ViewModel {
         }
     }
     public ContextViewModel Context => _context;
-    // TODO: tell the window to look for Localisation.State instead
-    public string State => _state;
+    public string State { get; }
     public event Action<StartingBallotEventArgs>? StartingBallot;
     public event Action? EndingBallot;
 
     public SimulationViewModel (Simulation simulation) {
         _simulation = new (simulation);
         _localisation = simulation.Localisation;
-        _state = _localisation.State;
+        State = _localisation.State;
+        _context = new (_simulation, simulation, in _localisation);
         _simulation.PreparingElection += Simulation_PreparingElectionEventHandler;
-        _simulation.ModifiedProcedures += Simulation_ModifiedProceduresEventHandler;
-
-#region Context
-        _context = new (_simulation, in _localisation);
         _context.Voting += Context_VotingEventHandler;
         _context.DeclaringProcedure += Context_DeclaringProcedureEventHandler;
         StartingBallot += _context.Simulation_StartingBallotEventHandler;
         EndingBallot += _context.Simulation_EndingBallotEventHandler;
-
-        foreach (ProcedureImmediate pi in _simulation.ProceduresGovernmental.Values) {
-            string effect = pi.ToString (simulation, in _localisation);
-            ContextViewModel.ProcedureGroup procedure = new (
-                pi.ID,
-                _localisation.Procedures[pi.ID].Item1,
-                effect
-            );
-
-            _proceduresEffects[pi.ID] = effect;
-            _context.ProceduresGovernmental.Add (procedure);
-        }
-
-        foreach (ProcedureTargeted pt in _simulation.ProceduresSpecial.Values) {
-            string effect = pt.ToString (simulation, in _localisation);
-
-            if (pt.IsActiveStart) {
-                ContextViewModel.ProcedureGroup procedure = new (
-                    pt.ID,
-                    _localisation.Procedures[pt.ID].Item1,
-                    effect
-                );
-
-                _context.ProceduresSpecial.Add (procedure);
-            }
-
-            _proceduresEffects[pt.ID] = effect;
-        }
-
-        foreach (ProcedureDeclared pd in _simulation.ProceduresDeclared.Values) {
-            string effect = pd.ToString (simulation, in _localisation);
-            ContextViewModel.ProcedureGroup procedure = new (
-                pd.ID,
-                _localisation.Procedures[pd.ID].Item1,
-                effect
-            );
-
-            _context.ProceduresDeclared.Add (procedure);
-            _proceduresEffects[pd.ID] = effect;
-        }
-
-        _context.Sort ();
-#endregion
 
         IDType slideCurrentIdx = GenerateSlidesIntroduction ();
 
@@ -530,22 +481,6 @@ internal class SimulationViewModel : ViewModel {
         e.PeopleFactionsNew = election.PeopleFactionsNew;
     }
 
-    private void Simulation_ModifiedProceduresEventHandler (HashSet<ProcedureTargeted> e) {
-        _context.ProceduresSpecial.Clear ();
-
-        foreach (ProcedureTargeted pt in e) {
-            ContextViewModel.ProcedureGroup procedure = new (
-                pt.ID,
-                _localisation.Procedures[pt.ID].Item1,
-                _proceduresEffects[pt.ID]
-            );
-
-            _context.ProceduresSpecial.Add (procedure);
-        }
-
-        _context.Sort ();
-    }
-
     public void Context_VotingEventHandler (VotingEventArgs e) {
         if (e.IsPass is bool isPass) {
             if (isPass) {
@@ -598,10 +533,10 @@ internal class SimulationViewModel : ViewModel {
                     break;
                 // case Confirmation.CostType.DivisionChamber:
                 case Confirmation.ConfirmationType.CurrencyValue: {
-                    if (result.IsConfirmed == true) {
+                    if (result.IsConfirmed is true) {
                         (IDType currencyId, sbyte _) = result.Currency ?? default;
 
-                        e.Message = $"Success: Spent {result.Value!} {_localisation.Currencies[currencyId]}";
+                        e.Message = $"Success: Spent {result.Value} {_localisation.Currencies[currencyId]}";
                     } else {
                         throw new UnreachableException ();
                     }
@@ -609,43 +544,43 @@ internal class SimulationViewModel : ViewModel {
                     break;
                 }
                 case Confirmation.ConfirmationType.DiceValue:
-                    if (result.IsConfirmed == true) {
-                        e.Message = $"Success: Rolled {result.DiceDeclarer!}";
+                    if (result.IsConfirmed is true) {
+                        e.Message = $"Success: Rolled {result.DiceDeclarer}";
                     } else {
-                        e.Message = $"Failure: Rolled {result.DiceDeclarer!}, but needed at least {result.Value!}";
+                        e.Message = $"Failure: Rolled {result.DiceDeclarer}, but needed at least {result.Value}";
                     }
 
                     break;
                 case Confirmation.ConfirmationType.DiceCurrency: {
                     (IDType currencyId, sbyte currency) = result.Currency ?? default;
 
-                    if (result.IsConfirmed == true) {
-                        e.Message = $"Success: Rolled and spent {result.DiceDeclarer!} {_localisation.Currencies[currencyId]}";
+                    if (result.IsConfirmed is true) {
+                        e.Message = $"Success: Rolled and spent {result.DiceDeclarer} {_localisation.Currencies[currencyId]}";
                     } else {
-                        e.Message = $"Failure: Rolled {result.DiceDeclarer!}, but only had {currency} {_localisation.Currencies[currencyId]}";
+                        e.Message = $"Failure: Rolled {result.DiceDeclarer}, but only had {currency} {_localisation.Currencies[currencyId]}";
                     }
 
                     break;
                 }
                 case Confirmation.ConfirmationType.DiceAdversarial: {
-                    if (result.IsConfirmed == true) {
+                    if (result.IsConfirmed is true) {
                         if (result.Currency is (IDType currencyId, sbyte _)) {
-                            e.Message = $"Success: Rolled and spent {result.DiceDeclarer!} {_localisation.Currencies[currencyId]}, while defender rolled {result.DiceDefender!}";
+                            e.Message = $"Success: Rolled and spent {result.DiceDeclarer} {_localisation.Currencies[currencyId]}, while defender rolled {result.DiceDefender}";
                         } else {
-                            e.Message = $"Success: Rolled {result.DiceDeclarer!}, while defender rolled {result.DiceDefender!}";
+                            e.Message = $"Success: Rolled {result.DiceDeclarer}, while defender rolled {result.DiceDefender}";
                         }
                     } else {
                         if (result.Currency is (IDType currencyId, sbyte currency)) {
                             if (result.DiceDefender is null) {
-                                e.Message = $"Failure: Rolled {result.DiceDeclarer!}, but only had {currency} {_localisation.Currencies[currencyId]}";
+                                e.Message = $"Failure: Rolled {result.DiceDeclarer}, but only had {currency} {_localisation.Currencies[currencyId]}";
                             } else {
-                                e.Message = $"Failure: Rolled and spent {result.DiceDeclarer!} {_localisation.Currencies[currencyId]}, but defender rolled {result.DiceDefender!}";
+                                e.Message = $"Failure: Rolled and spent {result.DiceDeclarer} {_localisation.Currencies[currencyId]}, but defender rolled {result.DiceDefender}";
                             }
                         } else {
                             if (result.DiceDefender is null) {
                                 throw new UnreachableException ();
                             } else {
-                                e.Message = $"Failure: Rolled and spent {result.DiceDeclarer!}, but defender rolled {result.DiceDefender!}";
+                                e.Message = $"Failure: Rolled and spent {result.DiceDeclarer}, but defender rolled {result.DiceDefender}";
                             }
                         }
                     }

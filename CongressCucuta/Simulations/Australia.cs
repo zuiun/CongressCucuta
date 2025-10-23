@@ -126,7 +126,7 @@ internal class Australia : ISimulation {
             10,
             [new (Procedure.Effect.EffectType.ElectionAppointed, [primeMinister, governorGeneral])],
             new Confirmation (Confirmation.ConfirmationType.Always),
-            []
+            [governorGeneral]
         );
         ProcedureDeclared viceregalAppointment = new (
             11,

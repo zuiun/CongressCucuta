@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
 using CongressCucuta.Simulations;
@@ -7,6 +8,7 @@ using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
+[ExcludeFromCodeCoverage]
 internal class CompilerViewModel : ViewModel {
     internal class SimulationGroup (ISimulation simulation) : ViewModel {
         public Simulation Simulation => simulation.Simulation;

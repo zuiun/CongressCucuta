@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
+[ExcludeFromCodeCoverage]
 internal class PersonViewModel (IDType id, string name, bool isInteractable) : ViewModel, IID {
     internal class RoleGroup : ViewModel, IID {
         private readonly string _name;
@@ -27,6 +29,7 @@ internal class PersonViewModel (IDType id, string name, bool isInteractable) : V
     private bool _isFail = false;
     private bool _isAbstain = true;
     private bool _canVote = true;
+    private byte _votes = 1;
     private bool _canSpeak = true;
     private bool _isInteractable = isInteractable;
     private bool _canDeclare = false;
@@ -104,6 +107,13 @@ internal class PersonViewModel (IDType id, string name, bool isInteractable) : V
             OnPropertyChanged ();
         }
     }
+    public byte Votes {
+        get => _votes;
+        set {
+            _votes = value;
+            OnPropertyChanged ();
+        }
+    }
     public bool CanSpeak {
         get => _canSpeak;
         set {
@@ -125,6 +135,7 @@ internal class PersonViewModel (IDType id, string name, bool isInteractable) : V
 
     public void UpdatePermissions (Permissions permissions) {
         CanVote = permissions.CanVote;
+        Votes = permissions.Votes;
         CanSpeak = permissions.CanSpeak;
     }
 
