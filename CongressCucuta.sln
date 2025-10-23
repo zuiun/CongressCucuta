@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CongressCucuta", "CongressC
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CongressCucuta.Tests.Unit", "CongressCucuta.Tests\CongressCucuta.Tests.Unit.csproj", "{2C904EAA-6978-DB69-9C9E-E6E461EF0CD3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CongressCucuta.Tests.Integration", "CongressCucuta.Tests.Integration\CongressCucuta.Tests.Integration.csproj", "{E2D2E434-EFBC-41E7-B793-C2AD91D3E202}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CongressCucuta.Core", "CongressCucuta.Core\CongressCucuta.Core.csproj", "{4B825AC0-B821-41D1-A712-81C53013BBA7}"
 EndProject
 Global
@@ -25,10 +23,6 @@ Global
 		{2C904EAA-6978-DB69-9C9E-E6E461EF0CD3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C904EAA-6978-DB69-9C9E-E6E461EF0CD3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C904EAA-6978-DB69-9C9E-E6E461EF0CD3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E2D2E434-EFBC-41E7-B793-C2AD91D3E202}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E2D2E434-EFBC-41E7-B793-C2AD91D3E202}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E2D2E434-EFBC-41E7-B793-C2AD91D3E202}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E2D2E434-EFBC-41E7-B793-C2AD91D3E202}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4B825AC0-B821-41D1-A712-81C53013BBA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4B825AC0-B821-41D1-A712-81C53013BBA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4B825AC0-B821-41D1-A712-81C53013BBA7}.Release|Any CPU.ActiveCfg = Release|Any CPU

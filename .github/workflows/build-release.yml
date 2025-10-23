@@ -1,0 +1,71 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: true
+      matrix:
+        arch: [win-x64, win-x86]
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Install .NET Core
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
+
+    - name: Create the app package (${{ matrix.arch }})
+      run: |
+        dotnet publish CongressCucuta/CongressCucuta.csproj `
+          -c Release `
+          -r ${{ matrix.arch }} `
+          --self-contained false `
+          -p:PublishSingleFile=true `
+          -p:DebugType=None `
+          -p:DebugSymbols=false `
+          -o publish/${{ matrix.arch }}
+
+    - name: Upload build artifacts (${{ matrix.arch }})
+      uses: actions/upload-artifact@v4
+      with:
+        name: CongressCucuta-${{ matrix.arch }}
+        path: publish/${{ matrix.arch }}
+
+  release:
+    runs-on: windows-latest
+    needs: build
+
+    steps:
+      - name: Download build artifacts (win-x64)
+        uses: actions/download-artifact@v4
+        with:
+          name: CongressCucuta-win-x64
+          path: publish/win-x64
+
+      - name: Download build artifacts (win-x86)
+        uses: actions/download-artifact@v4
+        with:
+          name: CongressCucuta-win-x86
+          path: publish/win-x86
+
+      - name: Compress build artifacts
+        run: |
+          Compress-Archive -Path publish/win-x64/* -DestinationPath CongressCucuta-win-x64.zip
+          Compress-Archive -Path publish/win-x86/* -DestinationPath CongressCucuta-win-x86.zip
+
+      - name: Create GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            CongressCucuta-win-x64.zip
+            CongressCucuta-win-x86.zip
