@@ -1,6 +1,6 @@
 ﻿namespace CongressCucuta.Core.Contexts;
 
-public class UpdatedVotesEventArgs (BallotContext context) {
+public class ResetVotesEventArgs (BallotContext context) {
     public byte VotesPass = context.CalculateVotesPass ();
     public byte VotesFail = context.CalculateVotesFail ();
     public byte VotesAbstain = context.CalculateVotesAbstain ();
@@ -17,7 +17,7 @@ public class BallotContext {
     public byte VotesFailBonus { get; set; } = 0;
     public bool IsSimpleMajority { get; set; } = true;
     public List<IDType> ProceduresDeclared = [];
-    public event Action<UpdatedVotesEventArgs>? UpdatedVotes;
+    public event Action<ResetVotesEventArgs>? ResetVotes;
 
     public void Reset () {
         VotesPass.Clear ();
@@ -28,13 +28,13 @@ public class BallotContext {
     }
 
     // For ProcedureDeclared
-    public void ResetVotes () {
+    public void OnResetVotes () {
         VotesPass.Clear ();
         VotesFail.Clear ();
 
-        UpdatedVotesEventArgs args = new (this);
+        ResetVotesEventArgs args = new (this);
 
-        UpdatedVotes?.Invoke (args);
+        ResetVotes?.Invoke (args);
     }
 
     public byte CalculateVotesTotal () {

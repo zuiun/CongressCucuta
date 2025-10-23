@@ -187,7 +187,7 @@ internal class Hungary : ISimulation {
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
-                [],
+                [new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [fkgp.ID])],
                 [new (new AlwaysCondition (), 2)]
             )
         );

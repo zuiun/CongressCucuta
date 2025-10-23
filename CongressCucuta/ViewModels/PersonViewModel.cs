@@ -14,7 +14,7 @@ internal class PersonViewModel (IDType id, string name, bool isInteractable) : V
         public string Abbreviation => _abbreviation;
 
         public RoleGroup (IDType id, string name) {
-            string[] words = name.Split (' ');
+            string[] words = name.Split ([' ', '-']);
             string abbreviation = string.Join (string.Empty, words.Select (w => w.First ()));
             
             _name = name;
@@ -137,6 +137,12 @@ internal class PersonViewModel (IDType id, string name, bool isInteractable) : V
         CanVote = permissions.CanVote;
         Votes = permissions.Votes;
         CanSpeak = permissions.CanSpeak;
+    }
+
+    public void Reset () {
+        IsPass = false;
+        IsFail = false;
+        IsAbstain = true;
     }
 
     public RelayCommand DeclareProcedureCommand => new (_ => DeclaringProcedure?.Invoke (ID));

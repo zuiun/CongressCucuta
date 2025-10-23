@@ -69,7 +69,7 @@ internal class Australia : ISimulation {
         );
         ProcedureImmediate duumvirate = new (
             2,
-            [new (Procedure.Effect.EffectType.PermissionsVotes, [primeMinister], 1)]
+            [new (Procedure.Effect.EffectType.PermissionsVotes, [alp.ID], 1)]
         );
         List<ProcedureImmediate> proceduresGovernmental = [commonwealthRealm, generalElection, duumvirate];
         ProcedureTargeted itsTime = new (
@@ -104,7 +104,7 @@ internal class Australia : ISimulation {
         );
         ProcedureTargeted stagflation = new (
             8,
-            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 1)],
+            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 2)],
             [],
             false
         );

@@ -73,9 +73,9 @@ internal class ElectionViewModel : ViewModel {
 
         Title = election.Type switch {
             ElectionContext.ElectionType.ShuffleRemove =>
-                $"Dissolution of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionOrAbbreviation (p)))}",
+                $"Dissolution of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionAndAbbreviation (p)))}",
             ElectionContext.ElectionType.ShuffleAdd =>
-                $"Founding of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionOrAbbreviation (p)))}",
+                $"Founding of {string.Join (", ", election.FilterIDs.Select (p => _localisation.GetFactionAndAbbreviation (p)))}",
             _ => _localisation.Procedures[(IDType) election.ProcedureID!].Item1,
         };
         Target = election.TargetID > 0 ? _localisation.Roles[election.TargetID].Item1 : string.Empty;

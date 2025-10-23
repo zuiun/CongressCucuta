@@ -43,23 +43,25 @@ internal class SetupViewModel : ViewModel {
         _people.CreatingSimulation += People_CreatingSimulationEventHandler;
     }
 
+    private void Reset () {
+        Title = CONGRESS_CUCUTA;
+        _import.Reset ();
+        _people.Reset ();
+        IsImportSetup = true;
+        IsPeopleSetup = false;
+        _simulation = null;
+    }
+
     private void Import_CreatingSimulationEventHandler (Simulation simulation) {
         Title = simulation.Localisation.State;
+        _import.Reset ();
         _people.Reset ();
         IsImportSetup = false;
         IsPeopleSetup = true;
-        _import.Reset ();
         _simulation = Task.Run (() => new SimulationViewModel (simulation));
     }
 
-    private void People_CreatingSimulationEventHandler () {
-        Title = CONGRESS_CUCUTA;
-        _import.Reset ();
-        IsImportSetup = true;
-        IsPeopleSetup = false;
-        _people.Reset ();
-        _simulation = null;
-    }
+    private void People_CreatingSimulationEventHandler () => Reset ();
 
     private async void People_InitialisingPeopleEventHandler (List<Person> people) {
         SimulationViewModel simulation;
@@ -77,10 +79,7 @@ internal class SetupViewModel : ViewModel {
             DataContext = simulation,
         };
 
-        _import.Reset ();
-        _people.Reset ();
-        IsPeopleSetup = false;
-        IsImportSetup = true;
+        Reset ();
         window.ShowDialog ();
     }
 }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Text.Json;
 using CongressCucuta.Converters;
 using CongressCucuta.Core;
+using CongressCucuta.Simulations;
 
 namespace CongressCucuta.ViewModels;
 
@@ -13,31 +14,65 @@ internal class ImportViewModel : ViewModel {
         Converters = { new IDTypeJsonConverter () },
         IncludeFields = true,
     };
-    private bool _wasChoiceFailure = false;
-    public bool WasChoiceFailure {
-        get => _wasChoiceFailure;
+    private bool _wasImportFailure = false;
+    private readonly List<CompilerViewModel.SimulationGroup> _simulations; 
+    private int _selectedIdx = -1;
+    public bool WasImportFailure {
+        get => _wasImportFailure;
         set {
-            _wasChoiceFailure = value;
+            _wasImportFailure = value;
+            OnPropertyChanged ();
+        }
+    }
+    public List<CompilerViewModel.SimulationGroup> Simulations => _simulations;
+    public int SelectedIdx {
+        get => _selectedIdx;
+        set {
+            _selectedIdx = value;
             OnPropertyChanged ();
         }
     }
     public event Action<Simulation>? CreatingSimulation = null;
 
-    public void Reset () {
-        WasChoiceFailure = false;
+    public ImportViewModel () {
+        List<ISimulation> simulations = [
+            new Argentina (),
+            new Australia (),
+            new Brazil (),
+            new Canada (),
+            new China (),
+            new Colombia (),
+            new Finland (),
+            new Hungary (),
+            new Indonesia (),
+            new Japan (),
+            new Malaysia (),
+            new Poland (),
+        ];
+
+        _simulations = [.. simulations.Select (s => new CompilerViewModel.SimulationGroup (s)).OrderBy (s => s.Name)];
     }
 
-    public RelayCommand ChooseSimulationCommand => new (_ => {
+    public void Reset () {
+        WasImportFailure = false;
+        SelectedIdx = -1;
+    }
+
+    public RelayCommand ChooseSimulationCommand => new (
+        _ => CreatingSimulation?.Invoke (_simulations[_selectedIdx].Simulation),
+        _ => _selectedIdx > -1
+    );
+
+    public RelayCommand ImportSimulationCommand => new (_ => {
         OpenFileDialog file = new () {
             Filter = "Simulation files (*.sim)|*.sim",
         };
 
-        WasChoiceFailure = false;
+        WasImportFailure = false;
 
         bool? result = file.ShowDialog ();
 
-        if (result != true) {
-            WasChoiceFailure = true;
+        if (result is not true) {
             return;
         }
 
@@ -48,7 +83,7 @@ internal class ImportViewModel : ViewModel {
 
             simulation = JsonSerializer.Deserialize<Simulation> (json, _options)!;
         } catch (Exception) {
-            WasChoiceFailure = true;
+            WasImportFailure = true;
             return;
         }
 

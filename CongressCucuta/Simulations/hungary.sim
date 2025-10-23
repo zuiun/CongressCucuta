@@ -269,7 +269,15 @@
         ]
       },
       "Fail": {
-        "Effects": [],
+        "Effects": [
+          {
+            "Type": 0,
+            "TargetIDs": [
+              2
+            ],
+            "Value": 0
+          }
+        ],
         "Links": [
           {
             "Condition": {

@@ -1,3 +1,5 @@
 should end slide be constant or backward?
 
 try not to use event logic too much
+
+currencies values does not reset after closing and re-opening simulation - is simulationcontext and contextviewmodel not getting destroyed and recreated?

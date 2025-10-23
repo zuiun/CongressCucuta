@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
+using System.Diagnostics.CodeAnalysis;
 using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
+[ExcludeFromCodeCoverage]
 internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
     public static readonly IDType INDEPENDENT = byte.MaxValue;
     private string _name = name;
@@ -64,16 +66,4 @@ internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
     }
 
     public void Sort () => People = [.. _people.OrderBy (p => p.ID)];
-
-    public void UpdatePermissions (Dictionary<IDType, Permissions> peoplePermissions) {
-        foreach (PersonViewModel p in _people) {
-            p.UpdatePermissions (peoplePermissions[p.ID]);
-        }
-    }
-
-    public void SetInteractable (bool isInteractable) {
-        foreach (PersonViewModel p in _people) {
-            p.IsInteractable = isInteractable;
-        }
-    }
 }

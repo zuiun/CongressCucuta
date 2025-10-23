@@ -56,7 +56,7 @@ public abstract class Procedure : IID {
              * Elects LEADER_REGION if present
              *
              * Immediate, Declared
-             * Targets Roles (populated: excluded)
+             * Targets Roles (populated: excluded [only from leadership])
              * Value (0: choose LEADER_REGION, anything else: random LEADER_REGION)
              */
             ElectionRegion,
@@ -382,8 +382,9 @@ public abstract class Procedure : IID {
                     break;
                 }
                 case EffectType.ElectionRegion: {
-                    string target = StringLineFormatter.Indent (TargetToString (this, in localisation), 1);
+                    string target = StringLineFormatter.Indent ("Everyone:", 1);
                     string action = StringLineFormatter.Indent ($"Randomly aligns with a {localisation.Region.Item1}", 2);
+                    string candidates = StringLineFormatter.Indent (TargetToString (this, in localisation), 2);
                     bool isRandom = Value > 0;
 
                     result.Add (target);
@@ -397,6 +398,9 @@ public abstract class Procedure : IID {
                         } else {
                             result.Add (StringLineFormatter.Indent ($"Elects {leader.Item1}", 2));
                         }
+
+                        result.Add (candidates);
+                        result.Add (StringLineFormatter.Indent ("Can be nominated", 3));
                     }
 
                     break;

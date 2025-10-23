@@ -352,14 +352,14 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_REGION);
 
                     elections.Add (new (procedureId, e, isLeaderNeeded));
-                    Context.ResetVotes ();
+                    Context.OnResetVotes ();
                     break;
                 }
                 case Procedure.Effect.EffectType.ElectionParty: {
                     bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
 
                     elections.Add (new (procedureId, e, isLeaderNeeded));
-                    Context.ResetVotes ();
+                    Context.OnResetVotes ();
                     break;
                 }
                 case Procedure.Effect.EffectType.ElectionNominated:
@@ -367,7 +367,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     ElectionContext election = new (procedureId, e);
 
                     elections.Add (new (procedureId, e));
-                    Context.ResetVotes ();
+                    Context.OnResetVotes ();
                     break;
                 }
                 case Procedure.Effect.EffectType.BallotLimit: {
@@ -385,7 +385,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     }
 
                     ComposePermissions ();
-                    Context.ResetVotes ();
+                    Context.OnResetVotes ();
                     break;
                 }
                 case Procedure.Effect.EffectType.BallotPass: {
@@ -403,7 +403,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
         if (elections.Count > 0) {
             OnPrepareElection (elections);
-            Context.ResetVotes ();
+            Context.OnResetVotes ();
         }
 
         if (isModifiedCurrencies) {

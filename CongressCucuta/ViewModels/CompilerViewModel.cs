@@ -2,9 +2,9 @@
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Text.Json;
-using CongressCucuta.Simulations;
 using CongressCucuta.Converters;
 using CongressCucuta.Core;
+using CongressCucuta.Simulations;
 
 namespace CongressCucuta.ViewModels;
 
@@ -24,7 +24,7 @@ internal class CompilerViewModel : ViewModel {
     };
     private string _name = string.Empty;
     private string _filename = string.Empty;
-    private readonly List<SimulationGroup> _simulations = [];
+    private readonly List<SimulationGroup> _simulations;
     private int _selectedIdx = -1;
     public bool WasCompilationSuccess {
         get => _wasCompilationSuccess;
@@ -65,18 +65,20 @@ internal class CompilerViewModel : ViewModel {
 
     public CompilerViewModel () {
         // Compilation targets
-        _simulations.Add (new (new Argentina ()));
-        _simulations.Add (new (new Australia ()));
-        _simulations.Add (new (new Brazil ()));
-        _simulations.Add (new (new Canada ()));
-        _simulations.Add (new (new China ()));
-        _simulations.Add (new (new Colombia ()));
-        _simulations.Add (new (new Finland ()));
-        _simulations.Add (new (new Hungary ()));
-        _simulations.Add (new (new Indonesia ()));
-        _simulations.Add (new (new Japan ()));
-        _simulations.Add (new (new Malaysia ()));
-        _simulations.Add (new (new Poland ()));
+        _simulations = [
+            new (new Argentina ()),
+            new (new Australia ()),
+            new (new Brazil ()),
+            new (new Canada ()),
+            new (new China ()),
+            new (new Colombia ()),
+            new (new Finland ()),
+            new (new Hungary ()),
+            new (new Indonesia ()),
+            new (new Japan ()),
+            new (new Malaysia ()),
+            new (new Poland ()),
+        ];
         _simulations = [.. _simulations.OrderBy (s => s.Name)];
     }
 
@@ -91,19 +93,15 @@ internal class CompilerViewModel : ViewModel {
             WasCompilationSuccess = false;
             WasCompilationFailure = false;
             Name = _simulations[_selectedIdx].Name;
-            Filename = "a .sim file";
 
             bool? result = file.ShowDialog ();
 
-            if (result is null or false) {
-                WasCompilationSuccess = false;
-                WasCompilationFailure = true;
+            if (result is not true) {
                 return;
             }
 
             string filename = file.FileName;
 
-            Name = _simulations[_selectedIdx].Name;
             Filename = Path.GetFileName (filename);
 
             try {

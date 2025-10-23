@@ -1,7 +1,7 @@
-﻿using CongressCucuta.Core;
+﻿using System.Collections.ObjectModel;
+using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
 using CongressCucuta.Core.Procedures;
-using System.Collections.ObjectModel;
 
 namespace CongressCucuta.ViewModels;
 
@@ -195,7 +195,7 @@ internal class ContextViewModel : ViewModel {
         context.VotedBallot += Context_VotedBallotEventHandler;
         context.ModifiedProcedures += Simulation_ModifiedProceduresEventHandler;
         context.ModifiedCurrencies += Context_ModifiedCurrenciesEventHandler;
-        context.Context.UpdatedVotes += Context_UpdatedVotesEventHandler;
+        context.Context.ResetVotes += Context_ResetVotesEventHandler;
 
         foreach (ProcedureDeclared pd in context.ProceduresDeclared.Values) {
             if (pd.DeclarerIDs.Length > 0) {
@@ -270,13 +270,17 @@ internal class ContextViewModel : ViewModel {
                 IsCurrency = true;
                 Value = kv.Value;
                 CurrencyName = _localisation.Currencies[kv.Key];
-            } else if (_factionsPeople.Any (f => f.ID == kv.Key)) {
-                FactionViewModel faction = _factionsPeople.Where (f => f.ID == kv.Key).First ();
+            } else {
+                var factionIter = _factionsPeople.Where (f => f.ID == kv.Key);
 
-                faction.IsCurrency = true;
-                faction.IsNotCurrency = false;
-                faction.Value = kv.Value;
-                faction.Currency = _localisation.Currencies[kv.Key];
+                if (factionIter.Any ()) {
+                    FactionViewModel faction = factionIter.First ();
+
+                    faction.IsCurrency = true;
+                    faction.IsNotCurrency = false;
+                    faction.Value = kv.Value;
+                    faction.Currency = _localisation.Currencies[kv.Key];
+                }
             }
         }
     }
@@ -294,7 +298,6 @@ internal class ContextViewModel : ViewModel {
             }
         }
 
-        person.Roles = [.. person.Roles.OrderBy (r => r.ID)];
         person.VotingPass += Person_VotingPassEventHandler;
         person.VotingFail += Person_VotingFailEventHandler;
         person.VotingAbstain += Person_VotingAbstainEventHandler;
@@ -405,7 +408,9 @@ internal class ContextViewModel : ViewModel {
             }
         } else {
             foreach (FactionViewModel f in _factionsPeople) {
-                f.SetInteractable (true);
+                foreach (PersonViewModel p in f.People) {
+                    p.IsInteractable = true;
+                }
             }
         }
 
@@ -424,7 +429,9 @@ internal class ContextViewModel : ViewModel {
             }
         } else {
             foreach (FactionViewModel f in _factionsPeople) {
-                f.SetInteractable (false);
+                foreach (PersonViewModel p in f.People) {
+                    p.IsInteractable = false;
+                }
             }
         }
 
@@ -481,12 +488,24 @@ internal class ContextViewModel : ViewModel {
         VotesAbstain = args.VotesAbstain;
     }
 
-    private void Context_UpdatedVotesEventHandler (UpdatedVotesEventArgs e) {
+    private void Context_ResetVotesEventHandler (ResetVotesEventArgs e) {
         VotesPass = e.VotesPass;
         VotesFail = e.VotesFail;
         VotesAbstain = e.VotesAbstain;
         VotesPassThreshold = e.VotesPassThreshold;
         VotesFailThreshold = e.VotesFailThreshold;
+
+        if (IsPeople) {
+            foreach (PersonViewModel p in _people) {
+                p.Reset ();
+            }
+        } else {
+            foreach (FactionViewModel f in _factionsPeople) {
+                foreach (PersonViewModel p in f.People) {
+                    p.Reset ();
+                }
+            }
+        }
     }
 
     private void Person_DeclaringProcedureEventHandler (IDType e) {
@@ -511,7 +530,9 @@ internal class ContextViewModel : ViewModel {
             }
         } else {
             foreach (FactionViewModel f in _factionsPeople) {
-                f.UpdatePermissions (e);
+                foreach (PersonViewModel p in f.People) {
+                    p.UpdatePermissions (e[p.ID]);
+                }
             }
         }
     }

@@ -42,7 +42,7 @@ public sealed class BallotContextTests {
         byte votesAbstain = byte.MaxValue;
         byte votesPassThreshold = byte.MaxValue;
         byte votesFailThreshold = byte.MaxValue;
-        void Context_UpdateVotesEventHandler (UpdatedVotesEventArgs e) {
+        void Context_UpdateVotesEventHandler (ResetVotesEventArgs e) {
             votesPass = e.VotesPass;
             votesFail = e.VotesFail;
             votesAbstain = e.VotesAbstain;
@@ -56,9 +56,9 @@ public sealed class BallotContextTests {
         context.ProceduresDeclared.Add (procedure);
         context.VotesPassBonus = 1;
         context.VotesFailBonus = 1;
-        context.UpdatedVotes += Context_UpdateVotesEventHandler;
+        context.ResetVotes += Context_UpdateVotesEventHandler;
 
-        context.ResetVotes ();
+        context.OnResetVotes ();
 
         Assert.IsEmpty (context.VotesPass);
         Assert.IsEmpty (context.VotesFail);
