@@ -15,6 +15,8 @@ internal class Indonesia : ISimulation {
         IDType chiefStaff = 0;
         IDType generalSecretary = 1;
         IDType chairman = 2;
+        IDType chairman2 = 3;
+        IDType chiefStaff2 = 4;
         List<IDType> roles = [
             member,
             president,
@@ -29,15 +31,19 @@ internal class Indonesia : ISimulation {
         rolesLocs[chiefStaff] = ("Chief of Staff", "Chiefs of Staff");
         rolesLocs[generalSecretary] = ("General Secretary", "General Secretaries");
         rolesLocs[chairman] = ("Chairman", "Chairmen");
+        rolesLocs[chairman2] = ("Chairman", "Chairmen");
+        rolesLocs[chiefStaff2] = ("Chief of Staff", "Chiefs of Staff");
         rolesLocs[Role.LEADER_PARTY] = ("Faction Leader", "Faction Leaders");
 
         Faction abri = new (0);
         Faction pki = new (1);
         Faction masyumi = new (2);
+        IDType masyumi2 = 3;
+        IDType abri2 = 4;
         List<Faction> factions = [abri, pki, masyumi];
         Dictionary<IDType, (string, string[])> factionsLocs = [];
         factionsLocs[abri.ID] = (
-            "Republic of Indonesia Armed Forces",
+            "Indonesian National Armed Forces",
             [
                 StringLineFormatter.Indent ("Anti-imperialist, anti-communist, and nationalist", 1),
                 StringLineFormatter.Indent ("Seen as a bastion of stability and independence", 1),
@@ -56,10 +62,14 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Relatively rightist and supports Sharia law", 1),
             ]
         );
+        factionsLocs[masyumi2.ID] = ("Revival of the Ulama", []);
+        factionsLocs[abri2.ID] = ("Republic of Indonesia Armed Forces", []);
         Dictionary<IDType, string> abbreviations = [];
-        abbreviations[abri.ID] = "ABRI";
+        abbreviations[abri.ID] = "TNI";
         abbreviations[pki.ID] = "PKI";
         abbreviations[masyumi.ID] = "Masyumi";
+        abbreviations[masyumi2.ID] = "NU";
+        abbreviations[abri2.ID] = "ABRI";
 
         Dictionary<IDType, sbyte> currenciesValues = [];
         IDType influenceAbri = 0;
@@ -156,7 +166,7 @@ internal class Indonesia : ISimulation {
         );
         procedures[eastSuez.ID] = (
             "East of Suez",
-            "Indonesia's foreign policy is primarily concerned with the UK's East of Suez policy, which is seen as a threat to Indonesian influence and independence."
+            "Indonesia's foreign policy is formulated primarily in opposition to the UK's East of Suez policy, which is seen as a threat to Indonesian influence and independence."
         );
         //procedures[industryTakeover.ID] = (
         //    "Industry Takeover",
@@ -183,25 +193,15 @@ internal class Indonesia : ISimulation {
             0,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.RemoveProcedure,
-                        [houseIslam.ID]
-                    ),
+                    new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [houseIslam.ID]),
                 ],
                 [new (new AlwaysCondition (), 1)]
             ),
             new Ballot.Result (
                 [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influenceMasyumi],
-                        -1
-                    ),
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influenceAbri],
-                        1
-                    ),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [masyumi.ID, masyumi2]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceMasyumi], -1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceAbri], 1),
                 ],
                 [new (new AlwaysCondition (), 1)]
             )
@@ -210,22 +210,13 @@ internal class Indonesia : ISimulation {
             1,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influenceAbri],
-                        1
-                    ),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [abri.ID, abri2]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceAbri], 1),
                 ],
                 [new (new AlwaysCondition (), 2)]
             ),
             new Ballot.Result (
-                [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influenceAbri, influencePki],
-                        -1
-                    ),
-                ],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceAbri, influencePki], -1)],
                 [new (new AlwaysCondition (), 3)]
             )
         );
@@ -233,26 +224,13 @@ internal class Indonesia : ISimulation {
             2,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influenceAbri, influencePki],
-                        1
-                    ),
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.RemoveProcedure,
-                        [eastSuez.ID]
-                    ),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceAbri, influencePki], 1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [eastSuez.ID]),
                 ],
                 [new (new AlwaysCondition (), 3)]
             ),
             new Ballot.Result (
-                [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influencePki],
-                        -1
-                    ),
-                ],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influencePki], -1)],
                 [new (new AlwaysCondition (), 3)]
             ),
             true
@@ -261,31 +239,15 @@ internal class Indonesia : ISimulation {
             3,
             new Ballot.Result (
                 [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influencePki],
-                        1
-                    ),
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influenceMasyumi],
-                        1
-                    ),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influencePki], 1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceMasyumi], 1),
                 ],
                 [new (new AlwaysCondition (), 4)]
             ),
             new Ballot.Result (
                 [
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influenceAbri],
-                        1
-                    ),
-                    new Ballot.Effect (
-                        Ballot.Effect.EffectType.ModifyCurrency,
-                        [influencePki],
-                        -1
-                    ),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influenceAbri], 1),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [influencePki], -1),
                 ],
                 []
             )
@@ -313,7 +275,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("However, the rebellion is almost defeated", 2),
                 StringLineFormatter.Indent ("Aceh and Borneo are on the verge of reclamation", 3),
                 StringLineFormatter.Indent ("Sunda and Celebes will take longer to pacify", 3),
-                StringLineFormatter.Indent ("Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the ABRI", 3),
+                StringLineFormatter.Indent ("Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the army", 3),
                 StringLineFormatter.Indent ("This would lessen tensions, especially in Aceh", 2),
                 "House of Islam will be militarily suppressed if this ballot fails",
             ],
@@ -328,7 +290,7 @@ internal class Indonesia : ISimulation {
                 "House of Islam is brutally crushed",
                 StringLineFormatter.Indent ("Masyumi is purged and supplanted by a parallel organisation, Revival of the Ulama (NU)", 1),
                 StringLineFormatter.Indent ("NU is closely monitored", 2),
-                StringLineFormatter.Indent ("ABRI is hailed as a bringer of stability", 1),
+                StringLineFormatter.Indent ("Army is hailed as a bringer of stability", 1),
             ]
         );
         ballotsLocs[ballotB.ID] = (
@@ -354,7 +316,7 @@ internal class Indonesia : ISimulation {
             [
                 "Anti-imperialist rhetoric is seen as posturing",
                 StringLineFormatter.Indent ("Many Indonesians see Dutch New Guinea as part of the Indonesian homeland", 1),
-                StringLineFormatter.Indent ("As a result, the people begin to distrust the ABRI and the PKI", 2),
+                StringLineFormatter.Indent ("As a result, the people begin to distrust the army and the PKI", 2),
                 StringLineFormatter.Indent ("However, this reassures the US and the UK", 1),
                 StringLineFormatter.Indent ("This should draw Indonesia out of the Soviet sphere", 2),
                 StringLineFormatter.Indent ("Therefore, there may be an opportunity for foreign investment or alliances", 3),
@@ -382,7 +344,7 @@ internal class Indonesia : ISimulation {
             ],
             [
                 "There is little reaction from most people",
-                StringLineFormatter.Indent ("ABRI is relieved, but concerned with British influence", 1),
+                StringLineFormatter.Indent ("Army is relieved, but concerned with British influence", 1),
                 StringLineFormatter.Indent ("However, the PKI is dissatisfied with inaction", 1),
                 StringLineFormatter.Indent ("It claims that Malaysia is an imperialist puppet that the UK will use to dominate the Malay Archipelago", 2),
                 "Malaysia reaches out for mutual investment",
@@ -415,7 +377,7 @@ internal class Indonesia : ISimulation {
             ],
             [
                 "PKI attempts to seize foreign assets anyway",
-                StringLineFormatter.Indent ("It is eventually stopped by the ABRI", 1),
+                StringLineFormatter.Indent ("It is eventually stopped by the army", 1),
                 "Relations with the West are gradually restored",
                 StringLineFormatter.Indent ("Most foreign assets seized over the years are returned", 1),
                 StringLineFormatter.Indent ("However, foreign powers don't want to bail out Indonesia", 2),
@@ -431,7 +393,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("This will be achieved through the use of political commissars and re-education", 3),
                 StringLineFormatter.Indent ("Fifth Force would be made of armed militias not subject to governmental control", 2),
                 StringLineFormatter.Indent ("This would essentially create an army for the PKI", 3),
-                StringLineFormatter.Indent ("All of these measures would drastically weaken the influence and the independence of the ABRI", 2),
+                StringLineFormatter.Indent ("All of these measures would drastically weaken the influence and the independence of the army", 2),
             ],
             [
                 "Intentionally left blank",
@@ -549,7 +511,7 @@ internal class Indonesia : ISimulation {
             "Incident B Passed",
             [
                 "Indonesia becomes a communist state",
-                StringLineFormatter.Indent ("With the gradual weakening of the ABRI and the Islamists, the PKI is able to seize power", 1),
+                StringLineFormatter.Indent ("With the gradual weakening of the army and the Islamists, the PKI is able to seize power", 1),
                 StringLineFormatter.Indent ("This leads to total collapse", 1),
                 StringLineFormatter.Indent ("Many industries were already being run inefficiently", 2),
                 StringLineFormatter.Indent ("Inexperienced PKI ministers are unable to repair the state of the economy", 2),
@@ -575,7 +537,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("This pushes Indonesia into the Western sphere", 1),
                 StringLineFormatter.Indent ("US greatly expands aid and investment to secure Indonesia", 2),
                 StringLineFormatter.Indent ("Though this improves the economy, it doesn't result in universal growth", 3),
-                StringLineFormatter.Indent ("ABRI institutes a military dictatorship without the PKI to counterbalance", 1),
+                StringLineFormatter.Indent ("Army institutes a military dictatorship without the PKI to counterbalance", 1),
                 StringLineFormatter.Indent ("This causes serious concerns about whether democracy can be restored or not", 2),
             ]
         );
@@ -586,18 +548,18 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Rebellion begins in Aceh to oppose foreign exploitation", 1),
                 StringLineFormatter.Indent ("NU supports the rebellion, which prevents it from being suppressed", 2),
                 StringLineFormatter.Indent ("With the emergence of an opposition faction, there is now a possibility for a return to democracy", 1),
-                StringLineFormatter.Indent ("If the ABRI can't improve living conditions, then it will likely be overthrown", 1),
+                StringLineFormatter.Indent ("If the army can't improve living conditions, then it will likely be overthrown", 1),
             ]
         );
         resultsLocs[ballotAFailed.ID] = (
             "Ballot A Failed",
             [
-                "Without any other opposition factions, the ABRI completely dominates",
+                "Without any other opposition factions, the army completely dominates",
                 StringLineFormatter.Indent ("Regionalist dissent and rebellions are easily crushed", 1),
                 "Economy only improves somewhat",
                 StringLineFormatter.Indent ("There is no good reason for the Western states to invest in Indonesia", 1),
                 StringLineFormatter.Indent ("Overall, Indonesia remains impoverished and the people are rebellious", 1),
-                StringLineFormatter.Indent ("If the ABRI can't maintain total dominance, this could result in a coup", 2),
+                StringLineFormatter.Indent ("If the army can't maintain total dominance, this could result in a coup", 2),
             ]
         );
         resultsLocs[ballotBFailed.ID] = (
@@ -617,7 +579,7 @@ internal class Indonesia : ISimulation {
                 StringLineFormatter.Indent ("Passivity convinces China and the USSR that Indonesia isn't worth supporting", 1),
                 StringLineFormatter.Indent ("This means no financial aid or investment", 1),
                 StringLineFormatter.Indent ("Population remains incredibly impoverished", 2),
-                "ABRI splits into radical, opposing factions",
+                "Army splits into radical, opposing factions",
                 StringLineFormatter.Indent ("After a failed coup, Indonesia collapses into civil war", 1),
                 StringLineFormatter.Indent ("Indonesia becomes a proxy battleground", 2),
             ]
@@ -635,12 +597,12 @@ internal class Indonesia : ISimulation {
         resultsLocs[ballotAFailed2.ID] = (
             "Ballot A Failed",
             [
-                "Without any other opposition factions, the ABRI completely dominates",
+                "Without any other opposition factions, the army completely dominates",
                 StringLineFormatter.Indent ("Regionalist dissent is easily suppressed", 1),
                 "Economy improves steadily",
                 StringLineFormatter.Indent ("Though there are always those who clamour for democracy, most are satisfied with the current state of affairs", 1),
                 StringLineFormatter.Indent ("Indonesia remains a rare example of a functional and stable military dictatorship", 2),
-                StringLineFormatter.Indent ("However, the ABRI will likely peacefully hand over power to civilian successors as international and domestic opinions shift", 3),
+                StringLineFormatter.Indent ("However, the army will likely peacefully hand over power to civilian successors as international and domestic opinions shift", 3),
             ]
         );
 

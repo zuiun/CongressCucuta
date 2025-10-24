@@ -1,2 +1,0 @@
-see if any event logic could be removed
-someday, replacing parties would be nice

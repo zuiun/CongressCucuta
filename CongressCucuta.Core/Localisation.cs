@@ -121,4 +121,31 @@ public readonly record struct Localisation {
             throw new ArgumentException ($"No Faction ID matches ID {factionId}", nameof (factionId));
         }
     }
+
+    public void ReplaceParty (IDType originalId, IDType newId) {
+        if (! Parties.ContainsKey (originalId)) {
+            throw new ArgumentException ($"No Party ID matches ID {originalId}", nameof (originalId));
+        }
+
+        if (Parties.TryGetValue (newId, out (string, string[]) party)) {
+            Parties[originalId] = party;
+        } else {
+            throw new ArgumentException ($"No Party ID matches ID {newId}", nameof (newId));
+        }
+
+        if (Abbreviations.TryGetValue (newId, out string? abbreviation)) {
+            Abbreviations[originalId] = abbreviation;
+        } else {
+            Abbreviations.Remove (originalId);
+        }
+
+        bool isRoleOriginal = Roles.ContainsKey (originalId);
+        bool isRoleNew = Roles.TryGetValue (newId, out (string, string) role);
+
+        if (isRoleOriginal && isRoleNew) {
+            Roles[originalId] = role;
+        } else if (Roles.ContainsKey (originalId) != Roles.ContainsKey (newId)) {
+            throw new ArgumentException ($"Party IDs {originalId} and {newId} must either both have Roles or have no Roles");
+        }
+    }
 }

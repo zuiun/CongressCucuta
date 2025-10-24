@@ -27,6 +27,11 @@ public sealed class BallotEffectTests {
     }
 
     [TestMethod]
+    public void Constructor_ReplacePartyNotTwoTargetIDs_Throws () {
+        Assert.Throws<ArgumentException> (() => new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [0]));
+    }
+
+    [TestMethod]
     [DataRow (new byte[] { 2 }, "Found Party 2 (2)")]
     [DataRow (new byte[] { 3 }, "Found Party 3")]
     [DataRow (new byte[] { 2, 3 }, "Found Party 2 (2), Party 3")]
@@ -97,6 +102,18 @@ public sealed class BallotEffectTests {
         Simulation simulation = new FakeSimulation ();
         Localisation localisation = simulation.Localisation;
 
+        string actual = effect.ToString (simulation, in localisation);
+
+        Assert.Contains (expected, actual);
+    }
+
+    [TestMethod]
+    public void ToString_ReplaceParty_ReturnsExpected () {
+        Ballot.Effect effect = new (Ballot.Effect.EffectType.ReplaceParty, [2, 3]);
+        Simulation simulation = new FakeSimulation ();
+        Localisation localisation = simulation.Localisation;
+
+        string expected = "Replace Party 2 (2) with Party 3";
         string actual = effect.ToString (simulation, in localisation);
 
         Assert.Contains (expected, actual);

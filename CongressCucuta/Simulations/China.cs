@@ -30,14 +30,18 @@ internal class China : ISimulation {
         rolesLocs[chairman] = ("Chairman", "Chairmen");
         rolesLocs[general] = ("General", "Generals");
         rolesLocs[0] = ("Ideologue of KMC", "Ideologues of KMC");
-        rolesLocs[1] = ("Ideologue of KTP", "Ideologues of KTP");
-        rolesLocs[2] = ("Ideologue of KHP", "Ideologues of KHP");
+        rolesLocs[1] = ("Ideologue of KTH", "Ideologues of KTH");
+        rolesLocs[2] = ("Ideologue of HHP", "Ideologues of HHP");
+        rolesLocs[3] = ("Ideologue of CHH", "Ideologues of CHH");
+        rolesLocs[4] = ("Ideologue of KHP", "Ideologues of KHP");
         rolesLocs[Role.LEADER_PARTY] = ("Ideologue", "Ideologues");
 
         Faction kmc = new (0);
-        Faction ktp = new (1);
+        Faction kth = new (1);
         Faction khp = new (2);
-        List<Faction> parties = [kmc, ktp, khp];
+        IDType kth2 = 3;
+        IDType khp2 = 4;
+        List<Faction> parties = [kmc, kth, khp];
         Dictionary<IDType, (string, string[])> factionsLocs = [];
         factionsLocs[kmc.ID] = (
             "National Revolutionary Army",
@@ -46,7 +50,7 @@ internal class China : ISimulation {
                 StringLineFormatter.Indent ("Nationalist with Christian influences", 1),
             ]
         );
-        factionsLocs[ktp.ID] = (
+        factionsLocs[kth.ID] = (
             "Reorganisation Comrades Association",
             [
                 StringLineFormatter.Indent ("Socialist with pro-Soviet leanings", 1),
@@ -54,16 +58,20 @@ internal class China : ISimulation {
             ]
         );
         factionsLocs[khp.ID] = (
-            "Innovation Club",
+            "Western Hills Conference",
             [
                 StringLineFormatter.Indent ("Largest civilian faction", 1),
                 StringLineFormatter.Indent ("Nationalist, conservative, and anti-communist", 1),
             ]
         );
+        factionsLocs[kth2] = ("Political Study Association", []);
+        factionsLocs[khp2] = ("Innovation Club", []);
         Dictionary<IDType, string> abbreviations = [];
         abbreviations[kmc.ID] = "KMC";
-        abbreviations[ktp.ID] = "KTP";
-        abbreviations[khp.ID] = "KHP";
+        abbreviations[kth.ID] = "KTH";
+        abbreviations[khp.ID] = "HHP";
+        abbreviations[kth2] = "CHH";
+        abbreviations[khp2] = "KHP";
 
         Dictionary<IDType, sbyte> currenciesValues = [];
         IDType unity = Currency.STATE;
@@ -253,11 +261,19 @@ internal class China : ISimulation {
         Ballot incidentB = new (
             3,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], -1)],
+                [
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [kth.ID, kth2]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [khp.ID, khp2]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], -1),
+                ],
                 [new (new AlwaysCondition (), 4)]
             ),
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], 1)],
+                [
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [kth.ID, kth2]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [khp.ID, khp2]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ModifyCurrency, [unity], 1),
+                ],
                 [new (new AlwaysCondition (), 4)]
             ),
             true

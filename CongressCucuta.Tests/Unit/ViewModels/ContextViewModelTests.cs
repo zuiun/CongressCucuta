@@ -1,5 +1,6 @@
 ﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
+using CongressCucuta.Core.Procedures;
 using CongressCucuta.Tests.Fakes;
 using CongressCucuta.ViewModels;
 
@@ -133,5 +134,31 @@ public sealed class ContextViewModelTests {
         vm.EndBallot ();
 
         Assert.IsFalse (vm.People[0].IsInteractable);
+    }
+
+    [TestMethod]
+    public void ReplaceParty_Normal_MutatesExpected () {
+        FakeSimulation simulation = new ();
+        simulation.ProceduresGovernmental[0] = new (0, [new (Procedure.Effect.EffectType.PermissionsCanVote, [2], 0)]);
+        simulation.ProceduresSpecial[0] = new (1, [new (Procedure.Effect.EffectType.CurrencyAdd, [2], 1)], []);
+        simulation.ProceduresDeclared[0] = new (
+            3,
+            [
+                new (Procedure.Effect.EffectType.BallotPass, []),
+                new (Procedure.Effect.EffectType.CurrencyAdd, [2], 1),
+            ],
+            new Confirmation (Confirmation.ConfirmationType.Always),
+            []
+        );
+        SimulationContext context = new (simulation);
+        Localisation localisation = simulation.Localisation;
+        localisation.ReplaceParty (2, 3);
+        ContextViewModel vm = new (context, simulation, in localisation);
+
+        vm.ReplaceParty (in localisation);
+
+        Assert.Contains ("3 Leaders", vm.ProceduresGovernmental[0].Effects);
+        Assert.Contains ("Party 3", vm.ProceduresSpecial[0].Effects);
+        Assert.Contains ("Party 3", vm.ProceduresDeclared[0].Effects);
     }
 }

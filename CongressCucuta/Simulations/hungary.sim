@@ -370,6 +370,14 @@
       "Pass": {
         "Effects": [
           {
+            "Type": 5,
+            "TargetIDs": [
+              3,
+              4
+            ],
+            "Value": 0
+          },
+          {
             "Type": 2,
             "TargetIDs": [
               5
@@ -705,6 +713,10 @@
         "Item1": "Leader of NAP",
         "Item2": "Leaders of NAP"
       },
+      "4": {
+        "Item1": "Leader of NYKP",
+        "Item2": "Leaders of NYKP"
+      },
       "252": {
         "Item1": "Party Leader",
         "Item2": "Party Leaders"
@@ -744,13 +756,18 @@
       "3": {
         "Item1": "Party of National Will",
         "Item2": []
+      },
+      "4": {
+        "Item1": "Arrow Cross Party",
+        "Item2": []
       }
     },
     "Abbreviations": {
       "0": "EP",
       "1": "MSZDP",
       "2": "FKgP",
-      "3": "NAP"
+      "3": "NAP",
+      "4": "NYKP"
     },
     "Currencies": {
       "255": "Anti-Semitism"

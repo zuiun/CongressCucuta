@@ -29,7 +29,7 @@ public sealed class BallotTests {
     [TestMethod]
     [DataRow (true, (byte) 1)]
     [DataRow (false, (byte) 0)]
-    public void Voting_VoteFail_MutatesExpected (bool isFail, byte expected) {
+    public void Ballot_VoteFail_MutatesExpected (bool isFail, byte expected) {
         FakeSimulation simulation = new ();
         SimulationViewModel vm = new (simulation);
         vm.InitialisePeople ([new (0, "0")]);
@@ -47,7 +47,7 @@ public sealed class BallotTests {
     [TestMethod]
     [DataRow (true, (byte) 1)]
     [DataRow (false, (byte) 1)]
-    public void Voting_VoteAbstain_MutatesExpected (bool isAbstain, byte expected) {
+    public void Ballot_VoteAbstain_MutatesExpected (bool isAbstain, byte expected) {
         FakeSimulation simulation = new ();
         SimulationViewModel vm = new (simulation);
         vm.InitialisePeople ([new (0, "0")]);

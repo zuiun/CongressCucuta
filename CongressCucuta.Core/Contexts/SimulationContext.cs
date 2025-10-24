@@ -86,6 +86,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
     public event Action<VotedBallotEventArgs>? VotedBallot;
     public event Action<Dictionary<IDType, sbyte>>? ModifiedCurrencies;
     public event Action<HashSet<ProcedureTargeted>>? ModifiedProcedures;
+    public event Action<IDType, IDType>? ReplacingParty;
 
     public void InitialisePeople (List<Person> people) {
         foreach (Person p in people) {
@@ -597,29 +598,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
                     elections.Add (new (ElectionContext.ElectionType.ShuffleRemove, e.TargetIDs, generator: _generator));
                     break;
-                //case Ballot.Effect.EffectType.ReplaceParty:
-                //    IDType partyOriginal = e.TargetIDs[0];
-                //    IDType partyNew = e.TargetIDs[1];
-
-                //    _partiesActive.Remove (partyOriginal);
-                //    _partiesActive.Add (partyNew);
-
-                //    foreach (var kv in PeopleFactions) {
-                //        if (kv.Value.Item1 is IDType p && p == partyOriginal) {
-                //            PeopleFactions[kv.Key] = (partyNew, kv.Value.Item2);
-                //        }
-                //    }
-
-                //    foreach (var kv in PeopleRoles) {
-                //        if (kv.Value.Remove (partyOriginal)) {
-                //            kv.Value.Add (partyNew);
-                //        }
-                //    }
-
-                //    // update currencies, which seems impossible to maintain consistently
-
-                //    OnCompleteElection ();
-                //    break;
                 case Ballot.Effect.EffectType.RemoveProcedure:
                     _proceduresActive.RemoveWhere (p => e.TargetIDs.Contains (p));
                     isModifiedProcedures = true;
@@ -646,6 +624,12 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         }
                     }
 
+                    break;
+                case Ballot.Effect.EffectType.ReplaceParty:
+                    IDType partyOriginal = e.TargetIDs[0];
+                    IDType partyNew = e.TargetIDs[1];
+
+                    ReplacingParty?.Invoke (partyOriginal, partyNew);
                     break;
             }
         }

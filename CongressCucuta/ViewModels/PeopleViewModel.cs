@@ -97,20 +97,21 @@ internal class PeopleViewModel : ViewModel {
 
         bool? result = file.ShowDialog ();
 
-        if (result != true) {
-            WasImportFailure = true;
+        if (result is not true) {
             return;
         }
 
         try {
-            string[] names = File.ReadAllLines (file.FileName);
+            var lines = File.ReadLines (file.FileName).Take (byte.MaxValue);
 
-            Names = [.. names.Select (n => new NameGroup (n))];
+            Names = [.. lines.Where (l => ! string.IsNullOrWhiteSpace (l)).Select (n => new NameGroup (n.Trim ()))];
         } catch (Exception) {
             WasImportFailure = true;
+            WasImportSuccess = false;
             return;
         }
 
+        WasImportFailure = false;
         WasImportSuccess = true;
     });
 

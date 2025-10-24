@@ -1,4 +1,4 @@
-name: Build and Release
+name: Release
 
 on:
   push:
@@ -32,7 +32,6 @@ jobs:
           --self-contained false `
           -p:PublishSingleFile=true `
           -p:DebugType=None `
-          -p:DebugSymbols=false `
           -o publish/${{ matrix.arch }}
 
     - name: Upload build artifacts (${{ matrix.arch }})
@@ -46,26 +45,26 @@ jobs:
     needs: build
 
     steps:
-      - name: Download build artifacts (win-x64)
-        uses: actions/download-artifact@v4
-        with:
-          name: CongressCucuta-win-x64
-          path: publish/win-x64
+    - name: Download build artifacts (win-x64)
+      uses: actions/download-artifact@v4
+      with:
+        name: CongressCucuta-win-x64
+        path: publish/win-x64
 
-      - name: Download build artifacts (win-x86)
-        uses: actions/download-artifact@v4
-        with:
-          name: CongressCucuta-win-x86
-          path: publish/win-x86
+    - name: Download build artifacts (win-x86)
+      uses: actions/download-artifact@v4
+      with:
+        name: CongressCucuta-win-x86
+        path: publish/win-x86
 
-      - name: Compress build artifacts
-        run: |
-          Compress-Archive -Path publish/win-x64/* -DestinationPath CongressCucuta-win-x64.zip
-          Compress-Archive -Path publish/win-x86/* -DestinationPath CongressCucuta-win-x86.zip
+    - name: Compress build artifacts
+      run: |
+        Compress-Archive -Path publish/win-x64/* -DestinationPath CongressCucuta-win-x64.zip
+        Compress-Archive -Path publish/win-x86/* -DestinationPath CongressCucuta-win-x86.zip
 
-      - name: Create GitHub release
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            CongressCucuta-win-x64.zip
-            CongressCucuta-win-x86.zip
+    - name: Create GitHub release
+      uses: softprops/action-gh-release@v2
+      with:
+        files: |
+          CongressCucuta-win-x64.zip
+          CongressCucuta-win-x86.zip

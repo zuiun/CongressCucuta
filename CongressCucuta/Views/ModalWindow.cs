@@ -1,5 +1,5 @@
-﻿using CongressCucuta.ViewModels;
-using System.Windows;
+﻿using System.Windows;
+using CongressCucuta.ViewModels;
 
 namespace CongressCucuta.Views;
 

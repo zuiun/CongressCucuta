@@ -32,11 +32,12 @@ public sealed class SimulationViewModelTests {
     [DataRow ((byte) 11)]
     public void SetSlideCurrentIdx_StartBallot_InvokesExpected (byte slideId) {
         FakeSimulation simulation = new ();
-        SimulationViewModel vm = new (simulation);
 
-        vm.SlideCurrentIdx = slideId;
+        SimulationViewModel actual = new (simulation) {
+            SlideCurrentIdx = slideId
+        };
 
-        Assert.IsTrue (vm.Context.IsBallotCount);
+        Assert.IsTrue (actual.Context.IsBallotCount);
     }
 
     [TestMethod]

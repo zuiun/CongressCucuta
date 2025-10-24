@@ -63,5 +63,17 @@ internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
         }
     }
 
+    public void ReplaceParty (ref readonly Localisation localisation) {
+        if (localisation.Parties.TryGetValue (ID, out (string, string[]) party)) {
+            Name = localisation.GetFactionOrAbbreviation (ID);
+
+            foreach (PersonViewModel p in _people) {
+                p.ReplaceParty (in localisation);
+            }
+
+            Description = localisation.Abbreviations.ContainsKey (ID) ? party.Item1 : null;
+        }
+    }
+
     public void Sort () => People = [.. _people.OrderBy (p => p.ID)];
 }

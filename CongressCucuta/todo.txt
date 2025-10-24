@@ -1,3 +1,9 @@
 should end slide be constant or backward?
 
-try not to use event logic too much
+could localisation be centralised in a vm?
+tostring:
+condition
+ballot result
+confirmation
+procedure
+procedure effect

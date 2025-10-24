@@ -210,7 +210,7 @@ public sealed class LocalisationTests {
     [DataRow ((byte) 1, "Region 1")]
     [DataRow ((byte) 2, "Party 2 (2)")]
     [DataRow ((byte) 3, "Party 3")]
-    public void GetFactionAndAbbreviation_Localisation_ReturnsExpected (byte factionId, string expected) {
+    public void GetFactionAndAbbreviation_Normal_ReturnsExpected (byte factionId, string expected) {
         Localisation localisation = FakeLocalisation.Create ();
 
         string actual = localisation.GetFactionAndAbbreviation (factionId);
@@ -219,7 +219,7 @@ public sealed class LocalisationTests {
     }
 
     [TestMethod]
-    public void GetFactionAndAbbreviation_LocalisationWrongID_Throws () {
+    public void GetFactionAndAbbreviation_NoFaction_Throws () {
         Localisation localisation = FakeLocalisation.Create ();
 
         Assert.Throws<ArgumentException> (() => localisation.GetFactionAndAbbreviation (255));
@@ -230,7 +230,7 @@ public sealed class LocalisationTests {
     [DataRow ((byte) 1, "Region 1")]
     [DataRow ((byte) 2, "2")]
     [DataRow ((byte) 3, "Party 3")]
-    public void GetFactionOrAbbreviation_Localisation_ReturnsExpected (byte factionId, string expected) {
+    public void GetFactionOrAbbreviation_Normal_ReturnsExpected (byte factionId, string expected) {
         Localisation localisation = FakeLocalisation.Create ();
 
         string actual = localisation.GetFactionOrAbbreviation (factionId);
@@ -239,9 +239,66 @@ public sealed class LocalisationTests {
     }
 
     [TestMethod]
-    public void GetFactionOrAbbreviation_LocalisationWrongID_Throws () {
+    public void GetFactionOrAbbreviation_NoFaction_Throws () {
         Localisation localisation = FakeLocalisation.Create ();
 
         Assert.Throws<ArgumentException> (() => localisation.GetFactionOrAbbreviation (255));
+    }
+
+    [TestMethod]
+    [DataRow ((byte) 255, (byte) 3)]
+    [DataRow ((byte) 2, (byte) 255)]
+    public void ReplaceParty_NoParty_Throws (byte originalId, byte newId) {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        Assert.Throws<ArgumentException> (() => localisation.ReplaceParty (originalId, newId));
+    }
+
+    [TestMethod]
+    public void ReplaceParty_Abbreviation_MutatesExpected () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        localisation.ReplaceParty (3, 2);
+
+        Assert.AreEqual ("Party 2", localisation.Parties[3].Item1);
+        Assert.AreEqual ("2", localisation.Abbreviations[3]);
+    }
+
+    [TestMethod]
+    public void ReplaceParty_NoAbbreviation_MutatesExpected () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        localisation.ReplaceParty (2, 3);
+
+        Assert.AreEqual ("Party 3", localisation.Parties[2].Item1);
+        Assert.DoesNotContain (2, localisation.Abbreviations.Keys);
+    }
+
+    [TestMethod]
+    public void ReplaceParty_Role_MutatesExpected () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        localisation.ReplaceParty (2, 3);
+
+        Assert.AreEqual ("3 Leader", localisation.Roles[2].Item1);
+    }
+
+    [TestMethod]
+    public void ReplaceParty_NoRole_MutatesExpected () {
+        Localisation localisation = FakeLocalisation.Create ();
+        localisation.Roles.Clear ();
+
+        localisation.ReplaceParty (2, 3);
+
+        Assert.DoesNotContain (2, localisation.Roles.Keys);
+    }
+
+    [TestMethod]
+    public void ReplaceParty_RoleNoRole_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+
+        localisation.Roles.Remove (3);
+
+        Assert.Throws<ArgumentException> (() => localisation.ReplaceParty (2, 3));
     }
 }

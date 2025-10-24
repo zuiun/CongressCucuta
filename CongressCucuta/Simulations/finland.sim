@@ -356,6 +356,14 @@
             "Value": 0
           },
           {
+            "Type": 5,
+            "TargetIDs": [
+              0,
+              4
+            ],
+            "Value": 0
+          },
+          {
             "Type": 2,
             "TargetIDs": [
               5
@@ -388,7 +396,16 @@
     {
       "ID": 2,
       "Pass": {
-        "Effects": [],
+        "Effects": [
+          {
+            "Type": 5,
+            "TargetIDs": [
+              0,
+              4
+            ],
+            "Value": 0
+          }
+        ],
         "Links": [
           {
             "Condition": {
@@ -607,6 +624,10 @@
         "Item1": "Chairman of SFP",
         "Item2": "Chairmen of SFP"
       },
+      "4": {
+        "Item1": "Chairman of Kesk",
+        "Item2": "Chairmen of Kesk"
+      },
       "252": {
         "Item1": "Chairman",
         "Item2": "Chairmen"
@@ -647,13 +668,18 @@
       "3": {
         "Item1": "Swedish People\u0027s Party of Finland",
         "Item2": []
+      },
+      "4": {
+        "Item1": "Centre Party",
+        "Item2": []
       }
     },
     "Abbreviations": {
       "0": "Ml",
       "1": "SDP",
       "2": "Kok",
-      "3": "SFP"
+      "3": "SFP",
+      "4": "Kesk"
     },
     "Currencies": {},
     "Procedures": {
@@ -744,14 +770,14 @@
       },
       "1": {
         "Item1": "Ballot B",
-        "Item2": "Mandate Swedish in primary schools",
+        "Item2": "Introduce Swedish in primary schools",
         "Item3": [
           "#|Less than 8% of the population speaks Swedish",
           "##|However, western and southern coasts have Swedish majorities",
           "##|Swedish was the state and elite language for most of Finland\u0027s history, so it retains significant prestige",
           "#|Despite Soviet dominance, Sweden remains one of Finland\u0027s most important allies and trading partners",
           "##|This makes it relatively important for business",
-          "#|Mandating Swedish will be seen as a step towards the West",
+          "#|Introducing Swedish will be seen as a step towards the West",
           "##|Ironically, it will also be seen as a nationalist policy, given the importance of Swedish literature to Finnish culture",
           "###|Even the national anthem is actually a Swedish tune, translated to Finnish"
         ],
@@ -760,14 +786,14 @@
           "#|However, mandatory Swedish becomes the rallying cry of the Swedish minority",
           "##|This is the first step towards their end goal of full bilingualism",
           "#|Many question why students can\u0027t opt for a more useful language, like English",
-          "On the other hand, mandatory Swedish becomes a unique facet of Finnish culture",
+          "On the other hand, learning Swedish becomes a unique facet of Finnish culture",
           "#|Anything is better than learning Russian"
         ],
         "Item5": [
           "Swedish minority is disgruntled",
           "#|They complain about \u0022mandatory Finnish,\u0022 although there is no widespread discontent",
           "Business largely goes on as usual",
-          "#|Some speculate that refusing to mandate Swedish could actually lead to a resurgence in its popularity among bilingual Finnish-Swedish speakers"
+          "#|Some speculate that refusing to introduce Swedish could actually lead to a resurgence in its popularity among bilingual Finnish-Swedish speakers"
         ]
       },
       "2": {

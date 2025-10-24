@@ -254,6 +254,14 @@
       "Fail": {
         "Effects": [
           {
+            "Type": 5,
+            "TargetIDs": [
+              2,
+              3
+            ],
+            "Value": 0
+          },
+          {
             "Type": 4,
             "TargetIDs": [
               2
@@ -283,6 +291,14 @@
       "ID": 1,
       "Pass": {
         "Effects": [
+          {
+            "Type": 5,
+            "TargetIDs": [
+              0,
+              4
+            ],
+            "Value": 0
+          },
           {
             "Type": 4,
             "TargetIDs": [
@@ -621,6 +637,14 @@
         "Item1": "Chairman",
         "Item2": "Chairmen"
       },
+      "3": {
+        "Item1": "Chairman",
+        "Item2": "Chairmen"
+      },
+      "4": {
+        "Item1": "Chief of Staff",
+        "Item2": "Chiefs of Staff"
+      },
       "252": {
         "Item1": "Faction Leader",
         "Item2": "Faction Leaders"
@@ -638,7 +662,7 @@
     },
     "Parties": {
       "0": {
-        "Item1": "Republic of Indonesia Armed Forces",
+        "Item1": "Indonesian National Armed Forces",
         "Item2": [
           "#|Anti-imperialist, anti-communist, and nationalist",
           "#|Seen as a bastion of stability and independence"
@@ -656,12 +680,22 @@
         "Item2": [
           "#|Relatively rightist and supports Sharia law"
         ]
+      },
+      "3": {
+        "Item1": "Revival of the Ulama",
+        "Item2": []
+      },
+      "4": {
+        "Item1": "Republic of Indonesia Armed Forces",
+        "Item2": []
       }
     },
     "Abbreviations": {
-      "0": "ABRI",
+      "0": "TNI",
       "1": "PKI",
-      "2": "Masyumi"
+      "2": "Masyumi",
+      "3": "NU",
+      "4": "ABRI"
     },
     "Currencies": {
       "0": "Influence",
@@ -688,7 +722,7 @@
       },
       "4": {
         "Item1": "East of Suez",
-        "Item2": "Indonesia\u0027s foreign policy is primarily concerned with the UK\u0027s East of Suez policy, which is seen as a threat to Indonesian influence and independence."
+        "Item2": "Indonesia\u0027s foreign policy is formulated primarily in opposition to the UK\u0027s East of Suez policy, which is seen as a threat to Indonesian influence and independence."
       },
       "5": {
         "Item1": "Rubber Stamp",
@@ -717,7 +751,7 @@
           "##|However, the rebellion is almost defeated",
           "###|Aceh and Borneo are on the verge of reclamation",
           "###|Sunda and Celebes will take longer to pacify",
-          "###|Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the ABRI",
+          "###|Completely defeating the rebellion would greatly weaken all Islamists, even moderate ones, and promote the image of the army",
           "##|This would lessen tensions, especially in Aceh",
           "House of Islam will be militarily suppressed if this ballot fails"
         ],
@@ -732,7 +766,7 @@
           "House of Islam is brutally crushed",
           "#|Masyumi is purged and supplanted by a parallel organisation, Revival of the Ulama (NU)",
           "##|NU is closely monitored",
-          "#|ABRI is hailed as a bringer of stability"
+          "#|Army is hailed as a bringer of stability"
         ]
       },
       "1": {
@@ -758,7 +792,7 @@
         "Item5": [
           "Anti-imperialist rhetoric is seen as posturing",
           "#|Many Indonesians see Dutch New Guinea as part of the Indonesian homeland",
-          "##|As a result, the people begin to distrust the ABRI and the PKI",
+          "##|As a result, the people begin to distrust the army and the PKI",
           "#|However, this reassures the US and the UK",
           "##|This should draw Indonesia out of the Soviet sphere",
           "###|Therefore, there may be an opportunity for foreign investment or alliances"
@@ -786,7 +820,7 @@
         ],
         "Item5": [
           "There is little reaction from most people",
-          "#|ABRI is relieved, but concerned with British influence",
+          "#|Army is relieved, but concerned with British influence",
           "#|However, the PKI is dissatisfied with inaction",
           "##|It claims that Malaysia is an imperialist puppet that the UK will use to dominate the Malay Archipelago",
           "Malaysia reaches out for mutual investment",
@@ -819,7 +853,7 @@
         ],
         "Item5": [
           "PKI attempts to seize foreign assets anyway",
-          "#|It is eventually stopped by the ABRI",
+          "#|It is eventually stopped by the army",
           "Relations with the West are gradually restored",
           "#|Most foreign assets seized over the years are returned",
           "##|However, foreign powers don\u0027t want to bail out Indonesia",
@@ -835,7 +869,7 @@
           "###|This will be achieved through the use of political commissars and re-education",
           "##|Fifth Force would be made of armed militias not subject to governmental control",
           "###|This would essentially create an army for the PKI",
-          "##|All of these measures would drastically weaken the influence and the independence of the ABRI"
+          "##|All of these measures would drastically weaken the influence and the independence of the army"
         ],
         "Item4": [
           "Intentionally left blank"
@@ -875,7 +909,7 @@
         "Item1": "Incident B Passed",
         "Item2": [
           "Indonesia becomes a communist state",
-          "#|With the gradual weakening of the ABRI and the Islamists, the PKI is able to seize power",
+          "#|With the gradual weakening of the army and the Islamists, the PKI is able to seize power",
           "#|This leads to total collapse",
           "##|Many industries were already being run inefficiently",
           "##|Inexperienced PKI ministers are unable to repair the state of the economy",
@@ -901,7 +935,7 @@
           "#|This pushes Indonesia into the Western sphere",
           "##|US greatly expands aid and investment to secure Indonesia",
           "###|Though this improves the economy, it doesn\u0027t result in universal growth",
-          "#|ABRI institutes a military dictatorship without the PKI to counterbalance",
+          "#|Army institutes a military dictatorship without the PKI to counterbalance",
           "##|This causes serious concerns about whether democracy can be restored or not"
         ]
       },
@@ -912,18 +946,18 @@
           "#|Rebellion begins in Aceh to oppose foreign exploitation",
           "##|NU supports the rebellion, which prevents it from being suppressed",
           "#|With the emergence of an opposition faction, there is now a possibility for a return to democracy",
-          "#|If the ABRI can\u0027t improve living conditions, then it will likely be overthrown"
+          "#|If the army can\u0027t improve living conditions, then it will likely be overthrown"
         ]
       },
       "7": {
         "Item1": "Ballot A Failed",
         "Item2": [
-          "Without any other opposition factions, the ABRI completely dominates",
+          "Without any other opposition factions, the army completely dominates",
           "#|Regionalist dissent and rebellions are easily crushed",
           "Economy only improves somewhat",
           "#|There is no good reason for the Western states to invest in Indonesia",
           "#|Overall, Indonesia remains impoverished and the people are rebellious",
-          "##|If the ABRI can\u0027t maintain total dominance, this could result in a coup"
+          "##|If the army can\u0027t maintain total dominance, this could result in a coup"
         ]
       },
       "8": {
@@ -943,7 +977,7 @@
           "#|Passivity convinces China and the USSR that Indonesia isn\u0027t worth supporting",
           "#|This means no financial aid or investment",
           "##|Population remains incredibly impoverished",
-          "ABRI splits into radical, opposing factions",
+          "Army splits into radical, opposing factions",
           "#|After a failed coup, Indonesia collapses into civil war",
           "##|Indonesia becomes a proxy battleground"
         ]
@@ -961,12 +995,12 @@
       "11": {
         "Item1": "Ballot A Failed",
         "Item2": [
-          "Without any other opposition factions, the ABRI completely dominates",
+          "Without any other opposition factions, the army completely dominates",
           "#|Regionalist dissent is easily suppressed",
           "Economy improves steadily",
           "#|Though there are always those who clamour for democracy, most are satisfied with the current state of affairs",
           "##|Indonesia remains a rare example of a functional and stable military dictatorship",
-          "###|However, the ABRI will likely peacefully hand over power to civilian successors as international and domestic opinions shift"
+          "###|However, the army will likely peacefully hand over power to civilian successors as international and domestic opinions shift"
         ]
       }
     }

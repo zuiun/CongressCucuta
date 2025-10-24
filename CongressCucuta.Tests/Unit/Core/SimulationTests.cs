@@ -1060,6 +1060,76 @@ public sealed class SimulationTests {
     }
 
     [TestMethod]
+    public void Validate_11PassReplacePartyOriginal_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Pass.Effects.Add (new (Ballot.Effect.EffectType.ReplaceParty, [100, 3]));
+
+        string expected = "Ballot ID 0 Pass Effect original Target ID does not correspond with any Party ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11PassReplacePartyNew_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Pass.Effects.Add (new (Ballot.Effect.EffectType.ReplaceParty, [2, 100]));
+
+        string expected = "Ballot ID 0 Pass Effect new Target ID does not correspond with any Localisation ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11PassReplacePartyRole_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Pass.Effects.Add (new (Ballot.Effect.EffectType.ReplaceParty, [2, 4]));
+        simulation.Localisation.Parties[4] = (Localisation.UNUSED, []);
+
+        string expected = "Ballot ID 0 Pass Effect original and new Party must either both have Roles or have no Roles";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
     public void Validate_11FailFoundParty_Throws () {
         Simulation simulation = new FakeSimulation ();
         simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.FoundParty, [100]));
@@ -1229,6 +1299,76 @@ public sealed class SimulationTests {
         simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ModifyCurrency, [100], 1));
 
         string expected = "Ballot ID 0 Fail Effect Target IDs do not correspond with any Currency ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11FailReplacePartyOriginal_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ReplaceParty, [100, 3]));
+
+        string expected = "Ballot ID 0 Fail Effect original Target ID does not correspond with any Party ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11FailReplacePartyNew_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ReplaceParty, [2, 100]));
+
+        string expected = "Ballot ID 0 Fail Effect new Target ID does not correspond with any Localisation ID";
+
+        var e = Assert.Throws<ArgumentException> (() => new Simulation (
+            simulation.History,
+            simulation.RolesPermissions,
+            simulation.Regions,
+            simulation.Parties,
+            simulation.CurrenciesValues,
+            simulation.ProceduresGovernmental,
+            simulation.ProceduresSpecial,
+            simulation.ProceduresDeclared,
+            simulation.Ballots,
+            simulation.Results,
+            simulation.Localisation
+        ));
+        Assert.AreEqual (expected, e.Message);
+    }
+
+    [TestMethod]
+    public void Validate_11FailReplacePartyRole_Throws () {
+        Simulation simulation = new FakeSimulation ();
+        simulation.Ballots[0].Fail.Effects.Add (new (Ballot.Effect.EffectType.ReplaceParty, [2, 4]));
+        simulation.Localisation.Parties[4] = (Localisation.UNUSED, []);
+
+        string expected = "Ballot ID 0 Fail Effect original and new Party must either both have Roles or have no Roles";
 
         var e = Assert.Throws<ArgumentException> (() => new Simulation (
             simulation.History,

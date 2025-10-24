@@ -1,4 +1,5 @@
 ﻿using CongressCucuta.Core;
+using CongressCucuta.Tests.Fakes;
 using CongressCucuta.ViewModels;
 
 namespace CongressCucuta.Tests.Unit.ViewModels;
@@ -12,7 +13,7 @@ public sealed class PersonViewModelTests {
     public void GetRoles_Normal_ReturnsExpected (string role, string expected) {
         PersonViewModel person = new (0, "Person", true);
 
-        person.Roles.Add (new (role));
+        person.Roles.Add (new (0, role));
 
         Assert.AreEqual (role, person.Roles[0].Name);
         Assert.Contains (expected, person.Roles[0].Abbreviation);
@@ -122,13 +123,13 @@ public sealed class PersonViewModelTests {
 
     [TestMethod]
     public void SetInteractable_False_MutatesExpected () {
-        PersonViewModel person = new (0, "Name", true);
+        PersonViewModel actual = new (0, "Name", true) {
+            IsInteractable = false
+        };
 
-        person.IsInteractable = false;
-
-        Assert.IsFalse (person.IsPass);
-        Assert.IsFalse (person.IsFail);
-        Assert.IsTrue (person.IsAbstain);
+        Assert.IsFalse (actual.IsPass);
+        Assert.IsFalse (actual.IsFail);
+        Assert.IsTrue (actual.IsAbstain);
     }
 
     [TestMethod]
@@ -156,5 +157,18 @@ public sealed class PersonViewModelTests {
         Assert.IsFalse (person.CanVote);
         Assert.AreEqual (0, person.Votes);
         Assert.IsFalse (person.CanSpeak);
+    }
+
+    [TestMethod]
+    public void ReplaceParty_Normal_MutatesExpected () {
+        Localisation localisation = FakeLocalisation.Create ();
+        localisation.Roles[0] = ("Role 1", "Roles 1");
+        PersonViewModel person = new (0, "Person", true);
+        person.Roles.Add (new (0, "Role 0"));
+
+        person.ReplaceParty (in localisation);
+
+        Assert.AreEqual ("Role 1", person.Roles[0].Name);
+        Assert.Contains ("R1", person.Roles[0].Abbreviation);
     }
 }

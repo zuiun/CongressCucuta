@@ -9,11 +9,11 @@ public readonly record struct Ballot (IDType ID, Ballot.Result Pass, Ballot.Resu
             // Regions are not intended to change
             FoundParty, // Targets Factions, elects PARTY_LEADER (if present, random if value > 0)
             DissolveParty, // Targets Factions, elects PARTY_LEADER (if present)
-            //AddProcedure, // Targets Procedures (single)
-            //ReplaceParty, // Targets Factions (original, new), retains PARTY_LEADER (if present)
             RemoveProcedure, // Targets Procedures
             ReplaceProcedure, // Targets Procedures (original, new)
             ModifyCurrency, // Targets Currencies (Faction ID, REGION [one], PARTY [one], STATE [one])
+            ReplaceParty, // Targets Factions (original, new), retains PARTY_LEADER (if present)
+            //AddProcedure, // Targets Procedures (single)
         }
 
         public EffectType Type { get; }
@@ -26,16 +26,16 @@ public readonly record struct Ballot (IDType ID, Ballot.Result Pass, Ballot.Resu
                 throw new ArgumentException ("Target IDs must be populated", nameof (targetIds));
             }
 
-            //if (type is EffectType.ReplaceParty && targetIds.Length != 2) {
-            //    throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceParty", nameof (targetIds));
-            //}
-
             if (type is EffectType.ReplaceProcedure && targetIds.Length != 2) {
                 throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceProcedure", nameof (targetIds));
             }
 
             if (type is EffectType.ModifyCurrency && value == 0) {
                 throw new ArgumentException ("Value must be non-zero for Action ModifyCurrency", nameof (targetIds));
+            }
+
+            if (type is EffectType.ReplaceParty && targetIds.Length != 2) {
+                throw new ArgumentException ("Target IDs must have two IDs for Action ReplaceParty", nameof (targetIds));
             }
 
             Type = type;
@@ -63,12 +63,6 @@ public readonly record struct Ballot (IDType ID, Ballot.Result Pass, Ballot.Resu
 
                     return $"Dissolve {string.Join (", ", parties)}";
                 }
-                //case EffectType.ReplaceParty: {
-                //    string partyOriginal = localisation.GetFactionAndAbbreviation (TargetIDs[0]);
-                //    string partyNew = localisation.GetFactionAndAbbreviation (TargetIDs[1]);
-
-                //    return $"Replace {partyOriginal} with {partyNew}";
-                //}
                 case EffectType.RemoveProcedure: {
                     List<string> procedures = [];
 
@@ -118,6 +112,12 @@ public readonly record struct Ballot (IDType ID, Ballot.Result Pass, Ballot.Resu
 
                         return $"{string.Join (", ", owners)}:\n{StringLineFormatter.Indent ($"{action} {value} {currency}", 1)}";
                     }
+                }
+                case EffectType.ReplaceParty: {
+                    string partyOriginal = localisation.GetFactionAndAbbreviation (TargetIDs[0]);
+                    string partyNew = localisation.GetFactionAndAbbreviation (TargetIDs[1]);
+
+                    return $"Replace {partyOriginal} with {partyNew}";
                 }
                 default:
                     throw new UnreachableException ();

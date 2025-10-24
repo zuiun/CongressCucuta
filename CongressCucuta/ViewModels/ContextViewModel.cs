@@ -34,24 +34,31 @@ internal class ContextViewModel : ViewModel {
         public ObservableCollection<string> Procedures => [.. procedures];
     }
 
-    internal class ProcedureGroup : ViewModel, IID {
-        public IDType ID { get; }
-        public string Name { get; }
-        public string Effects { get; }
+    internal class ProcedureGroup (IDType id, string name, string effects) : ViewModel, IID {
+        private string _effects = Trim (effects);
+        public IDType ID { get; } = id;
+        public string Name { get; } = name;
+        public string Effects {
+            get => _effects;
+            set {
+                _effects = value;
+                OnPropertyChanged ();
+            }
+        }
 
-        public ProcedureGroup (IDType id, string name, string effects) {
+        public static string Trim (string effects) {
             string[] lines = effects.Split ('\n');
-            string[] clean = lines[1 ..];
+            string[] clean = lines[1..];
             string join = string.Join ('\n', clean);
             string trim = StringLineFormatter.Outdent (join);
+            string result = StringLineFormatter.Convert (trim);
 
-            ID = id;
-            Name = name;
-            Effects = StringLineFormatter.Convert (trim);
+            return result;
         }
     }
 
-    private readonly Localisation _localisation;
+    private readonly Simulation _simulation;
+    private Localisation _localisation;
     private bool _isPeople = true;
     private bool _isFaction = false;
     // One of the two is used, depending on whether or not factions exist
@@ -71,7 +78,6 @@ internal class ContextViewModel : ViewModel {
     private ObservableCollection<ProcedureGroup> _proceduresSpecial = [];
     private ObservableCollection<ProcedureGroup> _proceduresDeclared = [];
     private readonly HashSet<IDType> _declarerRoles = [];
-    private readonly Dictionary<IDType, string> _proceduresEffects = [];
     public bool IsPeople {
         get => _isPeople;
         set {
@@ -189,11 +195,12 @@ internal class ContextViewModel : ViewModel {
     public event Action<IDType>? DeclaringProcedure;
 
     public ContextViewModel (SimulationContext context, Simulation simulation, ref readonly Localisation localisation) {
+        _simulation = simulation;
         _localisation = localisation;
         context.CompletedElection += Context_CompletedElectionEventHandler;
         context.UpdatedPermissions += Context_UpdatedPermissionsEventHandler;
         context.VotedBallot += Context_VotedBallotEventHandler;
-        context.ModifiedProcedures += Simulation_ModifiedProceduresEventHandler;
+        context.ModifiedProcedures += Context_ModifiedProceduresEventHandler;
         context.ModifiedCurrencies += Context_ModifiedCurrenciesEventHandler;
         context.Context.ResetVotes += Context_ResetVotesEventHandler;
 
@@ -208,7 +215,7 @@ internal class ContextViewModel : ViewModel {
         }
 
         foreach (ProcedureImmediate pi in context.ProceduresGovernmental.Values) {
-            string effect = pi.ToString (simulation, in _localisation);
+            string effect = pi.ToString (_simulation, in _localisation);
             ProcedureGroup procedure = new (
                 pi.ID,
                 _localisation.Procedures[pi.ID].Item1,
@@ -216,11 +223,10 @@ internal class ContextViewModel : ViewModel {
             );
 
             ProceduresGovernmental.Add (procedure);
-            _proceduresEffects[pi.ID] = effect;
         }
 
         foreach (ProcedureTargeted pt in context.ProceduresSpecial.Values) {
-            string effect = pt.ToString (simulation, in _localisation);
+            string effect = pt.ToString (_simulation, in _localisation);
 
             if (pt.IsActiveStart) {
                 ProcedureGroup procedure = new (
@@ -231,12 +237,10 @@ internal class ContextViewModel : ViewModel {
 
                 ProceduresSpecial.Add (procedure);
             }
-
-            _proceduresEffects[pt.ID] = effect;
         }
 
         foreach (ProcedureDeclared pd in context.ProceduresDeclared.Values) {
-            string effect = pd.ToString (simulation, in _localisation);
+            string effect = pd.ToString (_simulation, in _localisation);
             ProcedureGroup procedure = new (
                 pd.ID,
                 _localisation.Procedures[pd.ID].Item1,
@@ -244,7 +248,6 @@ internal class ContextViewModel : ViewModel {
             );
 
             ProceduresDeclared.Add (procedure);
-            _proceduresEffects[pd.ID] = effect;
         }
 
         Sort ();
@@ -290,7 +293,7 @@ internal class ContextViewModel : ViewModel {
 
         foreach (IDType r in roles) {
             if (r != Role.MEMBER && r != Role.LEADER_PARTY && r != Role.LEADER_REGION) {
-                person.Roles.Add (new (_localisation.Roles[r].Item1));
+                person.Roles.Add (new (r, _localisation.Roles[r].Item1));
             }
 
             if (_declarerRoles.Contains (r)) {
@@ -452,6 +455,34 @@ internal class ContextViewModel : ViewModel {
         IsBallotCount = false;
     }
 
+    public void ReplaceParty (ref readonly Localisation localisation) {
+        _localisation = localisation;
+
+        foreach (FactionViewModel f in _factionsPeople) {
+            f.ReplaceParty (in _localisation);
+        }
+
+        foreach (ProcedureGroup pi in _proceduresGovernmental) {
+            string effect = _simulation.ProceduresGovernmental[pi.ID].ToString (_simulation, in _localisation);
+
+            pi.Effects = ProcedureGroup.Trim (effect);
+        }
+
+        foreach (ProcedureGroup pt in _proceduresSpecial) {
+            IDType offsetIdx = _simulation.ProceduresGovernmental.Count;
+            string effect = _simulation.ProceduresSpecial[pt.ID - offsetIdx].ToString (_simulation, in _localisation);
+
+            pt.Effects = ProcedureGroup.Trim (effect);
+        }
+
+        foreach (ProcedureGroup pd in _proceduresDeclared) {
+            IDType offsetIdx = _simulation.ProceduresGovernmental.Count + _simulation.ProceduresSpecial.Count;
+            string effect = _simulation.ProceduresDeclared[pd.ID - offsetIdx].ToString (_simulation, in _localisation);
+
+            pd.Effects = ProcedureGroup.Trim (effect);
+        }
+    }
+
     private void Person_VotingPassEventHandler (object? sender, bool e) {
         IDType id = ((PersonViewModel) sender!).ID;
         VotingEventArgs args = new (
@@ -554,14 +585,15 @@ internal class ContextViewModel : ViewModel {
         e.ProceduresDeclared.ConvertAll (p => _localisation.Procedures[p.ID].Item1)
     ));
 
-    private void Simulation_ModifiedProceduresEventHandler (HashSet<ProcedureTargeted> e) {
+    private void Context_ModifiedProceduresEventHandler (HashSet<ProcedureTargeted> e) {
         ProceduresSpecial.Clear ();
 
         foreach (ProcedureTargeted pt in e) {
+            string effect = pt.ToString (_simulation, in _localisation);
             ProcedureGroup procedure = new (
                 pt.ID,
                 _localisation.Procedures[pt.ID].Item1,
-                _proceduresEffects[pt.ID]
+                effect
             );
 
             ProceduresSpecial.Add (procedure);

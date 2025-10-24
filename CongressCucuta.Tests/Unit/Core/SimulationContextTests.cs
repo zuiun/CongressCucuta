@@ -1065,6 +1065,27 @@ public sealed class SimulationContextTests {
     }
 
     [TestMethod]
+    [DataRow (true)]
+    [DataRow (false)]
+    public void EndBallot_ReplaceParty_InvokesExpected (bool isPass) {
+        FakeSimulation simulation = new ();
+        SimulationContext context = new (simulation);
+        context.Ballots[0] = new (
+            0,
+            new Ballot.Result ([new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [2, 3])], []),
+            new Ballot.Result ([new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [2, 3])], [])
+        );
+        context.ReplacingParty += Context_ReplacingPartyEventHandler;
+
+        context.EndBallot (isPass);
+
+        static void Context_ReplacingPartyEventHandler (IDType e1, IDType e2) {
+            Assert.AreEqual<IDType> (2, e1);
+            Assert.AreEqual<IDType> (3, e2);
+        }
+    }
+
+    [TestMethod]
     public void IsBallotPassed_Pass_ReturnsTrue () {
         FakeSimulation simulation = new ();
         SimulationContext context = new (simulation);

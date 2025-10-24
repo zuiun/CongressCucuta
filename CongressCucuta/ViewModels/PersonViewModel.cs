@@ -4,18 +4,30 @@ using CongressCucuta.Core;
 namespace CongressCucuta.ViewModels;
 
 internal class PersonViewModel (IDType id, string name, bool isInteractable) : ViewModel, IID {
-    internal class RoleGroup : ViewModel {
-        private readonly string _name;
-        private readonly string _abbreviation;
-        public string Name => _name;
-        public string Abbreviation => _abbreviation;
+    internal class RoleGroup (IDType id, string name) : ViewModel, IID {
+        private string _name = name;
+        private string _abbreviation = Trim (name);
+        public IDType ID { get; } = id;
+        public string Name {
+            get => _name;
+            set {
+                _name = value;
+                OnPropertyChanged ();
+            }
+        }
+        public string Abbreviation {
+            get => _abbreviation;
+            set {
+                _abbreviation = value;
+                OnPropertyChanged ();
+            }
+        }
 
-        public RoleGroup (string name) {
+        public static string Trim (string name) {
             string[] words = name.Split ([' ', '-']);
             string abbreviation = string.Join (string.Empty, words.Select (w => w.First ()));
-            
-            _name = name;
-            _abbreviation = $"[{abbreviation}]";
+
+            return $"[{abbreviation}]";
         }
     }
 
@@ -126,6 +138,15 @@ internal class PersonViewModel (IDType id, string name, bool isInteractable) : V
         IsPass = false;
         IsFail = false;
         IsAbstain = true;
+    }
+
+    public void ReplaceParty (ref readonly Localisation localisation) {
+        foreach (RoleGroup r in _roles) {
+            string name = localisation.Roles[r.ID].Item1;
+
+            r.Name = name;
+            r.Abbreviation = RoleGroup.Trim (name);
+        }
     }
 
     public RelayCommand DeclareProcedureCommand => new (_ => DeclaringProcedure?.Invoke (ID));

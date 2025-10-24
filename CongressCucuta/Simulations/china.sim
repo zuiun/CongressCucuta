@@ -409,6 +409,22 @@
       "Pass": {
         "Effects": [
           {
+            "Type": 5,
+            "TargetIDs": [
+              1,
+              3
+            ],
+            "Value": 0
+          },
+          {
+            "Type": 5,
+            "TargetIDs": [
+              2,
+              4
+            ],
+            "Value": 0
+          },
+          {
             "Type": 4,
             "TargetIDs": [
               255
@@ -427,6 +443,22 @@
       },
       "Fail": {
         "Effects": [
+          {
+            "Type": 5,
+            "TargetIDs": [
+              1,
+              3
+            ],
+            "Value": 0
+          },
+          {
+            "Type": 5,
+            "TargetIDs": [
+              2,
+              4
+            ],
+            "Value": 0
+          },
           {
             "Type": 4,
             "TargetIDs": [
@@ -602,10 +634,18 @@
         "Item2": "Ideologues of KMC"
       },
       "1": {
-        "Item1": "Ideologue of KTP",
-        "Item2": "Ideologues of KTP"
+        "Item1": "Ideologue of KTH",
+        "Item2": "Ideologues of KTH"
       },
       "2": {
+        "Item1": "Ideologue of HHP",
+        "Item2": "Ideologues of HHP"
+      },
+      "3": {
+        "Item1": "Ideologue of CHH",
+        "Item2": "Ideologues of CHH"
+      },
+      "4": {
         "Item1": "Ideologue of KHP",
         "Item2": "Ideologues of KHP"
       },
@@ -640,17 +680,27 @@
         ]
       },
       "2": {
-        "Item1": "Innovation Club",
+        "Item1": "Western Hills Conference",
         "Item2": [
           "#|Largest civilian faction",
           "#|Nationalist, conservative, and anti-communist"
         ]
+      },
+      "3": {
+        "Item1": "Political Study Association",
+        "Item2": []
+      },
+      "4": {
+        "Item1": "Innovation Club",
+        "Item2": []
       }
     },
     "Abbreviations": {
       "0": "KMC",
-      "1": "KTP",
-      "2": "KHP"
+      "1": "KTH",
+      "2": "HHP",
+      "3": "CHH",
+      "4": "KHP"
     },
     "Currencies": {
       "255": "Unity"

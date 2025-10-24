@@ -31,12 +31,14 @@ internal class Hungary : ISimulation {
         rolesLocs[1] = ("Chairman of MSZDP", "Chairmen of MSZDP");
         rolesLocs[2] = ("Leader of FKgP", "Leaders of FKgP");
         rolesLocs[3] = ("Leader of NAP", "Leaders of NAP");
+        rolesLocs[4] = ("Leader of NYKP", "Leaders of NYKP");
         rolesLocs[Role.LEADER_PARTY] = ("Party Leader", "Party Leaders");
 
         Faction ep = new (0);
         Faction mszdp = new (1);
         Faction fkgp = new (2, false);
         Faction nap = new (3, false);
+        IDType nap2 = 4;
         List<Faction> parties = [ep, mszdp, fkgp, nap];
         Dictionary<IDType, (string, string[])> partiesLocs = [];
         partiesLocs[ep.ID] = (
@@ -55,19 +57,15 @@ internal class Hungary : ISimulation {
                 StringLineFormatter.Indent ("Doesn't want to anger the great powers over the Treaty of Trianon", 2),
             ]
         );
-        partiesLocs[fkgp.ID] = (
-            "Independent Smallholders' Party",
-            []
-        );
-        partiesLocs[nap.ID] = (
-            "Party of National Will",
-            []
-        );
+        partiesLocs[fkgp.ID] = ("Independent Smallholders' Party", []);
+        partiesLocs[nap.ID] = ("Party of National Will", []);
+        partiesLocs[nap2] = ("Arrow Cross Party", []);
         Dictionary<IDType, string> abbreviations = [];
         abbreviations[ep.ID] = "EP";
         abbreviations[mszdp.ID] = "MSZDP";
         abbreviations[fkgp.ID] = "FKgP";
         abbreviations[nap.ID] = "NAP";
+        abbreviations[nap2] = "NYKP";
 
         Dictionary<IDType, sbyte> currenciesValues = [];
         IDType antisemitism = Currency.STATE;
@@ -217,7 +215,10 @@ internal class Hungary : ISimulation {
         Ballot incidentB = new (
             3,
             new Ballot.Result (
-                [new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [consolidation.ID])],
+                [
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [nap.ID, nap2]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [consolidation.ID]),
+                ],
                 [new (new AlwaysCondition (), 5)]
             ),
             new Ballot.Result (

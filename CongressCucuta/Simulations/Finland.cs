@@ -31,12 +31,14 @@ internal class Finland : ISimulation {
         rolesLocs[1] = ("Chairman of SDP", "Chairmen of SDP");
         rolesLocs[2] = ("Chairman of Kok", "Chairmen of Kok");
         rolesLocs[3] = ("Chairman of SFP", "Chairmen of SFP");
+        rolesLocs[4] = ("Chairman of Kesk", "Chairmen of Kesk");
         rolesLocs[Role.LEADER_PARTY] = ("Chairman", "Chairmen");
 
         Faction ml = new (0);
         Faction sdp = new (1);
         Faction kok = new (2);
         Faction sfp = new (3, false);
+        IDType ml2 = 4;
         List<Faction> factions = [ml, sdp, kok, sfp];
         Dictionary<IDType, (string, string[])> factionsLocs = [];
         factionsLocs[ml.ID] = (
@@ -64,11 +66,13 @@ internal class Finland : ISimulation {
             "Swedish People's Party of Finland",
             []
         );
+        factionsLocs[ml2] = ("Centre Party", []);
         Dictionary<IDType, string> abbreviations = [];
         abbreviations[ml.ID] = "Ml";
         abbreviations[sdp.ID] = "SDP";
         abbreviations[kok.ID] = "Kok";
         abbreviations[sfp.ID] = "SFP";
+        abbreviations[ml2] = "Kesk";
 
         ProcedureImmediate legislativeElection = new (
             0,
@@ -221,6 +225,7 @@ internal class Finland : ISimulation {
             new Ballot.Result (
                 [
                     new Ballot.Effect (Ballot.Effect.EffectType.FoundParty, [sfp.ID]),
+                    new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [ml.ID, ml2]),
                     new Ballot.Effect (Ballot.Effect.EffectType.RemoveProcedure, [academicKareliaSociety.ID]),
                 ],
                 [new (new AlwaysCondition (), 2)]
@@ -233,7 +238,7 @@ internal class Finland : ISimulation {
         Ballot ballotC = new (
             2,
             new Ballot.Result (
-                [],
+                [new Ballot.Effect (Ballot.Effect.EffectType.ReplaceParty, [ml.ID, ml2])],
                 [
                     new (new ProcedureActiveCondition (activatedYyaTreaty.ID, true), 3),
                     new (new ProcedureActiveCondition (activatedYyaTreaty.ID, false), 4),
@@ -311,14 +316,14 @@ internal class Finland : ISimulation {
         );
         ballotsLocs[ballotB.ID] = (
             "Ballot B",
-            "Mandate Swedish in primary schools",
+            "Introduce Swedish in primary schools",
             [
                 StringLineFormatter.Indent ("Less than 8% of the population speaks Swedish", 1),
                 StringLineFormatter.Indent ("However, western and southern coasts have Swedish majorities", 2),
                 StringLineFormatter.Indent ("Swedish was the state and elite language for most of Finland's history, so it retains significant prestige", 2),
                 StringLineFormatter.Indent ("Despite Soviet dominance, Sweden remains one of Finland's most important allies and trading partners", 1),
                 StringLineFormatter.Indent ("This makes it relatively important for business", 2),
-                StringLineFormatter.Indent ("Mandating Swedish will be seen as a step towards the West", 1),
+                StringLineFormatter.Indent ("Introducing Swedish will be seen as a step towards the West", 1),
                 StringLineFormatter.Indent ("Ironically, it will also be seen as a nationalist policy, given the importance of Swedish literature to Finnish culture", 2),
                 StringLineFormatter.Indent ("Even the national anthem is actually a Swedish tune, translated to Finnish", 3),
             ],
@@ -327,14 +332,14 @@ internal class Finland : ISimulation {
                 StringLineFormatter.Indent ("However, mandatory Swedish becomes the rallying cry of the Swedish minority", 1),
                 StringLineFormatter.Indent ("This is the first step towards their end goal of full bilingualism", 2),
                 StringLineFormatter.Indent ("Many question why students can't opt for a more useful language, like English", 1),
-                "On the other hand, mandatory Swedish becomes a unique facet of Finnish culture",
+                "On the other hand, learning Swedish becomes a unique facet of Finnish culture",
                 StringLineFormatter.Indent ("Anything is better than learning Russian", 1),
             ],
             [
                 "Swedish minority is disgruntled",
                 StringLineFormatter.Indent ("They complain about \"mandatory Finnish,\" although there is no widespread discontent", 1),
                 "Business largely goes on as usual",
-                StringLineFormatter.Indent ("Some speculate that refusing to mandate Swedish could actually lead to a resurgence in its popularity among bilingual Finnish-Swedish speakers", 1),
+                StringLineFormatter.Indent ("Some speculate that refusing to introduce Swedish could actually lead to a resurgence in its popularity among bilingual Finnish-Swedish speakers", 1),
             ]
         );
         ballotsLocs[ballotC.ID] = (

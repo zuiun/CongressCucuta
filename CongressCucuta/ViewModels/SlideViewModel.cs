@@ -6,14 +6,20 @@ namespace CongressCucuta.ViewModels;
 internal class SlideViewModel : ViewModel, IID {
     private readonly string _title;
     // Intentionally a List, as only setting is intended (no in-place modifications)
-    private readonly List<LineViewModel> _description;
+    private List<LineViewModel> _description;
     // Intentionally a List, as only setting is intended (no in-place modifications)
     private readonly List<LinkViewModel> _links = [];
     private bool _isContent;
     private bool _isSubtitle;
     public IDType ID { get; }
     public string Title => _title;
-    public List<LineViewModel> Description => _description;
+    public List<LineViewModel> Description {
+        get => _description;
+        set {
+            _description = value;
+            OnPropertyChanged ();
+        }
+    }
     public List<LinkViewModel> Links => _links;
     public bool IsContent {
         get => _isContent;

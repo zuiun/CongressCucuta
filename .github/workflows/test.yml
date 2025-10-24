@@ -18,5 +18,5 @@ jobs:
       with:
         dotnet-version: 9.0.x
 
-    - name: Execute unit tests
-      run: dotnet test
+    - name: Execute tests
+      run: dotnet test --no-build --verbosity normal

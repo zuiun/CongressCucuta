@@ -1,4 +1,5 @@
 ﻿using CongressCucuta.Core.Procedures;
+using System.Data;
 using System.Text.Json.Serialization;
 
 namespace CongressCucuta.Core;
@@ -473,6 +474,19 @@ public class Simulation {
                         throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect Target IDs do not correspond with any Currency ID");
                     }
 
+                    break;
+                case Ballot.Effect.EffectType.ReplaceParty:
+                    if (Parties.All (p => effect.TargetIDs[0] != p.ID)) {
+                        throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect original Target ID does not correspond with any Party ID");
+                    }
+
+                    if (! Localisation.Parties.ContainsKey (effect.TargetIDs[1])) {
+                        throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect new Target ID does not correspond with any Localisation ID");
+                    }
+
+                    if (RolesPermissions.ContainsKey (effect.TargetIDs[0]) != Localisation.Roles.ContainsKey (effect.TargetIDs[1])) {
+                        throw new ArgumentException ($"Ballot ID {ballotId} {result} Effect original and new Party must either both have Roles or have no Roles");
+                    }
                     break;
             }
         }
