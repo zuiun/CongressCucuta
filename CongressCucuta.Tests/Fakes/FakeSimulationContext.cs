@@ -1,7 +1,7 @@
 ﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
 
-namespace CongressCucuta.Tests.Unit.Fakes;
+namespace CongressCucuta.Tests.Fakes;
 
 public class FakeSimulationContext () : SimulationContext (new FakeSimulation ()) {
     //public ConfirmationResult TryConfirmProcedureResult { get; set; }
@@ -10,7 +10,6 @@ public class FakeSimulationContext () : SimulationContext (new FakeSimulation ()
     //public (byte, byte, byte) VotePassResult { get; set; }
     //public (byte, byte, byte) VoteFailResult { get; set; }
     //public (byte, byte, byte) VoteAbstainResult { get; set; }
-    public bool? IsBallotVotedResult { get; set; }
     public bool IsBallotPassedResult { get; set; }
     public byte GetBallotsPassedCountResult { get; set; }
     public sbyte GetCurrencyValueResult { get; set; }
@@ -29,8 +28,6 @@ public class FakeSimulationContext () : SimulationContext (new FakeSimulation ()
     //public void StartBallot () { }
 
     //public void EndBallot (bool isPass) { }
-
-    public override bool? IsBallotVoted () => IsBallotVotedResult;
 
     public override bool IsBallotPassed (IDType ballotId) => IsBallotPassedResult;
 

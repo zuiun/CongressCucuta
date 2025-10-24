@@ -1,8 +1,10 @@
-﻿using System.Windows.Input;
+﻿using System.Diagnostics.CodeAnalysis;
+using System.Windows.Input;
 
 namespace CongressCucuta.ViewModels;
 
 // Used for commands that take no parameters
+[ExcludeFromCodeCoverage]
 internal class RelayCommand (Action<object?> execute, Func<object?, bool>? canExecute = null) : ICommand {
     private readonly Func<object?, bool>? _canExecute = canExecute;
     private readonly Action<object?> _execute = execute;
@@ -18,6 +20,7 @@ internal class RelayCommand (Action<object?> execute, Func<object?, bool>? canEx
 }
 
 // Used for commands that take a parameter
+[ExcludeFromCodeCoverage]
 internal class RelayCommand<T> (Action<T> execute, Func<T, bool>? canExecute = null) : ICommand {
     private readonly Func<T, bool>? _canExecute = canExecute;
     private readonly Action<T> _execute = execute;

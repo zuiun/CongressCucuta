@@ -1,10 +1,8 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
-[ExcludeFromCodeCoverage]
 internal class FactionViewModel (IDType id, string name) : ViewModel, IID {
     public static readonly IDType INDEPENDENT = byte.MaxValue;
     private string _name = name;

@@ -222,7 +222,7 @@ public class Simulation {
                     case Procedure.Effect.EffectType.CurrencyAdd:
                     case Procedure.Effect.EffectType.CurrencySubtract:
                         foreach (IDType c in e.TargetIDs) {
-                            if (!CurrenciesValues.ContainsKey (c) && c < Currency.REGION) {
+                            if (! CurrenciesValues.ContainsKey (c) && c != Currency.REGION && c != Currency.PARTY) {
                                 throw new ArgumentException ($"ProcedureTargeted ID {pt.ID} targets an invalid Currency ID");
                             }
                         }
@@ -248,7 +248,7 @@ public class Simulation {
                     case Procedure.Effect.EffectType.CurrencyAdd:
                     case Procedure.Effect.EffectType.CurrencySubtract:
                         foreach (IDType c in e.TargetIDs) {
-                            if (! CurrenciesValues.ContainsKey (c) && c < Currency.REGION) {
+                            if (! CurrenciesValues.ContainsKey (c) && c != Currency.REGION && c != Currency.PARTY) {
                                 throw new ArgumentException ($"ProcedureDeclared ID {pd.ID} targets an invalid Currency ID");
                             }
                         }

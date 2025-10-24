@@ -1,7 +1,7 @@
-﻿using CongressCucuta.Core;
-using CongressCucuta.Core.Contexts;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
+using CongressCucuta.Core;
+using CongressCucuta.Core.Contexts;
 
 namespace CongressCucuta.ViewModels;
 
@@ -50,25 +50,26 @@ internal class ElectionViewModel : ViewModel {
         _localisation = localisation;
         PeopleRolesNew = election.PeopleRoles.ToDictionary (kv => kv.Key, kv => new SortedSet<IDType> ([.. kv.Value]));
         PeopleFactionsNew = election.PeopleFactions.ToDictionary (kv => kv.Key, kv => kv.Value);
-        RunElection ();
     }
 
     private void Group_SelectedChangedEventHandler (SelectedChangedEventArgs e) {
-        foreach (IDType roleId in e.TargetIDs) {
-            if (e.IsSelected) {
-                if (PeopleRolesNew.TryGetValue (e.PersonID, out var rs)) {
+        if (e.IsSelected) {
+            if (PeopleRolesNew.TryGetValue (e.PersonID, out var rs)) {
+                foreach (IDType roleId in e.TargetIDs) {
                     rs.Add (roleId);
-                } else {
-                    // Everyone should have a MEMBER Role
-                    throw new UnreachableException ();
                 }
             } else {
+                // Everyone should have a MEMBER Role
+                throw new UnreachableException ();
+            }
+        } else {
+            foreach (IDType roleId in e.TargetIDs) {
                 PeopleRolesNew[e.PersonID].Remove (roleId);
             }
         }
     }
 
-    private void RunElection () {
+    public void RunElection () {
         ElectionContext election = _elections[_electionIdx];
 
         Title = election.Type switch {
@@ -129,6 +130,6 @@ internal class ElectionViewModel : ViewModel {
                 RunElection ();
             }
         },
-        _ => _electionIdx < _elections.Count && GroupsPeople.All (g => g.IsSelected ())
+        _ => GroupsPeople.All (g => g.IsSelected ())
     );
 }

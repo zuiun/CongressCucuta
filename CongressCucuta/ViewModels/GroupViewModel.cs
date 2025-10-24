@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
-using CongressCucuta.Core;
+﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
+using System.Collections.ObjectModel;
 
 namespace CongressCucuta.ViewModels;
 
@@ -12,18 +12,11 @@ internal class SelectedChangedEventArgs (IDType personId, IDType[] targetIds, bo
 
 internal class GroupViewModel : ViewModel, IID {
     internal class PersonGroup (IDType id, IDType factionId, string name, bool isCandidate = false) : ViewModel, IID {
-        private bool _isCandidate = isCandidate;
         private bool _isSelected = false;
         public IDType ID => id;
         public IDType FactionID => factionId;
         public string Name => name;
-        public bool IsCandidate {
-            get => _isCandidate;
-            set {
-                _isCandidate = value;
-                OnPropertyChanged ();
-            }
-        }
+        public bool IsCandidate => isCandidate;
         public bool IsSelected {
             get => _isSelected;
             set {
@@ -54,8 +47,8 @@ internal class GroupViewModel : ViewModel, IID {
         ID = group.FactionID;
         Name = name;
 
-        foreach (var kv in peopleNames) {
-            PersonGroup person = new (kv.Key, ID, kv.Value, group.PeopleAreCandidates[kv.Key]);
+        foreach (var kv in group.PeopleAreCandidates) {
+            PersonGroup person = new (kv.Key, ID, peopleNames[kv.Key], kv.Value);
 
             person.SelectedChanged += Person_SelectedChangedEventHandler;
             People.Add (person);

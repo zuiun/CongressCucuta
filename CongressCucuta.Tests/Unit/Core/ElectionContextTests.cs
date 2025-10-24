@@ -1,7 +1,7 @@
 ﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
-using CongressCucuta.Core.Generators;
 using CongressCucuta.Core.Procedures;
+using CongressCucuta.Tests.Fakes;
 
 namespace CongressCucuta.Tests.Unit.Core;
 
@@ -181,7 +181,7 @@ public sealed class ElectionContextTests {
     public void Run_ShuffleAddRandom_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
         partiesActive.Add (4);
-        DeterministicGenerator generator = new ([3, 0, 0]);
+        FakeGenerator generator = new ([3, 0, 0]);
         ElectionContext election = new (ElectionContext.ElectionType.ShuffleAdd, [4], 1, true, generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -202,7 +202,7 @@ public sealed class ElectionContextTests {
     public void Run_ShuffleAddNotRandom_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
         partiesActive.Add (4);
-        DeterministicGenerator generator = new ([3, 0]);
+        FakeGenerator generator = new ([3, 0]);
         ElectionContext election = new (ElectionContext.ElectionType.ShuffleAdd, [4], 0, true, generator: generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -221,7 +221,7 @@ public sealed class ElectionContextTests {
     public void Run_ShuffleAddForce_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
         partiesActive.Add (4);
-        DeterministicGenerator generator = new ([3, 3, 1]);
+        FakeGenerator generator = new ([3, 3, 1]);
         ElectionContext election = new (ElectionContext.ElectionType.ShuffleAdd, [4], generator: generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -240,7 +240,7 @@ public sealed class ElectionContextTests {
     public void Run_ShuffleAddNoLeader_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
         partiesActive.Add (4);
-        DeterministicGenerator generator = new ([0]);
+        FakeGenerator generator = new ([0]);
         ElectionContext election = new (ElectionContext.ElectionType.ShuffleAdd, [4], generator: generator);
 
         (var pr, var _, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -256,7 +256,7 @@ public sealed class ElectionContextTests {
     [TestMethod]
     public void Run_RegionRandom_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
-        DeterministicGenerator generator = new ([0]);
+        FakeGenerator generator = new ([0]);
         ElectionContext election = new (0, new (Procedure.Effect.EffectType.ElectionRegion, [], 1), true, generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -282,7 +282,7 @@ public sealed class ElectionContextTests {
     [TestMethod]
     public void Run_RegionNotRandom_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
-        DeterministicGenerator generator = new ([0]);
+        FakeGenerator generator = new ([0]);
         ElectionContext election = new (0, new (Procedure.Effect.EffectType.ElectionRegion, [], 0), true, generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -308,7 +308,7 @@ public sealed class ElectionContextTests {
     [TestMethod]
     public void Run_RegionNoLeader_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
-        DeterministicGenerator generator = new ([0]);
+        FakeGenerator generator = new ([0]);
         ElectionContext election = new (0, new (Procedure.Effect.EffectType.ElectionRegion, [], 0), false, generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -334,7 +334,7 @@ public sealed class ElectionContextTests {
     [TestMethod]
     public void Run_PartyRandom_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
-        DeterministicGenerator generator = new ([0]);
+        FakeGenerator generator = new ([0]);
         ElectionContext election = new (0, new (Procedure.Effect.EffectType.ElectionParty, [], 1), true, generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -360,7 +360,7 @@ public sealed class ElectionContextTests {
     [TestMethod]
     public void Run_PartyNotRandom_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
-        DeterministicGenerator generator = new ([0]);
+        FakeGenerator generator = new ([0]);
         ElectionContext election = new (0, new (Procedure.Effect.EffectType.ElectionParty, [], 0), true, generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -386,7 +386,7 @@ public sealed class ElectionContextTests {
     [TestMethod]
     public void Run_PartyNoLeader_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
-        DeterministicGenerator generator = new ([0]);
+        FakeGenerator generator = new ([0]);
         ElectionContext election = new (0, new (Procedure.Effect.EffectType.ElectionParty, [], 0), false, generator);
 
         (var pr, var pf, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);
@@ -425,7 +425,7 @@ public sealed class ElectionContextTests {
     [TestMethod]
     public void Run_AppointedRandom_ReturnsExpected () {
         (var peopleRoles, var peopleFactions, var partiesActive, var regionsActive) = CreateFakes ();
-        DeterministicGenerator generator = new ([3]);
+        FakeGenerator generator = new ([3]);
         ElectionContext election = new (0, new Procedure.Effect (Procedure.Effect.EffectType.ElectionAppointed, [0], 1), generator: generator);
 
         (var pr, var _, var g) = election.Run (peopleRoles, peopleFactions, partiesActive, regionsActive);

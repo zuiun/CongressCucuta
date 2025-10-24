@@ -1,7 +1,7 @@
 ﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Core.Procedures;
-using CongressCucuta.Tests.Unit.Fakes;
+using CongressCucuta.Tests.Fakes;
 
 namespace CongressCucuta.Tests.Unit.Core;
 

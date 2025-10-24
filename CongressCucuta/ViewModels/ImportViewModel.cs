@@ -10,12 +10,18 @@ namespace CongressCucuta.ViewModels;
 
 [ExcludeFromCodeCoverage]
 internal class ImportViewModel : ViewModel {
+    internal class SimulationGroup (Func<ISimulation> generator) : ViewModel {
+        public Simulation Simulation => generator ().Simulation;
+        public string Name => Simulation.Localisation.State;
+        public Func<ISimulation> Generator => generator;
+    }
+
     private readonly JsonSerializerOptions _options = new () {
         Converters = { new IDTypeJsonConverter () },
         IncludeFields = true,
     };
     private bool _wasImportFailure = false;
-    private readonly List<CompilerViewModel.SimulationGroup> _simulations; 
+    private readonly List<SimulationGroup> _simulations;
     private int _selectedIdx = -1;
     public bool WasImportFailure {
         get => _wasImportFailure;
@@ -24,7 +30,7 @@ internal class ImportViewModel : ViewModel {
             OnPropertyChanged ();
         }
     }
-    public List<CompilerViewModel.SimulationGroup> Simulations => _simulations;
+    public List<SimulationGroup> Simulations => _simulations;
     public int SelectedIdx {
         get => _selectedIdx;
         set {
@@ -35,22 +41,22 @@ internal class ImportViewModel : ViewModel {
     public event Action<Simulation>? CreatingSimulation = null;
 
     public ImportViewModel () {
-        List<ISimulation> simulations = [
-            new Argentina (),
-            new Australia (),
-            new Brazil (),
-            new Canada (),
-            new China (),
-            new Colombia (),
-            new Finland (),
-            new Hungary (),
-            new Indonesia (),
-            new Japan (),
-            new Malaysia (),
-            new Poland (),
+        List<Func<ISimulation>> simulations = [
+            () => new Argentina (),
+            () => new Australia (),
+            () => new Brazil (),
+            () => new Canada(),
+            () => new China(),
+            () => new Colombia(),
+            () => new Finland(),
+            () => new Hungary(),
+            () => new Indonesia(),
+            () => new Japan(),
+            () => new Malaysia(),
+            () => new Poland(),
         ];
 
-        _simulations = [.. simulations.Select (s => new CompilerViewModel.SimulationGroup (s)).OrderBy (s => s.Name)];
+        _simulations = [.. simulations.Select (s => new SimulationGroup (s)).OrderBy (s => s.Name)];
     }
 
     public void Reset () {
@@ -59,7 +65,12 @@ internal class ImportViewModel : ViewModel {
     }
 
     public RelayCommand ChooseSimulationCommand => new (
-        _ => CreatingSimulation?.Invoke (_simulations[_selectedIdx].Simulation),
+        _ => {
+            ISimulation generator = _simulations[_selectedIdx].Generator ();
+            Simulation simulation = generator.Simulation;
+
+            CreatingSimulation?.Invoke (simulation);
+        },
         _ => _selectedIdx > -1
     );
 

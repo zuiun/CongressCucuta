@@ -54,7 +54,7 @@ internal class ContextViewModel : ViewModel {
     private readonly Localisation _localisation;
     private bool _isPeople = true;
     private bool _isFaction = false;
-    // One of the two is used, depending on if another faction is enabled
+    // One of the two is used, depending on whether or not factions exist
     private ObservableCollection<PersonViewModel> _people = [];
     private ObservableCollection<FactionViewModel> _factionsPeople = [];
     private readonly ObservableCollection<BallotGroup> _ballots = [];
@@ -254,7 +254,7 @@ internal class ContextViewModel : ViewModel {
         foreach (Person p in people) {
             PersonViewModel person = CreatePerson (p.ID, p.Name, [], false);
 
-            _people.Add (person);
+            People.Add (person);
         }
     }
 
@@ -290,7 +290,7 @@ internal class ContextViewModel : ViewModel {
 
         foreach (IDType r in roles) {
             if (r != Role.MEMBER && r != Role.LEADER_PARTY && r != Role.LEADER_REGION) {
-                person.Roles.Add (new (r, _localisation.Roles[r].Item1));
+                person.Roles.Add (new (_localisation.Roles[r].Item1));
             }
 
             if (_declarerRoles.Contains (r)) {
@@ -328,9 +328,10 @@ internal class ContextViewModel : ViewModel {
 
             if (partyId is IDType pa) {
                 FactionViewModel party;
+                var partyIter = _factionsPeople.Where (f => f.ID == pa);
 
-                if (_factionsPeople.Any (f => f.ID == pa)) {
-                    party = _factionsPeople.Where (f => f.ID == pa).First ();
+                if (partyIter.Any ()) {
+                    party = partyIter.First ();
                 } else {
                     party = new FactionViewModel (pa, _localisation.GetFactionOrAbbreviation (pa));
                     _factionsPeople.Add (party);
@@ -347,9 +348,10 @@ internal class ContextViewModel : ViewModel {
 
             if (regionId is IDType r) {
                 FactionViewModel region;
+                var regionIter = _factionsPeople.Where (f => f.ID == r);
 
-                if (_factionsPeople.Any (f => f.ID == r)) {
-                    region = _factionsPeople.Where (f => f.ID == r).First ();
+                if (regionIter.Any ()) {
+                    region = regionIter.First ();
                 } else {
                     region = new FactionViewModel (r, _localisation.GetFactionOrAbbreviation (r));
                     _factionsPeople.Add (region);
@@ -366,9 +368,10 @@ internal class ContextViewModel : ViewModel {
 
             if (partyId is null && regionId is null) {
                 FactionViewModel independent;
+                var independentIter = _factionsPeople.Where (f => f.ID == FactionViewModel.INDEPENDENT);
 
-                if (_factionsPeople.Any (f => f.ID == FactionViewModel.INDEPENDENT)) {
-                    independent = _factionsPeople.Where (f => f.ID == FactionViewModel.INDEPENDENT).First ();
+                if (independentIter.Any ()) {
+                    independent = independentIter.First ();
                 } else {
                     independent = new (FactionViewModel.INDEPENDENT, "Independent");
                     _factionsPeople.Add (independent);
@@ -401,7 +404,13 @@ internal class ContextViewModel : ViewModel {
         People = [.. _people.OrderBy (p => p.ID)];
     }
 
-    public void Simulation_StartingBallotEventHandler (StartingBallotEventArgs e) {
+    public void StartBallot (
+        byte votesPassThreshold,
+        byte votesFailThreshold,
+        byte votesPass,
+        byte votesFail,
+        byte votesAbstain
+    ) {
         if (IsPeople) {
             foreach (PersonViewModel p in _people) {
                 p.IsInteractable = true;
@@ -414,15 +423,15 @@ internal class ContextViewModel : ViewModel {
             }
         }
 
-        VotesPassThreshold = e.VotesPassThreshold;
-        VotesFailThreshold = e.VotesFailThreshold;
-        VotesPass = e.VotesPass;
-        VotesFail = e.VotesFail;
-        VotesAbstain = e.VotesAbstain;
+        VotesPassThreshold = votesPassThreshold;
+        VotesFailThreshold = votesFailThreshold;
+        VotesPass = votesPass;
+        VotesFail = votesFail;
+        VotesAbstain = votesAbstain;
         IsBallotCount = true;
     }
 
-    public void Simulation_EndingBallotEventHandler () {
+    public void EndBallot () {
         if (IsPeople) {
             foreach (PersonViewModel p in _people) {
                 p.IsInteractable = false;
@@ -508,12 +517,10 @@ internal class ContextViewModel : ViewModel {
         }
     }
 
-    private void Person_DeclaringProcedureEventHandler (IDType e) {
-        DeclaringProcedure?.Invoke (e);
-    }
+    private void Person_DeclaringProcedureEventHandler (IDType e) => DeclaringProcedure?.Invoke (e);
 
     private void Context_CompletedElectionEventHandler (CompletedElectionEventArgs e) {
-        IsFaction = _localisation.Regions.Count > 0 || _localisation.Parties.Count > 0;
+        IsFaction = e.PeopleFactions.Values.Any (f => f.Item1 is not null || f.Item2 is not null);
         IsPeople = ! IsFaction;
 
         if (IsFaction) {

@@ -1,9 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using CongressCucuta.Core;
+﻿using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
-[ExcludeFromCodeCoverage]
 internal class LineViewModel : ViewModel {
     private const byte SUBTITLE_SIZE = 2;
     private bool _isContent;

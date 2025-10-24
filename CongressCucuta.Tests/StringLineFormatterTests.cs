@@ -1,6 +1,6 @@
 ﻿using CongressCucuta.Core;
 
-namespace CongressCucuta.Tests.Unit;
+namespace CongressCucuta.Tests;
 
 [TestClass]
 public sealed class StringLineFormatterTests {

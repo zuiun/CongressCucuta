@@ -18,13 +18,13 @@ public class ProcedureImmediate : Procedure {
                     break;
                 case Effect.EffectType.PermissionsCanVote:
                     if (e.TargetIDs.Length == 0) {
-                        throw new ArgumentException ($"ProcedureImmediate ID {id}: PermissionsCanSpeak Target must be populated");
+                        throw new ArgumentException ($"ProcedureImmediate ID {id}: PermissionsCanVote Target must be populated");
                     }
 
                     break;
                 case Effect.EffectType.PermissionsVotes:
                     if (e.TargetIDs.Length == 0) {
-                        throw new ArgumentException ($"ProcedureImmediate ID {id}: PermissionsCanSpeak Target must be populated");
+                        throw new ArgumentException ($"ProcedureImmediate ID {id}: PermissionsVotes Target must be populated");
                     }
 
                     break;

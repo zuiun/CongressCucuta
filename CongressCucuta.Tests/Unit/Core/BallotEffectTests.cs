@@ -1,5 +1,5 @@
 ﻿using CongressCucuta.Core;
-using CongressCucuta.Tests.Unit.Fakes;
+using CongressCucuta.Tests.Fakes;
 
 namespace CongressCucuta.Tests.Unit.Core;
 

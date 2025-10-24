@@ -1,13 +1,13 @@
 ﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
-using CongressCucuta.Tests.Unit.Fakes;
+using CongressCucuta.Tests.Fakes;
 
 namespace CongressCucuta.Tests.Unit.Core;
 
 [TestClass]
 public sealed class ConditionTests {
     [TestMethod]
-    public void Evaluate_AlwaysCondition_ReturnsTrue () {
+    public void Evaluate_Always_ReturnsTrue () {
         FakeSimulationContext context = new ();
         AlwaysCondition condition = new ();
 
@@ -17,7 +17,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void ToString_AlwaysCondition_ReturnsNext () {
+    public void ToString_Always_ReturnsNext () {
         Localisation localisation = FakeLocalisation.Create ();
         AlwaysCondition condition = new ();
 
@@ -27,7 +27,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_AlwaysCondition_ReturnsNull () {
+    public void YieldBallotVote_Always_ReturnsNull () {
         AlwaysCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();
@@ -36,7 +36,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void Evaluate_NeverCondition_ReturnsFalse () {
+    public void Evaluate_Never_ReturnsFalse () {
         FakeSimulationContext context = new ();
         NeverCondition condition = new ();
 
@@ -46,7 +46,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void ToString_NeverCondition_ReturnsEnd () {
+    public void ToString_Never_ReturnsEnd () {
         Localisation localisation = FakeLocalisation.Create ();
         NeverCondition condition = new ();
 
@@ -56,12 +56,70 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_NeverCondition_ReturnsNull () {
+    public void YieldBallotVote_Never_ReturnsNull () {
         NeverCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();
 
         Assert.IsNull (actual);
+    }
+
+    [TestMethod]
+    public void Evaluate_BallotAlways_ReturnsTrue () {
+        FakeSimulationContext context = new ();
+        BallotAlwaysCondition condition = new ();
+
+        bool actual = condition.Evaluate (context);
+
+        Assert.IsTrue (actual);
+    }
+
+    [TestMethod]
+    public void ToString_BallotAlways_ReturnsPass () {
+        Localisation localisation = FakeLocalisation.Create ();
+        BallotAlwaysCondition condition = new ();
+
+        string actual = condition.ToString (in localisation);
+
+        Assert.AreEqual ("Pass", actual);
+    }
+
+    [TestMethod]
+    public void YieldBallotVote_BallotAlways_ReturnsTrue () {
+        BallotAlwaysCondition condition = new ();
+
+        bool? actual = condition.YieldBallotVote ();
+
+        Assert.IsTrue (actual);
+    }
+
+    [TestMethod]
+    public void Evaluate_BallotNever_ReturnsTrue () {
+        FakeSimulationContext context = new ();
+        BallotNeverCondition condition = new ();
+
+        bool actual = condition.Evaluate (context);
+
+        Assert.IsTrue (actual);
+    }
+
+    [TestMethod]
+    public void ToString_BallotNever_ReturnsFail () {
+        Localisation localisation = FakeLocalisation.Create ();
+        BallotNeverCondition condition = new ();
+
+        string actual = condition.ToString (in localisation);
+
+        Assert.AreEqual ("Fail", actual);
+    }
+
+    [TestMethod]
+    public void YieldBallotVote_BallotNever_ReturnsFalse () {
+        BallotNeverCondition condition = new ();
+
+        bool? actual = condition.YieldBallotVote ();
+
+        Assert.IsFalse (actual);
     }
 
     [TestMethod]
@@ -91,7 +149,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void ToString_AndConditionAlwaysAlways_ReturnsNextEnd () {
+    public void ToString_AndConditionAlwaysNever_ReturnsNextEnd () {
         Localisation localisation = FakeLocalisation.Create ();
         AndCondition condition = new (
             new AlwaysCondition (),
@@ -104,7 +162,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_AndCondition_ReturnsNull () {
+    public void YieldBallotVote_And_ReturnsNull () {
         AndCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();
@@ -152,7 +210,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void ToString_OrConditionAlwaysAlways_ReturnsNextEnd () {
+    public void ToString_OrConditionAlwaysNever_ReturnsNextEnd () {
         Localisation localisation = FakeLocalisation.Create ();
         OrCondition condition = new (
             new AlwaysCondition (),
@@ -165,7 +223,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_OrCondition_ReturnsNull () {
+    public void YieldBallotVote_Or_ReturnsNull () {
         OrCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();
@@ -175,35 +233,34 @@ public sealed class ConditionTests {
 
     [TestMethod]
     [DataRow (true, true)]
-    [DataRow (false, true)]
-    [DataRow (true, false)]
     [DataRow (false, false)]
-    public void Evaluate_BallotVoteConditionPassed_ReturnsExpected (bool shouldBePassed, bool isPassed) {
-        FakeSimulationContext context = new () {
-            IsBallotVotedResult = isPassed,
-        };
+    public void Evaluate_BallotVoteConditionPassedTrue_ReturnsExpected (bool shouldBePassed, bool expected) {
+        FakeSimulationContext context = new ();
         BallotVoteCondition condition = new (shouldBePassed);
+        context.Context.VotesPassBonus = 1;
 
-        bool expected = shouldBePassed == isPassed;
         bool actual = condition.Evaluate (context);
 
         Assert.AreEqual (expected, actual);
     }
 
     [TestMethod]
-    public void Evaluate_BallotVoteConditionFailed_ReturnsExpected () {
+    [DataRow (true, false)]
+    [DataRow (false, true)]
+    public void Evaluate_BallotVoteConditionPassedFalse_ReturnsExpected (bool shouldBePassed, bool expected) {
+        FakeSimulationContext context = new ();
+        BallotVoteCondition condition = new (shouldBePassed);
+        context.Context.VotesFailBonus = 1;
 
-    }
+        bool actual = condition.Evaluate (context);
 
-    [TestMethod]
-    public void Evaluate_BallotVoteConditionNone_ReturnsExpected () {
-
+        Assert.AreEqual (expected, actual);
     }
 
     [TestMethod]
     [DataRow (true, "Pass")]
     [DataRow (false, "Fail")]
-    public void ToString_BallotVoteCondition_ReturnsExpected (bool shouldBePassed, string expected) {
+    public void ToString_BallotVote_ReturnsExpected (bool shouldBePassed, string expected) {
         Localisation localisation = FakeLocalisation.Create ();
         BallotVoteCondition condition = new (shouldBePassed);
 
@@ -215,7 +272,7 @@ public sealed class ConditionTests {
     [TestMethod]
     [DataRow (true)]
     [DataRow (false)]
-    public void YieldBallotVote_BallotVoteCondition_ReturnsExpected (bool shouldBePassed) {
+    public void YieldBallotVote_BallotVote_ReturnsExpected (bool shouldBePassed) {
         BallotVoteCondition condition = new (shouldBePassed);
 
         bool? actual = condition.YieldBallotVote ();
@@ -228,7 +285,7 @@ public sealed class ConditionTests {
     [DataRow (false, true)]
     [DataRow (true, false)]
     [DataRow (false, false)]
-    public void Evaluate_BallotPassedCondition_ReturnsExpected (bool shouldBePassed, bool isPassed) {
+    public void Evaluate_BallotPassed_ReturnsExpected (bool shouldBePassed, bool isPassed) {
         FakeSimulationContext context = new () {
             IsBallotPassedResult = isPassed,
         };
@@ -243,7 +300,7 @@ public sealed class ConditionTests {
     [TestMethod]
     [DataRow (true, "0 Passed")]
     [DataRow (false, "0 Failed")]
-    public void ToString_BallotPassedCondition_ReturnsExpected (bool shouldBePassed, string expected) {
+    public void ToString_BallotPassed_ReturnsExpected (bool shouldBePassed, string expected) {
         Localisation localisation = FakeLocalisation.Create ();
         BallotPassedCondition condition = new (0, shouldBePassed);
 
@@ -253,7 +310,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_BallotPassedCondition_ReturnsExpected () {
+    public void YieldBallotVote_BallotPassed_ReturnsExpected () {
         BallotPassedCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();
@@ -272,7 +329,7 @@ public sealed class ConditionTests {
     [DataRow (3, (byte) 2, false)]
     [DataRow (4, (byte) 1, true)]
     [DataRow (4, (byte) 0, false)]
-    public void Evaluate_BallotsPassedCountCondition_ReturnsExpected (int comparison, byte count, bool expected) {
+    public void Evaluate_BallotsPassedCount_ReturnsExpected (int comparison, byte count, bool expected) {
         FakeSimulationContext context = new () {
             GetBallotsPassedCountResult = 1,
         };
@@ -289,7 +346,7 @@ public sealed class ConditionTests {
     [DataRow (2, "Fewer than 1 Ballot(s) Passed")]
     [DataRow (3, "1 or Greater Ballot(s) Passed")]
     [DataRow (4, "1 or Fewer Ballot(s) Passed")]
-    public void ToString_BallotsPassedCountCondition_ReturnsExpected (int comparison, string expected) {
+    public void ToString_BallotsPassedCount_ReturnsExpected (int comparison, string expected) {
         Localisation localisation = FakeLocalisation.Create ();
         BallotsPassedCountCondition condition = new ((ComparisonType) comparison, 1);
 
@@ -299,7 +356,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_BallotsPassedCountCondition_ReturnsNull () {
+    public void YieldBallotVote_BallotsPassedCount_ReturnsNull () {
         BallotsPassedCountCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();
@@ -318,7 +375,7 @@ public sealed class ConditionTests {
     [DataRow (3, (sbyte) 2, false)]
     [DataRow (4, (sbyte) 1, true)]
     [DataRow (4, (sbyte) 0, false)]
-    public void Evaluate_CurrencyValueCondition_ReturnsExpected (int comparison, sbyte value, bool expected) {
+    public void Evaluate_CurrencyValue_ReturnsExpected (int comparison, sbyte value, bool expected) {
         FakeSimulationContext context = new () {
             GetCurrencyValueResult = 1,
         };
@@ -335,7 +392,7 @@ public sealed class ConditionTests {
     [DataRow (2, "Fewer than 1 Currency State")]
     [DataRow (3, "1 or Greater Currency State")]
     [DataRow (4, "1 or Fewer Currency State")]
-    public void ToString_CurrencyValueCondition_ReturnsExpected (int comparison, string expected) {
+    public void ToString_CurrencyValue_ReturnsExpected (int comparison, string expected) {
         Localisation localisation = FakeLocalisation.Create ();
         CurrencyValueCondition condition = new (Currency.STATE, (ComparisonType) comparison, 1);
 
@@ -345,7 +402,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_CurrencyValueCondition_ReturnsNull () {
+    public void YieldBallotVote_CurrencyValue_ReturnsNull () {
         CurrencyValueCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();
@@ -358,7 +415,7 @@ public sealed class ConditionTests {
     [DataRow (false, true)]
     [DataRow (true, false)]
     [DataRow (false, false)]
-    public void Evaluate_ProcedureActiveCondition_ReturnsExpected (bool shouldBeActive, bool isActive) {
+    public void Evaluate_ProcedureActive_ReturnsExpected (bool shouldBeActive, bool isActive) {
         FakeSimulationContext context = new () {
             IsProcedureActiveResult = isActive,
         };
@@ -373,7 +430,7 @@ public sealed class ConditionTests {
     [TestMethod]
     [DataRow (true, "Procedure 0 is Active")]
     [DataRow (false, "Procedure 0 is not Active")]
-    public void ToString_ProcedureActiveCondition_ReturnsExpected (bool shouldBeActive, string expected) {
+    public void ToString_ProcedureActive_ReturnsExpected (bool shouldBeActive, string expected) {
         Localisation localisation = FakeLocalisation.Create ();
         ProcedureActiveCondition condition = new (0, shouldBeActive);
 
@@ -383,7 +440,7 @@ public sealed class ConditionTests {
     }
 
     [TestMethod]
-    public void YieldBallotVote_ProcedureActiveCondition_ReturnsNull () {
+    public void YieldBallotVote_ProcedureActive_ReturnsNull () {
         ProcedureActiveCondition condition = new ();
 
         bool? actual = condition.YieldBallotVote ();

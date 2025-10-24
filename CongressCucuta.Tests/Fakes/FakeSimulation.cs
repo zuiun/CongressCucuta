@@ -2,7 +2,7 @@
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Core.Procedures;
 
-namespace CongressCucuta.Tests.Unit.Fakes;
+namespace CongressCucuta.Tests.Fakes;
 
 public class FakeSimulation () : Simulation (
     new ([0], new Dictionary<IDType, SortedSet<IDType>> { [1] = [3] }),
@@ -16,7 +16,7 @@ public class FakeSimulation () : Simulation (
         [3] = 1,
         [Currency.STATE] = 1,
     },
-    [new (0, [new (Procedure.Effect.EffectType.ElectionAppointed, [Role.HEAD_STATE, Role.HEAD_GOVERNMENT], 1)])],
+    [new (0, [new (Procedure.Effect.EffectType.PermissionsCanVote, [Role.MEMBER], 1)])],
     [
         new (1, [new (Procedure.Effect.EffectType.CurrencyInitialise, [])], []),
         new (2, [new (Procedure.Effect.EffectType.VotePassAdd, [], 1)], [], false),

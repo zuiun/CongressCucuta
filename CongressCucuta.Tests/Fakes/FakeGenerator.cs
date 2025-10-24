@@ -1,6 +1,8 @@
-﻿namespace CongressCucuta.Core.Generators;
+﻿using CongressCucuta.Core.Generators;
 
-public class DeterministicGenerator (params IEnumerable<int> values) : IGenerator {
+namespace CongressCucuta.Tests.Fakes;
+
+public class FakeGenerator (params IEnumerable<int> values) : IGenerator {
     private readonly int[] _values = [.. values];
     private int _idx = 0;
 

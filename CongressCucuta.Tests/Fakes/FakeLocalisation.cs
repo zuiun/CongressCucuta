@@ -1,6 +1,6 @@
 ﻿using CongressCucuta.Core;
 
-namespace CongressCucuta.Tests.Unit.Fakes;
+namespace CongressCucuta.Tests.Fakes;
 
 public static class FakeLocalisation {
     public static Localisation Create () {

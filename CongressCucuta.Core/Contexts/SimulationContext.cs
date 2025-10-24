@@ -96,18 +96,15 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
     }
 
     private void OnPrepareElection (List<ElectionContext> elections) {
-        PreparingElectionEventArgs args = new (elections, PeopleRoles, PeopleFactions, _partiesActive, _regionsActive, _people);
+        PreparingElectionEventArgs argsPrepare = new (elections, PeopleRoles, PeopleFactions, _partiesActive, _regionsActive, _people);
 
-        PreparingElection?.Invoke (args);
-        PeopleRoles = args.PeopleRolesNew;
-        PeopleFactions = args.PeopleFactionsNew;
-        OnCompleteElection ();
-    }
+        PreparingElection?.Invoke (argsPrepare);
+        PeopleRoles = argsPrepare.PeopleRolesNew;
+        PeopleFactions = argsPrepare.PeopleFactionsNew;
 
-    private void OnCompleteElection () {
-        CompletedElectionEventArgs args = new (_people, PeopleRoles, PeopleFactions, IsBallot);
+        CompletedElectionEventArgs argsComplete = new (_people, PeopleRoles, PeopleFactions, IsBallot);
 
-        CompletedElection?.Invoke (args);
+        CompletedElection?.Invoke (argsComplete);
         ComposePermissions ();
     }
 
@@ -315,7 +312,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
     public bool? DeclareProcedure (IDType personId, IDType procedureId) {
         bool? isPass = null;
-        bool isModifiedCurrencies = false;
         List<ElectionContext> elections = [];
 
         foreach (Procedure.Effect e in ProceduresDeclared[procedureId].Effects) {
@@ -331,7 +327,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         CurrenciesValues[currencyId] += (sbyte) e.Value;
                     }
 
-                    isModifiedCurrencies = true;
                     break;
                 }
                 case Procedure.Effect.EffectType.CurrencySubtract: {
@@ -345,31 +340,24 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         CurrenciesValues[currencyId] -= (sbyte) e.Value;
                     }
 
-                    isModifiedCurrencies = true;
                     break;
                 }
                 case Procedure.Effect.EffectType.ElectionRegion: {
                     bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_REGION);
 
-                    elections.Add (new (procedureId, e, isLeaderNeeded));
-                    Context.OnResetVotes ();
+                    elections.Add (new (procedureId, e, isLeaderNeeded, generator: _generator));
                     break;
                 }
                 case Procedure.Effect.EffectType.ElectionParty: {
                     bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
 
-                    elections.Add (new (procedureId, e, isLeaderNeeded));
-                    Context.OnResetVotes ();
+                    elections.Add (new (procedureId, e, isLeaderNeeded, generator: _generator));
                     break;
                 }
                 case Procedure.Effect.EffectType.ElectionNominated:
-                case Procedure.Effect.EffectType.ElectionAppointed: {
-                    ElectionContext election = new (procedureId, e);
-
-                    elections.Add (new (procedureId, e));
-                    Context.OnResetVotes ();
+                case Procedure.Effect.EffectType.ElectionAppointed:
+                    elections.Add (new (procedureId, e, generator: _generator));
                     break;
-                }
                 case Procedure.Effect.EffectType.BallotLimit: {
                     foreach (IDType p in _people.Keys) {
                         if (
@@ -388,16 +376,12 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     Context.OnResetVotes ();
                     break;
                 }
-                case Procedure.Effect.EffectType.BallotPass: {
-                    EndBallot (true);
+                case Procedure.Effect.EffectType.BallotPass:
                     isPass = true;
                     break;
-                }
-                case Procedure.Effect.EffectType.BallotFail: {
-                    EndBallot (false);
+                case Procedure.Effect.EffectType.BallotFail:
                     isPass = false;
                     break;
-                }
             }
         }
 
@@ -406,7 +390,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             Context.OnResetVotes ();
         }
 
-        if (isModifiedCurrencies) {
+        if (CurrenciesValues.Count > 0) {
             OnModifiedCurrencies ();
         }
 
@@ -415,8 +399,7 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
 
     public void StartSetup () {
         List<(IDType, Procedure.EffectBundle)> effects = [
-            .. ProceduresGovernmental.Values.Where (pi => pi.IsActiveStart)
-                .Select (pi => (pi.ID, (Procedure.EffectBundle) pi.YieldEffects (0)!))
+            .. ProceduresGovernmental.Values.Select (pi => (pi.ID, (Procedure.EffectBundle) pi.YieldEffects (0)!))
         ];
         List<ElectionContext> elections = [];
 
@@ -426,18 +409,18 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                     case Procedure.Effect.EffectType.ElectionRegion: {
                         bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_REGION);
 
-                        elections.Add (new ElectionContext (p, e, isLeaderNeeded));
+                        elections.Add (new ElectionContext (p, e, isLeaderNeeded, generator: _generator));
                         break;
                     }
                     case Procedure.Effect.EffectType.ElectionParty: {
                         bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
 
-                        elections.Add (new ElectionContext (p, e, isLeaderNeeded));
+                        elections.Add (new ElectionContext (p, e, isLeaderNeeded, generator: _generator));
                         break;
                     }
                     case Procedure.Effect.EffectType.ElectionNominated:
                     case Procedure.Effect.EffectType.ElectionAppointed:
-                        elections.Add (new ElectionContext (p, e));
+                        elections.Add (new ElectionContext (p, e, generator: _generator));
                         break;
                     case Procedure.Effect.EffectType.PermissionsCanVote: {
                         bool canVote = e.Value > 0;
@@ -490,7 +473,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             .Where (e => e is not null)
             .Select (e => (Procedure.EffectBundle) e!);
         List<ElectionContext> elections = [];
-        bool isModifiedCurrencies = false;
 
         Context.Reset ();
         _effectsPermissions.Clear ();
@@ -518,8 +500,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                             } else {
                                 CurrenciesValues[Currency.STATE] += (sbyte) e.Value;
                             }
-
-                            isModifiedCurrencies = true;
                         }
 
                         break;
@@ -533,8 +513,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                             } else {
                                 CurrenciesValues[Currency.STATE] -= (sbyte) e.Value;
                             }
-
-                            isModifiedCurrencies = true;
                         }
 
                         break;
@@ -546,16 +524,16 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                                     if (ee.Type is Procedure.Effect.EffectType.ElectionRegion) {
                                         bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_REGION);
 
-                                        elections.Add (new (p, ee, isLeaderNeeded));
+                                        elections.Add (new (p, ee, isLeaderNeeded, generator: _generator));
                                     } else if (ee.Type is Procedure.Effect.EffectType.ElectionParty) {
                                         bool isLeaderNeeded = _rolesPermissions.ContainsKey (Role.LEADER_PARTY);
 
-                                        elections.Add (new (p, ee, isLeaderNeeded));
+                                        elections.Add (new (p, ee, isLeaderNeeded, generator: _generator));
                                     } else if (
                                         ee.Type is Procedure.Effect.EffectType.ElectionNominated
                                         or Procedure.Effect.EffectType.ElectionAppointed
                                     ) {
-                                        elections.Add (new (p, ee));
+                                        elections.Add (new (p, ee, generator: _generator));
                                     }
                                 } 
                             }
@@ -576,12 +554,12 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             }
         }
 
-        if (isModifiedCurrencies) {
-            OnModifiedCurrencies ();
-        }
-
         if (elections.Count > 0) {
             OnPrepareElection (elections);
+        }
+
+        if (CurrenciesValues.Count > 0) {
+            OnModifiedCurrencies ();
         }
 
         if (_effectsPermissions.Count > 0) {
@@ -592,7 +570,6 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
     public void EndBallot (bool isPass) {
         List<Ballot.Effect> effects;
         List<ElectionContext> elections = [];
-        bool isModifiedCurrencies = false;
         bool isModifiedProcedures = false;
 
         if (isPass) {
@@ -611,14 +588,14 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         _partiesActive.Add (p);
                     }
 
-                    elections.Add (new (ElectionContext.ElectionType.ShuffleAdd, e.TargetIDs, e.Value, isLeaderNeeded));
+                    elections.Add (new (ElectionContext.ElectionType.ShuffleAdd, e.TargetIDs, e.Value, isLeaderNeeded, generator: _generator));
                     break;
                 case Ballot.Effect.EffectType.DissolveParty:
                     foreach (IDType p in e.TargetIDs) {
                         _partiesActive.Remove (p);
                     }
 
-                    elections.Add (new (ElectionContext.ElectionType.ShuffleRemove, e.TargetIDs));
+                    elections.Add (new (ElectionContext.ElectionType.ShuffleRemove, e.TargetIDs, generator: _generator));
                     break;
                 //case Ballot.Effect.EffectType.ReplaceParty:
                 //    IDType partyOriginal = e.TargetIDs[0];
@@ -669,16 +646,11 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         }
                     }
 
-                    isModifiedCurrencies = true;
                     break;
             }
         }
 
         VotedBallot?.Invoke (new (BallotCurrentID, isPass, Context));
-
-        if (isModifiedCurrencies) {
-            OnModifiedCurrencies ();
-        }
 
         if (isModifiedProcedures) {
             OnModifiedProcedures ();
@@ -687,9 +659,11 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
         if (elections.Count > 0) {
             OnPrepareElection (elections);
         }
-    }
 
-    public virtual bool? IsBallotVoted () => Context.IsBallotVoted ();
+        if (CurrenciesValues.Count > 0) {
+            OnModifiedCurrencies ();
+        }
+    }
 
     public virtual bool IsBallotPassed (IDType ballotId) => _ballotsPassed.Contains (ballotId);
 

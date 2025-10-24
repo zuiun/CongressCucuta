@@ -1,25 +1,12 @@
-﻿using CongressCucuta.Core;
+﻿using System.Diagnostics;
+using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Core.Contexts;
+using CongressCucuta.Core.Generators;
 using CongressCucuta.Core.Procedures;
 using CongressCucuta.Views;
-using System.Diagnostics;
 
 namespace CongressCucuta.ViewModels;
-
-internal class StartingBallotEventArgs (
-    byte votesPassThreshold,
-    byte votesFailThreshold,
-    byte votesPass,
-    byte votesFail,
-    byte votesAbstain
-) {
-    public byte VotesPassThreshold = votesPassThreshold;
-    public byte VotesFailThreshold = votesFailThreshold;
-    public byte VotesPass = votesPass;
-    public byte VotesFail = votesFail;
-    public byte VotesAbstain = votesAbstain;
-}
 
 internal class SimulationViewModel : ViewModel {
     private readonly SimulationContext _simulation;
@@ -30,12 +17,15 @@ internal class SimulationViewModel : ViewModel {
     private bool _isBallot = false;
     private SlideViewModel _slide;
     private readonly ContextViewModel _context;
+    private readonly IWindow<ElectionWindow, ElectionViewModel> _election;
+    private readonly IWindow<DeclareWindow, DeclareViewModel> _declare;
     public Localisation Localisation => _localisation;
     public List<SlideViewModel> Slides { get; } = [];
     public IDType SlideCurrentIdx {
         get => _slideCurrentIdx;
         set {
             _slideCurrentIdx = value;
+            Slide = Slides[_slideCurrentIdx];
 
             if (_slideCurrentIdx == _slideTitleIdx) {
                 _simulation.StartSetup ();
@@ -44,20 +34,17 @@ internal class SimulationViewModel : ViewModel {
                 _isBallot = true;
                 _simulation.IsBallot = true;
                 _simulation.StartBallot ();
-
-                StartingBallotEventArgs args = new (
+                Context.StartBallot (
                     _simulation.Context.CalculateVotesPassThreshold (),
                     _simulation.Context.CalculateVotesFailThreshold (),
                     _simulation.Context.CalculateVotesPass (),
                     _simulation.Context.CalculateVotesFail (),
                     _simulation.Context.CalculateVotesAbstain ()
                 );
-
-                StartingBallot?.Invoke (args);
             } else if (_isBallot) {
                 _isBallot = false;
                 _simulation.IsBallot = false;
-                EndingBallot?.Invoke ();
+                _context.EndBallot ();
             }
         }
     }
@@ -70,19 +57,26 @@ internal class SimulationViewModel : ViewModel {
     }
     public ContextViewModel Context => _context;
     public string State { get; }
-    public event Action<StartingBallotEventArgs>? StartingBallot;
-    public event Action? EndingBallot;
 
-    public SimulationViewModel (Simulation simulation) {
-        _simulation = new (simulation);
+    public SimulationViewModel (
+        Simulation simulation,
+        IWindow<ElectionWindow, ElectionViewModel>? election = null,
+        IWindow<DeclareWindow, DeclareViewModel>? declare = null,
+        IGenerator? generator = null
+    ) {
+        _simulation = new (simulation, generator);
         _localisation = simulation.Localisation;
         State = _localisation.State;
         _context = new (_simulation, simulation, in _localisation);
+        _election = election ?? new ModalWindow<ElectionWindow, ElectionViewModel> ((e) => new ElectionWindow () {
+            DataContext = e,
+        });
+        _declare = declare ?? new ModalWindow<DeclareWindow, DeclareViewModel> ((d) => new DeclareWindow () {
+            DataContext = d,
+        });
         _simulation.PreparingElection += Simulation_PreparingElectionEventHandler;
         _context.Voting += Context_VotingEventHandler;
         _context.DeclaringProcedure += Context_DeclaringProcedureEventHandler;
-        StartingBallot += _context.Simulation_StartingBallotEventHandler;
-        EndingBallot += _context.Simulation_EndingBallotEventHandler;
 
         IDType slideCurrentIdx = GenerateSlidesIntroduction ();
 
@@ -469,14 +463,17 @@ internal class SimulationViewModel : ViewModel {
 
     private void Simulation_PreparingElectionEventHandler (PreparingElectionEventArgs e) {
         ElectionViewModel election = new (e, in _localisation);
-        ElectionWindow window = new () {
-            DataContext = election,
-        };
 
-        // yeah ok fight me
-        election.CompletingElection += window.Election_CompletingElectionEventHandler;
-        election.CloseWindow = window.Close;
-        window.ShowDialog ();
+        _election.New (
+            election,
+            // yeah ok fight me
+            () => {
+                election!.CompletingElection += _election.Window!.Election_CompletingElectionEventHandler;
+                election!.CloseWindow = _election.Window!.Close;
+            }
+        );
+        election.RunElection ();
+        _election.ShowDialog ();
         e.PeopleRolesNew = election.PeopleRolesNew;
         e.PeopleFactionsNew = election.PeopleFactionsNew;
     }
@@ -509,13 +506,11 @@ internal class SimulationViewModel : ViewModel {
     }
 
     private void Context_DeclaringProcedureEventHandler (IDType e) {
-        DeclareViewModel declare = new (e, _simulation, _localisation);
-        DeclareWindow window = new () {
-            DataContext = declare,
-        };
+        DeclareViewModel declare = new (e, _simulation, in _localisation);
+        _declare.New (declare);
 
         declare.ConfirmingProcedure += Declare_ConfirmingProcedureEventHandler;
-        window.ShowDialog ();
+        _declare.ShowDialog ();
     }
 
     private void Declare_ConfirmingProcedureEventHandler (ConfirmingProcedureEventArgs e) {
@@ -580,7 +575,7 @@ internal class SimulationViewModel : ViewModel {
                             if (result.DiceDefender is null) {
                                 throw new UnreachableException ();
                             } else {
-                                e.Message = $"Failure: Rolled and spent {result.DiceDeclarer}, but defender rolled {result.DiceDefender}";
+                                e.Message = $"Failure: Rolled {result.DiceDeclarer}, but defender rolled {result.DiceDefender}";
                             }
                         }
                     }
@@ -596,9 +591,16 @@ internal class SimulationViewModel : ViewModel {
                     bool? vote = _simulation.DeclareProcedure (e.PersonID, e.ProcedureID);
 
                     if (vote is bool isPass) {
+                        Link<SlideViewModel> link;
+
+                        if (isPass) {
+                            IDType slideIdx = _slide.Links[0].Link.TargetID;
+                            link = new (new BallotAlwaysCondition (), slideIdx);
+                        } else {
+                            IDType slideIdx = _slide.Links[1].Link.TargetID;
+                            link = new (new BallotNeverCondition (), slideIdx);
+                        }
                         LinkViewModel linkResult = isPass ? _slide.Links[0] : _slide.Links[1];
-                        IDType slideIdx = linkResult.Link.TargetID;
-                        Link<SlideViewModel> link = new (new AlwaysCondition (), slideIdx);
 
                         SwitchSlideCommand.Execute (link);
                     }
@@ -621,8 +623,9 @@ internal class SimulationViewModel : ViewModel {
                     _simulation.EndBallot (isPass);
                 }
 
-                Slide = Slides[slideIdx];
                 SlideCurrentIdx = slideIdx;
+            } else {
+                throw new UnreachableException ();
             }
         },
         l => l.Condition.Evaluate (_simulation)

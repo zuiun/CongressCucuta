@@ -1,30 +1,25 @@
 ﻿using System.Collections.ObjectModel;
-using System.Diagnostics.CodeAnalysis;
 using CongressCucuta.Core;
 
 namespace CongressCucuta.ViewModels;
 
-[ExcludeFromCodeCoverage]
 internal class PersonViewModel (IDType id, string name, bool isInteractable) : ViewModel, IID {
-    internal class RoleGroup : ViewModel, IID {
+    internal class RoleGroup : ViewModel {
         private readonly string _name;
         private readonly string _abbreviation;
-        public IDType ID { get; }
         public string Name => _name;
         public string Abbreviation => _abbreviation;
 
-        public RoleGroup (IDType id, string name) {
+        public RoleGroup (string name) {
             string[] words = name.Split ([' ', '-']);
             string abbreviation = string.Join (string.Empty, words.Select (w => w.First ()));
             
             _name = name;
             _abbreviation = $"[{abbreviation}]";
-            ID = id;
         }
     }
 
-    private string _name = name;
-    private ObservableCollection<RoleGroup> _roles = [];
+    private readonly ObservableCollection<RoleGroup> _roles = [];
     private bool _isPass = false;
     private bool _isFail = false;
     private bool _isAbstain = true;
@@ -34,20 +29,8 @@ internal class PersonViewModel (IDType id, string name, bool isInteractable) : V
     private bool _isInteractable = isInteractable;
     private bool _canDeclare = false;
     public IDType ID => id;
-    public string Name {
-        get => _name;
-        set {
-            _name = value;
-            OnPropertyChanged ();
-        }
-    }
-    public ObservableCollection<RoleGroup> Roles {
-        get => _roles;
-        set {
-            _roles = value;
-            OnPropertyChanged ();
-        }
-    }
+    public string Name => name;
+    public ObservableCollection<RoleGroup> Roles => _roles;
     public bool IsPass {
         get => _isPass;
         set {

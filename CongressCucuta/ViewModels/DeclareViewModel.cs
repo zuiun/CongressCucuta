@@ -87,7 +87,7 @@ internal class DeclareViewModel : ViewModel {
     }
     public event Action<ConfirmingProcedureEventArgs>? ConfirmingProcedure;
 
-    public DeclareViewModel (IDType personId, SimulationContext context, Localisation localisation) {
+    public DeclareViewModel (IDType personId, SimulationContext context, ref readonly Localisation localisation) {
         PersonID = personId;
         Name = context.People[personId].Name;
 

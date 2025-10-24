@@ -1,8 +1,7 @@
 ﻿using CongressCucuta.Core;
 using CongressCucuta.Core.Contexts;
-using CongressCucuta.Core.Generators;
 using CongressCucuta.Core.Procedures;
-using CongressCucuta.Tests.Unit.Fakes;
+using CongressCucuta.Tests.Fakes;
 
 namespace CongressCucuta.Tests.Unit.Core;
 
@@ -105,7 +104,7 @@ public sealed class SimulationContextTests {
     public void TryConfirmProcedure_DiceValue_ReturnsExpected () {
         FakeSimulation simulation = new ();
         int dice = 0;
-        DeterministicGenerator generator = new ([dice]);
+        FakeGenerator generator = new ([dice]);
         SimulationContext context = new (simulation, generator);
         context.InitialisePeople ([new (0, "0")]);
         context.ProceduresDeclared[3] = new (
@@ -128,7 +127,7 @@ public sealed class SimulationContextTests {
     [DataRow (6, false)]
     public void TryConfirmProcedure_DiceCurrencySuccess_ReturnsExpected (int dice, bool expected) {
         FakeSimulation simulation = new ();
-        DeterministicGenerator generator = new ([dice]);
+        FakeGenerator generator = new ([dice]);
         SimulationContext context = new (simulation, generator);
         context.InitialisePeople ([new (0, "0")]);
         context.ProceduresDeclared[3] = new (
@@ -151,7 +150,7 @@ public sealed class SimulationContextTests {
     public void TryConfirmProcedure_DiceAdversarialCurrencyFailure_ReturnsExpected () {
         FakeSimulation simulation = new ();
         int[] dice = [6, 6];
-        DeterministicGenerator generator = new (dice);
+        FakeGenerator generator = new (dice);
         SimulationContext context = new (simulation, generator);
         context.InitialisePeople ([new (0, "0")]);
         context.ProceduresDeclared[3] = new (
@@ -175,7 +174,7 @@ public sealed class SimulationContextTests {
     [DataRow (new int[] { 1, 0 }, true)]
     public void TryConfirmProcedure_DiceAdversarial_ReturnsExpected (int[] dice, bool expected) {
         FakeSimulation simulation = new ();
-        DeterministicGenerator generator = new (dice);
+        FakeGenerator generator = new (dice);
         SimulationContext context = new (simulation, generator);
         context.InitialisePeople ([new (0, "0")]);
         context.ProceduresDeclared[3] = new (
@@ -797,7 +796,7 @@ public sealed class SimulationContextTests {
     [DataRow ((byte) 0, false)]
     public void StartBallot_PermissionsCanVoteNoTarget_MutatesExpected (byte value, bool expected) {
         FakeSimulation simulation = new ();
-        DeterministicGenerator generator = new ([1]);
+        FakeGenerator generator = new ([1]);
         SimulationContext context = new (simulation, generator);
         context.InitialisePeople ([new (0, "0"), new (1, "1")]);
         context.ProceduresSpecial[1] = new (
@@ -834,7 +833,7 @@ public sealed class SimulationContextTests {
     [DataRow ((byte) 1, (byte) 2)]
     public void StartBallot_PermissionsVotesNoTarget_MutatesExpected (byte value, byte expected) {
         FakeSimulation simulation = new ();
-        DeterministicGenerator generator = new ([1]);
+        FakeGenerator generator = new ([1]);
         SimulationContext context = new (simulation, generator);
         context.InitialisePeople ([new (0, "0"), new (1, "1")]);
         context.ProceduresSpecial[1] = new (
@@ -871,7 +870,7 @@ public sealed class SimulationContextTests {
     [DataRow ((byte) 0, false)]
     public void StartBallot_PermissionsCanSpeakNoTarget_MutatesExpected (byte value, bool expected) {
         FakeSimulation simulation = new ();
-        DeterministicGenerator generator = new ([1]);
+        FakeGenerator generator = new ([1]);
         SimulationContext context = new (simulation, generator);
         context.InitialisePeople ([new (0, "0"), new (1, "1")]);
         context.ProceduresSpecial[1] = new (

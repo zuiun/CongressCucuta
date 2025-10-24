@@ -8,7 +8,7 @@ namespace CongressCucuta.Core.Conditions;
  */
 public readonly record struct BallotVoteCondition (bool ShouldBePassed) : ICondition {
     public bool Evaluate (SimulationContext context) {
-        bool? result = context.IsBallotVoted ();
+        bool? result = context.Context.IsBallotVoted ();
 
         return result == ShouldBePassed;
     }

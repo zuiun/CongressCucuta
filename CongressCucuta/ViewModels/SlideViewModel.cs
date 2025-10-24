@@ -3,36 +3,18 @@ using CongressCucuta.Core.Conditions;
 
 namespace CongressCucuta.ViewModels;
 
-internal class SlideViewModel (IDType id, string title, List<LineViewModel> description, bool isContent = true) : ViewModel, IID {
-    private string _title = title;
+internal class SlideViewModel : ViewModel, IID {
+    private readonly string _title;
     // Intentionally a List, as only setting is intended (no in-place modifications)
-    private List<LineViewModel> _description = description;
+    private readonly List<LineViewModel> _description;
     // Intentionally a List, as only setting is intended (no in-place modifications)
-    private List<LinkViewModel> _links = [];
-    private bool _isContent = isContent;
-    private bool _isSubtitle = ! isContent;
-    public IDType ID => id;
-    public string Title {
-        get => _title;
-        set {
-            _title = value;
-            OnPropertyChanged ();
-        }
-    }
-    public List<LineViewModel> Description {
-        get => _description;
-        set {
-            _description = value;
-            OnPropertyChanged ();
-        }
-    }
-    public List<LinkViewModel> Links {
-        get => _links;
-        set {
-            _links = value;
-            OnPropertyChanged ();
-        }
-    }
+    private readonly List<LinkViewModel> _links = [];
+    private bool _isContent;
+    private bool _isSubtitle;
+    public IDType ID { get; }
+    public string Title => _title;
+    public List<LineViewModel> Description => _description;
+    public List<LinkViewModel> Links => _links;
     public bool IsContent {
         get => _isContent;
         set {
@@ -48,42 +30,38 @@ internal class SlideViewModel (IDType id, string title, List<LineViewModel> desc
         }
     }
 
-    public static SlideViewModel Forward (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
-        SlideViewModel slide = new (id, title, description, isContent) {
-            Links = [new ("Next", new (new AlwaysCondition (), id + 1))],
-        };
+    private SlideViewModel (IDType id, string title, List<LineViewModel> description, bool isContent) {
+        ID = id;
+        _title = title;
+        _description = description;
+        IsContent = isContent;
+        IsSubtitle = ! isContent;
 
-        foreach (LineViewModel line in slide.Description) {
-            line.IsContent = isContent;
-            line.IsSubtitle = ! isContent;
+        foreach (LineViewModel line in Description) {
+            line.IsContent = IsContent;
+            line.IsSubtitle = IsSubtitle;
         }
+    }
 
+    public static SlideViewModel Forward (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
+        SlideViewModel slide = new (id, title, description, isContent);
+
+        slide.Links.Add (new ("Next", new (new AlwaysCondition (), id + 1)));
         return slide;
     }
 
     public static SlideViewModel Backward (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
-        SlideViewModel slide = new (id, title, description, isContent) {
-            Links = [new ("Previous", new (new AlwaysCondition (), id - 1))],
-        };
+        SlideViewModel slide = new (id, title, description, isContent);
 
-        foreach (LineViewModel line in slide.Description) {
-            line.IsContent = isContent;
-            line.IsSubtitle = ! isContent;
-        }
-
+        slide.Links.Add (new ("Previous", new (new AlwaysCondition (), id - 1)));
         return slide;
     }
 
     public static SlideViewModel Bidirectional (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
-        SlideViewModel slide = new (id, title, description, isContent) {
-            Links = [new ("Previous", new (new AlwaysCondition (), id - 1)), new ("Next", new (new AlwaysCondition (), id + 1))],
-        };
+        SlideViewModel slide = new (id, title, description, isContent);
 
-        foreach (LineViewModel line in slide.Description) {
-            line.IsContent = isContent;
-            line.IsSubtitle = ! isContent;
-        }
-
+        slide.Links.Add (new ("Previous", new (new AlwaysCondition (), id - 1)));
+        slide.Links.Add (new ("Next", new (new AlwaysCondition (), id + 1)));
         return slide;
     }
 
@@ -101,23 +79,11 @@ internal class SlideViewModel (IDType id, string title, List<LineViewModel> desc
             slide.Links.Add (new LinkViewModel (l.Condition.ToString (in localisation), l));
         }
 
-        foreach (LineViewModel line in slide.Description) {
-            line.IsContent = isContent;
-            line.IsSubtitle = ! isContent;
-        }
-
         return slide;
     }
 
     public static SlideViewModel Constant (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
-        SlideViewModel slide = new (id, title, description, isContent) {
-            Links = [],
-        };
-
-        foreach (LineViewModel line in slide.Description) {
-            line.IsContent = isContent;
-            line.IsSubtitle = ! isContent;
-        }
+        SlideViewModel slide = new (id, title, description, isContent);
 
         return slide;
     }
