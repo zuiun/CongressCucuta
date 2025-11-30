@@ -1,4 +1,5 @@
-﻿using CongressCucuta.Core;
+﻿using System.Diagnostics;
+using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Core.Procedures;
 using CongressCucuta.Tests.Fakes;
@@ -379,7 +380,7 @@ public sealed class SimulationViewModelTests {
     }
 
     [TestMethod]
-    public void SwitchSlideCommand_Execute_MutatesExpected () {
+    public void SwitchSlideCommand_ExecuteNormal_MutatesExpected () {
         IDType expected = 1;
         FakeSimulation simulation = new ();
         SimulationViewModel vm = new (simulation);
@@ -389,6 +390,15 @@ public sealed class SimulationViewModelTests {
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    public void SwitchSlideCommand_ExecuteFailure_Throws () {
+        FakeSimulation simulation = new ();
+        SimulationViewModel vm = new (simulation);
+        Link<SlideViewModel> link = new (new NeverCondition (), 0);
+
+        Assert.Throws<UnreachableException> (() => vm.SwitchSlideCommand.Execute (link));
     }
 
     [TestMethod]
@@ -411,5 +421,151 @@ public sealed class SimulationViewModelTests {
         bool actual = vm.SwitchSlideCommand.CanExecute (link);
 
         Assert.IsFalse (actual);
+    }
+
+    [TestMethod]
+    public void TrySwitchSlideCommand_ExecuteForward_MutatesExpected () {
+        IDType expected = 1;
+        FakeSimulation simulation = new ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Forward (0, "", [])
+        };
+
+        vm.TrySwitchSlideCommand.Execute ("R");
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    public void TrySwitchSlideCommand_ExecuteBackward_MutatesExpected () {
+        IDType expected = 0;
+        FakeSimulation simulation = new ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Backward (1, "", [])
+        };
+
+        vm.TrySwitchSlideCommand.Execute ("L");
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    [DataRow ("L", 0)]
+    [DataRow ("R", 2)]
+    public void TrySwitchSlideCommand_ExecuteBidirectional_MutatesExpected (string key, int slide) {
+        IDType expected = slide;
+        FakeSimulation simulation = new ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Bidirectional (1, "", [])
+        };
+
+        vm.TrySwitchSlideCommand.Execute (key);
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    public void TrySwitchSlideCommand_ExecuteBranching1_MutatesExpected () {
+        IDType expected = 1;
+        FakeSimulation simulation = new ();
+        Localisation localisation = FakeLocalisation.Create ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Branching (0, "", [], [
+                new (new AlwaysCondition (), 1),
+            ], in localisation)
+        };
+
+        vm.TrySwitchSlideCommand.Execute ("R");
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    [DataRow ("L", 1)]
+    [DataRow ("R", 2)]
+    public void TrySwitchSlideCommand_ExecuteBranching2_MutatesExpected (string key, int slide) {
+        IDType expected = slide;
+        FakeSimulation simulation = new ();
+        Localisation localisation = FakeLocalisation.Create ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Branching (0, "", [], [
+                new (new AlwaysCondition (), 1),
+                new (new AlwaysCondition (), 2),
+            ], in localisation)
+        };
+
+        vm.TrySwitchSlideCommand.Execute (key);
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    [DataRow ("L", 1)]
+    [DataRow ("U", 2)]
+    [DataRow ("R", 3)]
+    public void TrySwitchSlideCommand_ExecuteBranching3_MutatesExpected (string key, int slide) {
+        IDType expected = slide;
+        FakeSimulation simulation = new ();
+        Localisation localisation = FakeLocalisation.Create ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Branching (0, "", [], [
+                new (new AlwaysCondition (), 1),
+                new (new AlwaysCondition (), 2),
+                new (new AlwaysCondition (), 3),
+            ], in localisation)
+        };
+
+        vm.TrySwitchSlideCommand.Execute (key);
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    [DataRow ("L", 1)]
+    [DataRow ("U", 2)]
+    [DataRow ("D", 3)]
+    [DataRow ("R", 4)]
+    public void TrySwitchSlideCommand_ExecuteBranching4_MutatesExpected (string key, int slide) {
+        IDType expected = slide;
+        FakeSimulation simulation = new ();
+        Localisation localisation = FakeLocalisation.Create ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Branching (0, "", [], [
+                new (new AlwaysCondition (), 1),
+                new (new AlwaysCondition (), 2),
+                new (new AlwaysCondition (), 3),
+                new (new AlwaysCondition (), 4),
+            ], in localisation)
+        };
+
+        vm.TrySwitchSlideCommand.Execute (key);
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
+    }
+
+    [TestMethod]
+    [DataRow ("L")]
+    [DataRow ("U")]
+    [DataRow ("D")]
+    [DataRow ("R")]
+    public void TrySwitchSlideCommand_ExecuteFailure_DoesNothing (string key) {
+        IDType expected = 0;
+        FakeSimulation simulation = new ();
+        Localisation localisation = FakeLocalisation.Create ();
+        SimulationViewModel vm = new (simulation) {
+            Slide = SlideViewModel.Branching (expected, "", [], [new (new NeverCondition (), 1)], in localisation)
+        };
+
+        vm.TrySwitchSlideCommand.Execute (key);
+
+        Assert.AreEqual (expected, vm.Slide.ID);
+        Assert.AreEqual (expected, vm.SlideCurrentIdx);
     }
 }

@@ -36,12 +36,9 @@ public sealed class ElectionViewModelTests {
     [TestMethod]
     public void RunNextElectionCommand_ExecuteEnd_InvokesExpected () {
         bool isCompleted = false;
-        void Election_CompletingElectionEventHandler () {
-            isCompleted = true;
-        }
         ElectionContext context = new (ElectionContext.ElectionType.ShuffleRemove, [2]);
         ElectionViewModel election = Create (context);
-        election.CompletingElection += Election_CompletingElectionEventHandler;
+        election.CompletingElection += () => isCompleted = true;
 
         election.RunNextElectionCommand.Execute (null);
 
@@ -67,5 +64,27 @@ public sealed class ElectionViewModelTests {
         bool actual = election.RunNextElectionCommand.CanExecute (null);
 
         Assert.IsFalse (actual);
+    }
+
+    [TestMethod]
+    public void TryRunNextElectionCommand_ExecuteSuccess_InvokesExpected () {
+        bool isCompleted = false;
+        ElectionContext context = new (ElectionContext.ElectionType.ShuffleRemove, [2]);
+        ElectionViewModel election = Create (context);
+        election.CompletingElection += () => isCompleted = true;
+
+        election.TryRunNextElectionCommand.Execute (null);
+
+        Assert.IsTrue (isCompleted);
+    }
+
+    [TestMethod]
+    public void TryRunNextElectionCommand_ExecuteFailure_DoesNothing () {
+        ElectionContext context = new (ElectionContext.ElectionType.ShuffleAdd, [2], isLeaderNeeded: true);
+        ElectionViewModel election = Create (context);
+        election.CompletingElection += () => Assert.Fail ();
+        election.RunElection ();
+
+        election.TryRunNextElectionCommand.Execute (null);
     }
 }

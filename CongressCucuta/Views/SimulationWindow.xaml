@@ -7,22 +7,20 @@
         xmlns:vm = "clr-namespace:CongressCucuta.ViewModels"
         mc:Ignorable="d"
         Title="{Binding State}" Height="720" Width="1280">
-    <Window.Resources>
-        <Style TargetType = "Border">
-            <Setter Property = "BorderBrush" Value = "Black"/>
-            <Setter Property = "BorderThickness" Value = "0, 1, 0, 0"/>
-        </Style>
-    </Window.Resources>
-
+    <Window.InputBindings>
+        <KeyBinding Key = "Left" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "L"/>
+        <KeyBinding Key = "Up" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "U"/>
+        <KeyBinding Key = "Down" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "D"/>
+        <KeyBinding Key = "Right" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "R"/>
+    </Window.InputBindings>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width = "3*"/>
             <ColumnDefinition Width = "1*"/>
         </Grid.ColumnDefinitions>
 
-        <!--<Border>-->
-            <local:SlideView Grid.Column = "0" DataContext = "{Binding Slide}"/>
-        <!--</Border>-->
+        <local:SlideView Grid.Column = "0" DataContext = "{Binding Slide}"/>
         <local:ContextView Grid.Column = "1" DataContext = "{Binding Context}"/>
     </Grid>
 </Window>

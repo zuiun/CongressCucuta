@@ -631,4 +631,14 @@ internal class SimulationViewModel : ViewModel {
         },
         l => l.Condition.Evaluate (_simulation)
     );
+
+    public RelayCommand<string> TrySwitchSlideCommand => new (k => {
+        Link<SlideViewModel>? link = _slide.FindLink (k);
+
+        if (link is Link<SlideViewModel> l) {
+            if (SwitchSlideCommand.CanExecute (l)) {
+                SwitchSlideCommand.Execute (l);
+            }
+        }
+    });
 }

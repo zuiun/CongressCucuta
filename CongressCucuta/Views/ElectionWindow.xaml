@@ -29,11 +29,14 @@
             <Setter Property = "Margin" Value = "0, 0, 0, 12"/>
         </Style>
     </Window.Resources>
+    <Window.InputBindings>
+        <KeyBinding Key = "Right" Command = "{Binding TryRunNextElectionCommand}"/>
+    </Window.InputBindings>
     
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height = "2*"/>
-            <RowDefinition Height = "23*"/>
+            <RowDefinition Height = "20*"/>
             <RowDefinition Height = "1*"/>
             <RowDefinition Height = "2*"/>
         </Grid.RowDefinitions>
@@ -86,8 +89,10 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-        <Button Grid.Row = "3" Grid.Column = "1" HorizontalAlignment = "Center" Command = "{Binding RunNextElectionCommand}">
-            Next
-        </Button>
+        <ItemsControl Grid.Row = "3" Grid.Column = "1">
+            <Button Grid.Row = "3" Grid.Column = "1" HorizontalAlignment = "Center" Command = "{Binding RunNextElectionCommand}">
+                Next
+            </Button>
+        </ItemsControl>
     </Grid>
 </Window>

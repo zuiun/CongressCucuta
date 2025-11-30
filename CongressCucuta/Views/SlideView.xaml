@@ -8,9 +8,9 @@
              d:DesignHeight = "720" d:DesignWidth = "810">
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-        <Style TargetType = "TextBlock">
-            <Setter Property = "FontFamily" Value = "Candara"/>
-            <Setter Property = "FontSize" Value = "44"/>
+        <Style TargetType = "ToolTip">
+            <Setter Property = "FontFamily" Value = "Segoe UI"/>
+            <Setter Property = "FontSize" Value = "12"/>
         </Style>
         <Style x:Key = "Content" TargetType = "Grid">
             <Setter Property = "Visibility" Value = "{Binding IsContent, Converter = {StaticResource BooleanToVisibilityConverter}}"/>
@@ -39,6 +39,8 @@
 
             <TextBlock Grid.Row = "0"
                        Grid.Column = "1"
+                       FontFamily = "Candara"
+                       FontSize = "44"
                        Text = "{Binding Title}"
                        HorizontalAlignment = "Center"
                        VerticalAlignment = "Center"
@@ -74,6 +76,8 @@
             </ItemsControl>
             <TextBlock Grid.Row = "1"
                        Grid.Column = "1"
+                       FontFamily = "Candara"
+                       FontSize = "44"
                        Text = "{Binding Title}"
                        TextWrapping = "Wrap"
                        VerticalAlignment = "Top"/>
@@ -90,12 +94,11 @@
                             CommandParameter = "{Binding Link}"
                             HorizontalAlignment = "Center"
                             VerticalAlignment = "Center"
+                            ToolTip = "{Binding Key}"
+                            ToolTipService.ShowOnDisabled = "True"
                             Padding = "12, 6, 12, 6"
                             Margin = "0, 0, 0, 12">
-                        <TextBlock FontFamily = "Candara"
-                                   FontSize = "16"
-                                   Text = "{Binding Name}"
-                                   TextWrapping = "Wrap"/>
+                        <TextBlock FontFamily = "Candara" FontSize = "16" Text = "{Binding Name}" TextWrapping = "Wrap"/>
                     </Button>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

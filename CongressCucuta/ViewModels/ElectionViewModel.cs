@@ -132,4 +132,10 @@ internal class ElectionViewModel : ViewModel {
         },
         _ => GroupsPeople.All (g => g.IsSelected ())
     );
+
+    public RelayCommand TryRunNextElectionCommand => new (_ => {
+        if (RunNextElectionCommand.CanExecute (null)) {
+            RunNextElectionCommand.Execute (null);
+        }
+    });
 }

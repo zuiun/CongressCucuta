@@ -1,3 +1,2 @@
 Dynamically generate slides
-Use keyboard to navigate
 Separate compiler from app
