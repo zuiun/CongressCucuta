@@ -7,8 +7,7 @@ Government simulation game/slideshow program, made for nostalgic reasons.
 
 ## Installation
 
-Congress of Cúcuta is released as a single executable, but uses [.NET 9.0](https://dotnet.microsoft.com/en-us/download/dotnet/9.0/runtime).
-Whenever 10.0 comes out, it will use that instead.
+Congress of Cúcuta is released as a single executable, but uses [.NET 10.0](https://dotnet.microsoft.com/en-us/download).
 This does mean that Congress of Cúcuta is only tested and intended for Windows, though I strongly suspect it could be emulated without much hassle.
 
 ## Usage
@@ -237,7 +236,7 @@ Brazil, Presidential Republic: The Old Republic
 For the first time, Brazil is without a monarch.
 For the oligarchs of the new republic, this is a dream come true.
 For nearly everyone else, this is a disaster.
-Without the old emperor at the helm, Brazil's politicians now face the challenge of garnering public support and uniting the many states of Brazil.
+Without the old emperor at the helm, Brazil's politicians now face the challenge of garnering public support and uniting the many states of Brazil, all in the hopes of leading a Victorian nation into a new century.
 
 In time, they will understand why Pedro II was so eager to part with his poisoned inheritance.
 

@@ -158,7 +158,15 @@ internal class Finland : ISimulation {
             new Confirmation (Confirmation.ConfirmationType.Always),
             [president]
         );
-        List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence, veto, dissolutionParliament, ministerialAppointment];
+        ProcedureDeclared presidentialIncapacity = new (
+            12,
+            [
+                new (Procedure.Effect.EffectType.ElectionNominated, [president]),
+            ],
+            new Confirmation (Confirmation.ConfirmationType.DivisionChamber),
+            [primeMinister]
+        );
+        List<ProcedureDeclared> proceduresDeclared = [voteNoConfidence, veto, dissolutionParliament, ministerialAppointment, presidentialIncapacity];
         Dictionary<IDType, (string, string)> procedures = [];
         procedures[legislativeElection.ID] = (
             "Legislative Election",
@@ -170,19 +178,19 @@ internal class Finland : ISimulation {
         );
         procedures[paasikiviDoctrine.ID] = (
             "Paasikivi Doctrine",
-            "Finland's continued existence depends on the mercy of the USSR - a mercy which may not last long, and which previous governments have committed to preserving at almost any cost."
+            "Finland's continued existence depends on the mercy of the USSR - a mercy which may not last long, and which previous governments have committed to preserving at almost any cost. For as long as this \"Cold War\" continues, every election will be held under a Soviet spectre."
         );
         procedures[kLine.ID] = (
-            "K-Line",
-            "Supporters of the president manipulate politics through backdoor channels, avoiding official decrees and votes. Their rationale is simple: only Urho Kekkonen can maintain the confidence of the USSR, and he must stay in power."
+            "Dear brother!",
+            "Separation of powers is a formality in Finland, as the president often bypasses his government through an informal network of grandees. These bureaucrats stay in their positions even through presidential elections, and are known to exercise their influence in order to protect the president."
         );
         procedures[lingeringNightFrost.ID] = (
             "Lingering Night Frost",
-            "The current government lives in the shadow of a Soviet spectre: a \"night frost\" hangs in the air, and threatens to descend at any time."
+            "Only a few months ago, the Soviets employed every method short of invasion to bring down the social democratic government. The current government lives in the shadow of this crisis: a \"night frost\" hangs in the air, and threatens to descend once again."
         );
         procedures[academicKareliaSociety.ID] = (
             "Academic Karelia Society",
-            "The Academic Karelia Society was an anti-Soviet organisation that demanded the conquest of Karelia. Though it no longer exists, many societal leaders remember the organisation with fondness and continue to sympathise with its precepts."
+            "The Academic Karelia Society was an anti-Soviet organisation that demanded the conquest of Karelia. Though it no longer exists, many societal leaders remember their time in the organisation with fondness and continue to sympathise with its precepts."
         );
         procedures[activatedYyaTreaty.ID] = (
             "Activated YYA Treaty",
@@ -207,6 +215,10 @@ internal class Finland : ISimulation {
         procedures[ministerialAppointment.ID] = (
             "Ministerial Appointment",
             "This country's head of state is empowered to appoint government ministers, which drastically reduces legislative independence."
+        );
+        procedures[presidentialIncapacity.ID] = (
+            "Presidential Incapacity",
+            "When this country's head of state is no longer capable of performing his duties, a senior minister of the government replaces him for the duration of the incapacity. In most cases, this is the prime minister."
         );
 
         Ballot ballotA = new (

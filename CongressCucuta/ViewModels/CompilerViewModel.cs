@@ -106,6 +106,7 @@ internal class CompilerViewModel : ViewModel {
 
             try {
                 string json = JsonSerializer.Serialize (_simulations[_selectedIdx].Simulation, _options);
+
                 File.WriteAllText (filename, json);
             } catch (Exception) {
                 WasCompilationSuccess = false;

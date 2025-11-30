@@ -297,6 +297,26 @@
         }
       ],
       "IsActiveStart": true
+    },
+    {
+      "Confirmation": {
+        "Type": 1,
+        "Value": 0
+      },
+      "DeclarerIDs": [
+        254
+      ],
+      "ID": 12,
+      "Effects": [
+        {
+          "Type": 9,
+          "TargetIDs": [
+            253
+          ],
+          "Value": 0
+        }
+      ],
+      "IsActiveStart": true
     }
   ],
   "Ballots": [
@@ -693,19 +713,19 @@
       },
       "2": {
         "Item1": "Paasikivi Doctrine",
-        "Item2": "Finland\u0027s continued existence depends on the mercy of the USSR - a mercy which may not last long, and which previous governments have committed to preserving at almost any cost."
+        "Item2": "Finland\u0027s continued existence depends on the mercy of the USSR - a mercy which may not last long, and which previous governments have committed to preserving at almost any cost. For as long as this \u0022Cold War\u0022 continues, every election will be held under a Soviet spectre."
       },
       "3": {
-        "Item1": "K-Line",
-        "Item2": "Supporters of the president manipulate politics through backdoor channels, avoiding official decrees and votes. Their rationale is simple: only Urho Kekkonen can maintain the confidence of the USSR, and he must stay in power."
+        "Item1": "Dear brother!",
+        "Item2": "Separation of powers is a formality in Finland, as the president often bypasses his government through an informal network of grandees. These bureaucrats stay in their positions even through presidential elections, and are known to exercise their influence in order to protect the president."
       },
       "4": {
         "Item1": "Lingering Night Frost",
-        "Item2": "The current government lives in the shadow of a Soviet spectre: a \u0022night frost\u0022 hangs in the air, and threatens to descend at any time."
+        "Item2": "Only a few months ago, the Soviets employed every method short of invasion to bring down the social democratic government. The current government lives in the shadow of this crisis: a \u0022night frost\u0022 hangs in the air, and threatens to descend once again."
       },
       "5": {
         "Item1": "Academic Karelia Society",
-        "Item2": "The Academic Karelia Society was an anti-Soviet organisation that demanded the conquest of Karelia. Though it no longer exists, many societal leaders remember the organisation with fondness and continue to sympathise with its precepts."
+        "Item2": "The Academic Karelia Society was an anti-Soviet organisation that demanded the conquest of Karelia. Though it no longer exists, many societal leaders remember their time in the organisation with fondness and continue to sympathise with its precepts."
       },
       "6": {
         "Item1": "Activated YYA Treaty",
@@ -730,6 +750,10 @@
       "11": {
         "Item1": "Ministerial Appointment",
         "Item2": "This country\u0027s head of state is empowered to appoint government ministers, which drastically reduces legislative independence."
+      },
+      "12": {
+        "Item1": "Presidential Incapacity",
+        "Item2": "When this country\u0027s head of state is no longer capable of performing his duties, a senior minister of the government replaces him for the duration of the incapacity. In most cases, this is the prime minister."
       }
     },
     "Ballots": {
