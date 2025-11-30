@@ -1,4 +1,5 @@
-﻿using CongressCucuta.Core;
+﻿using System.Diagnostics;
+using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Tests.Fakes;
 using CongressCucuta.ViewModels;
@@ -36,7 +37,7 @@ public sealed class SlideViewModelTests {
     }
 
     [TestMethod]
-    public void Branching_Links_ConstructsExpected () {
+    public void Branching_LinksNormal_ConstructsExpected () {
         Localisation localisation = FakeLocalisation.Create ();
         SlideViewModel actual = SlideViewModel.Branching (
             0,
@@ -48,6 +49,19 @@ public sealed class SlideViewModelTests {
 
         Assert.AreEqual<IDType> (1, actual.Links[0].Link.TargetID);
         Assert.AreEqual<IDType> (2, actual.Links[1].Link.TargetID);
+    }
+
+    [TestMethod]
+    public void Branching_LinksEmpty_Throws () {
+        Localisation localisation = FakeLocalisation.Create ();
+        
+        Assert.Throws<UnreachableException> (() => SlideViewModel.Branching (
+            0,
+            "Title",
+            ["Description"],
+            [],
+            in localisation
+        ));
     }
 
     [TestMethod]

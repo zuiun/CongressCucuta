@@ -319,8 +319,18 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
             switch (e.Type) {
                 case Procedure.Effect.EffectType.CurrencyAdd: {
                     if (e.TargetIDs.Length > 0) {
-                        foreach (IDType c in e.TargetIDs) {
-                            CurrenciesValues[c] += (sbyte) e.Value;
+                        if (e.TargetIDs[0] == Currency.PARTY) {
+                            foreach (IDType c in _partiesActive) {
+                                CurrenciesValues[c] += (sbyte) e.Value;
+                            }
+                        } else if (e.TargetIDs[0] == Currency.REGION) {
+                            foreach (IDType c in _regionsActive) {
+                                CurrenciesValues[c] += (sbyte) e.Value;
+                            }
+                        } else {
+                            foreach (IDType c in e.TargetIDs) {
+                                CurrenciesValues[c] += (sbyte) e.Value;
+                            }
                         }
                     } else {
                         IDType currencyId = ChooseCurrencyOwner (personId);
@@ -332,8 +342,18 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                 }
                 case Procedure.Effect.EffectType.CurrencySubtract: {
                     if (e.TargetIDs.Length > 0) {
-                        foreach (IDType c in e.TargetIDs) {
-                            CurrenciesValues[c] -= (sbyte) e.Value;
+                        if (e.TargetIDs[0] == Currency.PARTY) {
+                            foreach (IDType c in _partiesActive) {
+                                CurrenciesValues[c] -= (sbyte) e.Value;
+                            }
+                        } else if (e.TargetIDs[0] == Currency.REGION) {
+                            foreach (IDType c in _regionsActive) {
+                                CurrenciesValues[c] -= (sbyte) e.Value;
+                            }
+                        } else {
+                            foreach (IDType c in e.TargetIDs) {
+                                CurrenciesValues[c] -= (sbyte) e.Value;
+                            }
                         }
                     } else {
                         IDType currencyId = ChooseCurrencyOwner (personId);
@@ -495,8 +515,18 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         // Don't apply on the first ballot, since it's already pre-initialised
                         if (BallotCurrentID > 0) {
                             if (e.TargetIDs.Length > 0) {
-                                foreach (IDType c in CurrenciesValues.Keys.Where (c => e.TargetIDs.Contains (c))) {
-                                    CurrenciesValues[c] += (sbyte) e.Value;
+                                if (e.TargetIDs[0] == Currency.PARTY) {
+                                    foreach (IDType c in _partiesActive) {
+                                        CurrenciesValues[c] += (sbyte) e.Value;
+                                    }
+                                } else if (e.TargetIDs[0] == Currency.REGION) {
+                                    foreach (IDType c in _regionsActive) {
+                                        CurrenciesValues[c] += (sbyte) e.Value;
+                                    }
+                                } else {
+                                    foreach (IDType c in e.TargetIDs) {
+                                        CurrenciesValues[c] += (sbyte) e.Value;
+                                    }
                                 }
                             } else {
                                 CurrenciesValues[Currency.STATE] += (sbyte) e.Value;
@@ -508,8 +538,18 @@ public class SimulationContext (Simulation simulation, IGenerator? generator = n
                         // Don't apply on the first ballot, since it's already pre-initialised
                         if (BallotCurrentID > 0) {
                             if (e.TargetIDs.Length > 0) {
-                                foreach (IDType c in CurrenciesValues.Keys.Where (c => e.TargetIDs.Contains (c))) {
-                                    CurrenciesValues[c] -= (sbyte) e.Value;
+                                if (e.TargetIDs[0] == Currency.PARTY) {
+                                    foreach (IDType c in _partiesActive) {
+                                        CurrenciesValues[c] -= (sbyte) e.Value;
+                                    }
+                                } else if (e.TargetIDs[0] == Currency.REGION) {
+                                    foreach (IDType c in _regionsActive) {
+                                        CurrenciesValues[c] -= (sbyte) e.Value;
+                                    }
+                                } else {
+                                    foreach (IDType c in e.TargetIDs) {
+                                        CurrenciesValues[c] -= (sbyte) e.Value;
+                                    }
                                 }
                             } else {
                                 CurrenciesValues[Currency.STATE] -= (sbyte) e.Value;

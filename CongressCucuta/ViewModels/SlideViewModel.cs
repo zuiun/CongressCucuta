@@ -1,4 +1,6 @@
-﻿using CongressCucuta.Core;
+﻿using System.Diagnostics;
+using System.Windows.Input;
+using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
 
 namespace CongressCucuta.ViewModels;
@@ -52,22 +54,22 @@ internal class SlideViewModel : ViewModel, IID {
     public static SlideViewModel Forward (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
         SlideViewModel slide = new (id, title, description, isContent);
 
-        slide.Links.Add (new ("Next", new (new AlwaysCondition (), id + 1)));
+        slide.Links.Add (new ("Next", new (new AlwaysCondition (), id + 1), Key.Right));
         return slide;
     }
 
     public static SlideViewModel Backward (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
         SlideViewModel slide = new (id, title, description, isContent);
 
-        slide.Links.Add (new ("Previous", new (new AlwaysCondition (), id - 1)));
+        slide.Links.Add (new ("Previous", new (new AlwaysCondition (), id - 1), Key.Left));
         return slide;
     }
 
     public static SlideViewModel Bidirectional (IDType id, string title, List<LineViewModel> description, bool isContent = true) {
         SlideViewModel slide = new (id, title, description, isContent);
 
-        slide.Links.Add (new ("Previous", new (new AlwaysCondition (), id - 1)));
-        slide.Links.Add (new ("Next", new (new AlwaysCondition (), id + 1)));
+        slide.Links.Add (new ("Previous", new (new AlwaysCondition (), id - 1), Key.Left));
+        slide.Links.Add (new ("Next", new (new AlwaysCondition (), id + 1), Key.Right));
         return slide;
     }
 
@@ -83,6 +85,24 @@ internal class SlideViewModel : ViewModel, IID {
 
         foreach (Link<SlideViewModel> l in links) {
             slide.Links.Add (new LinkViewModel (l.Condition.ToString (in localisation), l));
+        }
+
+        if (links.Count == 0) {
+            throw new UnreachableException ();
+        } else if (links.Count == 1) {
+            slide.Links[0].Key = Key.Right;
+        } else if (links.Count == 2) {
+            slide.Links[0].Key = Key.Left;
+            slide.Links[1].Key = Key.Right;
+        } else if (links.Count == 3) {
+            slide.Links[0].Key = Key.Left;
+            slide.Links[1].Key = Key.Up;
+            slide.Links[2].Key = Key.Right;
+        } else {
+            slide.Links[0].Key = Key.Left;
+            slide.Links[1].Key = Key.Up;
+            slide.Links[links.Count - 2].Key = Key.Down;
+            slide.Links[links.Count - 1].Key = Key.Right;
         }
 
         return slide;

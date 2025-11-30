@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows.Input;
 using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Core.Contexts;
@@ -631,4 +632,20 @@ internal class SimulationViewModel : ViewModel {
         },
         l => l.Condition.Evaluate (_simulation)
     );
+
+    public RelayCommand<string> TrySwitchSlideCommand => new (k => {
+        Key key = k switch {
+            "L" => Key.Left,
+            "U" => Key.Up,
+            "D" => Key.Down,
+            "R" => Key.Right,
+            _ => throw new NotSupportedException (),
+        };
+
+        if (_slide.Links.Find (l => l.Key == key) is LinkViewModel l) {
+            if (SwitchSlideCommand.CanExecute (l.Link)) {
+                SwitchSlideCommand.Execute (l.Link);
+            }
+        }
+    });
 }

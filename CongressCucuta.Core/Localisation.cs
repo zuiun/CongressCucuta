@@ -17,6 +17,7 @@ public readonly record struct Localisation {
     public readonly (string, string) Region;
     // (name, description)
     public readonly Dictionary<IDType, (string, string[])> Regions;
+    // (singular, plural)
     public readonly (string, string) Party;
     // (name, description)
     public readonly Dictionary<IDType, (string, string[])> Parties;

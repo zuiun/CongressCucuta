@@ -39,26 +39,30 @@ internal class Brazil : ISimulation {
         statesLocs[paulistaniaMinas.ID] = (
             "Paulistania-Minas",
             [
-                StringLineFormatter.Indent ("Wealthiest states, reliant on exports", 1),
+                StringLineFormatter.Indent ("Wealthiest states, reliant on exports of dairy and coffee", 1),
             ]
         );
         statesLocs[southBrazil.ID] = (
             "South Brazil",
             [
                 StringLineFormatter.Indent ("Most politically radical states, but marginalised", 1),
+                StringLineFormatter.Indent ("Large immigrant population", 1),
             ]
         );
         statesLocs[greatPara.ID] = (
             "Great Para",
             [
-                StringLineFormatter.Indent ("Extremely poor and marginalised", 1),
+                StringLineFormatter.Indent ("Extremely poor and isolated states", 1),
+                StringLineFormatter.Indent ("Formerly known for rubber production, but no longer generates any revenue", 1),
+                StringLineFormatter.Indent ("Large indigenous population", 1),
             ]
         );
         statesLocs[maranhaoPernambuco.ID] = (
-            "Maranhao-Pernambuco",
+            "Northeast Brazil",
             [
-                StringLineFormatter.Indent ("Historic centre of republicanism", 1),
-                StringLineFormatter.Indent ("Produces sugar, which suffered from abolition", 1),
+                StringLineFormatter.Indent ("Historic centre of republicanism and incredibly rebellious", 1),
+                StringLineFormatter.Indent ("Reliant on plantation crops, whose production suffered from abolition", 1),
+                StringLineFormatter.Indent ("Large black and mixed populations", 1),
             ]
         );
 
@@ -115,17 +119,14 @@ internal class Brazil : ISimulation {
         );
         ProcedureTargeted brazilianWorkersConfederation = new (
             6,
-            [new (Procedure.Effect.EffectType.VoteFailAdd, [], 2)],
-            [],
+            [new (Procedure.Effect.EffectType.VotePassAdd, [], 2)],
+            [3],
             false
         );
         ProcedureTargeted communistPartyBrazil = new (
             7,
-            [
-                new (Procedure.Effect.EffectType.VotePassAdd, [], 1),
-                new (Procedure.Effect.EffectType.VoteFailAdd, [], 1),
-            ],
-            [],
+            [new (Procedure.Effect.EffectType.VotePassTwoThirds, [])],
+            [3],
             false
         );
         List<ProcedureTargeted> proceduresSpecial = [
@@ -349,9 +350,9 @@ internal class Brazil : ISimulation {
                 StringLineFormatter.Indent ("While the unrest is not yet catastrophic, it could explode in the future", 1),
             ],
             [
-                "Anarchist movement grows bolder and bolder",
+                "Anarchist movement grows bolder and more violent",
                 StringLineFormatter.Indent ("To some degree, this is beneficial", 1),
-                StringLineFormatter.Indent ("It's easier to legitimise the use of deadly force against strikers", 2),
+                StringLineFormatter.Indent ("It's easier to legitimise the use of deadly force against violent strikers", 2),
                 StringLineFormatter.Indent ("Not everyone is comfortable with militant anarchism", 2),
                 "Socialism is likely here to stay",
                 StringLineFormatter.Indent ("Events in Russia only embolden them further", 1),
@@ -378,7 +379,7 @@ internal class Brazil : ISimulation {
             [
                 "Tenentist uprisings grow in number and strength",
                 StringLineFormatter.Indent ("São Paulo and south Brazil are revolutionary hotspots", 1),
-                StringLineFormatter.Indent ("These revolts all fail, but the São Paulo revolution is extremely destructive and nearly successful", 2),
+                StringLineFormatter.Indent ("These revolts all fail, but the São Paulo revolt was extremely destructive and nearly successful", 2),
                 StringLineFormatter.Indent ("Survivors are represented by a lone guerrilla force, Luís Prestes' Column", 3),
                 "While Brazil is now at peace, it is certain not to last",
                 StringLineFormatter.Indent ("Many tenentists have fled abroad, from where they continue to agitate against the government", 1),
@@ -390,6 +391,7 @@ internal class Brazil : ISimulation {
                 StringLineFormatter.Indent ("Free public education for all", 2),
                 StringLineFormatter.Indent ("Amnesty for rebels", 2),
                 StringLineFormatter.Indent ("This does not satisfy the tenentists, who continue to revolt", 1),
+                StringLineFormatter.Indent ("They are especially concerned with the rejection of land reform and an independent electoral commission", 2),
                 StringLineFormatter.Indent ("However, they find less support than they had hoped for, and the movement eventually dies out", 2),
                 StringLineFormatter.Indent ("Survivors are represented by a lone guerrilla force, Luís Prestes' Column", 3),
             ]
@@ -531,10 +533,11 @@ internal class Brazil : ISimulation {
                 StringLineFormatter.Indent ("However, the two movements tolerate each other and sometimes cooperate", 1),
             ]
         );
+        // Based on the Rio Grande do Sul revolts in 1924 - 1926 and the revolution in 1930
         resultsLocs[incidentAPassed.ID] = (
             "Incident A Passed",
             [
-                "Revolution breaks out in Rio Grande do Sul",
+                "Revolution breaks out in Porto Alegre",
                 StringLineFormatter.Indent ("Tenentist exiles and officers back a liberal coalition that overthrows the government", 1),
                 StringLineFormatter.Indent ("Anarchists organise some support for the revolution, although they aren't too excited about liberalism", 1),
                 "New government cracks down on dissent and organises a dictatorship",
@@ -545,7 +548,7 @@ internal class Brazil : ISimulation {
         resultsLocs[incidentAFailed.ID] = (
             "Incident A Failed",
             [
-                "Revolution breaks out in Rio Grande do Sul",
+                "Revolution breaks out in Porto Alegre",
                 StringLineFormatter.Indent ("Tenentist exiles and officers back a liberal coalition that fails", 1),
                 StringLineFormatter.Indent ("Anarchists organise some support for the revolution, although they aren't too excited about liberalism", 1),
                 "Revolution's aftershocks are concerning",
@@ -563,10 +566,11 @@ internal class Brazil : ISimulation {
                 StringLineFormatter.Indent ("Communists eventually infiltrate the tenentist movement", 1),
             ]
         );
+        // Based on endemic banditry, the Prestes column, and the Natal and Recife revolt in 1935
         resultsLocs[militaryClubInactiveIncidentAPassed.ID] = (
             "Military Club Inactive and Incident A Passed",
             [
-                "Revolution breaks out in Rio Grande do Norte",
+                "Revolution breaks out in Natal",
                 StringLineFormatter.Indent ("Tenentist exiles and officers back a socialist coalition that overthrows the government", 1),
                 StringLineFormatter.Indent ("Anarchists organise some support for the revolution, although they aren't too excited about communism", 1),
                 "New government cracks down on dissent and organises a dictatorship",
@@ -578,7 +582,7 @@ internal class Brazil : ISimulation {
         resultsLocs[militaryClubInactiveIncidentAFailed.ID] = (
             "Military Club Inactive and Incident A Failed",
             [
-                "Revolution breaks out in Rio Grande do Norte",
+                "Revolution breaks out in Natal",
                 StringLineFormatter.Indent ("Tenentist exiles and officers back a socialist coalition that fails", 1),
                 StringLineFormatter.Indent ("Anarchists stay silent", 1),
                 "Revolution's aftershocks are concerning",
@@ -589,10 +593,11 @@ internal class Brazil : ISimulation {
                 StringLineFormatter.Indent ("Brazil will probably remain unstable in the years to come", 2),
             ]
         );
+        // See previous
         resultsLocs[militaryClubActive.ID] = (
             "Military Club Active",
             [
-                "Revolution breaks out in Rio Grande do Norte",
+                "Revolution breaks out in Porto Alegre",
                 StringLineFormatter.Indent ("Tenentist exiles and officers back a liberal coalition that fails", 1),
                 StringLineFormatter.Indent ("Anarchists organise some support for the revolution, although they aren't too excited about liberalism", 1),
                 "Government survives mostly intact",
@@ -618,10 +623,11 @@ internal class Brazil : ISimulation {
                 StringLineFormatter.Indent ("With the rise of tenentism, this could be disastrous", 1),
             ]
         );
+        // Based on the São Paulo strikes in 1917 - 1919 and the revolt in 1924
         resultsLocs[ballotCPassed2.ID] = (
             "Ballot C Passed",
             [
-                "Revolution breaks out in Rio de Janeiro",
+                "Revolution breaks out in São Paulo",
                 StringLineFormatter.Indent ("Tenentist exiles and officers back an anarchist coalition that overthrows the government", 1),
                 StringLineFormatter.Indent ("Rural poor organise some support for the revolution, although they aren't too involved", 1),
                 "New government cracks down on dissent and organises a dictatorship",
@@ -633,7 +639,7 @@ internal class Brazil : ISimulation {
         resultsLocs[ballotCFailed2.ID] = (
             "Ballot C Failed",
             [
-                "Revolution breaks out in Rio de Janeiro",
+                "Revolution breaks out in São Paulo",
                 StringLineFormatter.Indent ("Tenentist exiles and officers back an anarchist coalition that fails", 1),
                 StringLineFormatter.Indent ("Rural poor organise some support for the revolution, although they aren't too involved", 1),
                 "Revolution's aftershocks are concerning",
@@ -651,15 +657,16 @@ internal class Brazil : ISimulation {
                 StringLineFormatter.Indent ("This tempers some discontent, but entrenches the oligarchy", 1),
             ]
         );
+        // Based on the São Paulo revolt in 1924 
         resultsLocs[incidentAPassed2.ID] = (
             "Incident A Passed",
             [
-                "Revolution breaks out in Rio Grande do Sul",
-                StringLineFormatter.Indent ("Tenentist exiles and officers back a populist coalition that overthrows the government", 1),
-                StringLineFormatter.Indent ("Anarchists organise some support for the revolution, although they aren't too excited about populism", 1),
+                "Revolution breaks out in São Paulo",
+                StringLineFormatter.Indent ("Tenentist exiles and officers back a conservative coalition that overthrows the government", 1),
+                StringLineFormatter.Indent ("Anarchists organise some support for the revolution, although they aren't too excited about conservatism", 1),
                 "New government cracks down on dissent and organises a dictatorship",
                 StringLineFormatter.Indent ("Goal is to break the oligarchy and improve the lot of Brazilians", 1),
-                StringLineFormatter.Indent ("This particular revolution has an incredibly unclear focus and is not exactly political", 2),
+                StringLineFormatter.Indent ("This particular revolution has an incredibly unclear focus and is not exactly ideological", 2),
                 StringLineFormatter.Indent ("Many doubt that they will succeed, and there is already opposition brewing in São Paulo", 2),
                 StringLineFormatter.Indent ("Most likely outcome is a different kind of oligarchy", 3),
             ]
@@ -667,8 +674,8 @@ internal class Brazil : ISimulation {
         resultsLocs[incidentAFailed2.ID] = (
             "Incident A Failed",
             [
-                "Revolution breaks out in Rio Grande do Sul",
-                StringLineFormatter.Indent ("Tenentist exiles and officers back a populist coalition that fails", 1),
+                "Revolution breaks out in São Paulo",
+                StringLineFormatter.Indent ("Tenentist exiles and officers back a conservative coalition that fails", 1),
                 StringLineFormatter.Indent ("Anarchists stay silent", 1),
                 "Government survives mostly intact",
                 StringLineFormatter.Indent ("Economic shift away from exports badly hurts the oligarchy anyway", 1),

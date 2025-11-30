@@ -15,6 +15,27 @@ public sealed class ProcedureEffectTests {
     }
 
     [TestMethod]
+    [DataRow (3)]
+    [DataRow (4)]
+    public void Constructor_CurrencyState_Throws (int type) {
+        Assert.Throws<ArgumentException> (() => new Procedure.Effect ((Procedure.Effect.EffectType) type, [Currency.STATE]));
+    }
+
+    [TestMethod]
+    [DataRow (3)]
+    [DataRow (4)]
+    public void Constructor_CurrencyPartyOther_Throws (int type) {
+        Assert.Throws<ArgumentException> (() => new Procedure.Effect ((Procedure.Effect.EffectType) type, [Currency.PARTY, 0]));
+    }
+
+    [TestMethod]
+    [DataRow (3)]
+    [DataRow (4)]
+    public void Constructor_CurrencyRegionOther_Throws (int type) {
+        Assert.Throws<ArgumentException> (() => new Procedure.Effect ((Procedure.Effect.EffectType) type, [Currency.REGION, 0]));
+    }
+
+    [TestMethod]
     public void ToString_VotePassAdd_ReturnsExpected () {
         Simulation simulation = new FakeSimulation ();
         Localisation localisation = FakeLocalisation.Create ();

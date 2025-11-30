@@ -25,6 +25,7 @@ public abstract class Procedure : IID {
             VotePassTwoThirds,
             /*
              * Adds Value to Target Currency during Filter Ballot
+             * Can't mix every scope with individual scopes
              *
              * Targeted, Declared
              * Targets Factions (populated: specified), Currencies (empty: STATE or declarer)
@@ -32,6 +33,7 @@ public abstract class Procedure : IID {
             CurrencyAdd,
             /*
              * Subtracts Value from Target Currency during Filter Ballot
+             * Can't mix every scope with individual scopes
              *
              * Targeted, Declared
              * Targets Factions (populated: specified), Currencies (empty: STATE or declarer)
@@ -141,6 +143,21 @@ public abstract class Procedure : IID {
                     }
 
                     break;
+                case EffectType.CurrencyAdd:
+                case EffectType.CurrencySubtract:
+                    if (targetIDs.Contains (Currency.STATE)) {
+                        throw new ArgumentException ($"Currency* Target cannot be State");
+                    }
+
+                    if (targetIDs.Contains (Currency.REGION) && targetIDs.Length != 1) {
+                        throw new ArgumentException ($"Currency* Target cannot include both Region and other targets");
+                    }
+
+                    if (targetIDs.Contains (Currency.PARTY) && targetIDs.Length != 1) {
+                        throw new ArgumentException ($"Currency* Target cannot include both Party and other targets");
+                    }
+
+                    break;
                 case EffectType.ElectionNominated:
                     if (targetIDs.Length == 0) {
                         throw new ArgumentException ($"ElectionNominated Target must be populated", nameof (targetIDs));
@@ -164,22 +181,27 @@ public abstract class Procedure : IID {
             switch (effect.Type) {
                 case EffectType.CurrencyAdd:
                 case EffectType.CurrencySubtract:
-                    List<string> factions = [];
-                    var partiesIter = localisation.Parties.Keys.Where (p => effect.TargetIDs.Contains (p.ID));
-                    var regionsIter = localisation.Regions.Keys.Where (r => effect.TargetIDs.Contains (r.ID));
+                    if (effect.TargetIDs[0] == Currency.REGION) {
+                        return $"Every {localisation.Region.Item1}:";
+                    } else if (effect.TargetIDs[0] == Currency.PARTY) {
+                        return $"Every {localisation.Party.Item1}:";
+                    } else {
+                        List<string> factions = [];
+                        var regionsIter = localisation.Regions.Keys.Intersect (effect.TargetIDs);
+                        var partiesIter = localisation.Parties.Keys.Intersect (effect.TargetIDs);
 
-                    foreach (var r in regionsIter) {
-                        factions.Add (localisation.GetFactionOrAbbreviation (r));
+                        foreach (var r in regionsIter) {
+                            factions.Add (localisation.GetFactionOrAbbreviation (r));
+                        }
+
+                        foreach (var p in partiesIter) {
+                            factions.Add (localisation.GetFactionOrAbbreviation (p));
+                        }
+
+                        return $"{string.Join (", ", factions)}:";
                     }
-
-                    foreach (var p in partiesIter) {
-                        factions.Add (localisation.GetFactionOrAbbreviation (p));
-                    }
-
-                    return $"{string.Join (", ", factions)}:";
-                case EffectType.ProcedureActivate: {
+                case EffectType.ProcedureActivate:
                     return localisation.Procedures[effect.TargetIDs[0]].Item1;
-                }
                 case EffectType.ElectionRegion:
                 case EffectType.ElectionParty: {
                     if (effect.TargetIDs.Length > 0) {
@@ -241,7 +263,6 @@ public abstract class Procedure : IID {
                 default:
                     throw new NotSupportedException ();
             }
-            ;
         }
 
         public string ToString (Simulation simulation, ref readonly Localisation localisation) {
@@ -335,7 +356,7 @@ public abstract class Procedure : IID {
                             string regions = string.Join (", ", pair.Value);
 
                             result.Add (StringLineFormatter.Indent ($"{regions}:", 1));
-                            result.Add (StringLineFormatter.Indent ($"{currencyRegion} begins at {pair.Key}:", 2));
+                            result.Add (StringLineFormatter.Indent ($"{currencyRegion} begins at {pair.Key}", 2));
                         }
                     }
 
@@ -368,7 +389,7 @@ public abstract class Procedure : IID {
                             string parties = string.Join (", ", pair.Value);
 
                             result.Add (StringLineFormatter.Indent ($"{parties}:", 1));
-                            result.Add (StringLineFormatter.Indent ($"{currencyParty} begins at {pair.Key}:", 2));
+                            result.Add (StringLineFormatter.Indent ($"{currencyParty} begins at {pair.Key}", 2));
                         }
                     }
 
