@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Windows.Input;
 using CongressCucuta.Core;
 using CongressCucuta.Core.Conditions;
 using CongressCucuta.Core.Procedures;
@@ -431,7 +432,7 @@ public sealed class SimulationViewModelTests {
             Slide = SlideViewModel.Forward (0, "", [])
         };
 
-        vm.TrySwitchSlideCommand.Execute ("R");
+        vm.TrySwitchSlideCommand.Execute (Shortcut.Right);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
@@ -439,29 +440,29 @@ public sealed class SimulationViewModelTests {
 
     [TestMethod]
     public void TrySwitchSlideCommand_ExecuteBackward_MutatesExpected () {
-        IDType expected = 0;
         FakeSimulation simulation = new ();
         SimulationViewModel vm = new (simulation) {
             Slide = SlideViewModel.Backward (1, "", [])
         };
 
-        vm.TrySwitchSlideCommand.Execute ("L");
+        IDType expected = 0;
+        vm.TrySwitchSlideCommand.Execute (Shortcut.Left);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
     }
 
     [TestMethod]
-    [DataRow ("L", 0)]
-    [DataRow ("R", 2)]
-    public void TrySwitchSlideCommand_ExecuteBidirectional_MutatesExpected (string key, int slide) {
-        IDType expected = slide;
+    [DataRow (0, 0)]
+    [DataRow (3, 2)]
+    public void TrySwitchSlideCommand_ExecuteBidirectional_MutatesExpected (int shortcut, int slide) {
         FakeSimulation simulation = new ();
         SimulationViewModel vm = new (simulation) {
             Slide = SlideViewModel.Bidirectional (1, "", [])
         };
 
-        vm.TrySwitchSlideCommand.Execute (key);
+        IDType expected = slide;
+        vm.TrySwitchSlideCommand.Execute ((Shortcut) shortcut);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
@@ -478,17 +479,16 @@ public sealed class SimulationViewModelTests {
             ], in localisation)
         };
 
-        vm.TrySwitchSlideCommand.Execute ("R");
+        vm.TrySwitchSlideCommand.Execute (Shortcut.Right);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
     }
 
     [TestMethod]
-    [DataRow ("L", 1)]
-    [DataRow ("R", 2)]
-    public void TrySwitchSlideCommand_ExecuteBranching2_MutatesExpected (string key, int slide) {
-        IDType expected = slide;
+    [DataRow (0, 1)]
+    [DataRow (3, 2)]
+    public void TrySwitchSlideCommand_ExecuteBranching2_MutatesExpected (int shortcut, int slide) {
         FakeSimulation simulation = new ();
         Localisation localisation = FakeLocalisation.Create ();
         SimulationViewModel vm = new (simulation) {
@@ -498,18 +498,18 @@ public sealed class SimulationViewModelTests {
             ], in localisation)
         };
 
-        vm.TrySwitchSlideCommand.Execute (key);
+        IDType expected = slide;
+        vm.TrySwitchSlideCommand.Execute ((Shortcut) shortcut);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
     }
 
     [TestMethod]
-    [DataRow ("L", 1)]
-    [DataRow ("U", 2)]
-    [DataRow ("R", 3)]
-    public void TrySwitchSlideCommand_ExecuteBranching3_MutatesExpected (string key, int slide) {
-        IDType expected = slide;
+    [DataRow (0, 1)]
+    [DataRow (1, 2)]
+    [DataRow (3, 3)]
+    public void TrySwitchSlideCommand_ExecuteBranching3_MutatesExpected (int shortcut, int slide) {
         FakeSimulation simulation = new ();
         Localisation localisation = FakeLocalisation.Create ();
         SimulationViewModel vm = new (simulation) {
@@ -520,19 +520,19 @@ public sealed class SimulationViewModelTests {
             ], in localisation)
         };
 
-        vm.TrySwitchSlideCommand.Execute (key);
+        IDType expected = slide;
+        vm.TrySwitchSlideCommand.Execute ((Shortcut) shortcut);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
     }
 
     [TestMethod]
-    [DataRow ("L", 1)]
-    [DataRow ("U", 2)]
-    [DataRow ("D", 3)]
-    [DataRow ("R", 4)]
-    public void TrySwitchSlideCommand_ExecuteBranching4_MutatesExpected (string key, int slide) {
-        IDType expected = slide;
+    [DataRow (0, 1)]
+    [DataRow (1, 2)]
+    [DataRow (2, 3)]
+    [DataRow (3, 4)]
+    public void TrySwitchSlideCommand_ExecuteBranching4_MutatesExpected (int shortcut, int slide) {
         FakeSimulation simulation = new ();
         Localisation localisation = FakeLocalisation.Create ();
         SimulationViewModel vm = new (simulation) {
@@ -544,18 +544,19 @@ public sealed class SimulationViewModelTests {
             ], in localisation)
         };
 
-        vm.TrySwitchSlideCommand.Execute (key);
+        IDType expected = slide;
+        vm.TrySwitchSlideCommand.Execute ((Shortcut) shortcut);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);
     }
 
     [TestMethod]
-    [DataRow ("L")]
-    [DataRow ("U")]
-    [DataRow ("D")]
-    [DataRow ("R")]
-    public void TrySwitchSlideCommand_ExecuteFailure_DoesNothing (string key) {
+    [DataRow (0)]
+    [DataRow (1)]
+    [DataRow (2)]
+    [DataRow (3)]
+    public void TrySwitchSlideCommand_ExecuteFailure_DoesNothing (int shortcut) {
         IDType expected = 0;
         FakeSimulation simulation = new ();
         Localisation localisation = FakeLocalisation.Create ();
@@ -563,7 +564,7 @@ public sealed class SimulationViewModelTests {
             Slide = SlideViewModel.Branching (expected, "", [], [new (new NeverCondition (), 1)], in localisation)
         };
 
-        vm.TrySwitchSlideCommand.Execute (key);
+        vm.TrySwitchSlideCommand.Execute ((Shortcut) shortcut);
 
         Assert.AreEqual (expected, vm.Slide.ID);
         Assert.AreEqual (expected, vm.SlideCurrentIdx);

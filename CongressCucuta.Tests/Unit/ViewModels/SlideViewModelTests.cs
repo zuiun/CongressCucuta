@@ -76,27 +76,20 @@ public sealed class SlideViewModelTests {
         SlideViewModel slide = SlideViewModel.Forward (0, "", []);
 
         IDType expected = 1;
-        Link<SlideViewModel> actual = (Link<SlideViewModel>) slide.FindLink ("R")!;
+        Link<SlideViewModel> actual = (Link<SlideViewModel>) slide.FindLink (Shortcut.Right)!;
 
         Assert.AreEqual (expected, actual.TargetID);
     }
 
     [TestMethod]
-    [DataRow ("L")]
-    [DataRow ("U")]
-    [DataRow ("D")]
-    public void FindLink_Other_ReturnsNothing (string code) {
+    [DataRow (0)]
+    [DataRow (1)]
+    [DataRow (2)]
+    public void FindLink_Other_ReturnsNothing (int shortcut) {
         SlideViewModel slide = SlideViewModel.Forward (0, "", []);
 
-        Link<SlideViewModel>? actual = slide.FindLink (code);
+        Link<SlideViewModel>? actual = slide.FindLink ((Shortcut) shortcut);
 
         Assert.IsNull (actual);
-    }
-
-    [TestMethod]
-    public void FindLink_Wrong_Throws () {
-        SlideViewModel slide = SlideViewModel.Forward (0, "", []);
-
-        Assert.Throws<NotSupportedException> (() => slide.FindLink (" "));
     }
 }

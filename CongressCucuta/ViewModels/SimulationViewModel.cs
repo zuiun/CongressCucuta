@@ -12,9 +12,9 @@ internal class SimulationViewModel : ViewModel {
     private readonly Simulation _raw;
     private readonly SimulationContext _simulation;
     private readonly Localisation _localisation;
-    private IDType _slideCurrentIdx = 0;
-    private readonly IDType _slideTitleIdx;
-    private readonly Dictionary<IDType, IDType> _ballotIdxsIds;
+    private byte _slideCurrentIdx = 0;
+    private readonly byte _slideTitleIdx;
+    private readonly Dictionary<byte, IDType> _ballotIdxsIds;
     private bool _isBallot = false;
     private SlideViewModel _slide;
     private readonly ContextViewModel _context;
@@ -81,20 +81,21 @@ internal class SimulationViewModel : ViewModel {
         _context.Voting += Context_VotingEventHandler;
         _context.DeclaringProcedure += Context_DeclaringProcedureEventHandler;
 
-        IDType slideCurrentIdx = GenerateSlidesIntroduction ();
 
-        slideCurrentIdx = GenerateSlidesProcedures (simulation, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlideRoles (simulation, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlidesFactions (simulation, slideCurrentIdx);
-        (slideCurrentIdx, _slideTitleIdx) = GenerateSlidesTitles (simulation, slideCurrentIdx);
-        (slideCurrentIdx, _ballotIdxsIds) = GenerateSlidesBallots (simulation, slideCurrentIdx);
-        slideCurrentIdx = GenerateSlidesResults (simulation, slideCurrentIdx);
-        GenerateSlidesEnd (simulation, slideCurrentIdx);
+        GenerateSlidesIntroduction (out byte slideCurrentIdx);
+        GenerateSlidesProcedures (simulation, ref slideCurrentIdx);
+        GenerateSlideRoles (simulation, ref slideCurrentIdx);
+        GenerateSlidesFactions (simulation, ref slideCurrentIdx);
+        _slideTitleIdx = GenerateSlidesTitles (simulation, ref slideCurrentIdx);
+        _ballotIdxsIds = GenerateSlidesBallots (simulation, ref slideCurrentIdx);
+        GenerateSlidesResults (simulation, ref slideCurrentIdx);
+        GenerateSlidesEnd (simulation, ref slideCurrentIdx);
         _slide = Slides[0];
     }
 
-    private IDType GenerateSlidesIntroduction () {
-        IDType slideCurrentIdx = 0;
+    private void GenerateSlidesIntroduction (out byte slideCurrentIdx) {
+        slideCurrentIdx = 0;
+
         SlideViewModel slideIntro = SlideViewModel.Forward (slideCurrentIdx, _localisation.State, [_localisation.Government], false);
 
         ++ slideCurrentIdx;
@@ -104,11 +105,10 @@ internal class SimulationViewModel : ViewModel {
 
         ++ slideCurrentIdx;
         Slides.Add (slideContext);
-        return slideCurrentIdx;
     }
 
-    private IDType GenerateSlidesProcedures (Simulation simulation, IDType slideCurrentIdx) {
-        void GenerateSlideProcedure (string title, Procedure procedure) {
+    private void GenerateSlidesProcedures (Simulation simulation, ref byte slideCurrentIdx) {
+        void GenerateSlideProcedure (string title, Procedure procedure, ref byte slideCurrentIdx) {
             string procedureFull = procedure.ToString (simulation, in _localisation);
             string[] procedureSplit = procedureFull.Split ('\n');
             LineViewModel line = new (procedureSplit[0], description: _localisation.Procedures[procedure.ID].Item2);
@@ -122,33 +122,31 @@ internal class SimulationViewModel : ViewModel {
             Slides.Add (slideProcedure);
         }
 
-        for (byte i = 0; i < simulation.ProceduresGovernmental.Count; ++i) {
+        for (byte i = 0; i < simulation.ProceduresGovernmental.Count; ++ i) {
             string title = i > 0 ? "Governmental Procedures (cont.)" : "Governmental Procedures";
             Procedure procedure = simulation.ProceduresGovernmental[i];
 
-            GenerateSlideProcedure (title, procedure);
+            GenerateSlideProcedure (title, procedure, ref slideCurrentIdx);
         }
 
-        for (byte i = 0; i < simulation.ProceduresSpecial.Count; ++i) {
+        for (byte i = 0; i < simulation.ProceduresSpecial.Count; ++ i) {
             string title = i > 0 ? "Special Procedures (cont.)" : "Special Procedures";
             Procedure procedure = simulation.ProceduresSpecial[i];
 
             if (procedure.IsActiveStart) {
-                GenerateSlideProcedure (title, procedure);
+                GenerateSlideProcedure (title, procedure, ref slideCurrentIdx);
             }
         }
 
-        for (byte i = 0; i < simulation.ProceduresDeclared.Count; ++i) {
+        for (byte i = 0; i < simulation.ProceduresDeclared.Count; ++ i) {
             string title = i > 0 ? "Declared Procedures (cont.)" : "Declared Procedures";
             Procedure procedure = simulation.ProceduresDeclared[i];
 
-            GenerateSlideProcedure (title, procedure);
+            GenerateSlideProcedure (title, procedure, ref slideCurrentIdx);
         }
-
-        return slideCurrentIdx;
     }
 
-    private IDType GenerateSlideRoles (Simulation simulation, IDType slideCurrentIdx) {
+    private void GenerateSlideRoles (Simulation simulation, ref byte slideCurrentIdx) {
         List<string> roles = [];
         string speaker = _localisation.Speaker;
         string member = _localisation.Roles[Role.MEMBER].Item1;
@@ -212,10 +210,9 @@ internal class SimulationViewModel : ViewModel {
 
         ++ slideCurrentIdx;
         Slides.Add (slideRoles);
-        return slideCurrentIdx;
     }
 
-    private IDType GenerateSlidesFactions (Simulation simulation, IDType slideCurrentIdx) {
+    private void GenerateSlidesFactions (Simulation simulation, ref byte slideCurrentIdx) {
         List<string> regions = [];
 
         foreach (Faction region in simulation.Regions) {
@@ -249,11 +246,9 @@ internal class SimulationViewModel : ViewModel {
             ++ slideCurrentIdx;
             Slides.Add (slideParties);
         }
-
-        return slideCurrentIdx;
     }
 
-    private (IDType, IDType) GenerateSlidesTitles (Simulation simulation, IDType slideCurrentIdx) {
+    private byte GenerateSlidesTitles (Simulation simulation, ref byte slideCurrentIdx) {
         List<LineViewModel> linesBallots = [];
 
         foreach (Ballot ballot in simulation.Ballots.Where (b => ! b.IsIncident)) {
@@ -268,7 +263,7 @@ internal class SimulationViewModel : ViewModel {
         ++ slideCurrentIdx;
         Slides.Add (slideBallots);
 
-        IDType slideTitleIdx = slideCurrentIdx;
+        byte slideTitleIdx = slideCurrentIdx;
         SlideViewModel slideTitle = SlideViewModel.Forward (
             slideCurrentIdx,
             _localisation.Period,
@@ -278,16 +273,14 @@ internal class SimulationViewModel : ViewModel {
 
         ++ slideCurrentIdx;
         Slides.Add (slideTitle);
-        return (slideCurrentIdx, slideTitleIdx);
+        return slideTitleIdx;
     }
 
-    private (IDType, Dictionary<IDType, IDType>) GenerateSlidesBallots (Simulation simulation, IDType slideCurrentIdx) {
-        IDType ballotIdx = slideCurrentIdx;
+    private Dictionary<byte, IDType> GenerateSlidesBallots (Simulation simulation, ref byte slideCurrentIdx) {
         IDType resultBallotIdx = slideCurrentIdx + simulation.Ballots.Count;
         List<SlideViewModel> slidesBallots = [];
         List<SlideViewModel> slidesResultBallots = [];
-        Dictionary<IDType, IDType> ballotIDsFinalIdxs = [];
-        Dictionary<IDType, IDType> resultBallotIDsFinalIdxs = [];
+        Dictionary<IDType, byte> ballotIDsFinalIdxs = [];
 
         // Every Ballot ID is mapped to its index
         foreach (Ballot ballot in simulation.Ballots) {
@@ -311,7 +304,7 @@ internal class SimulationViewModel : ViewModel {
         }
 
         IDType resultEndIdx = resultBallotIdx;
-        void GenerateSlideResult (Ballot.Result result, string title, string[] results) {
+        void GenerateSlideResult (Ballot.Result result, string title, string[] results, ref byte slideCurrentIdx) {
             List<Link<SlideViewModel>> links = [];
             List<LineViewModel> effects = [];
 
@@ -349,22 +342,20 @@ internal class SimulationViewModel : ViewModel {
         foreach (Ballot ballot in simulation.Ballots) {
             // Pass, fail
             (string title, string _, string[] _, string[] pass, string[] fail) = _localisation.Ballots[ballot.ID];
-            GenerateSlideResult (ballot.Pass, $"{title} Passed", pass);
-            GenerateSlideResult (ballot.Fail, $"{title} Failed", fail);
+            GenerateSlideResult (ballot.Pass, $"{title} Passed", pass, ref slideCurrentIdx);
+            GenerateSlideResult (ballot.Fail, $"{title} Failed", fail, ref slideCurrentIdx);
         }
 
-        Dictionary<IDType, IDType> ballotIdxsIds = ballotIDsFinalIdxs.ToDictionary (k => k.Value, k => k.Key);
+        Dictionary<byte, IDType> ballotIdxsIds = ballotIDsFinalIdxs.ToDictionary (kv => kv.Value, kv => kv.Key);
 
         Slides.AddRange (slidesBallots);
         Slides.AddRange (slidesResultBallots);
-        return (slideCurrentIdx, ballotIdxsIds);
+        return ballotIdxsIds;
     }
 
-    private IDType GenerateSlidesResults (Simulation simulation, IDType slideCurrentIdx) {
+    private void GenerateSlidesResults (Simulation simulation, ref byte slideCurrentIdx) {
         IDType resultIdxOffset = slideCurrentIdx;
         IDType resultHistoricalIdx = slideCurrentIdx + simulation.Results.Count;
-        List<SlideViewModel> slidesResults = [];
-        Dictionary<IDType, IDType> resultIDsFinalIdxs = [];
 
         foreach (Result result in simulation.Results) {
             (string title, string[] description) = _localisation.Results[result.ID];
@@ -387,11 +378,9 @@ internal class SimulationViewModel : ViewModel {
             ++ slideCurrentIdx;
             Slides.Add (slideResult);
         }
-
-        return slideCurrentIdx;
     }
 
-    private void GenerateSlidesEnd (Simulation simulation, IDType slideCurrentIdx) {
+    private void GenerateSlidesEnd (Simulation simulation, ref byte slideCurrentIdx) {
         List<string> ballotsPassed = [];
         List<string> ballotsFailed = [];
 
@@ -433,6 +422,7 @@ internal class SimulationViewModel : ViewModel {
 
         SlideViewModel slideEnd = SlideViewModel.Backward (slideCurrentIdx, "End", [], false);
 
+        ++ slideCurrentIdx;
         Slides.Add (slideEnd);
     }
 
@@ -632,8 +622,8 @@ internal class SimulationViewModel : ViewModel {
         l => l.Condition.Evaluate (_simulation)
     );
 
-    public RelayCommand<string> TrySwitchSlideCommand => new (k => {
-        Link<SlideViewModel>? link = _slide.FindLink (k);
+    public RelayCommand<Shortcut> TrySwitchSlideCommand => new (s => {
+        Link<SlideViewModel>? link = _slide.FindLink (s);
 
         if (link is Link<SlideViewModel> l) {
             if (SwitchSlideCommand.CanExecute (l)) {

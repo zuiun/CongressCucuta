@@ -8,10 +8,10 @@
         mc:Ignorable="d"
         Title="{Binding State}" Height="720" Width="1280">
     <Window.InputBindings>
-        <KeyBinding Key = "Left" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "L"/>
-        <KeyBinding Key = "Up" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "U"/>
-        <KeyBinding Key = "Down" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "D"/>
-        <KeyBinding Key = "Right" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "R"/>
+        <KeyBinding Key = "Left" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "{x:Static vm:Shortcut.Left}"/>
+        <KeyBinding Key = "Up" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "{x:Static vm:Shortcut.Up}"/>
+        <KeyBinding Key = "Down" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "{x:Static vm:Shortcut.Down}"/>
+        <KeyBinding Key = "Right" Command = "{Binding TrySwitchSlideCommand}" CommandParameter = "{x:Static vm:Shortcut.Right}"/>
     </Window.InputBindings>
     
     <Grid>

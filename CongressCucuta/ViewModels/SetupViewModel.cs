@@ -82,4 +82,16 @@ internal class SetupViewModel : ViewModel {
         Reset ();
         window.ShowDialog ();
     }
+
+    public RelayCommand TryAddNameCommand => new (_ => {
+        if (IsPeopleSetup && _people.AddNameCommand.CanExecute (null)) {
+            _people.AddNameCommand.Execute (null);
+        }
+    });
+
+    public RelayCommand TryRemoveNameCommand => new (_ => {
+        if (IsPeopleSetup && _people.RemoveNameCommand.CanExecute (null)) {
+            _people.RemoveNameCommand.Execute (null);
+        }
+    });
 }
