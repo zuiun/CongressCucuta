@@ -94,7 +94,7 @@
                             CommandParameter = "{Binding Link}"
                             HorizontalAlignment = "Center"
                             VerticalAlignment = "Center"
-                            ToolTip = "{Binding Key}"
+                            ToolTip = "{Binding Shortcut}"
                             ToolTipService.ShowOnDisabled = "True"
                             Padding = "12, 6, 12, 6"
                             Margin = "0, 0, 0, 12">

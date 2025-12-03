@@ -90,7 +90,12 @@
             </ListBox>
         </Grid>
         <ItemsControl Grid.Row = "3" Grid.Column = "1">
-            <Button Grid.Row = "3" Grid.Column = "1" HorizontalAlignment = "Center" Command = "{Binding RunNextElectionCommand}">
+            <Button Grid.Row = "3"
+                    Grid.Column = "1"
+                    HorizontalAlignment = "Center"
+                    Command = "{Binding RunNextElectionCommand}"
+                    ToolTip = "Right"
+                    ToolTipService.ShowOnDisabled = "True">
                 Next
             </Button>
         </ItemsControl>

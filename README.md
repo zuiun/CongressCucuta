@@ -14,14 +14,14 @@ This does mean that Congress of Cúcuta is only tested and intended for Windows,
 
 Run the appropriate build for your platform in [Releases](https://github.com/zuiun/CongressCucuta/releases/latest) and follow the directions.
 Congress of Cúcuta comes with several simulations packaged with the main program, but you could also import a `.sim`.
-If you made your own `.sim` or just want to try the import function, the provided simulations can also be found pre-compiled in the `CongressCucuta/Simulations` folder.
+The provided simulations can be found pre-compiled as `.sim` in the `CongressCucuta/Simulations` folder.
 
 ## Simulations
 
 These simulations are provided with Congress of Cúcuta.
 Originally, I wrote these simulations by hand in PowerPoint.
-While I have more than just those provided, I opted not to convert most of the older simulations, given their relative lack of quality.
-In addition, the selection below includes at least one simulation from each government type for which I had written simulations.
+While I made more than just those provided, I opted not to convert most of the older simulations, given their relative lack of quality.
+The selection below includes at least one simulation from each government type for which I had written simulations.
 
 <details>
 <summary>

@@ -72,6 +72,8 @@
                 Add participants:
             </TextBlock>
             <TextBlock HorizontalAlignment = "Center" Margin = "0, 0, 0, 6">
+                <Run Text = "{Binding Names.Count, Mode = OneWay}"/>
+                <Run Text = "/"/>
                 <Run Text = "{Binding PeopleMin, Mode = OneWay}"/>
                 <Run Text = "minimum"/>
             </TextBlock>
@@ -79,8 +81,16 @@
                 <TextBlock Style = "{StaticResource Watermark}" Text = "Name" Panel.ZIndex = "1" Margin = "3, 1, 0, 0"/>
                 <TextBox x:Name = "NameBox" Text = "{Binding Name, UpdateSourceTrigger = PropertyChanged}"/>
             </Grid>
-            <Button Content = "Add" Command = "{Binding AddNameCommand}" Margin = "0, 0, 0, 6"/>
-            <Button Content = "Remove" Command = "{Binding RemoveNameCommand}" Margin = "0, 0, 0, 6"/>
+            <Button Content = "Add"
+                    Command = "{Binding AddNameCommand}"
+                    ToolTip = "Enter"
+                    ToolTipService.ShowOnDisabled = "True"
+                    Margin = "0, 0, 0, 6"/>
+            <Button Content = "Remove"
+                    Command = "{Binding RemoveNameCommand}"
+                    ToolTip = "Delete"
+                    ToolTipService.ShowOnDisabled = "True"
+                    Margin = "0, 0, 0, 6"/>
             <Button Content = "Import" Command = "{Binding ImportNamesCommand}" Margin = "0, 0, 0, 6"/>
             <Grid>
                 <TextBlock Visibility = "{Binding WasImportFailure, Converter = {StaticResource BooleanToVisibilityConverter}}"

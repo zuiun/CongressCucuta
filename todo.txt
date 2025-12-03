@@ -1,2 +1,0 @@
-Dynamically generate slides
-Separate compiler from app
